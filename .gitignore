@@ -1,0 +1,8 @@
+node_modules/
+.next/
+dist/
+coverage/
+***REMOVED***
+***REMOVED***.local
+*.log
+packages/database/generated/
