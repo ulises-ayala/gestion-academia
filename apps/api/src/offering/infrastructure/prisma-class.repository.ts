@@ -67,8 +67,8 @@ export class PrismaClassRepository implements ClassRepository {
   create(data: ValidClassInput) {
     return this.write(undefined, data);
   }
-  update(id: string, data: ValidClassInput) {
-    return this.write(id, data);
+  update(id: string, data: ValidClassInput, validateCapacity = false) {
+    return this.write(id, data, validateCapacity);
   }
   async findPage(query: ClassQuery) {
     const where: Prisma.AcademyClassWhereInput = {
@@ -92,9 +92,26 @@ export class PrismaClassRepository implements ClassRepository {
     ]);
     return { items: items.map(mapClass), total, page: query.page, pageSize: query.pageSize };
   }
-  private async write(id: string | undefined, data: ValidClassInput): Promise<ClassData> {
+  private async write(
+    id: string | undefined,
+    data: ValidClassInput,
+    validateCapacity = false,
+  ): Promise<ClassData> {
     return this.prisma.$transaction(
       async (tx) => {
+        if (id && validateCapacity) {
+          await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${id}))`;
+          const activeEnrollmentCount = await tx.enrollment.count({
+            where: { classId: id, status: 'ACTIVE' },
+          });
+          if (data.capacity < activeEnrollmentCount) {
+            throw new DomainError(
+              'CLASS_CAPACITY_BELOW_ENROLLMENT_COUNT',
+              'No se puede establecer un cupo menor a la cantidad de alumnos inscriptos.',
+              { activeEnrollmentCount, requestedCapacity: data.capacity },
+            );
+          }
+        }
         if (data.status === 'ACTIVE') await this.assertNoConflicts(tx, id, data);
         const classData = {
           name: data.name,

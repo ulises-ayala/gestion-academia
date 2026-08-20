@@ -12,6 +12,7 @@ class MemoryClasses implements ClassRepository {
     { status: 'ACTIVE' | 'INACTIVE'; branchStatus: 'ACTIVE' | 'INACTIVE'; name: string }
   >();
   items: ClassData[] = [];
+  enrollmentCounts = new Map<string, { active: number; ended: number }>();
   async findById(id: string) {
     return this.items.find((item) => item.id === id) ?? null;
   }
@@ -33,7 +34,15 @@ class MemoryClasses implements ClassRepository {
     this.conflicts(undefined, data);
     return this.save(crypto.randomUUID(), data);
   }
-  async update(id: string, data: ValidClassInput) {
+  async update(id: string, data: ValidClassInput, validateCapacity = false) {
+    const activeEnrollmentCount = this.enrollmentCounts.get(id)?.active ?? 0;
+    if (validateCapacity && data.capacity < activeEnrollmentCount) {
+      throw new DomainError(
+        'CLASS_CAPACITY_BELOW_ENROLLMENT_COUNT',
+        'No se puede establecer un cupo menor a la cantidad de alumnos inscriptos.',
+        { activeEnrollmentCount, requestedCapacity: data.capacity },
+      );
+    }
     this.conflicts(id, data);
     return this.save(id, data);
   }
@@ -186,6 +195,31 @@ describe('ClassesService', () => {
     } as never);
     await expect(guarded.deactivate(created.id)).rejects.toMatchObject({
       code: 'CLASS_HAS_ACTIVE_ENROLLMENTS',
+    });
+  });
+  it('permite reducir el cupo por encima o exactamente hasta la ocupaciÃ³n activa', async () => {
+    const created = await service.create(input());
+    repo.enrollmentCounts.set(created.id, { active: 15, ended: 5 });
+    await expect(service.update(created.id, { capacity: 18 })).resolves.toMatchObject({
+      capacity: 18,
+    });
+    await expect(service.update(created.id, { capacity: 15 })).resolves.toMatchObject({
+      capacity: 15,
+    });
+  });
+  it('rechaza reducir el cupo por debajo de la ocupaciÃ³n activa', async () => {
+    const created = await service.create(input());
+    repo.enrollmentCounts.set(created.id, { active: 15, ended: 5 });
+    await expect(service.update(created.id, { capacity: 14 })).rejects.toMatchObject({
+      code: 'CLASS_CAPACITY_BELOW_ENROLLMENT_COUNT',
+      details: { activeEnrollmentCount: 15, requestedCapacity: 14 },
+    });
+  });
+  it('no cuenta inscripciones finalizadas para el cupo mÃ­nimo', async () => {
+    const created = await service.create(input());
+    repo.enrollmentCounts.set(created.id, { active: 10, ended: 5 });
+    await expect(service.update(created.id, { capacity: 10 })).resolves.toMatchObject({
+      capacity: 10,
     });
   });
 });
