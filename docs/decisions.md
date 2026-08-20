@@ -41,6 +41,17 @@
 21. **Edad derivada:** la edad se calcula en la interfaz a partir de `birthDate`; no se persiste ni forma parte del dominio.
 22. **Frontend por módulo:** autenticación y acceso HTTP son transversales; `/students`, `/students/new` y `/students/:id` concentran listado, alta y ficha/edición respectivamente dentro de un shell administrativo reutilizable.
 
+## Decisiones de Oferta Académica v1
+
+23. **Profesor responsable único:** cada clase referencia un `Teacher`. Una futura ampliación a colaboradores podrá agregar una relación sin eliminar esta responsabilidad principal.
+24. **Horas locales:** `ClassSchedule.startTime/endTime` usan PostgreSQL `TIME(0)` y la API usa `HH:mm`; no representan instantes UTC.
+25. **Sucursal derivada:** un horario referencia solamente `Room`; `Branch` se obtiene a través del salón y no se duplica.
+26. **Intervalos semiabiertos:** existe conflicto cuando `inicioExistente < finNuevo` y `finExistente > inicioNuevo`. Por ello 20:00–21:00 y 21:00–22:00 son contiguos válidos.
+27. **Conflictos transaccionales:** alta y edición de clase validan salón y profesor dentro de una transacción serializable.
+28. **Historial de horarios:** al reemplazar horarios se desactivan los anteriores y se crean nuevos; no se reescribe ni elimina el historial.
+29. **Desactivación sin cascadas:** se rechaza desactivar un profesor o danza con clases activas, una sucursal con salones activos o un salón usado por clases activas. Desactivar una clase conserva sus horarios.
+30. **Danzas equivalentes:** `DanceType` persiste un nombre normalizado con restricción única para impedir variantes triviales por mayúsculas o espacios.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
@@ -50,7 +61,7 @@
 - Imputación de pagos parciales, saldo a favor, anulaciones y devoluciones.
 - Apertura/cierre/arqueo de caja y cajas por sucursal o usuario.
 - Recuperos, feriados, reemplazos y asistencia fuera de inscripción.
-- Excepciones de solapamiento, intervalos contiguos y clases canceladas.
+- Excepciones manuales de solapamiento, vigencias estacionales, clases canceladas, feriados y reemplazos.
 - Tolerancias, pausas y horas docentes liquidables.
 - Matriz concreta de permisos.
 - Método de acceso y conducta ante deuda o vencimiento.

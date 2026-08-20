@@ -11,6 +11,7 @@ button.secondary { background: #eee5e7; color: #5d2633; }
 .sidebar { padding: 1.5rem 1rem; background: #4a1423; color: white; }
 .brand { display: block; margin: 0 .5rem 2rem; font-size: 1.15rem; font-weight: 800; text-decoration: none; }
 .nav-link { display: block; padding: .75rem; border-radius: .5rem; text-decoration: none; }
+.nav-link + .nav-link { margin-top: .2rem; }
 .nav-link.active { background: rgb(255 255 255 / 14%); font-weight: 700; }
 .admin-content { min-width: 0; }
 .topbar { min-height: 4rem; display: flex; justify-content: flex-end; align-items: center; gap: .75rem; padding: .75rem 2rem; border-bottom: 1px solid #e7dadd; background: white; }
@@ -25,6 +26,15 @@ p { line-height: 1.5; }
 .card { margin-top: 1.25rem; padding: 1.5rem; background: white; border: 1px solid #e7dadd; border-radius: 1rem; box-shadow: 0 8px 30px rgb(74 33 43 / 6%); }
 .filters { display: grid; grid-template-columns: minmax(16rem, 1fr) 12rem auto; align-items: end; gap: 1rem; margin-bottom: 1.25rem; }
 .student-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.catalog-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: 1rem; }
+.class-filters { display: grid; grid-template-columns: repeat(5, minmax(8rem, 1fr)) auto; align-items: end; gap: .75rem; margin-bottom: 1.25rem; }
+.class-form { display: grid; gap: 1.5rem; }
+fieldset { margin: 0; padding: 1rem; border: 1px solid #dfcfd3; border-radius: .75rem; }
+legend { padding: 0 .5rem; color: #7f1d35; font-weight: 750; }
+.schedule-builder { display: grid; grid-template-columns: repeat(5, minmax(7rem, 1fr)) auto; align-items: end; gap: .75rem; }
+.schedule-list { display: grid; gap: .5rem; padding: 0; list-style: none; }
+.schedule-list li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem; background: #f8f3f4; border-radius: .5rem; }
+.section-title { margin-top: 2rem; }
 label { display: grid; align-content: start; gap: .4rem; color: #5f4148; font-size: .85rem; font-weight: 650; }
 input, select { width: 100%; padding: .72rem .8rem; border: 1px solid #ccb9bd; border-radius: .5rem; background: white; color: inherit; }
 input:focus, select:focus { outline: 3px solid #ecd0d7; border-color: #8d2942; }
@@ -57,5 +67,6 @@ dd { margin: .35rem 0 0; overflow-wrap: anywhere; font-size: 1.05rem; }
 .auth-card { width: min(100%, 28rem); margin: 0; }
 .auth-card h1 { font-size: 2.4rem; }
 .auth-form { display: grid; gap: 1rem; }
+@media (max-width: 1000px) { .class-filters, .schedule-builder, .catalog-form { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 850px) { .admin-layout { grid-template-columns: 1fr; } .sidebar { padding: 1rem; } .brand { margin-bottom: 1rem; } .student-form, .detail-grid { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 620px) { .topbar { padding-inline: 1rem; } .admin-content > main { padding: 1.5rem 1rem 4rem; } .page-heading { align-items: stretch; flex-direction: column; } .filters, .student-form, .detail-grid, .future-grid { grid-template-columns: 1fr; } .wide { grid-column: auto; } .pagination { justify-content: space-between; } }
+@media (max-width: 620px) { .topbar { padding-inline: 1rem; } .admin-content > main { padding: 1.5rem 1rem 4rem; } .page-heading { align-items: stretch; flex-direction: column; } .filters, .student-form, .detail-grid, .future-grid, .class-filters, .schedule-builder, .catalog-form { grid-template-columns: 1fr; } .wide { grid-column: auto; } .pagination { justify-content: space-between; } }

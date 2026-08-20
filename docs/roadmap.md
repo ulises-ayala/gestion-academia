@@ -1,8 +1,8 @@
 # Plan incremental
 
 1. **Base y Alumnos v1 (terminado):** migraciones iniciales, errores, validación, autenticación, contratos públicos y CRUD de alumnos con búsqueda, filtros, paginación, ficha y baja lógica.
-2. **Oferta:** profesores, danzas, sucursales, salones, clases y horarios; definir conflictos.
-3. **Inscripciones:** altas/bajas, cupos y ficha del alumno.
+2. **Oferta Académica v1 (terminado):** profesores, danzas, sucursales, salones, clases, horarios y conflictos de salón/profesor.
+3. **Inscripciones v1 (siguiente):** `Enrollment`, altas/bajas, cupos y ficha del alumno.
 4. **Tarifas y cuotas:** relevar planes, versionado, descuentos y generación.
 5. **Pagos y caja:** parciales, imputaciones, medios y cierres según reglas confirmadas.
 6. **Asistencias y acceso:** alumnos/docentes, búsqueda y auditoría; sin hardware.
