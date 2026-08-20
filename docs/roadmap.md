@@ -3,7 +3,7 @@
 1. **Base y Alumnos v1 (terminado):** migraciones iniciales, errores, validación, autenticación, contratos públicos y CRUD de alumnos con búsqueda, filtros, paginación, ficha y baja lógica.
 2. **Oferta Académica v1 (terminado):** profesores, danzas, sucursales, salones, clases, horarios y conflictos de salón/profesor.
 3. **Inscripciones v1 (terminado):** `Enrollment`, altas/finalización, historia, cupos y fichas de alumno/clase.
-4. **Tarifas y cuotas (siguiente):** relevar planes, versionado, descuentos y generación.
+4. **Tarifas y cuotas v1 (terminado):** tarifa simple por clase, cuota mensual manual por inscripción, vencimiento 1–10 y snapshot monetario; prorrateos, descuentos y promociones siguen pendientes.
 5. **Pagos y caja:** parciales, imputaciones, medios y cierres según reglas confirmadas.
 6. **Asistencias y acceso:** alumnos/docentes, búsqueda y auditoría; sin hardware.
 7. **Liquidación:** motor configurable después de validar fórmula y modalidades.

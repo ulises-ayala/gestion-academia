@@ -1,6 +1,6 @@
 # Gestión Academia
 
-Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1 e Inscripciones v1.
+Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1, Inscripciones v1 y Tarifas/Cuotas v1.
 
 ## Arquitectura
 
@@ -28,7 +28,8 @@ futura app alumno ----------------^          |
 - PostgreSQL 16 y migraciones Prisma.
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
-Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. El cupo de una clase no puede reducirse por debajo de sus inscripciones activas. No están implementados tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
+Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. El cupo de una clase no puede reducirse por debajo de sus inscripciones activas.
+Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Los montos quedan congelados en cada cuota. No están implementados pagos, caja, descuentos, promociones, Formación, asistencias, control de acceso ni liquidaciones.
 
 ## Stack
 
@@ -171,6 +172,21 @@ El Blueprint usa los planes gratuitos para minimizar costo. Los web services gra
 - `GET /api/v1/enrollments/:id`: obtener detalle.
 - `POST /api/v1/enrollments/:id/end`: finalizar con `endDate` sin borrar historia.
 
+## API de tarifas y cuotas
+
+- `GET /api/v1/tariffs?status=`: listar tarifas.
+- `GET /api/v1/tariffs/active`: listar tarifas activas.
+- `GET /api/v1/tariffs/:id`: obtener una tarifa.
+- `POST /api/v1/tariffs`: crear con `name`, `amount`, `validFrom` y `validTo` opcional.
+- `PATCH /api/v1/tariffs/:id`: editar una tarifa.
+- `DELETE /api/v1/tariffs/:id`: desactivar sin borrar.
+- `POST /api/v1/tariffs/:id/reactivate`: reactivar.
+- `POST /api/v1/monthly-charges`: generar manualmente con `enrollmentId`, `tariffId`, `period` (`AAAA-MM`) y `dueDate`.
+- `GET /api/v1/monthly-charges?studentId=&period=`: listar por alumno y/o período.
+- `GET /api/v1/monthly-charges/:id`: obtener detalle.
+
+Cada cuota nace `PENDING`, con descuento cero y montos históricos. No hay endpoints de pago, anulación ni generación automática.
+
 ## Próxima etapa
 
-El siguiente incremento recomendado es **Tarifas y Cuotas**. No está implementado todavía. Antes de módulos sensibles como tarifas, pagos, caja y liquidaciones, debe definirse la matriz concreta de permisos.
+El siguiente incremento recomendado es **Pagos**, solamente después de confirmar imputaciones, anulaciones, recibos y métodos de pago. Antes de pagos, caja y liquidaciones debe definirse la matriz concreta de permisos.

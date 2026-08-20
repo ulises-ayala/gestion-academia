@@ -5,12 +5,14 @@ import { AuthModule } from './auth/auth.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { OfferingModule } from './offering/offering.module';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { BillingModule } from './billing/billing.module';
 
 @Module({
   imports: [
     AuthModule,
     HealthModule,
     EnrollmentsModule,
+    BillingModule,
     StudentsModule,
     TeachersModule,
     OfferingModule,

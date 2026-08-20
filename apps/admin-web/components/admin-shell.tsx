@@ -15,6 +15,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     { href: '/dance-types', label: 'Tipos de danza' },
     { href: '/branches', label: 'Sucursales' },
     { href: '/rooms', label: 'Salones' },
+    { href: '/tariffs', label: 'Tarifas' },
   ];
   return (
     <div className="admin-layout">

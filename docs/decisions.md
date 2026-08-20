@@ -71,12 +71,23 @@
 39. **Migraciones sin pre-deploy pago:** para admitir servicios web gratuitos, el arranque de la API ejecuta `prisma migrate deploy` antes del servidor. El comando es idempotente, no reinicia la base y detiene el despliegue si una migración falla.
 40. **Cookie configurable por entorno:** desarrollo conserva `SameSite=Lax` sin `Secure`; staging usa `SameSite=None` y `Secure=true` para los servicios HTTPS separados. CORS mantiene una lista explícita de orígenes y credenciales habilitadas.
 
+## Decisiones de Tarifas y Cuotas v1
+
+41. **Cuota por inscripción persistente:** cada `MonthlyCharge` referencia una `Enrollment` existente y conserva `studentId`. El período mensual no crea una nueva inscripción; dos inscripciones pueden producir dos cuotas para el mismo alumno y mes.
+42. **Período mensual canónico:** la API recibe `AAAA-MM` y la base lo guarda como el primer día del mes. Una restricción única sobre `enrollmentId + period` impide duplicados incluso ante requests simultáneas.
+43. **Snapshot monetario:** al generar se copian monto base, descuento cero y monto final desde la tarifa. Los importes usan `Decimal(12,2)` y no se recalculan al editar o desactivar la tarifa.
+44. **Generación manual acotada:** solamente inscripciones activas y tarifas activas/vigentes admiten una cuota nueva. Administración elige explícitamente período y vencimiento; el vencimiento debe caer entre los días 1 y 10 del mismo mes.
+45. **Estados preparados, transiciones diferidas:** toda cuota v1 nace `PENDING`. `PAID` y `VOID` existen para evitar una migración de enum inmediata, pero este incremento no expone transiciones porque dependen de pagos y reglas de anulación aún no confirmadas.
+46. **Historial financiero restringido:** tarifas y cuotas no se borran físicamente. Las claves foráneas de cuota hacia alumno, inscripción y tarifa usan `ON DELETE RESTRICT`.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
 - Significado y facturación de “Formación” y “Solo salón / alquiler”.
 - Relación entre frecuencia semanal, clases elegidas y tarifa/plan.
-- Prorrateos, mora, recargos, becas y combinación/prioridad de descuentos.
+- Alta de inscripción a mitad de mes, prorrateos y elección del primer período a cobrar.
+- Conducta posterior al día 10, mora y recargos.
+- Becas y combinación/prioridad de descuentos.
 - Imputación de pagos parciales, saldo a favor, anulaciones y devoluciones.
 - Apertura/cierre/arqueo de caja y cajas por sucursal o usuario.
 - Recuperos, feriados, reemplazos y asistencia fuera de inscripción.
@@ -84,10 +95,10 @@
 - Tolerancias, pausas y horas docentes liquidables.
 - Matriz concreta de permisos.
 - Método de acceso y conducta ante deuda o vencimiento.
-- Inscripción mensual frente a inscripción persistente.
 - Conflictos de horario entre clases de un alumno: impedir, advertir o permitir.
 - Relación entre cupo de clase y capacidad de los salones.
 - Recuperos y cambios de clase.
 - Relación entre frecuencia semanal y tarifa.
+- Promociones 2x1 y reglas concretas de Formación.
 - Efectos de la cancelación general de una clase.
 - Snapshot histórico de `Enrollment`: debe definirse antes de reportes financieros, asistencia histórica o liquidaciones si clase, profesor y horarios deben conservarse como estaban durante el período inscripto.

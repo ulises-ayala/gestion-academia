@@ -203,3 +203,49 @@ export type EnrollmentAvailabilityDto = Readonly<{
   available: number;
   full: boolean;
 }>;
+
+export type TariffDto = Readonly<{
+  id: string;
+  name: string;
+  amount: string;
+  validFrom: string;
+  validTo: string | null;
+  status: RecordStatusDto;
+  createdAt: string;
+  updatedAt: string;
+}>;
+export type CreateTariffDto = Readonly<{
+  name: string;
+  amount: string;
+  validFrom: string;
+  validTo?: string | null;
+}>;
+export type UpdateTariffDto = Readonly<Partial<CreateTariffDto> & { status?: RecordStatusDto }>;
+
+export type MonthlyChargeStatusDto = 'PENDING' | 'PAID' | 'VOID';
+export type MonthlyChargeDto = Readonly<{
+  id: string;
+  studentId: string;
+  enrollmentId: string;
+  tariffId: string;
+  period: string;
+  baseAmount: string;
+  discountAmount: string;
+  finalAmount: string;
+  dueDate: string;
+  status: MonthlyChargeStatusDto;
+  academicClass: Readonly<{ id: string; name: string }>;
+  tariff: Readonly<{ id: string; name: string }>;
+  createdAt: string;
+  updatedAt: string;
+}>;
+export type CreateMonthlyChargeDto = Readonly<{
+  enrollmentId: string;
+  tariffId: string;
+  period: string;
+  dueDate: string;
+}>;
+export type MonthlyChargeListDto = Readonly<{
+  items: readonly MonthlyChargeDto[];
+  total: number;
+}>;

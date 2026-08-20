@@ -21,6 +21,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
           error.code === 'ENROLLMENT_ALREADY_ENDED' ||
           error.code === 'CLASS_FULL' ||
           error.code === 'CLASS_CAPACITY_BELOW_ENROLLMENT_COUNT' ||
+          error.code === 'MONTHLY_CHARGE_ALREADY_EXISTS' ||
           error.code.endsWith('_HAS_ACTIVE_ENROLLMENTS')
         ? 409
         : error.code === 'UNAUTHORIZED' || error.code === 'INVALID_CREDENTIALS'
