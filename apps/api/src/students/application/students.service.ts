@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../shared/domain/domain-error';
-import { validateStudentInput, type StudentData, type StudentInput, type StudentStatus } from '../domain/student';
-import { STUDENT_REPOSITORY, type StudentRepository } from './student.repository';
+import { validateStudentInput, type StudentData, type StudentInput } from '../domain/student';
+import { STUDENT_REPOSITORY, type StudentListQuery, type StudentPage, type StudentRepository } from './student.repository';
 
 @Injectable()
 export class StudentsService {
   constructor(@Inject(STUDENT_REPOSITORY) private readonly repository: StudentRepository) {}
 
-  list(status?: StudentStatus): Promise<StudentData[]> {
-    return this.repository.findAll(status);
+  list(query: StudentListQuery): Promise<StudentPage> {
+    return this.repository.findPage(query);
   }
 
   async get(id: string): Promise<StudentData> {
@@ -47,5 +47,9 @@ export class StudentsService {
 
   async deactivate(id: string): Promise<StudentData> {
     return this.update(id, { status: 'INACTIVE' });
+  }
+
+  async reactivate(id: string): Promise<StudentData> {
+    return this.update(id, { status: 'ACTIVE' });
   }
 }

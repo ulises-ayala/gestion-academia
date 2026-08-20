@@ -1,35 +1,41 @@
 # Gestión Academia
 
-Base arquitectónica para el sistema administrativo de una academia de baile. Esta entrega contiene documentación, configuración y un esqueleto ejecutable; todavía no implementa módulos funcionales.
+Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación administrativa y el módulo Alumnos v1.
 
 ## Arquitectura
 
 ```text
-apps/admin-web ──HTTP/JSON──> apps/api ──Prisma──> PostgreSQL
-futura app alumno ───────────^   │
-                                 └── módulos de dominio
+apps/admin-web --HTTP/JSON--> apps/api --Prisma--> PostgreSQL
+futura app alumno ----------------^          |
+                                             +-- módulos de dominio
 ```
 
-Se adopta un **monolito modular**: una API desplegable, dividida internamente por capacidades de negocio. Es más simple de operar que microservicios, pero conserva límites que permitirían extraer módulos si el volumen lo justificara.
+- `apps/api`: API REST NestJS versionada bajo `/api/v1`, con autenticación, validación y traducción centralizada de errores.
+- `apps/admin-web`: panel administrativo Next.js; consume exclusivamente la API.
+- `packages/database`: esquema, migraciones y cliente Prisma.
+- `packages/contracts`: DTO públicos compartidos; no expone Prisma ni entidades internas.
+- `docs`: modelo de dominio, decisiones, ambigüedades y plan incremental.
 
-- `apps/api`: API REST NestJS; autenticación, validación y errores se centralizarán aquí.
-- `apps/admin-web`: interfaz administrativa Next.js, sin reglas de negocio propias.
-- `packages/database`: esquema y migraciones de Prisma.
-- `packages/contracts`: contratos compartidos de API, sin infraestructura.
-- `docs`: modelo, decisiones, ambigüedades y plan incremental.
+## Estado actual
+
+- Autenticación administrativa con primer usuario, login, logout, roles iniciales y sesiones opacas.
+- Contraseñas derivadas con `scrypt`; tokens de sesión almacenados solamente como hash.
+- Cookie `HttpOnly`, `SameSite=Lax` y expiración configurable.
+- Alumnos v1: alta, ficha, edición, baja lógica, reactivación, búsqueda, filtros y paginación server-side.
+- PostgreSQL 16 y migraciones Prisma.
+- Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
+
+No están implementados profesores, oferta académica, inscripciones, tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
 
 ## Stack
 
-- Node.js 22 LTS, TypeScript estricto y npm workspaces.
-- NestJS para una API modular, validable y testeable.
-- Next.js para el panel administrativo.
-- PostgreSQL para integridad relacional, transacciones y restricciones.
-- Prisma para migraciones, acceso tipado y manejo explícito de `Decimal`.
-- Vitest para pruebas unitarias. Docker Compose solamente para la base local.
+- Node.js 22+, TypeScript estricto y npm workspaces.
+- NestJS, Next.js, PostgreSQL, Prisma y Vitest.
+- Docker Compose solamente para PostgreSQL local.
 
 ## Puesta en marcha
 
-Requiere Node.js 22+, npm 10+ y Docker con Compose.
+Requiere Node.js 22+, npm 10+, Docker y Docker Compose.
 
 ```bash
 cp .env.example .env
@@ -40,11 +46,26 @@ npm run db:migrate
 npm run dev
 ```
 
-En PowerShell use `Copy-Item .env.example .env`. La API queda en `http://localhost:3001/api/v1`, el panel en `http://localhost:3000`, y `GET /api/v1/health` comprueba la API.
+En PowerShell, use `Copy-Item .env.example .env`. Si la política de ejecución bloquea `npm.ps1`, use `npm.cmd`.
 
-En el primer ingreso al panel, el sistema solicita crear el usuario administrador inicial. La contraseña debe tener al menos 12 caracteres. Los siguientes ingresos usan ese usuario; la sesión se conserva en una cookie `HttpOnly` y puede cerrarse desde el encabezado del panel.
+- Panel: `http://localhost:3000`
+- API: `http://localhost:3001/api/v1`
+- Salud: `GET http://localhost:3001/api/v1/health`
 
-Los endpoints de negocio requieren autenticación. Salud, estado de configuración, bootstrap y login son públicos. El bootstrap deja de estar disponible después de crear el primer administrador.
+En el primer ingreso, el panel solicita crear el administrador inicial. La contraseña debe tener al menos 12 caracteres. El bootstrap se deshabilita después de crear ese usuario.
+
+## API de alumnos
+
+- `GET /api/v1/students?q=&status=&page=1&pageSize=25`: buscar, filtrar y paginar.
+- `POST /api/v1/students`: crear.
+- `GET /api/v1/students/:id`: obtener ficha.
+- `PATCH /api/v1/students/:id`: editar datos o estado.
+- `DELETE /api/v1/students/:id`: desactivar sin borrar.
+- `POST /api/v1/students/:id/reactivate`: reactivar.
+
+Todos estos endpoints requieren una sesión administrativa activa.
+
+## Calidad
 
 ```bash
 npm run lint
@@ -53,16 +74,6 @@ npm test
 npm run build
 ```
 
-## Documentación
+## Próxima etapa
 
-- [Modelo del dominio](docs/domain-model.md)
-- [Decisiones y supuestos](docs/decisions.md)
-- [Etapas](docs/roadmap.md)
-
-## Alcance actual
-
-El esquema incluido es deliberadamente mínimo: demuestra IDs, auditoría, precisión monetaria y separación entre alumno, profesor y usuario administrativo. El resto se incorporará por migraciones al implementar cada módulo. No están implementadas la liquidación, modalidades, pagos, cuotas, caja, asistencias ni control de acceso.
-
-## Próxima tarea recomendada
-
-Implementar el primer módulo vertical: migración inicial, manejo de errores, validación y CRUD de alumnos con pruebas de dominio y API.
+Antes de implementar administración de usuarios o módulos sensibles como tarifas, pagos, caja y liquidaciones, debe definirse la matriz concreta de permisos. Las reglas de negocio marcadas como ambiguas en [decisions.md](docs/decisions.md) no deben implementarse sin confirmación.

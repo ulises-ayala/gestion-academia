@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, Inject, Post, Req, Res } from '@nestjs/common';
+import type { AuthCredentialsDto } from '@academy/contracts';
 import { AuthService } from '../application/auth.service';
 import { Public } from './public.decorator';
 import { readSessionToken } from './session-token';
@@ -17,7 +18,7 @@ export class AuthController {
 
   @Public()
   @Post('bootstrap')
-  async bootstrap(@Body() body: { username?: unknown; password?: unknown }, @Res({ passthrough: true }) response: HttpResponse) {
+  async bootstrap(@Body() body: AuthCredentialsDto, @Res({ passthrough: true }) response: HttpResponse) {
     const result = await this.auth.bootstrap(body?.username, body?.password);
     response.cookie('academy_session', result.token, cookieOptions(result.expiresAt));
     return { user: result.user, expiresAt: result.expiresAt };
@@ -26,7 +27,7 @@ export class AuthController {
   @Public()
   @HttpCode(200)
   @Post('login')
-  async login(@Body() body: { username?: unknown; password?: unknown }, @Res({ passthrough: true }) response: HttpResponse) {
+  async login(@Body() body: AuthCredentialsDto, @Res({ passthrough: true }) response: HttpResponse) {
     const result = await this.auth.login(body?.username, body?.password);
     response.cookie('academy_session', result.token, cookieOptions(result.expiresAt));
     return { user: result.user, expiresAt: result.expiresAt };

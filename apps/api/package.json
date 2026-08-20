@@ -9,6 +9,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@academy/contracts": "0.1.0",
     "@academy/database": "0.1.0",
     "@nestjs/common": "11.1.6",
     "@nestjs/core": "11.1.6",
