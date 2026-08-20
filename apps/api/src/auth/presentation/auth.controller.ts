@@ -3,19 +3,23 @@ import type { AuthCredentialsDto } from '@academy/contracts';
 import { AuthService } from '../application/auth.service';
 import { Public } from './public.decorator';
 import { readSessionToken } from './session-token';
+import { authCookieConfig } from '../../shared/infrastructure/runtime-config';
 
 type HttpResponse = {
   cookie(name: string, value: string, options: Record<string, unknown>): void;
   clearCookie(name: string, options: Record<string, unknown>): void;
 };
 type HttpRequest = { headers: Record<string, string | string[] | undefined>; adminUser?: unknown };
-const cookieOptions = (expires?: Date) => ({
-  httpOnly: true,
-  sameSite: 'lax' as const,
-  secure: process.env.NODE_ENV === 'production',
-  path: '/',
-  ...(expires ? { expires } : {}),
-});
+const cookieOptions = (expires?: Date) => {
+  const { sameSite, secure } = authCookieConfig();
+  return {
+    httpOnly: true,
+    sameSite,
+    secure,
+    path: '/',
+    ...(expires ? { expires } : {}),
+  };
+};
 
 @Controller('auth')
 export class AuthController {
