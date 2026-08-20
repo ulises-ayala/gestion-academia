@@ -42,6 +42,10 @@ npm run dev
 
 En PowerShell use `Copy-Item .env.example .env`. La API queda en `http://localhost:3001/api/v1`, el panel en `http://localhost:3000`, y `GET /api/v1/health` comprueba la API.
 
+En el primer ingreso al panel, el sistema solicita crear el usuario administrador inicial. La contraseña debe tener al menos 12 caracteres. Los siguientes ingresos usan ese usuario; la sesión se conserva en una cookie `HttpOnly` y puede cerrarse desde el encabezado del panel.
+
+Los endpoints de negocio requieren autenticación. Salud, estado de configuración, bootstrap y login son públicos. El bootstrap deja de estar disponible después de crear el primer administrador.
+
 ```bash
 npm run lint
 npm run typecheck

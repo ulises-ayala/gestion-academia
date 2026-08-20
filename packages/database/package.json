@@ -2,6 +2,8 @@
   "name": "@academy/database",
   "private": true,
   "version": "0.1.0",
+  "main": "src/index.js",
+  "types": "src/index.ts",
   "scripts": {
     "generate": "prisma generate",
     "migrate:dev": "prisma migrate dev",
