@@ -151,6 +151,9 @@ p {
   align-items: end;
   gap: 1rem;
 }
+.tariff-form {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+}
 .class-filters {
   display: grid;
   grid-template-columns: repeat(5, minmax(8rem, 1fr)) auto;
@@ -375,6 +378,9 @@ dd {
   .catalog-form {
     grid-template-columns: 1fr 1fr;
   }
+  .tariff-form {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 @media (max-width: 850px) {
   .admin-layout {
@@ -409,6 +415,9 @@ dd {
   .class-filters,
   .schedule-builder,
   .catalog-form {
+    grid-template-columns: 1fr;
+  }
+  .tariff-form {
     grid-template-columns: 1fr;
   }
   .wide {

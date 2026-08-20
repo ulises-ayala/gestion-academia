@@ -1,5 +1,5 @@
 'use client';
-import type { EnrollmentListDto, StudentDto } from '@academy/contracts';
+import type { EnrollmentListDto, MonthlyChargeListDto, StudentDto } from '@academy/contracts';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,23 +7,29 @@ import { StudentForm } from '../../../components/student-form';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { calculateAge, formatDate } from '../../../lib/dates';
 import { dayLabels } from '../../../lib/offering';
-const futureSections = ['Cuotas', 'Pagos', 'Descuentos', 'Asistencias'];
+const futureSections = ['Pagos', 'Descuentos', 'Asistencias'];
+const money = (value: string) =>
+  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
+const chargeStatus = { PENDING: 'Pendiente', PAID: 'Pagada', VOID: 'Anulada' } as const;
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [student, setStudent] = useState<StudentDto | null>(null);
   const [enrollments, setEnrollments] = useState<EnrollmentListDto['items']>([]);
+  const [charges, setCharges] = useState<MonthlyChargeListDto['items']>([]);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [s, e] = await Promise.all([
+      const [s, e, c] = await Promise.all([
         apiRequest<StudentDto>(`/students/${id}`),
         apiRequest<EnrollmentListDto>(`/enrollments?studentId=${id}&pageSize=100`),
+        apiRequest<MonthlyChargeListDto>(`/monthly-charges?studentId=${id}`),
       ]);
       setStudent(s);
       setEnrollments(e.items);
+      setCharges(c.items);
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cargar el alumno');
     } finally {
@@ -167,6 +173,37 @@ export default function StudentDetailPage() {
                 </button>
               </article>
             ))}
+          </div>
+        )}
+      </section>
+      <section className="card">
+        <h2>Cuotas</h2>
+        {charges.length === 0 ? (
+          <p className="empty-state">Todavía no hay cuotas generadas.</p>
+        ) : (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Período</th>
+                  <th>Clase</th>
+                  <th>Monto</th>
+                  <th>Vencimiento</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {charges.map((charge) => (
+                  <tr key={charge.id}>
+                    <td>{charge.period}</td>
+                    <td>{charge.academicClass.name}</td>
+                    <td>{money(charge.finalAmount)}</td>
+                    <td>{formatDate(charge.dueDate)}</td>
+                    <td>{chargeStatus[charge.status]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </section>
