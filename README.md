@@ -96,6 +96,7 @@ La pipeline ejecuta, en orden:
 
 ```bash
 npm ci
+npm run db:generate
 npm run format:check
 npm run lint
 npm run typecheck
@@ -105,7 +106,7 @@ npm test
 npm run build
 ```
 
-Durante el job se inicia un service container efímero de PostgreSQL 16. `DATABASE_URL` apunta exclusivamente a la base `academy_ci` del contenedor y usa credenciales fijas sin valor fuera de CI; no lee `.env`, la base local ni secretos reales. `prisma migrate deploy` aplica desde cero todas las migraciones versionadas antes de ejecutar las pruebas.
+Durante el job se inicia un service container efímero de PostgreSQL 16. `DATABASE_URL` apunta exclusivamente a la base `academy_ci` del contenedor y usa credenciales fijas sin valor fuera de CI; no lee `.env`, la base local ni secretos reales. Después de instalar las dependencias se genera el cliente Prisma requerido por TypeScript y `prisma migrate deploy` aplica desde cero todas las migraciones versionadas antes de ejecutar las pruebas.
 
 ## API de inscripciones
 
