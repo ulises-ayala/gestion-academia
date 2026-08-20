@@ -52,6 +52,14 @@
 29. **Desactivación sin cascadas:** se rechaza desactivar un profesor o danza con clases activas, una sucursal con salones activos o un salón usado por clases activas. Desactivar una clase conserva sus horarios.
 30. **Danzas equivalentes:** `DanceType` persiste un nombre normalizado con restricción única para impedir variantes triviales por mayúsculas o espacios.
 
+## Decisiones de Inscripciones v1
+
+31. **Vigencia persistente:** una inscripción permanece activa hasta que administración la finaliza explícitamente. Es revisable si el negocio confirma reinscripciones mensuales.
+32. **Unicidad activa:** PostgreSQL refuerza una sola inscripción `ACTIVE` por alumno/clase mediante un índice único parcial; períodos `ENDED` no impiden reinscribir.
+33. **Cupo transaccional:** `AcademyClass.capacity` es la única autoridad en esta versión. El alta toma un advisory lock transaccional por clase, usa aislamiento serializable y reintenta hasta tres veces conflictos de serialización.
+34. **Finalización explícita:** finalizar guarda `ENDED` y `endDate >= startDate`; nunca elimina ni sobrescribe períodos anteriores.
+35. **Desactivación conservadora:** alumno o clase con inscripciones activas no pueden desactivarse. No se finalizan inscripciones por cascada.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
@@ -65,3 +73,9 @@
 - Tolerancias, pausas y horas docentes liquidables.
 - Matriz concreta de permisos.
 - Método de acceso y conducta ante deuda o vencimiento.
+- Inscripción mensual frente a inscripción persistente.
+- Conflictos de horario entre clases de un alumno: impedir, advertir o permitir.
+- Relación entre cupo de clase y capacidad de los salones.
+- Recuperos y cambios de clase.
+- Relación entre frecuencia semanal y tarifa.
+- Efectos de la cancelación general de una clase.

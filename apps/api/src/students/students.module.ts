@@ -4,9 +4,10 @@ import { StudentsService } from './application/students.service';
 import { STUDENT_REPOSITORY } from './application/student.repository';
 import { PrismaStudentRepository } from './infrastructure/prisma-student.repository';
 import { StudentsController } from './presentation/students.controller';
+import { EnrollmentsModule } from '../enrollments/enrollments.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, EnrollmentsModule],
   controllers: [StudentsController],
   providers: [
     StudentsService,

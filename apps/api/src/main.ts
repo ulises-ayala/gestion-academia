@@ -6,7 +6,10 @@ import { DomainExceptionFilter } from './shared/presentation/domain-exception.fi
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
-  app.enableCors({ origin: process.env.ADMIN_WEB_URL ?? 'http://localhost:3000', credentials: true });
+  app.enableCors({
+    origin: process.env.ADMIN_WEB_URL ?? 'http://localhost:3000',
+    credentials: true,
+  });
   app.useGlobalFilters(new DomainExceptionFilter());
   app.enableShutdownHooks();
 

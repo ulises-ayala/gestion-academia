@@ -1,6 +1,12 @@
 export const AUTH_REPOSITORY = Symbol('AUTH_REPOSITORY');
 
-export type AuthUser = Readonly<{ id: string; username: string; passwordHash: string; role: 'ADMINISTRATOR' | 'RECEPTION' | 'MANAGER'; status: 'ACTIVE' | 'INACTIVE' }>;
+export type AuthUser = Readonly<{
+  id: string;
+  username: string;
+  passwordHash: string;
+  role: 'ADMINISTRATOR' | 'RECEPTION' | 'MANAGER';
+  status: 'ACTIVE' | 'INACTIVE';
+}>;
 export type PublicAuthUser = Omit<AuthUser, 'passwordHash'>;
 
 export interface AuthRepository {

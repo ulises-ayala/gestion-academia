@@ -6,12 +6,24 @@ const cost = 16384;
 const blockSize = 8;
 const parallelization = 1;
 
-const scrypt = (password: string, salt: Buffer, options = { cost, blockSize, parallelization }): Promise<Buffer> =>
-  new Promise((resolve, reject) => nodeScrypt(password, salt, keyLength, options, (error, key) => error ? reject(error) : resolve(key as Buffer)));
+const scrypt = (
+  password: string,
+  salt: Buffer,
+  options = { cost, blockSize, parallelization },
+): Promise<Buffer> =>
+  new Promise((resolve, reject) =>
+    nodeScrypt(password, salt, keyLength, options, (error, key) =>
+      error ? reject(error) : resolve(key as Buffer),
+    ),
+  );
 
 export const validatePassword = (value: unknown): string => {
   if (typeof value !== 'string' || value.length < 12 || value.length > 200) {
-    throw new DomainError('VALIDATION_ERROR', 'La contraseña debe tener entre 12 y 200 caracteres', { field: 'password' });
+    throw new DomainError(
+      'VALIDATION_ERROR',
+      'La contraseña debe tener entre 12 y 200 caracteres',
+      { field: 'password' },
+    );
   }
   return value;
 };
@@ -27,6 +39,10 @@ export const verifyPassword = async (password: string, encoded: string): Promise
   if (algorithm !== 'scrypt' || !n || !r || !p || !saltValue || !hashValue) return false;
   const expected = Buffer.from(hashValue, 'base64');
   if (expected.length !== keyLength) return false;
-  const actual = await scrypt(password, Buffer.from(saltValue, 'base64'), { cost: Number(n), blockSize: Number(r), parallelization: Number(p) });
+  const actual = await scrypt(password, Buffer.from(saltValue, 'base64'), {
+    cost: Number(n),
+    blockSize: Number(r),
+    parallelization: Number(p),
+  });
   return timingSafeEqual(actual, expected);
 };

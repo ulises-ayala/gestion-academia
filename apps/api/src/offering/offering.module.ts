@@ -10,5 +10,17 @@ import { BranchesController } from './presentation/branches.controller';
 import { ClassesController } from './presentation/classes.controller';
 import { DanceTypesController } from './presentation/dance-types.controller';
 import { RoomsController } from './presentation/rooms.controller';
-@Module({ imports: [DatabaseModule], controllers: [DanceTypesController, BranchesController, RoomsController, ClassesController], providers: [CatalogService, ClassesService, PrismaCatalogRepository, PrismaClassRepository, { provide: CATALOG_REPOSITORY, useExisting: PrismaCatalogRepository }, { provide: CLASS_REPOSITORY, useExisting: PrismaClassRepository }] })
+import { EnrollmentsModule } from '../enrollments/enrollments.module';
+@Module({
+  imports: [DatabaseModule, EnrollmentsModule],
+  controllers: [DanceTypesController, BranchesController, RoomsController, ClassesController],
+  providers: [
+    CatalogService,
+    ClassesService,
+    PrismaCatalogRepository,
+    PrismaClassRepository,
+    { provide: CATALOG_REPOSITORY, useExisting: PrismaCatalogRepository },
+    { provide: CLASS_REPOSITORY, useExisting: PrismaClassRepository },
+  ],
+})
 export class OfferingModule {}

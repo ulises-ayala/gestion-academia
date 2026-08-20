@@ -1,1 +1,19 @@
-'use client'; import type { ClassDto } from '@academy/contracts'; import Link from 'next/link'; import { useRouter } from 'next/navigation'; import { ClassForm } from '../../../components/class-form'; export default function Page() { const router = useRouter(); return <><Link className="back-link" href="/classes">← Volver</Link><h1>Nueva clase</h1><section className="card"><ClassForm onSaved={(item: ClassDto) => router.push(`/classes/${item.id}`)} /></section></>; }
+'use client';
+import type { ClassDto } from '@academy/contracts';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ClassForm } from '../../../components/class-form';
+export default function Page() {
+  const router = useRouter();
+  return (
+    <>
+      <Link className="back-link" href="/classes">
+        ← Volver
+      </Link>
+      <h1>Nueva clase</h1>
+      <section className="card">
+        <ClassForm onSaved={(item: ClassDto) => router.push(`/classes/${item.id}`)} />
+      </section>
+    </>
+  );
+}

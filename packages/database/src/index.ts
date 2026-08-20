@@ -1,1 +1,17 @@
-export { Prisma, PrismaClient, RecordStatus, AdminRole, DayOfWeek, type Student, type Teacher, type AdminUser, type DanceType, type Branch, type Room } from '@prisma/client';
+export {
+  Prisma,
+  PrismaClient,
+  RecordStatus,
+  AdminRole,
+  DayOfWeek,
+  EnrollmentStatus,
+  type Student,
+  type Teacher,
+  type AdminUser,
+  type DanceType,
+  type Branch,
+  type Room,
+  type AcademyClass,
+  type ClassSchedule,
+  type Enrollment,
+} from '@prisma/client';

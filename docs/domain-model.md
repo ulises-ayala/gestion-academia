@@ -51,3 +51,11 @@ erDiagram
 - `ClassSchedule` normaliza día, hora local de inicio/fin y salón. Una clase puede tener varios horarios.
 - No se permiten superposiciones de salón ni profesor para clases activas. Los intervalos contiguos son válidos.
 - No existe relación alumno–clase hasta implementar `Enrollment` en Inscripciones v1.
+
+## Inscripciones v1
+
+- `Enrollment` vincula un `Student` con una `AcademyClass` y conserva su propio período e historial.
+- Una inscripción comienza `ACTIVE` con una `startDate` explícita y finaliza como `ENDED` con `endDate`; nunca se elimina físicamente.
+- Solo alumnos y clases activas admiten nuevas inscripciones. Una pareja alumno/clase puede tener una sola inscripción activa, pero múltiples períodos finalizados.
+- `AcademyClass.capacity` es la autoridad del cupo. El alta serializa por clase y cuenta inscripciones activas antes de confirmar.
+- Un horario solo es operacional cuando `AcademyClass.status == ACTIVE` y `ClassSchedule.status == ACTIVE`.

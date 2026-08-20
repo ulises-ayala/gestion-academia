@@ -3,7 +3,8 @@ export function calculateAge(birthDate: string | null, today = new Date()): numb
   const [year, month, day] = birthDate.slice(0, 10).split('-').map(Number);
   if (!year || !month || !day) return null;
   let age = today.getFullYear() - year;
-  const birthdayPassed = today.getMonth() + 1 > month || (today.getMonth() + 1 === month && today.getDate() >= day);
+  const birthdayPassed =
+    today.getMonth() + 1 > month || (today.getMonth() + 1 === month && today.getDate() >= day);
   if (!birthdayPassed) age -= 1;
   return age;
 }

@@ -3,7 +3,12 @@ import { Prisma, type Student } from '@academy/database';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { StudentData } from '../domain/student';
-import type { StudentListQuery, StudentPage, StudentPersistenceInput, StudentRepository } from '../application/student.repository';
+import type {
+  StudentListQuery,
+  StudentPage,
+  StudentPersistenceInput,
+  StudentRepository,
+} from '../application/student.repository';
 
 const toDomain = (student: Student): StudentData => ({
   ...student,
@@ -58,7 +63,9 @@ export class PrismaStudentRepository implements StudentRepository {
 
   private translateUniqueError(error: unknown): void {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      throw new DomainError('DNI_ALREADY_EXISTS', 'Ya existe un alumno con ese DNI', { field: 'dni' });
+      throw new DomainError('DNI_ALREADY_EXISTS', 'Ya existe un alumno con ese DNI', {
+        field: 'dni',
+      });
     }
   }
 

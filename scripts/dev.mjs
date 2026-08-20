@@ -2,7 +2,9 @@ import { spawn } from 'node:child_process';
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const workspaces = ['@academy/api', '@academy/admin-web'];
-const children = workspaces.map((workspace) => spawn(npmCommand, ['run', 'dev', '-w', workspace], { stdio: 'inherit', env: process.env }));
+const children = workspaces.map((workspace) =>
+  spawn(npmCommand, ['run', 'dev', '-w', workspace], { stdio: 'inherit', env: process.env }),
+);
 
 let stopping = false;
 const stop = () => {
