@@ -88,6 +88,25 @@ npm test
 npm run build
 ```
 
+## Integración continua
+
+El workflow `.github/workflows/ci.yml` se ejecuta para cada `push` y `pull_request` dirigido a `main`. Usa Node.js 22 con caché de npm e instala exactamente las dependencias del lockfile mediante `npm ci`.
+
+La pipeline ejecuta, en orden:
+
+```bash
+npm ci
+npm run format:check
+npm run lint
+npm run typecheck
+npx prisma validate --schema packages/database/prisma/schema.prisma
+npx prisma migrate deploy --schema packages/database/prisma/schema.prisma
+npm test
+npm run build
+```
+
+Durante el job se inicia un service container efímero de PostgreSQL 16. `DATABASE_URL` apunta exclusivamente a la base `academy_ci` del contenedor y usa credenciales fijas sin valor fuera de CI; no lee `.env`, la base local ni secretos reales. `prisma migrate deploy` aplica desde cero todas las migraciones versionadas antes de ejecutar las pruebas.
+
 ## API de inscripciones
 
 - `GET /api/v1/enrollments?studentId=&classId=&status=`: listar y filtrar.

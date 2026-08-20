@@ -1,6 +1,8 @@
 node_modules/
-dist/
-.next/
-*.tsbuildinfo
 .env
+.env.*
+dist/
+build/
+.next/
 coverage/
+.prisma/
