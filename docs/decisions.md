@@ -65,6 +65,12 @@
 
 37. **CI aislada y reproducible:** GitHub Actions valida cada `push` y `pull_request` sobre `main` con Node.js 22, dependencias instaladas mediante `npm ci` y una instancia efímera de PostgreSQL 16. La base usa credenciales exclusivas y no secretas de CI; el esquema se reconstruye aplicando las migraciones versionadas con `prisma migrate deploy`.
 
+## Decisiones de staging
+
+38. **Staging declarativo en Render:** un Blueprint crea dos servicios web Node y una base PostgreSQL exclusivos de staging desde `main`. Los comandos se ejecutan desde la raíz para preservar npm workspaces y los despliegues automáticos esperan que pase CI.
+39. **Migraciones sin pre-deploy pago:** para admitir servicios web gratuitos, el arranque de la API ejecuta `prisma migrate deploy` antes del servidor. El comando es idempotente, no reinicia la base y detiene el despliegue si una migración falla.
+40. **Cookie configurable por entorno:** desarrollo conserva `SameSite=Lax` sin `Secure`; staging usa `SameSite=None` y `Secure=true` para los servicios HTTPS separados. CORS mantiene una lista explícita de orígenes y credenciales habilitadas.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.

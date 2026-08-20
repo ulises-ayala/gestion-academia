@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: gestion-academia-staging-api
+    runtime: node
+    plan: free
+    branch: main
+    autoDeployTrigger: checksPass
+    buildCommand: npm run render:build:api
+    startCommand: npm run render:start:api
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gestion-academia-staging-db
+          property: connectionString
+      - key: ADMIN_ORIGINS
+        sync: false
+      - key: AUTH_COOKIE_SECURE
+        value: 'true'
+      - key: AUTH_COOKIE_SAME_SITE
+        value: none
+      - key: AUTH_SESSION_HOURS
+        value: '12'
+      - key: BUSINESS_TIMEZONE
+        value: America/Buenos_Aires
+
+  - type: web
+    name: gestion-academia-staging-web
+    runtime: node
+    plan: free
+    branch: main
+    autoDeployTrigger: checksPass
+    buildCommand: npm run render:build:web
+    startCommand: npm run render:start:web
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+
+databases:
+  - name: gestion-academia-staging-db
+    plan: free
+    databaseName: academy_staging
+    user: academy_staging
+    postgresMajorVersion: '16'
+    ipAllowList: []
