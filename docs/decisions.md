@@ -61,6 +61,10 @@
 35. **Desactivación conservadora:** alumno o clase con inscripciones activas no pueden desactivarse. No se finalizan inscripciones por cascada.
 36. **Cupo mínimo:** `AcademyClass.capacity` nunca puede ser inferior al número de inscripciones `ACTIVE`. Al modificar el cupo, la API toma el mismo advisory lock por clase que el alta de inscripciones y consulta la ocupación real dentro de la transacción.
 
+## Decisiones de integración continua
+
+37. **CI aislada y reproducible:** GitHub Actions valida cada `push` y `pull_request` sobre `main` con Node.js 22, dependencias instaladas mediante `npm ci` y una instancia efímera de PostgreSQL 16. La base usa credenciales exclusivas y no secretas de CI; el esquema se reconstruye aplicando las migraciones versionadas con `prisma migrate deploy`.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
