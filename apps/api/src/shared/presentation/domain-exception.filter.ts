@@ -10,8 +10,8 @@ type HttpResponse = {
 export class DomainExceptionFilter implements ExceptionFilter {
   catch(error: DomainError, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<HttpResponse>();
-    const status = error.code === 'STUDENT_NOT_FOUND' ? 404
-      : error.code === 'DNI_ALREADY_EXISTS' || error.code === 'AUTH_ALREADY_CONFIGURED' ? 409
+    const status = error.code.endsWith('_NOT_FOUND') ? 404
+      : error.code === 'DNI_ALREADY_EXISTS' || error.code === 'AUTH_ALREADY_CONFIGURED' || error.code.endsWith('_CONFLICT') || error.code.endsWith('_IN_USE') || error.code === 'DANCE_TYPE_ALREADY_EXISTS' ? 409
       : error.code === 'UNAUTHORIZED' || error.code === 'INVALID_CREDENTIALS' ? 401
       : 400;
     response.status(status).json({

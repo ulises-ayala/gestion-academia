@@ -18,6 +18,16 @@ enum AdminRole {
   MANAGER
 }
 
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
 model Student {
   id          String       @id @default(uuid()) @db.Uuid
   dni         String       @unique @db.VarChar(32)
@@ -47,9 +57,91 @@ model Teacher {
   status    RecordStatus @default(ACTIVE)
   createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  classes   AcademyClass[]
 
   @@index([lastName, firstName])
   @@map("teachers")
+}
+
+model DanceType {
+  id             String         @id @default(uuid()) @db.Uuid
+  name           String         @db.VarChar(100)
+  normalizedName String         @unique @map("normalized_name") @db.VarChar(100)
+  description    String?
+  status         RecordStatus   @default(ACTIVE)
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  classes        AcademyClass[]
+
+  @@index([name])
+  @@map("dance_types")
+}
+
+model Branch {
+  id        String       @id @default(uuid()) @db.Uuid
+  name      String       @db.VarChar(120)
+  address   String
+  status    RecordStatus @default(ACTIVE)
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  rooms     Room[]
+
+  @@index([name])
+  @@map("branches")
+}
+
+model Room {
+  id        String          @id @default(uuid()) @db.Uuid
+  name      String          @db.VarChar(120)
+  capacity  Int
+  branchId  String          @map("branch_id") @db.Uuid
+  status    RecordStatus    @default(ACTIVE)
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  branch    Branch          @relation(fields: [branchId], references: [id])
+  schedules ClassSchedule[]
+
+  @@index([branchId, status])
+  @@index([name])
+  @@map("rooms")
+}
+
+model AcademyClass {
+  id          String          @id @default(uuid()) @db.Uuid
+  name        String          @db.VarChar(150)
+  danceTypeId String          @map("dance_type_id") @db.Uuid
+  teacherId   String          @map("teacher_id") @db.Uuid
+  level       String?         @db.VarChar(100)
+  capacity    Int
+  status      RecordStatus    @default(ACTIVE)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  danceType   DanceType       @relation(fields: [danceTypeId], references: [id])
+  teacher     Teacher         @relation(fields: [teacherId], references: [id])
+  schedules   ClassSchedule[]
+
+  @@index([danceTypeId, status])
+  @@index([teacherId, status])
+  @@index([name])
+  @@map("classes")
+}
+
+model ClassSchedule {
+  id        String       @id @default(uuid()) @db.Uuid
+  classId   String       @map("class_id") @db.Uuid
+  dayOfWeek DayOfWeek    @map("day_of_week")
+  startTime DateTime     @map("start_time") @db.Time(0)
+  endTime   DateTime     @map("end_time") @db.Time(0)
+  roomId    String       @map("room_id") @db.Uuid
+  status    RecordStatus @default(ACTIVE)
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  class     AcademyClass @relation(fields: [classId], references: [id])
+  room      Room         @relation(fields: [roomId], references: [id])
+
+  @@index([classId, status])
+  @@index([roomId, dayOfWeek, status, startTime, endTime])
+  @@map("class_schedules")
 }
 
 model AdminUser {

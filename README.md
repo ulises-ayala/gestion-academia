@@ -1,6 +1,6 @@
 # Gestión Academia
 
-Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación administrativa y el módulo Alumnos v1.
+Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1 y Oferta Académica v1.
 
 ## Arquitectura
 
@@ -22,10 +22,13 @@ futura app alumno ----------------^          |
 - Contraseñas derivadas con `scrypt`; tokens de sesión almacenados solamente como hash.
 - Cookie `HttpOnly`, `SameSite=Lax` y expiración configurable.
 - Alumnos v1: alta, ficha, edición, baja lógica, reactivación, búsqueda, filtros y paginación server-side.
+- Profesores: ficha, búsqueda, paginación y ciclo activo/inactivo.
+- Oferta académica: tipos de danza, sucursales, salones, clases y múltiples horarios normalizados.
+- Detección transaccional de conflictos de salón y profesor; horarios contiguos permitidos.
 - PostgreSQL 16 y migraciones Prisma.
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
-No están implementados profesores, oferta académica, inscripciones, tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
+No están implementados inscripciones, tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
 
 ## Stack
 
@@ -65,6 +68,16 @@ En el primer ingreso, el panel solicita crear el administrador inicial. La contr
 
 Todos estos endpoints requieren una sesión administrativa activa.
 
+## API de oferta académica
+
+- `/api/v1/teachers`: CRUD lógico, búsqueda y paginación.
+- `/api/v1/dance-types`: administrar tipos de danza.
+- `/api/v1/branches`: administrar sucursales.
+- `/api/v1/rooms?branchId=`: administrar y filtrar salones.
+- `/api/v1/classes`: CRUD lógico de clases con filtros y horarios transaccionales.
+
+Cada recurso admite consulta, alta, edición, desactivación y reactivación. Las clases se crean con uno o más horarios `{ dayOfWeek, startTime, endTime, roomId }`.
+
 ## Calidad
 
 ```bash
@@ -76,4 +89,4 @@ npm run build
 
 ## Próxima etapa
 
-Antes de implementar administración de usuarios o módulos sensibles como tarifas, pagos, caja y liquidaciones, debe definirse la matriz concreta de permisos. Las reglas de negocio marcadas como ambiguas en [decisions.md](docs/decisions.md) no deben implementarse sin confirmación.
+El siguiente incremento recomendado es **Inscripciones v1**, mediante `Student -> Enrollment -> AcademyClass`. No se debe relacionar alumnos y clases con arrays o columnas improvisadas. Antes de módulos sensibles como tarifas, pagos, caja y liquidaciones, debe definirse la matriz concreta de permisos.
