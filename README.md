@@ -1,6 +1,6 @@
 # Gestión Academia
 
-Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1 y Oferta Académica v1.
+Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1 e Inscripciones v1.
 
 ## Arquitectura
 
@@ -28,7 +28,7 @@ futura app alumno ----------------^          |
 - PostgreSQL 16 y migraciones Prisma.
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
-No están implementados inscripciones, tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
+Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. No están implementados tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
 
 ## Stack
 
@@ -82,11 +82,19 @@ Cada recurso admite consulta, alta, edición, desactivación y reactivación. La
 
 ```bash
 npm run lint
+npm run format:check
 npm run typecheck
 npm test
 npm run build
 ```
 
+## API de inscripciones
+
+- `GET /api/v1/enrollments?studentId=&classId=&status=`: listar y filtrar.
+- `POST /api/v1/enrollments`: crear con `studentId`, `classId` y `startDate`.
+- `GET /api/v1/enrollments/:id`: obtener detalle.
+- `POST /api/v1/enrollments/:id/end`: finalizar con `endDate` sin borrar historia.
+
 ## Próxima etapa
 
-El siguiente incremento recomendado es **Inscripciones v1**, mediante `Student -> Enrollment -> AcademyClass`. No se debe relacionar alumnos y clases con arrays o columnas improvisadas. Antes de módulos sensibles como tarifas, pagos, caja y liquidaciones, debe definirse la matriz concreta de permisos.
+El siguiente incremento recomendado es **Tarifas y Cuotas**. No está implementado todavía. Antes de módulos sensibles como tarifas, pagos, caja y liquidaciones, debe definirse la matriz concreta de permisos.

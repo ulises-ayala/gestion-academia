@@ -10,6 +10,11 @@ import { AuthController } from './presentation/auth.controller';
 @Module({
   imports: [DatabaseModule],
   controllers: [AuthController],
-  providers: [AuthService, PrismaAuthRepository, { provide: AUTH_REPOSITORY, useExisting: PrismaAuthRepository }, { provide: APP_GUARD, useClass: AuthGuard }],
+  providers: [
+    AuthService,
+    PrismaAuthRepository,
+    { provide: AUTH_REPOSITORY, useExisting: PrismaAuthRepository },
+    { provide: APP_GUARD, useClass: AuthGuard },
+  ],
 })
 export class AuthModule {}

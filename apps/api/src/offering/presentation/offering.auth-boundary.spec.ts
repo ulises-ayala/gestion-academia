@@ -16,8 +16,41 @@ import { ClassesController } from './classes.controller';
 import { DanceTypesController } from './dance-types.controller';
 import { RoomsController } from './rooms.controller';
 describe('Offering authentication boundary', () => {
-  let app: INestApplication; let root: string;
-  beforeEach(async () => { const module = await Test.createTestingModule({ controllers: [TeachersController, DanceTypesController, BranchesController, RoomsController, ClassesController], providers: [{ provide: AuthService, useValue: { authenticate: async () => { throw new DomainError('UNAUTHORIZED', 'Debes iniciar sesión'); } } }, { provide: TeachersService, useValue: {} }, { provide: CatalogService, useValue: {} }, { provide: ClassesService, useValue: {} }, { provide: APP_GUARD, useClass: AuthGuard }] }).compile(); app = module.createNestApplication(); app.setGlobalPrefix('api/v1'); app.useGlobalFilters(new DomainExceptionFilter()); await app.listen(0, '127.0.0.1'); root = `http://127.0.0.1:${(app.getHttpServer().address() as AddressInfo).port}/api/v1`; });
+  let app: INestApplication;
+  let root: string;
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      controllers: [
+        TeachersController,
+        DanceTypesController,
+        BranchesController,
+        RoomsController,
+        ClassesController,
+      ],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: {
+            authenticate: async () => {
+              throw new DomainError('UNAUTHORIZED', 'Debes iniciar sesión');
+            },
+          },
+        },
+        { provide: TeachersService, useValue: {} },
+        { provide: CatalogService, useValue: {} },
+        { provide: ClassesService, useValue: {} },
+        { provide: APP_GUARD, useClass: AuthGuard },
+      ],
+    }).compile();
+    app = module.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalFilters(new DomainExceptionFilter());
+    await app.listen(0, '127.0.0.1');
+    root = `http://127.0.0.1:${(app.getHttpServer().address() as AddressInfo).port}/api/v1`;
+  });
   afterEach(async () => app.close());
-  it('protege todos los nuevos recursos administrativos', async () => { for (const path of ['/teachers', '/dance-types', '/branches', '/rooms', '/classes']) expect((await fetch(`${root}${path}`)).status).toBe(401); });
+  it('protege todos los nuevos recursos administrativos', async () => {
+    for (const path of ['/teachers', '/dance-types', '/branches', '/rooms', '/classes'])
+      expect((await fetch(`${root}${path}`)).status).toBe(401);
+  });
 });

@@ -28,6 +28,11 @@ enum DayOfWeek {
   SUNDAY
 }
 
+enum EnrollmentStatus {
+  ACTIVE
+  ENDED
+}
+
 model Student {
   id          String       @id @default(uuid()) @db.Uuid
   dni         String       @unique @db.VarChar(32)
@@ -41,6 +46,7 @@ model Student {
   status      RecordStatus @default(ACTIVE)
   createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  enrollments Enrollment[]
 
   @@index([lastName, firstName])
   @@map("students")
@@ -119,11 +125,29 @@ model AcademyClass {
   danceType   DanceType       @relation(fields: [danceTypeId], references: [id])
   teacher     Teacher         @relation(fields: [teacherId], references: [id])
   schedules   ClassSchedule[]
+  enrollments Enrollment[]
 
   @@index([danceTypeId, status])
   @@index([teacherId, status])
   @@index([name])
   @@map("classes")
+}
+
+model Enrollment {
+  id        String           @id @default(uuid()) @db.Uuid
+  studentId String           @map("student_id") @db.Uuid
+  classId   String           @map("class_id") @db.Uuid
+  startDate DateTime         @map("start_date") @db.Date
+  endDate   DateTime?        @map("end_date") @db.Date
+  status    EnrollmentStatus @default(ACTIVE)
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  student   Student          @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  class     AcademyClass     @relation(fields: [classId], references: [id], onDelete: Restrict)
+
+  @@index([studentId, status])
+  @@index([classId, status])
+  @@map("enrollments")
 }
 
 model ClassSchedule {

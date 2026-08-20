@@ -1,11 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
+import { EnrollmentsService } from '../../enrollments/application/enrollments.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import { validateStudentInput, type StudentData, type StudentInput } from '../domain/student';
-import { STUDENT_REPOSITORY, type StudentListQuery, type StudentPage, type StudentRepository } from './student.repository';
+import {
+  STUDENT_REPOSITORY,
+  type StudentListQuery,
+  type StudentPage,
+  type StudentRepository,
+} from './student.repository';
 
 @Injectable()
 export class StudentsService {
-  constructor(@Inject(STUDENT_REPOSITORY) private readonly repository: StudentRepository) {}
+  constructor(
+    @Inject(STUDENT_REPOSITORY) private readonly repository: StudentRepository,
+    @Optional() private readonly enrollments?: EnrollmentsService,
+  ) {}
 
   list(query: StudentListQuery): Promise<StudentPage> {
     return this.repository.findPage(query);
@@ -20,7 +29,9 @@ export class StudentsService {
   async create(input: StudentInput): Promise<StudentData> {
     const data = validateStudentInput(input);
     if (await this.repository.findByDni(data.dni)) {
-      throw new DomainError('DNI_ALREADY_EXISTS', 'Ya existe un alumno con ese DNI', { field: 'dni' });
+      throw new DomainError('DNI_ALREADY_EXISTS', 'Ya existe un alumno con ese DNI', {
+        field: 'dni',
+      });
     }
     return this.repository.create(data);
   }
@@ -31,7 +42,10 @@ export class StudentsService {
       dni: patch.dni ?? current.dni,
       firstName: patch.firstName ?? current.firstName,
       lastName: patch.lastName ?? current.lastName,
-      birthDate: patch.birthDate === undefined ? current.birthDate?.toISOString().slice(0, 10) ?? null : patch.birthDate,
+      birthDate:
+        patch.birthDate === undefined
+          ? (current.birthDate?.toISOString().slice(0, 10) ?? null)
+          : patch.birthDate,
       phone: patch.phone === undefined ? current.phone : patch.phone,
       email: patch.email === undefined ? current.email : patch.email,
       address: patch.address === undefined ? current.address : patch.address,
@@ -40,12 +54,16 @@ export class StudentsService {
     const data = validateStudentInput(input);
     const duplicate = await this.repository.findByDni(data.dni);
     if (duplicate && duplicate.id !== id) {
-      throw new DomainError('DNI_ALREADY_EXISTS', 'Ya existe un alumno con ese DNI', { field: 'dni' });
+      throw new DomainError('DNI_ALREADY_EXISTS', 'Ya existe un alumno con ese DNI', {
+        field: 'dni',
+      });
     }
     return this.repository.update(id, data);
   }
 
   async deactivate(id: string): Promise<StudentData> {
+    await this.get(id);
+    await this.enrollments?.assertStudentCanDeactivate(id);
     return this.update(id, { status: 'INACTIVE' });
   }
 

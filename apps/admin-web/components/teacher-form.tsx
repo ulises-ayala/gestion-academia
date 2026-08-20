@@ -3,9 +3,78 @@ import type { CreateTeacherDto, TeacherDto } from '@academy/contracts';
 import { FormEvent, useState } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 const empty = { dni: '', firstName: '', lastName: '', phone: '', email: '', address: '' };
-export function TeacherForm({ teacher, onSaved, onCancel }: Readonly<{ teacher?: TeacherDto; onSaved(value: TeacherDto): void; onCancel?(): void }>) {
-  const [form, setForm] = useState(teacher ? { dni: teacher.dni, firstName: teacher.firstName, lastName: teacher.lastName, phone: teacher.phone ?? '', email: teacher.email ?? '', address: teacher.address ?? '' } : empty); const [errors, setErrors] = useState<Record<string, string>>({}); const [message, setMessage] = useState(''); const [saving, setSaving] = useState(false);
-  async function submit(event: FormEvent) { event.preventDefault(); setErrors({}); setMessage(''); setSaving(true); try { onSaved(await apiRequest<TeacherDto>(teacher ? `/teachers/${teacher.id}` : '/teachers', { method: teacher ? 'PATCH' : 'POST', body: JSON.stringify(form satisfies CreateTeacherDto) })); } catch (error) { if (error instanceof ApiClientError && error.field) setErrors({ [error.field]: error.message }); else setMessage(error instanceof Error ? error.message : 'No se pudo guardar'); } finally { setSaving(false); } }
-  const field = (name: keyof typeof form, label: string, type = 'text') => <label>{label}<input type={type} value={form[name]} aria-invalid={Boolean(errors[name])} onChange={(event) => setForm({ ...form, [name]: event.target.value })} />{errors[name] && <span className="field-error">{errors[name]}</span>}</label>;
-  return <form className="student-form" onSubmit={submit} noValidate>{field('dni', 'DNI')}{field('firstName', 'Nombre')}{field('lastName', 'Apellido')}{field('phone', 'Teléfono')}{field('email', 'Correo', 'email')}<div />{field('address', 'Domicilio')}<div className="actions wide"><button disabled={saving}>{saving ? 'Guardando…' : teacher ? 'Guardar cambios' : 'Crear profesor'}</button>{onCancel && <button type="button" className="secondary" onClick={onCancel}>Cancelar</button>}</div>{message && <p className="message wide">{message}</p>}</form>;
+export function TeacherForm({
+  teacher,
+  onSaved,
+  onCancel,
+}: Readonly<{ teacher?: TeacherDto; onSaved(value: TeacherDto): void; onCancel?(): void }>) {
+  const [form, setForm] = useState(
+    teacher
+      ? {
+          dni: teacher.dni,
+          firstName: teacher.firstName,
+          lastName: teacher.lastName,
+          phone: teacher.phone ?? '',
+          email: teacher.email ?? '',
+          address: teacher.address ?? '',
+        }
+      : empty,
+  );
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    setErrors({});
+    setMessage('');
+    setSaving(true);
+    try {
+      onSaved(
+        await apiRequest<TeacherDto>(teacher ? `/teachers/${teacher.id}` : '/teachers', {
+          method: teacher ? 'PATCH' : 'POST',
+          body: JSON.stringify(form satisfies CreateTeacherDto),
+        }),
+      );
+    } catch (error) {
+      if (error instanceof ApiClientError && error.field)
+        setErrors({ [error.field]: error.message });
+      else setMessage(error instanceof Error ? error.message : 'No se pudo guardar');
+    } finally {
+      setSaving(false);
+    }
+  }
+  const field = (name: keyof typeof form, label: string, type = 'text') => (
+    <label>
+      {label}
+      <input
+        type={type}
+        value={form[name]}
+        aria-invalid={Boolean(errors[name])}
+        onChange={(event) => setForm({ ...form, [name]: event.target.value })}
+      />
+      {errors[name] && <span className="field-error">{errors[name]}</span>}
+    </label>
+  );
+  return (
+    <form className="student-form" onSubmit={submit} noValidate>
+      {field('dni', 'DNI')}
+      {field('firstName', 'Nombre')}
+      {field('lastName', 'Apellido')}
+      {field('phone', 'Teléfono')}
+      {field('email', 'Correo', 'email')}
+      <div />
+      {field('address', 'Domicilio')}
+      <div className="actions wide">
+        <button disabled={saving}>
+          {saving ? 'Guardando…' : teacher ? 'Guardar cambios' : 'Crear profesor'}
+        </button>
+        {onCancel && (
+          <button type="button" className="secondary" onClick={onCancel}>
+            Cancelar
+          </button>
+        )}
+      </div>
+      {message && <p className="message wide">{message}</p>}
+    </form>
+  );
 }

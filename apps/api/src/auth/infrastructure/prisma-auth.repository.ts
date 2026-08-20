@@ -15,7 +15,9 @@ const toAuthUser = (user: AdminUser): AuthUser => ({
 export class PrismaAuthRepository implements AuthRepository {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
-  countUsers(): Promise<number> { return this.prisma.adminUser.count(); }
+  countUsers(): Promise<number> {
+    return this.prisma.adminUser.count();
+  }
 
   async findUserByUsername(username: string): Promise<AuthUser | null> {
     const user = await this.prisma.adminUser.findUnique({ where: { username } });
@@ -23,7 +25,11 @@ export class PrismaAuthRepository implements AuthRepository {
   }
 
   async createAdministrator(username: string, passwordHash: string): Promise<AuthUser> {
-    return toAuthUser(await this.prisma.adminUser.create({ data: { username, passwordHash, role: 'ADMINISTRATOR' } }));
+    return toAuthUser(
+      await this.prisma.adminUser.create({
+        data: { username, passwordHash, role: 'ADMINISTRATOR' },
+      }),
+    );
   }
 
   async createSession(userId: string, tokenHash: string, expiresAt: Date): Promise<void> {
@@ -31,7 +37,10 @@ export class PrismaAuthRepository implements AuthRepository {
   }
 
   async findUserBySession(tokenHash: string, now: Date): Promise<AuthUser | null> {
-    const session = await this.prisma.adminSession.findFirst({ where: { tokenHash, expiresAt: { gt: now } }, include: { user: true } });
+    const session = await this.prisma.adminSession.findFirst({
+      where: { tokenHash, expiresAt: { gt: now } },
+      include: { user: true },
+    });
     return session ? toAuthUser(session.user) : null;
   }
 
