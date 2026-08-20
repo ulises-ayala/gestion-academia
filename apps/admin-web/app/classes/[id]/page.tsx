@@ -7,28 +7,40 @@ import { ClassForm } from '../../../components/class-form';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { formatDate } from '../../../lib/dates';
 import { dayLabels } from '../../../lib/offering';
+import { resolveClassOccupancy } from '../../../lib/class-occupancy';
+const pageSize = 25;
 export default function ClassDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [item, setItem] = useState<ClassDto | null>(null);
-  const [enrollments, setEnrollments] = useState<EnrollmentListDto['items']>([]);
+  const [enrollments, setEnrollments] = useState<EnrollmentListDto>({
+    items: [],
+    total: 0,
+    page: 1,
+    pageSize,
+  });
+  const [page, setPage] = useState(1);
   const [edit, setEdit] = useState(false);
   const [message, setMessage] = useState('');
   const load = useCallback(async () => {
     try {
       const [classData, enrollmentData] = await Promise.all([
         apiRequest<ClassDto>(`/classes/${id}`),
-        apiRequest<EnrollmentListDto>(`/enrollments?classId=${id}&status=ACTIVE&pageSize=100`),
+        apiRequest<EnrollmentListDto>(
+          `/enrollments?classId=${id}&status=ACTIVE&page=${page}&pageSize=${pageSize}`,
+        ),
       ]);
       setItem(classData);
-      setEnrollments(enrollmentData.items);
+      setEnrollments(enrollmentData);
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cargar la clase');
     }
-  }, [id]);
+  }, [id, page]);
   useEffect(() => {
     void load();
   }, [load]);
   if (!item) return <p>{message || 'Cargando…'}</p>;
+  const occupancy = resolveClassOccupancy(item.activeEnrollmentCount, enrollments.total);
+  const totalPages = Math.max(1, Math.ceil(enrollments.total / enrollments.pageSize));
   async function toggle() {
     if (!item) return;
     if (item.status === 'ACTIVE' && !confirm('¿Desactivar esta clase?')) return;
@@ -87,7 +99,7 @@ export default function ClassDetailPage() {
           <div>
             <dt>Cupo utilizado</dt>
             <dd>
-              {enrollments.length} / {item.capacity}
+              {occupancy} / {item.capacity}
             </dd>
           </div>
           <div>
@@ -107,9 +119,9 @@ export default function ClassDetailPage() {
       </section>
       <section className="card">
         <h2>
-          Alumnos inscriptos ({enrollments.length} / {item.capacity})
+          Alumnos inscriptos ({occupancy} / {item.capacity})
         </h2>
-        {enrollments.length === 0 ? (
+        {enrollments.items.length === 0 ? (
           <p className="empty-state">No hay alumnos inscriptos.</p>
         ) : (
           <div className="table-wrap">
@@ -124,7 +136,7 @@ export default function ClassDetailPage() {
                 </tr>
               </thead>
               <tbody>
-                {enrollments.map((enrollment) => (
+                {enrollments.items.map((enrollment) => (
                   <tr key={enrollment.id}>
                     <td>
                       {enrollment.student.firstName} {enrollment.student.lastName}
@@ -143,6 +155,21 @@ export default function ClassDetailPage() {
             </table>
           </div>
         )}
+        <div className="pagination">
+          <button className="secondary" disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Anterior
+          </button>
+          <span>
+            Página {page} de {totalPages}
+          </span>
+          <button
+            className="secondary"
+            disabled={page >= totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Siguiente
+          </button>
+        </div>
       </section>
     </>
   );

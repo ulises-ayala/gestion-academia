@@ -59,6 +59,7 @@
 33. **Cupo transaccional:** `AcademyClass.capacity` es la única autoridad en esta versión. El alta toma un advisory lock transaccional por clase, usa aislamiento serializable y reintenta hasta tres veces conflictos de serialización.
 34. **Finalización explícita:** finalizar guarda `ENDED` y `endDate >= startDate`; nunca elimina ni sobrescribe períodos anteriores.
 35. **Desactivación conservadora:** alumno o clase con inscripciones activas no pueden desactivarse. No se finalizan inscripciones por cascada.
+36. **Cupo mínimo:** `AcademyClass.capacity` nunca puede ser inferior al número de inscripciones `ACTIVE`. Al modificar el cupo, la API toma el mismo advisory lock por clase que el alta de inscripciones y consulta la ocupación real dentro de la transacción.
 
 ## Reglas ambiguas: no implementar
 
@@ -79,3 +80,4 @@
 - Recuperos y cambios de clase.
 - Relación entre frecuencia semanal y tarifa.
 - Efectos de la cancelación general de una clase.
+- Snapshot histórico de `Enrollment`: debe definirse antes de reportes financieros, asistencia histórica o liquidaciones si clase, profesor y horarios deben conservarse como estaban durante el período inscripto.

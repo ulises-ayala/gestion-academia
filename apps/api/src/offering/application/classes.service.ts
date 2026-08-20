@@ -42,7 +42,7 @@ export class ClassesService {
       status: patch.status ?? current.status,
     });
     if (data.status === 'ACTIVE') await this.validateReferences(data);
-    return this.repo.update(id, data);
+    return this.repo.update(id, data, patch.capacity !== undefined);
   }
   async deactivate(id: string) {
     await this.get(id);

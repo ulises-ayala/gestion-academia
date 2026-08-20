@@ -28,7 +28,7 @@ futura app alumno ----------------^          |
 - PostgreSQL 16 y migraciones Prisma.
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
-Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. No están implementados tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
+Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. El cupo de una clase no puede reducirse por debajo de sus inscripciones activas. No están implementados tarifas, cuotas, pagos, caja, asistencias, control de acceso ni liquidaciones.
 
 ## Stack
 
