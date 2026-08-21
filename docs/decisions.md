@@ -80,6 +80,13 @@
 45. **Estados preparados, transiciones diferidas:** toda cuota v1 nace `PENDING`. `PAID` y `VOID` existen para evitar una migración de enum inmediata, pero este incremento no expone transiciones porque dependen de pagos y reglas de anulación aún no confirmadas.
 46. **Historial financiero restringido:** tarifas y cuotas no se borran físicamente. Las claves foráneas de cuota hacia alumno, inscripción y tarifa usan `ON DELETE RESTRICT`.
 
+## Decisiones de Usuarios y Permisos v1
+
+47. **Mapeo de niveles confirmado:** se preservan los valores persistidos del enum para evitar una migración destructiva: `RECEPTION` representa Admisión, `MANAGER` representa Administración y `ADMINISTRATOR` representa Dirección.
+48. **API como autoridad:** cada endpoint sensible declara permisos y un guard global los valida después de autenticar la sesión. Ocultar navegación o botones en el frontend es solamente una ayuda de interfaz.
+49. **Matriz inicial:** Admisión gestiona alumnos e inscripciones, consulta oferta y tarifas y queda preparada para asistencia, cobros, ventas y registro de formaciones. Administración agrega configuración, caja, usuarios no pertenecientes a Dirección, reportes operativos y liquidaciones. Dirección agrega gestión de su propio nivel, reportes completos y aprobación de liquidaciones.
+50. **Protección administrativa:** un usuario no puede desactivarse ni cambiar su propio rol. Debe permanecer al menos una cuenta activa de Dirección. Administración no puede listar, consultar, crear ni modificar cuentas de Dirección.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
@@ -93,7 +100,6 @@
 - Recuperos, feriados, reemplazos y asistencia fuera de inscripción.
 - Excepciones manuales de solapamiento, vigencias estacionales, clases canceladas, feriados y reemplazos.
 - Tolerancias, pausas y horas docentes liquidables.
-- Matriz concreta de permisos.
 - Método de acceso y conducta ante deuda o vencimiento.
 - Conflictos de horario entre clases de un alumno: impedir, advertir o permitir.
 - Relación entre cupo de clase y capacidad de los salones.
