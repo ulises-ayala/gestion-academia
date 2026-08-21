@@ -3,8 +3,13 @@
 import type { AuthSessionDto, AuthUserDto, SetupStatusDto } from '@academy/contracts';
 import { FormEvent, createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
+import { roleCan, type UiPermission } from '../lib/permissions';
 
-type AuthContextValue = { user: AuthUserDto; logout(): Promise<void> };
+type AuthContextValue = {
+  user: AuthUserDto;
+  can(permission: UiPermission): boolean;
+  logout(): Promise<void>;
+};
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function useAuth(): AuthContextValue {
@@ -52,7 +57,13 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       </main>
     );
   if (!user) return <LoginScreen setupRequired={setupRequired} onAuthenticated={setUser} />;
-  return <AuthContext.Provider value={{ user, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{ user, can: (permission) => roleCan(user.role, permission), logout }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 function LoginScreen({

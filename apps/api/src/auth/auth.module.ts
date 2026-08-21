@@ -6,6 +6,7 @@ import { AuthService } from './application/auth.service';
 import { PrismaAuthRepository } from './infrastructure/prisma-auth.repository';
 import { AuthGuard } from './presentation/auth.guard';
 import { AuthController } from './presentation/auth.controller';
+import { AuthorizationGuard } from './presentation/authorization.guard';
 
 @Module({
   imports: [DatabaseModule],
@@ -15,6 +16,7 @@ import { AuthController } from './presentation/auth.controller';
     PrismaAuthRepository,
     { provide: AUTH_REPOSITORY, useExisting: PrismaAuthRepository },
     { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: AuthorizationGuard },
   ],
 })
 export class AuthModule {}

@@ -8,6 +8,7 @@ import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { formatDate } from '../../../lib/dates';
 import { dayLabels } from '../../../lib/offering';
 import { resolveClassOccupancy } from '../../../lib/class-occupancy';
+import { PermissionGate } from '../../../components/permission-gate';
 const pageSize = 25;
 export default function ClassDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -67,28 +68,32 @@ export default function ClassDetailPage() {
             {item.danceType.name} · {item.teacher.firstName} {item.teacher.lastName}
           </p>
         </div>
-        <div className="actions">
-          <button className="secondary" onClick={() => setEdit(!edit)}>
-            Editar
-          </button>
-          <button onClick={() => void toggle()}>
-            {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
-          </button>
-        </div>
+        <PermissionGate permission="offering:manage">
+          <div className="actions">
+            <button className="secondary" onClick={() => setEdit(!edit)}>
+              Editar
+            </button>
+            <button onClick={() => void toggle()}>
+              {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
+            </button>
+          </div>
+        </PermissionGate>
       </div>
       {message && <p className="message">{message}</p>}
-      {edit && (
-        <section className="card">
-          <ClassForm
-            academicClass={item}
-            onSaved={(value) => {
-              setItem(value);
-              setEdit(false);
-            }}
-            onCancel={() => setEdit(false)}
-          />
-        </section>
-      )}
+      <PermissionGate permission="offering:manage">
+        {edit && (
+          <section className="card">
+            <ClassForm
+              academicClass={item}
+              onSaved={(value) => {
+                setItem(value);
+                setEdit(false);
+              }}
+              onCancel={() => setEdit(false)}
+            />
+          </section>
+        )}
+      </PermissionGate>
       <section className="card">
         <h2>Información</h2>
         <dl className="detail-grid">

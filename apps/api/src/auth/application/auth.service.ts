@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../shared/domain/domain-error';
 import { hashPassword, validatePassword, verifyPassword } from '../domain/password';
 import { AUTH_REPOSITORY, type AuthRepository, type PublicAuthUser } from './auth.repository';
+import { normalizeAdminUsername } from '../../users/domain/user';
 
 export type AuthResult = Readonly<{ token: string; user: PublicAuthUser; expiresAt: Date }>;
 const publicUser = ({
@@ -21,14 +22,14 @@ export class AuthService {
   async bootstrap(usernameValue: unknown, passwordValue: unknown): Promise<AuthResult> {
     if (!(await this.setupRequired()))
       throw new DomainError('AUTH_ALREADY_CONFIGURED', 'La configuración inicial ya fue realizada');
-    const username = this.normalizeUsername(usernameValue);
+    const username = normalizeAdminUsername(usernameValue);
     const password = validatePassword(passwordValue);
     const user = await this.repository.createAdministrator(username, await hashPassword(password));
     return this.startSession(user);
   }
 
   async login(usernameValue: unknown, passwordValue: unknown): Promise<AuthResult> {
-    const username = this.normalizeUsername(usernameValue);
+    const username = normalizeAdminUsername(usernameValue);
     const password = typeof passwordValue === 'string' ? passwordValue : '';
     const user = await this.repository.findUserByUsername(username);
     if (!user || user.status !== 'ACTIVE' || !(await verifyPassword(password, user.passwordHash))) {
@@ -63,18 +64,5 @@ export class AuthService {
 
   private tokenHash(token: string): string {
     return createHash('sha256').update(token).digest('hex');
-  }
-
-  private normalizeUsername(value: unknown): string {
-    if (typeof value !== 'string')
-      throw new DomainError('VALIDATION_ERROR', 'El usuario es obligatorio', { field: 'username' });
-    const username = value.trim().toLowerCase();
-    if (!/^[a-z0-9._-]{3,100}$/.test(username))
-      throw new DomainError(
-        'VALIDATION_ERROR',
-        'El usuario debe tener entre 3 y 100 caracteres y usar letras, números, punto, guion o guion bajo',
-        { field: 'username' },
-      );
-    return username;
   }
 }
