@@ -249,3 +249,32 @@ export type MonthlyChargeListDto = Readonly<{
   items: readonly MonthlyChargeDto[];
   total: number;
 }>;
+
+export type AttendanceStatusDto = 'PRESENT' | 'ABSENT' | 'JUSTIFIED';
+
+export type AttendanceDto = Readonly<{
+  id: string;
+  enrollmentId: string;
+  attendanceDate: string;
+  status: AttendanceStatusDto;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}>;
+
+export type CreateAttendanceDto = Readonly<{
+  enrollmentId: string;
+  attendanceDate: string;
+  status: AttendanceStatusDto;
+  notes?: string | null;
+}>;
+
+export type UpdateAttendanceDto = Readonly<{
+  status?: AttendanceStatusDto;
+  notes?: string | null;
+}>;
+
+export type AttendanceListDto = Readonly<{
+  items: readonly AttendanceDto[];
+  total: number;
+}>;
