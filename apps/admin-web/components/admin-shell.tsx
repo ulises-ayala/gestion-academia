@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+import {useState, type ReactNode } from 'react';
 import { useAuth } from './auth-provider';
 
 export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { href: '/students', label: 'Alumnos' },
     { href: '/teachers', label: 'Profesores' },
@@ -16,6 +17,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     { href: '/branches', label: 'Sucursales' },
     { href: '/rooms', label: 'Salones' },
     { href: '/tariffs', label: 'Tarifas' },
+    { href: '/attendances', label: 'Asistencias' },
   ];
   return (
     <div className="admin-layout">
@@ -35,8 +37,25 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
           ))}
         </nav>
       </aside>
+      {menuOpen && (
+        <button
+          type="button"
+          className="sidebar-overlay"
+          aria-label="Cerrar menú"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
       <div className="admin-content">
         <header className="topbar">
+          <button
+            type="button"
+            className="menu-toggle"
+            aria-label="Abrir menú"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((current) => !current)}
+          >
+            ☰
+          </button>
           <span className="user-badge">{user.username}</span>
           <button className="secondary" onClick={() => void logout()}>
             Cerrar sesión

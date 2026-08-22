@@ -12,6 +12,6 @@ import { EnrollmentsController } from './presentation/enrollments.controller';
     EnrollmentsService,
     { provide: ENROLLMENT_REPOSITORY, useClass: PrismaEnrollmentRepository },
   ],
-  exports: [EnrollmentsService],
+  exports: [EnrollmentsService, ENROLLMENT_REPOSITORY],
 })
 export class EnrollmentsModule {}
