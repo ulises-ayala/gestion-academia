@@ -1,0 +1,2 @@
+-- RenameIndex
+ALTER INDEX "public"."class_schedules_room_id_day_of_week_status_start_time_end_time_" RENAME TO "class_schedules_room_id_day_of_week_status_start_time_end_t_idx";

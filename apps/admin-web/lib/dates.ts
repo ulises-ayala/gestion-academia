@@ -13,3 +13,15 @@ export function formatDate(value: string | null): string {
   if (!value) return '—';
   return new Intl.DateTimeFormat('es-AR', { timeZone: 'UTC' }).format(new Date(value));
 }
+
+export function businessToday(now = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(now);
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? '';
+  return `${value('year')}-${value('month')}-${value('day')}`;
+}

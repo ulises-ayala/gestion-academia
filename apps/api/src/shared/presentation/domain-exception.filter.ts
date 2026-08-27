@@ -22,6 +22,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
           error.code === 'CLASS_FULL' ||
           error.code === 'CLASS_CAPACITY_BELOW_ENROLLMENT_COUNT' ||
           error.code === 'MONTHLY_CHARGE_ALREADY_EXISTS' ||
+          error.code === 'ATTENDANCE_ALREADY_EXISTS' ||
           error.code === 'USERNAME_ALREADY_EXISTS' ||
           error.code === 'CANNOT_RESTRICT_SELF' ||
           error.code === 'LAST_DIRECTION_USER_REQUIRED' ||

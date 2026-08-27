@@ -97,6 +97,17 @@
 56. **Caja y arqueo:** el negocio requiere arqueos de caja. La apertura y el cierre formal de caja todavía no están confirmados y no se presupone ese flujo.
 57. **Medios de pago pendientes de modelado:** los medios confirmados son efectivo, Mercado Pago y tarjeta. Transferencia bancaria debe reconfirmarse antes de modelar o implementar el módulo de pagos.
 
+## Decisiones de Asistencias de alumnos v1
+
+58. **Identidad por inscripción y fecha:** `StudentAttendance` pertenece a `Enrollment` y la base garantiza una sola asistencia por `enrollmentId + attendanceDate`. Corregir una asistencia no permite cambiar esa identidad histórica.
+59. **Vigencia histórica:** una asistencia sólo puede registrarse dentro de `startDate` y `endDate` inclusive. Una inscripción actualmente `ENDED` admite consulta y registro histórico si la fecha pertenece a su vigencia.
+60. **Roster por fecha:** `GET /attendances/roster` obtiene desde la API las inscripciones vigentes para la clase y fecha y adjunta la asistencia existente. El frontend no reconstruye el roster a partir de inscripciones activas hoy.
+61. **Estados y conservación:** v1 admite `PRESENT`, `ABSENT` y `JUSTIFIED`, con observación opcional y sin borrado físico. El historial se preserva aunque finalice la inscripción o el alumno deje la clase.
+62. **Dos flujos, una asistencia:** Asistencias ofrece Pasar lista por clase e Ingreso rápido por alumno. Ambos crean o corrigen el mismo `StudentAttendance` mediante los casos de uso existentes.
+63. **Búsqueda sin identidad financiera:** DNI, nombre, apellido y nombre completo solamente localizan al `Student`. La asistencia siempre se registra contra una `Enrollment` concreta elegida por el usuario; no se consultan cuotas ni deuda.
+64. **Selección asistida:** el ingreso rápido devuelve todas las inscripciones vigentes en la fecha. Si existen varias, cada una conserva su propia acción. Los horarios del día seleccionado se priorizan visualmente, pero nunca excluyen otras clases, deciden automáticamente ni aplican tolerancias.
+65. **Caso de uso reutilizable:** `GET /attendances/quick-search` concentra búsqueda de persona, vigencia de inscripciones, clase, profesor, horarios y asistencia existente. Un futuro módulo de Acceso podrá reutilizar esta capacidad, pero este incremento no automatiza ingresos ni incorpora dispositivos.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
@@ -107,7 +118,9 @@
 - Devoluciones de pagos y cualquier tratamiento de saldo a favor.
 - Transferencia bancaria como medio de pago.
 - Apertura/cierre formal de caja y cajas por sucursal, usuario o caja única.
-- Recuperos, feriados, reemplazos y asistencia fuera de inscripción.
+- Asistencia docente; recuperos, feriados, reemplazos y asistencia fuera de inscripción.
+- Vinculación de la asistencia a un `ClassSchedule` específico.
+- Acceso o registro de asistencia mediante DNI.
 - Excepciones manuales de solapamiento, vigencias estacionales, clases canceladas, feriados y reemplazos.
 - Tolerancias, pausas y horas docentes liquidables.
 - Método de acceso y conducta ante deuda o vencimiento.

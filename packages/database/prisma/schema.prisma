@@ -39,6 +39,12 @@ enum MonthlyChargeStatus {
   VOID
 }
 
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  JUSTIFIED
+}
+
 model Student {
   id             String          @id @default(uuid()) @db.Uuid
   dni            String          @unique @db.VarChar(32)
@@ -152,6 +158,7 @@ model Enrollment {
   student        Student          @relation(fields: [studentId], references: [id], onDelete: Restrict)
   class          AcademyClass     @relation(fields: [classId], references: [id], onDelete: Restrict)
   monthlyCharges MonthlyCharge[]
+  attendances    StudentAttendance[]
 
   @@index([studentId, status])
   @@index([classId, status])
@@ -215,6 +222,21 @@ model ClassSchedule {
   @@index([classId, status])
   @@index([roomId, dayOfWeek, status, startTime, endTime])
   @@map("class_schedules")
+}
+
+model StudentAttendance {
+  id             String           @id @default(uuid()) @db.Uuid
+  enrollmentId   String           @map("enrollment_id") @db.Uuid
+  attendanceDate DateTime         @map("attendance_date") @db.Date
+  status         AttendanceStatus
+  notes          String?
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  enrollment     Enrollment       @relation(fields: [enrollmentId], references: [id], onDelete: Restrict)
+
+  @@unique([enrollmentId, attendanceDate])
+  @@index([attendanceDate])
+  @@map("student_attendances")
 }
 
 model AdminUser {
