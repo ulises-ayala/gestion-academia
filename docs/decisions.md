@@ -84,8 +84,18 @@
 
 47. **Mapeo de niveles confirmado:** se preservan los valores persistidos del enum para evitar una migración destructiva: `RECEPTION` representa Admisión, `MANAGER` representa Administración y `ADMINISTRATOR` representa Dirección.
 48. **API como autoridad:** cada endpoint sensible declara permisos y un guard global los valida después de autenticar la sesión. Ocultar navegación o botones en el frontend es solamente una ayuda de interfaz.
-49. **Matriz inicial:** Admisión gestiona alumnos e inscripciones, consulta oferta y tarifas y queda preparada para asistencia, cobros, ventas y registro de formaciones. Administración agrega configuración, caja, usuarios no pertenecientes a Dirección, reportes operativos y liquidaciones. Dirección agrega gestión de su propio nivel, reportes completos y aprobación de liquidaciones.
+49. **Matriz inicial:** Admisión gestiona alumnos e inscripciones, consulta oferta, tarifas, cuotas y pagos, y puede cobrar pagos completos. Administración agrega configuración, gestión de tarifas y cuotas, anulación de pagos, caja, arqueos, usuarios no pertenecientes a Dirección, reportes operativos y liquidaciones. Dirección agrega gestión de su propio nivel, reportes completos y aprobación de liquidaciones.
 50. **Protección administrativa:** un usuario no puede desactivarse ni cambiar su propio rol. Debe permanecer al menos una cuenta activa de Dirección. Administración no puede listar, consultar, crear ni modificar cuentas de Dirección.
+
+## Decisiones confirmadas para el futuro módulo de pagos y caja
+
+51. **Cuota por clase/inscripción:** cada cuota corresponde a una inscripción y, por lo tanto, a una clase. Varias clases generan varias cuotas; el precio de referencia actual es ARS 40.000 por clase. Se mantiene `Enrollment 1 -> N MonthlyCharge` con unicidad por inscripción y período.
+52. **Pago sin fraccionamiento:** no se admiten pagos parciales. Una cuota se paga completa, no puede dividirse entre pagos y un futuro `Payment` podrá cancelar una o más cuotas completas.
+53. **Actor financiero autenticado:** todo pago tendrá un usuario administrativo responsable. Las futuras operaciones financieras deben obtener `AdminUser.id` desde la sesión autenticada mediante `CurrentUser`; nunca deben aceptar `createdByUserId` o `responsibleUserId` del body como autoridad.
+54. **Anulaciones y devoluciones:** se permitirá anular pagos. Las devoluciones no están confirmadas y no se implementarán ni se creará un permiso para ellas hasta definir sus reglas.
+55. **Vencimiento sin estado adicional:** el vencimiento mensual debe caer entre los días 1 y 10. Actualmente no hay intereses ni recargos por mora. Una cuota con `status == PENDING` y fecha actual posterior a `dueDate` puede considerarse vencida de forma derivada, sin persistir un estado `OVERDUE`.
+56. **Caja y arqueo:** el negocio requiere arqueos de caja. La apertura y el cierre formal de caja todavía no están confirmados y no se presupone ese flujo.
+57. **Medios de pago pendientes de modelado:** los medios confirmados son efectivo, Mercado Pago y tarjeta. Transferencia bancaria debe reconfirmarse antes de modelar o implementar el módulo de pagos.
 
 ## Reglas ambiguas: no implementar
 
@@ -93,10 +103,10 @@
 - Significado y facturación de “Formación” y “Solo salón / alquiler”.
 - Relación entre frecuencia semanal, clases elegidas y tarifa/plan.
 - Alta de inscripción a mitad de mes, prorrateos y elección del primer período a cobrar.
-- Conducta posterior al día 10, mora y recargos.
 - Becas y combinación/prioridad de descuentos.
-- Imputación de pagos parciales, saldo a favor, anulaciones y devoluciones.
-- Apertura/cierre/arqueo de caja y cajas por sucursal o usuario.
+- Devoluciones de pagos y cualquier tratamiento de saldo a favor.
+- Transferencia bancaria como medio de pago.
+- Apertura/cierre formal de caja y cajas por sucursal, usuario o caja única.
 - Recuperos, feriados, reemplazos y asistencia fuera de inscripción.
 - Excepciones manuales de solapamiento, vigencias estacionales, clases canceladas, feriados y reemplazos.
 - Tolerancias, pausas y horas docentes liquidables.
