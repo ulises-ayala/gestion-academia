@@ -1,19 +1,40 @@
+import type { DayOfWeekDto } from '@academy/contracts';
 import type { AttendanceData } from '../domain/attendance';
 
 export const ATTENDANCE_REPOSITORY = Symbol('ATTENDANCE_REPOSITORY');
 
-export type AttendancePersistenceInput = Omit<
-  AttendanceData,
-  'id' | 'createdAt' | 'updatedAt'
->;
+export type AttendancePersistenceInput = Omit<AttendanceData, 'id' | 'createdAt' | 'updatedAt'>;
 
-export type AttendanceUpdateInput = Partial<
-  Pick<AttendanceData, 'status' | 'notes'>
->;
+export type AttendanceUpdateInput = Partial<Pick<AttendanceData, 'status' | 'notes'>>;
 
 export type AttendanceListFilters = Readonly<{
   classId?: string;
   attendanceDate?: Date;
+}>;
+
+export type AttendanceRosterItem = Readonly<{
+  enrollmentId: string;
+  student: Readonly<{ id: string; dni: string; firstName: string; lastName: string }>;
+  attendance: AttendanceData | null;
+}>;
+
+export type AttendanceQuickSearchItem = Readonly<{
+  student: Readonly<{ id: string; dni: string; firstName: string; lastName: string }>;
+  enrollments: readonly Readonly<{
+    enrollmentId: string;
+    classId: string;
+    className: string;
+    teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
+    schedules: readonly Readonly<{
+      id: string;
+      dayOfWeek: DayOfWeekDto;
+      startTime: string;
+      endTime: string;
+      roomName: string;
+    }>[];
+    scheduledOnSelectedDay: boolean;
+    attendance: AttendanceData | null;
+  }>[];
 }>;
 
 export interface AttendanceRepository {
@@ -26,13 +47,11 @@ export interface AttendanceRepository {
     attendanceDate: Date,
   ): Promise<AttendanceData | null>;
 
-  update(
-    id: string,
-    input: AttendanceUpdateInput,
-  ): Promise<AttendanceData>;
+  update(id: string, input: AttendanceUpdateInput): Promise<AttendanceData>;
 
-  list(
-    filters: AttendanceListFilters,
-  ): Promise<readonly AttendanceData[]>;
+  list(filters: AttendanceListFilters): Promise<readonly AttendanceData[]>;
+
+  roster(classId: string, attendanceDate: Date): Promise<readonly AttendanceRosterItem[]>;
+
+  quickSearch(query: string, attendanceDate: Date): Promise<readonly AttendanceQuickSearchItem[]>;
 }
-

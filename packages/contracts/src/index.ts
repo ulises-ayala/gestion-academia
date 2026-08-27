@@ -290,3 +290,42 @@ export type AttendanceListDto = Readonly<{
   items: readonly AttendanceDto[];
   total: number;
 }>;
+
+export type AttendanceRosterItemDto = Readonly<{
+  enrollmentId: string;
+  student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
+  attendance: AttendanceDto | null;
+}>;
+
+export type AttendanceRosterDto = Readonly<{
+  classId: string;
+  date: string;
+  items: readonly AttendanceRosterItemDto[];
+}>;
+
+export type AttendanceQuickSearchEnrollmentDto = Readonly<{
+  enrollmentId: string;
+  classId: string;
+  className: string;
+  teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
+  schedules: readonly Readonly<{
+    id: string;
+    dayOfWeek: DayOfWeekDto;
+    startTime: string;
+    endTime: string;
+    roomName: string;
+  }>[];
+  scheduledOnSelectedDay: boolean;
+  attendance: AttendanceDto | null;
+}>;
+
+export type AttendanceQuickSearchItemDto = Readonly<{
+  student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
+  enrollments: readonly AttendanceQuickSearchEnrollmentDto[];
+}>;
+
+export type AttendanceQuickSearchDto = Readonly<{
+  query: string;
+  date: string;
+  items: readonly AttendanceQuickSearchItemDto[];
+}>;

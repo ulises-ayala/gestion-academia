@@ -6,3 +6,4 @@ build/
 .next/
 coverage/
 .prisma/
+*.tsbuildinfo

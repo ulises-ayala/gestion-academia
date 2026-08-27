@@ -30,7 +30,7 @@ futura app alumno ----------------^          |
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
 Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. El cupo de una clase no puede reducirse por debajo de sus inscripciones activas.
-Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Los montos quedan congelados en cada cuota. No están implementados pagos, caja, descuentos, promociones, Formación, asistencias, control de acceso ni liquidaciones.
+Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Los montos quedan congelados en cada cuota. Asistencias de alumnos v1 permite tomar y corregir asistencia sobre el roster vigente de una clase y fecha. No están implementados pagos, caja, descuentos, promociones, Formación, asistencia docente, control de acceso ni liquidaciones.
 
 ## Stack
 
@@ -187,6 +187,17 @@ El Blueprint usa los planes gratuitos para minimizar costo. Los web services gra
 - `GET /api/v1/monthly-charges/:id`: obtener detalle.
 
 Cada cuota nace `PENDING`, con descuento cero y montos históricos. No hay endpoints de pago, anulación ni generación automática.
+
+## API de asistencias
+
+- `GET /api/v1/attendances/roster?classId=&date=AAAA-MM-DD`: roster vigente con asistencia existente.
+- `GET /api/v1/attendances/quick-search?q=&date=AAAA-MM-DD`: buscar alumnos y sus clases vigentes con contexto suficiente para ingreso rápido.
+- `GET /api/v1/attendances?classId=&date=AAAA-MM-DD`: consultar historial por clase y/o fecha.
+- `POST /api/v1/attendances`: registrar asistencia para una inscripción y fecha.
+- `GET /api/v1/attendances/:id`: consultar una asistencia.
+- `PATCH /api/v1/attendances/:id`: corregir solamente estado y observación.
+
+Todos los endpoints requieren `attendance:manage`. No existe borrado físico.
 
 ## Usuarios y permisos
 
