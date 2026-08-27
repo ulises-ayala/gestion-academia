@@ -4,6 +4,7 @@ import type { TariffDto } from '@academy/contracts';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { formatDate } from '../../lib/dates';
+import { PermissionGate } from '../../components/permission-gate';
 
 const emptyForm = { name: '', amount: '40000.00', validFrom: '', validTo: '' };
 const money = (value: string) =>
@@ -57,62 +58,64 @@ export default function TariffsPage() {
           <p className="subtitle">Valores mensuales por clase, con vigencia e historial.</p>
         </div>
       </div>
-      <section className="card">
-        <h2>{editing ? 'Editar tarifa' : 'Nueva tarifa'}</h2>
-        <form className="catalog-form tariff-form" onSubmit={submit}>
-          <label>
-            Nombre
-            <input
-              required
-              maxLength={120}
-              value={form.name}
-              onChange={(event) => setForm({ ...form, name: event.target.value })}
-            />
-          </label>
-          <label>
-            Monto ARS
-            <input
-              required
-              inputMode="decimal"
-              value={form.amount}
-              onChange={(event) => setForm({ ...form, amount: event.target.value })}
-            />
-          </label>
-          <label>
-            Vigente desde
-            <input
-              required
-              type="date"
-              value={form.validFrom}
-              onChange={(event) => setForm({ ...form, validFrom: event.target.value })}
-            />
-          </label>
-          <label>
-            Vigente hasta <span className="optional">opcional</span>
-            <input
-              type="date"
-              value={form.validTo}
-              onChange={(event) => setForm({ ...form, validTo: event.target.value })}
-            />
-          </label>
-          <div className="actions">
-            <button>Guardar</button>
-            {editing && (
-              <button
-                className="secondary"
-                type="button"
-                onClick={() => {
-                  setEditing(null);
-                  setForm(emptyForm);
-                }}
-              >
-                Cancelar
-              </button>
-            )}
-          </div>
-        </form>
-        {message && <p className="message">{message}</p>}
-      </section>
+      <PermissionGate permission="tariffs:manage">
+        <section className="card">
+          <h2>{editing ? 'Editar tarifa' : 'Nueva tarifa'}</h2>
+          <form className="catalog-form tariff-form" onSubmit={submit}>
+            <label>
+              Nombre
+              <input
+                required
+                maxLength={120}
+                value={form.name}
+                onChange={(event) => setForm({ ...form, name: event.target.value })}
+              />
+            </label>
+            <label>
+              Monto ARS
+              <input
+                required
+                inputMode="decimal"
+                value={form.amount}
+                onChange={(event) => setForm({ ...form, amount: event.target.value })}
+              />
+            </label>
+            <label>
+              Vigente desde
+              <input
+                required
+                type="date"
+                value={form.validFrom}
+                onChange={(event) => setForm({ ...form, validFrom: event.target.value })}
+              />
+            </label>
+            <label>
+              Vigente hasta <span className="optional">opcional</span>
+              <input
+                type="date"
+                value={form.validTo}
+                onChange={(event) => setForm({ ...form, validTo: event.target.value })}
+              />
+            </label>
+            <div className="actions">
+              <button>Guardar</button>
+              {editing && (
+                <button
+                  className="secondary"
+                  type="button"
+                  onClick={() => {
+                    setEditing(null);
+                    setForm(emptyForm);
+                  }}
+                >
+                  Cancelar
+                </button>
+              )}
+            </div>
+          </form>
+          {message && <p className="message">{message}</p>}
+        </section>
+      </PermissionGate>
       <section className="card">
         <div className="table-wrap">
           <table>
@@ -135,23 +138,25 @@ export default function TariffsPage() {
                   </td>
                   <td>{item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}</td>
                   <td className="actions">
-                    <button
-                      className="secondary"
-                      onClick={() => {
-                        setEditing(item);
-                        setForm({
-                          name: item.name,
-                          amount: item.amount,
-                          validFrom: item.validFrom,
-                          validTo: item.validTo ?? '',
-                        });
-                      }}
-                    >
-                      Editar
-                    </button>
-                    <button onClick={() => void toggle(item)}>
-                      {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
-                    </button>
+                    <PermissionGate permission="tariffs:manage">
+                      <button
+                        className="secondary"
+                        onClick={() => {
+                          setEditing(item);
+                          setForm({
+                            name: item.name,
+                            amount: item.amount,
+                            validFrom: item.validFrom,
+                            validTo: item.validTo ?? '',
+                          });
+                        }}
+                      >
+                        Editar
+                      </button>
+                      <button onClick={() => void toggle(item)}>
+                        {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
+                      </button>
+                    </PermissionGate>
                   </td>
                 </tr>
               ))}

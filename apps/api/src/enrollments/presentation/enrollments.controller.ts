@@ -6,8 +6,10 @@ import type {
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { parsePage, parseUuid } from '../../shared/presentation/request-validation';
 import { EnrollmentsService } from '../application/enrollments.service';
+import { Permissions } from '../../auth/presentation/permissions.decorator';
 
 @Controller('enrollments')
+@Permissions('enrollments:manage')
 export class EnrollmentsController {
   constructor(private readonly service: EnrollmentsService) {}
   @Get() list(
