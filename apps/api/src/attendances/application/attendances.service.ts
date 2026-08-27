@@ -1,4 +1,8 @@
-import type { CreateAttendanceDto, UpdateAttendanceDto } from '@academy/contracts';
+import type {
+  CreateAttendanceDto,
+  SaveAttendanceRosterDto,
+  UpdateAttendanceDto,
+} from '@academy/contracts';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   ENROLLMENT_REPOSITORY,
@@ -82,12 +86,34 @@ export class AttendancesService {
     return this.attendanceRepository.roster(classId, attendanceDate);
   }
 
-  quickSearch(query: string, attendanceDate: Date) {
+  dayClasses(attendanceDate: Date) {
+    return this.attendanceRepository.dayClasses(attendanceDate);
+  }
+
+  quickSearch(query: string, attendanceDate: Date, includeOtherDays = false) {
     const normalizedQuery = query.trim();
     if (normalizedQuery.length > 100)
       throw new DomainError('VALIDATION_ERROR', 'La búsqueda no puede superar 100 caracteres', {
         field: 'q',
       });
-    return this.attendanceRepository.quickSearch(normalizedQuery, attendanceDate);
+    if (!normalizedQuery) return [];
+    return this.attendanceRepository.quickSearch(normalizedQuery, attendanceDate, includeOtherDays);
+  }
+
+  saveRoster(input: SaveAttendanceRosterDto, attendanceDate: Date) {
+    const enrollmentIds = input.attendances.map((item) => item.enrollmentId);
+    if (new Set(enrollmentIds).size !== enrollmentIds.length)
+      throw new DomainError('VALIDATION_ERROR', 'No puede repetir una inscripción en la lista', {
+        field: 'attendances',
+      });
+    return this.attendanceRepository.saveRoster(
+      input.classId,
+      attendanceDate,
+      input.attendances.map((item) => ({
+        enrollmentId: item.enrollmentId,
+        status: parseAttendanceStatus(item.status),
+        notes: normalizeAttendanceNotes(item.notes) ?? null,
+      })),
+    );
   }
 }

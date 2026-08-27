@@ -1,13 +1,17 @@
 import type {
   AttendanceDto,
+  AttendanceDayDto,
   AttendanceListDto,
   AttendanceQuickSearchDto,
   AttendanceRosterDto,
   CreateAttendanceDto,
+  SaveAttendanceRosterDto,
+  SaveAttendanceRosterResultDto,
   UpdateAttendanceDto,
 } from '@academy/contracts';
-import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
+import { DomainError } from '../../shared/domain/domain-error';
 import { parseUuid } from '../../shared/presentation/request-validation';
 import { AttendancesService } from '../application/attendances.service';
 import type { AttendanceData } from '../domain/attendance';
@@ -56,14 +60,51 @@ export class AttendancesController {
     };
   }
 
+  @Put('roster')
+  async saveRoster(@Body() input: SaveAttendanceRosterDto): Promise<SaveAttendanceRosterResultDto> {
+    if (!Array.isArray(input.attendances))
+      throw new DomainError('VALIDATION_ERROR', 'attendances debe ser una lista', {
+        field: 'attendances',
+      });
+    const classId = parseUuid(input.classId, 'classId');
+    const attendanceDate = parseAttendanceDate(input.date, 'date');
+    const attendances = await this.service.saveRoster(
+      {
+        ...input,
+        classId,
+        attendances: input.attendances.map((item) => ({
+          ...item,
+          enrollmentId: parseUuid(item.enrollmentId, 'enrollmentId'),
+        })),
+      },
+      attendanceDate,
+    );
+    return {
+      classId,
+      date: input.date,
+      items: attendances.map(toDto),
+    };
+  }
+
+  @Get('day')
+  async day(@Query('date') date: string): Promise<AttendanceDayDto> {
+    const attendanceDate = parseAttendanceDate(date, 'date');
+    return { date, items: await this.service.dayClasses(attendanceDate) };
+  }
+
   @Get('quick-search')
   async quickSearch(
     @Query('q') query: string,
     @Query('date') date: string,
+    @Query('includeOtherDays') includeOtherDays?: string,
   ): Promise<AttendanceQuickSearchDto> {
     const attendanceDate = parseAttendanceDate(date, 'date');
     const normalizedQuery = query?.trim() ?? '';
-    const items = await this.service.quickSearch(normalizedQuery, attendanceDate);
+    const items = await this.service.quickSearch(
+      normalizedQuery,
+      attendanceDate,
+      includeOtherDays === 'true',
+    );
     return {
       query: normalizedQuery,
       date,
