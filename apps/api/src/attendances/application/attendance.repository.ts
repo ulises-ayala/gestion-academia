@@ -37,6 +37,25 @@ export type AttendanceQuickSearchItem = Readonly<{
   }>[];
 }>;
 
+export type AttendanceDayClass = Readonly<{
+  classId: string;
+  className: string;
+  danceType: string;
+  teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
+  room: Readonly<{ id: string; name: string }>;
+  branch: Readonly<{ id: string; name: string }>;
+  startTime: string;
+  endTime: string;
+  enrolledCount: number;
+  presentCount: number;
+}>;
+
+export type AttendanceRosterSaveItem = Readonly<{
+  enrollmentId: string;
+  status: AttendanceData['status'];
+  notes: string | null;
+}>;
+
 export interface AttendanceRepository {
   create(input: AttendancePersistenceInput): Promise<AttendanceData>;
 
@@ -53,5 +72,17 @@ export interface AttendanceRepository {
 
   roster(classId: string, attendanceDate: Date): Promise<readonly AttendanceRosterItem[]>;
 
-  quickSearch(query: string, attendanceDate: Date): Promise<readonly AttendanceQuickSearchItem[]>;
+  dayClasses(attendanceDate: Date): Promise<readonly AttendanceDayClass[]>;
+
+  quickSearch(
+    query: string,
+    attendanceDate: Date,
+    includeOtherDays: boolean,
+  ): Promise<readonly AttendanceQuickSearchItem[]>;
+
+  saveRoster(
+    classId: string,
+    attendanceDate: Date,
+    items: readonly AttendanceRosterSaveItem[],
+  ): Promise<readonly AttendanceData[]>;
 }
