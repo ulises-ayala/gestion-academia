@@ -54,6 +54,18 @@ export type AuthUserDto = Readonly<{
 export type AuthSessionDto = Readonly<{ user: AuthUserDto; expiresAt: string }>;
 export type SetupStatusDto = Readonly<{ required: boolean }>;
 export type AuthCredentialsDto = Readonly<{ username: string; password: string }>;
+export type AdminUserDto = AuthUserDto;
+export type CreateAdminUserDto = Readonly<{
+  username: string;
+  password: string;
+  role: AdminRoleDto;
+}>;
+export type UpdateAdminUserDto = Readonly<{
+  username?: string;
+  password?: string;
+  role?: AdminRoleDto;
+  status?: RecordStatusDto;
+}>;
 
 export type RecordStatusDto = 'ACTIVE' | 'INACTIVE';
 export type PageDto<T> = Readonly<{

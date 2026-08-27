@@ -1,0 +1,106 @@
+import type { AdminRoleDto, AdminUserDto, RecordStatusDto } from '@academy/contracts';
+import { describe, expect, it } from 'vitest';
+import type { PublicAuthUser } from '../../auth/application/auth.repository';
+import type { UserRepository, UserWithPassword } from './user.repository';
+import { UsersService } from './users.service';
+
+class MemoryUsers implements UserRepository {
+  items: UserWithPassword[] = [];
+  async list() {
+    return this.items.map(({ passwordHash: _passwordHash, ...user }) => user);
+  }
+  async findById(id: string) {
+    return this.items.find((user) => user.id === id) ?? null;
+  }
+  async findByUsername(username: string) {
+    return this.items.find((user) => user.username === username) ?? null;
+  }
+  async countActiveDirectionUsers() {
+    return this.items.filter((user) => user.role === 'ADMINISTRATOR' && user.status === 'ACTIVE')
+      .length;
+  }
+  async create(data: { username: string; passwordHash: string; role: AdminRoleDto }) {
+    const item: UserWithPassword = {
+      ...data,
+      id: crypto.randomUUID(),
+      status: 'ACTIVE',
+    };
+    this.items.push(item);
+    const { passwordHash: _passwordHash, ...user } = item;
+    return user;
+  }
+  async update(
+    id: string,
+    data: {
+      username: string;
+      passwordHash?: string;
+      role: AdminRoleDto;
+      status: RecordStatusDto;
+    },
+  ): Promise<AdminUserDto> {
+    const current = this.items.find((user) => user.id === id)!;
+    Object.assign(current, data);
+    const { passwordHash: _passwordHash, ...user } = current;
+    return user;
+  }
+}
+
+const actor = (role: PublicAuthUser['role'], id = crypto.randomUUID()): PublicAuthUser => ({
+  id,
+  username: role.toLowerCase(),
+  role,
+  status: 'ACTIVE',
+});
+const seed = (repository: MemoryUsers, role: AdminRoleDto, id = crypto.randomUUID()) => {
+  repository.items.push({
+    id,
+    username: `${role.toLowerCase()}-${repository.items.length}`,
+    passwordHash: 'hash',
+    role,
+    status: 'ACTIVE',
+  });
+  return id;
+};
+
+describe('UsersService', () => {
+  it('Administración crea Admisión pero no Dirección', async () => {
+    const repository = new MemoryUsers();
+    const service = new UsersService(repository);
+    await expect(
+      service.create(actor('MANAGER'), {
+        username: 'recepcion',
+        password: 'una-clave-segura',
+        role: 'RECEPTION',
+      }),
+    ).resolves.toMatchObject({ role: 'RECEPTION' });
+    await expect(
+      service.create(actor('MANAGER'), {
+        username: 'direccion',
+        password: 'otra-clave-segura',
+        role: 'ADMINISTRATOR',
+      }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+  });
+  it('Administración no lista ni consulta usuarios de Dirección', async () => {
+    const repository = new MemoryUsers();
+    const directionId = seed(repository, 'ADMINISTRATOR');
+    seed(repository, 'RECEPTION');
+    const service = new UsersService(repository);
+    await expect(service.list(actor('MANAGER'))).resolves.toHaveLength(1);
+    await expect(service.get(actor('MANAGER'), directionId)).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    });
+  });
+  it('impide auto-desactivarse y eliminar la última Dirección activa', async () => {
+    const repository = new MemoryUsers();
+    const directionId = seed(repository, 'ADMINISTRATOR');
+    const service = new UsersService(repository);
+    const direction = actor('ADMINISTRATOR', directionId);
+    await expect(
+      service.update(direction, directionId, { status: 'INACTIVE' }),
+    ).rejects.toMatchObject({ code: 'CANNOT_RESTRICT_SELF' });
+    await expect(
+      service.update(actor('ADMINISTRATOR'), directionId, { status: 'INACTIVE' }),
+    ).rejects.toMatchObject({ code: 'LAST_DIRECTION_USER_REQUIRED' });
+  });
+});

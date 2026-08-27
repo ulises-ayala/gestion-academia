@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { apiRequest } from '../../lib/api-client';
 import { dayLabels } from '../../lib/offering';
+import { PermissionGate } from '../../components/permission-gate';
 export default function Page() {
   const [data, setData] = useState<ClassListDto>({ items: [], total: 0, page: 1, pageSize: 25 });
   const [options, setOptions] = useState<{
@@ -52,9 +53,11 @@ export default function Page() {
           <p className="eyebrow">Oferta académica</p>
           <h1>Clases</h1>
         </div>
-        <Link className="button" href="/classes/new">
-          Nueva clase
-        </Link>
+        <PermissionGate permission="offering:manage">
+          <Link className="button" href="/classes/new">
+            Nueva clase
+          </Link>
+        </PermissionGate>
       </div>
       <section className="card">
         <form className="class-filters" onSubmit={search}>

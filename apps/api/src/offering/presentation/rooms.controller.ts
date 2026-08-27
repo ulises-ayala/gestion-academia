@@ -13,28 +13,37 @@ import {
 } from '@nestjs/common';
 import { parseStatus, parseUuid } from '../../shared/presentation/request-validation';
 import { CatalogService } from '../application/catalog.service';
+import { Permissions } from '../../auth/presentation/permissions.decorator';
 @Controller('rooms')
 export class RoomsController {
   constructor(@Inject(CatalogService) private readonly service: CatalogService) {}
-  @Get() list(@Query('status') status?: string, @Query('branchId') branchId?: string) {
+  @Get() @Permissions('offering:read') list(
+    @Query('status') status?: string,
+    @Query('branchId') branchId?: string,
+  ) {
     return this.service.listRooms(
       parseStatus(status),
       branchId ? parseUuid(branchId, 'branchId') : undefined,
     );
   }
-  @Get(':id') get(@Param('id') id: string) {
+  @Get(':id') @Permissions('offering:read') get(@Param('id') id: string) {
     return this.service.getRoom(parseUuid(id));
   }
-  @Post() create(@Body() input: CreateRoomDto) {
+  @Post() @Permissions('offering:manage') create(@Body() input: CreateRoomDto) {
     return this.service.createRoom(input);
   }
-  @Patch(':id') update(@Param('id') id: string, @Body() input: UpdateRoomDto) {
+  @Patch(':id') @Permissions('offering:manage') update(
+    @Param('id') id: string,
+    @Body() input: UpdateRoomDto,
+  ) {
     return this.service.updateRoom(parseUuid(id), input);
   }
-  @Delete(':id') @HttpCode(200) deactivate(@Param('id') id: string) {
+  @Delete(':id') @HttpCode(200) @Permissions('offering:manage') deactivate(
+    @Param('id') id: string,
+  ) {
     return this.service.updateRoom(parseUuid(id), { status: 'INACTIVE' });
   }
-  @Post(':id/reactivate') reactivate(@Param('id') id: string) {
+  @Post(':id/reactivate') @Permissions('offering:manage') reactivate(@Param('id') id: string) {
     return this.service.updateRoom(parseUuid(id), { status: 'ACTIVE' });
   }
 }

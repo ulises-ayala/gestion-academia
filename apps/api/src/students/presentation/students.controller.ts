@@ -14,8 +14,10 @@ import type { CreateStudentDto, UpdateStudentDto } from '@academy/contracts';
 import { DomainError } from '../../shared/domain/domain-error';
 import { StudentsService } from '../application/students.service';
 import type { StudentStatus } from '../domain/student';
+import { Permissions } from '../../auth/presentation/permissions.decorator';
 
 @Controller('students')
+@Permissions('students:manage')
 export class StudentsController {
   constructor(@Inject(StudentsService) private readonly students: StudentsService) {}
 
