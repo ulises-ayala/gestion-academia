@@ -53,6 +53,8 @@ erDiagram
 - Una inscripción comienza `ACTIVE` con una `startDate` explícita y finaliza como `ENDED` con `endDate`; nunca se elimina físicamente.
 - Solo alumnos y clases activas admiten nuevas inscripciones. Una pareja alumno/clase puede tener una sola inscripción activa, pero múltiples períodos finalizados.
 - `AcademyClass.capacity` es la autoridad del cupo. El alta serializa por clase y cuenta inscripciones activas antes de confirmar.
+- Un alumno no puede tener períodos de inscripción coexistentes en clases cuyos horarios semanales activos se superpongan el mismo día. Se permiten horarios contiguos y horarios iguales en días distintos.
+- La validación compara todas las combinaciones de horarios y se serializa por alumno en el backend. Como los horarios no tienen fechas de vigencia propias, el historial se evalúa contra la programación actualmente activa.
 - Un horario solo es operacional cuando `AcademyClass.status == ACTIVE` y `ClassSchedule.status == ACTIVE`.
 
 ## Tarifas y Cuotas v1

@@ -51,6 +51,19 @@ export default function NewEnrollmentPage() {
       });
       router.push(`/students/${id}`);
     } catch (error) {
+      if (error instanceof ApiClientError && error.error.code === 'ENROLLMENT_SCHEDULE_CONFLICT') {
+        const details = error.error.details;
+        const className = typeof details?.className === 'string' ? details.className : null;
+        const dayOfWeek = typeof details?.dayOfWeek === 'string' ? details.dayOfWeek : null;
+        const startTime = typeof details?.startTime === 'string' ? details.startTime : null;
+        const endTime = typeof details?.endTime === 'string' ? details.endTime : null;
+        if (className && dayOfWeek && startTime && endTime) {
+          setMessage(
+            `No se puede inscribir a esta clase porque se superpone con ${className} · ${dayLabels[dayOfWeek as keyof typeof dayLabels]} ${startTime}–${endTime}.`,
+          );
+          return;
+        }
+      }
       setMessage(
         error instanceof ApiClientError ? error.message : 'No se pudo crear la inscripción',
       );
