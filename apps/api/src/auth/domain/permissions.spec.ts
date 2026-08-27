@@ -10,22 +10,46 @@ const user = (role: PublicAuthUser['role']): PublicAuthUser => ({
 });
 
 describe('role permissions', () => {
-  it('Admisión gestiona alumnos pero no configuración, caja ni usuarios', () => {
-    expect(hasPermissions(user('RECEPTION'), ['students:manage', 'offering:read'])).toBe(true);
-    expect(hasPermissions(user('RECEPTION'), ['offering:manage'])).toBe(false);
-    expect(hasPermissions(user('RECEPTION'), ['cash:manage'])).toBe(false);
-    expect(hasPermissions(user('RECEPTION'), ['users:manage'])).toBe(false);
+  it('Admisión consulta facturación y cobra cuotas, sin administrar economía ni caja', () => {
+    const reception = user('RECEPTION');
+
+    expect(hasPermissions(reception, ['tariffs:read'])).toBe(true);
+    expect(hasPermissions(reception, ['tariffs:manage'])).toBe(false);
+    expect(hasPermissions(reception, ['charges:read'])).toBe(true);
+    expect(hasPermissions(reception, ['charges:manage'])).toBe(false);
+    expect(hasPermissions(reception, ['payments:read'])).toBe(true);
+    expect(hasPermissions(reception, ['payments:collect'])).toBe(true);
+    expect(hasPermissions(reception, ['payments:void'])).toBe(false);
+    expect(hasPermissions(reception, ['cash:manage'])).toBe(false);
+    expect(hasPermissions(reception, ['cash:reconcile'])).toBe(false);
   });
-  it('Administración gestiona operación sensible pero no Dirección', () => {
+  it('Administración gestiona tarifas, cuotas, pagos y caja', () => {
+    const manager = user('MANAGER');
+
     expect(
-      hasPermissions(user('MANAGER'), ['offering:manage', 'cash:manage', 'settlements:manage']),
+      hasPermissions(manager, [
+        'tariffs:manage',
+        'charges:manage',
+        'payments:read',
+        'payments:collect',
+        'payments:void',
+        'cash:manage',
+        'cash:reconcile',
+      ]),
     ).toBe(true);
-    expect(hasPermissions(user('MANAGER'), ['users:manage-direction'])).toBe(false);
-    expect(hasPermissions(user('MANAGER'), ['settlements:approve'])).toBe(false);
+    expect(hasPermissions(manager, ['users:manage-direction'])).toBe(false);
+    expect(hasPermissions(manager, ['settlements:approve'])).toBe(false);
   });
-  it('Dirección posee permisos completos', () => {
+  it('Dirección conserva la matriz de Administración y sus capacidades sensibles', () => {
     expect(
       hasPermissions(user('ADMINISTRATOR'), [
+        'tariffs:manage',
+        'charges:manage',
+        'payments:read',
+        'payments:collect',
+        'payments:void',
+        'cash:manage',
+        'cash:reconcile',
         'users:manage-direction',
         'reports:all',
         'settlements:approve',

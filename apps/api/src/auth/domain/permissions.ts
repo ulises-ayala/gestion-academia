@@ -9,8 +9,11 @@ export type Permission =
   | 'tariffs:manage'
   | 'charges:read'
   | 'charges:manage'
+  | 'payments:read'
   | 'payments:collect'
+  | 'payments:void'
   | 'cash:manage'
+  | 'cash:reconcile'
   | 'attendance:manage'
   | 'users:manage'
   | 'users:manage-direction'
@@ -29,6 +32,7 @@ const admissionPermissions: readonly Permission[] = [
   'offering:read',
   'tariffs:read',
   'charges:read',
+  'payments:read',
   'payments:collect',
   'attendance:manage',
   'inventory:sell',
@@ -39,7 +43,9 @@ const administrationPermissions: readonly Permission[] = [
   'offering:manage',
   'tariffs:manage',
   'charges:manage',
+  'payments:void',
   'cash:manage',
+  'cash:reconcile',
   'users:manage',
   'inventory:manage',
   'trainings:manage',
