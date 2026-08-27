@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useAuth } from './auth-provider';
 import type { UiPermission } from '../lib/permissions';
 import { roleLabel } from '../lib/permissions';
@@ -10,8 +10,6 @@ import { roleLabel } from '../lib/permissions';
 export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const { user, can, logout } = useAuth();
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const links: { href: string; label: string; permission: UiPermission }[] = [
     { href: '/students', label: 'Alumnos', permission: 'students:manage' },
     { href: '/classes', label: 'Clases', permission: 'offering:read' },
@@ -23,14 +21,12 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     { href: '/attendances', label: 'Asistencias', permission: 'attendance:manage' },
     { href: '/users', label: 'Usuarios', permission: 'users:manage' },
   ];
-
   return (
     <div className="admin-layout">
-      <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
+      <aside className="sidebar">
         <Link className="brand" href="/students">
           Gestión Academia
         </Link>
-
         <nav aria-label="Módulos">
           {links
             .filter((link) => can(link.permission))
@@ -39,44 +35,21 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
                 key={link.href}
                 className={`nav-link ${pathname.startsWith(link.href) ? 'active' : ''}`}
                 href={link.href}
-                onClick={() => setMenuOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
         </nav>
       </aside>
-
-      {menuOpen && (
-        <button
-          type="button"
-          className="sidebar-overlay"
-          aria-label="Cerrar menú"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-
       <div className="admin-content">
         <header className="topbar">
-          <button
-            type="button"
-            className="menu-toggle"
-            aria-label="Abrir menú"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((current) => !current)}
-          >
-            ☰
-          </button>
-
           <span className="user-badge">
             {user.username} · {roleLabel[user.role]}
           </span>
-
           <button className="secondary" onClick={() => void logout()}>
             Cerrar sesión
           </button>
         </header>
-
         <main>{children}</main>
       </div>
     </div>
