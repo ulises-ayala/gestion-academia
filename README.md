@@ -19,6 +19,7 @@ futura app alumno ----------------^          |
 ## Estado actual
 
 - Autenticación administrativa con primer usuario, login, logout, roles iniciales y sesiones opacas.
+- Autorización por nivel: Admisión, Administración y Dirección, aplicada en API y navegación.
 - Contraseñas derivadas con `scrypt`; tokens de sesión almacenados solamente como hash.
 - Cookie `HttpOnly`, `SameSite=Lax` y expiración configurable.
 - Alumnos v1: alta, ficha, edición, baja lógica, reactivación, búsqueda, filtros y paginación server-side.
@@ -186,6 +187,23 @@ El Blueprint usa los planes gratuitos para minimizar costo. Los web services gra
 - `GET /api/v1/monthly-charges/:id`: obtener detalle.
 
 Cada cuota nace `PENDING`, con descuento cero y montos históricos. No hay endpoints de pago, anulación ni generación automática.
+
+## Usuarios y permisos
+
+Los valores internos se presentan de esta manera:
+
+- `RECEPTION`: Admisión.
+- `MANAGER`: Administración.
+- `ADMINISTRATOR`: Dirección.
+
+Admisión opera alumnos e inscripciones y consulta clases, tarifas y cuotas. Administración agrega configuración académica, gestión de tarifas y usuarios de Admisión/Administración. Dirección agrega la gestión de cuentas de Dirección y las capacidades reservadas de aprobación/reportes completos.
+
+- `GET /api/v1/users`: listar usuarios permitidos para el nivel actual.
+- `GET /api/v1/users/:id`: consultar.
+- `POST /api/v1/users`: crear.
+- `PATCH /api/v1/users/:id`: cambiar usuario, contraseña, rol o estado.
+
+No se eliminan usuarios físicamente. Una cuenta no puede desactivarse ni cambiar su propio rol, y siempre debe quedar una cuenta activa de Dirección. El frontend oculta módulos/acciones no habilitados, pero la autorización efectiva siempre se controla en la API.
 
 ## Próxima etapa
 

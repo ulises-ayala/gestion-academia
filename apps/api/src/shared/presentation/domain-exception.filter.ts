@@ -22,11 +22,16 @@ export class DomainExceptionFilter implements ExceptionFilter {
           error.code === 'CLASS_FULL' ||
           error.code === 'CLASS_CAPACITY_BELOW_ENROLLMENT_COUNT' ||
           error.code === 'MONTHLY_CHARGE_ALREADY_EXISTS' ||
+          error.code === 'USERNAME_ALREADY_EXISTS' ||
+          error.code === 'CANNOT_RESTRICT_SELF' ||
+          error.code === 'LAST_DIRECTION_USER_REQUIRED' ||
           error.code.endsWith('_HAS_ACTIVE_ENROLLMENTS')
         ? 409
-        : error.code === 'UNAUTHORIZED' || error.code === 'INVALID_CREDENTIALS'
-          ? 401
-          : 400;
+        : error.code === 'FORBIDDEN'
+          ? 403
+          : error.code === 'UNAUTHORIZED' || error.code === 'INVALID_CREDENTIALS'
+            ? 401
+            : 400;
     response.status(status).json({
       code: error.code,
       message: error.message,

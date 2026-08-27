@@ -14,10 +14,11 @@ import {
 import { DomainError } from '../../shared/domain/domain-error';
 import { parsePage, parseStatus, parseUuid } from '../../shared/presentation/request-validation';
 import { TeachersService } from '../application/teachers.service';
+import { Permissions } from '../../auth/presentation/permissions.decorator';
 @Controller('teachers')
 export class TeachersController {
   constructor(@Inject(TeachersService) private readonly service: TeachersService) {}
-  @Get() list(
+  @Get() @Permissions('offering:read') list(
     @Query('q') q?: string,
     @Query('status') status?: string,
     @Query('page') page?: string,
@@ -35,19 +36,24 @@ export class TeachersController {
       pageSize: parsePage(pageSize, 'pageSize', 25, 100),
     });
   }
-  @Get(':id') get(@Param('id') id: string) {
+  @Get(':id') @Permissions('offering:read') get(@Param('id') id: string) {
     return this.service.get(parseUuid(id));
   }
-  @Post() create(@Body() input: CreateTeacherDto) {
+  @Post() @Permissions('offering:manage') create(@Body() input: CreateTeacherDto) {
     return this.service.create(input);
   }
-  @Patch(':id') update(@Param('id') id: string, @Body() input: UpdateTeacherDto) {
+  @Patch(':id') @Permissions('offering:manage') update(
+    @Param('id') id: string,
+    @Body() input: UpdateTeacherDto,
+  ) {
     return this.service.update(parseUuid(id), input);
   }
-  @Delete(':id') @HttpCode(200) deactivate(@Param('id') id: string) {
+  @Delete(':id') @HttpCode(200) @Permissions('offering:manage') deactivate(
+    @Param('id') id: string,
+  ) {
     return this.service.deactivate(parseUuid(id));
   }
-  @Post(':id/reactivate') reactivate(@Param('id') id: string) {
+  @Post(':id/reactivate') @Permissions('offering:manage') reactivate(@Param('id') id: string) {
     return this.service.reactivate(parseUuid(id));
   }
 }

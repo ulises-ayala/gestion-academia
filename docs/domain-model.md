@@ -68,3 +68,11 @@ erDiagram
 - La cuota congela `baseAmount`, `discountAmount` y `finalAmount`. Cambiar una tarifa después no modifica cuotas existentes.
 - `discountAmount` es cero en v1. Los estados disponibles son `PENDING`, `PAID` y `VOID`, pero v1 solamente crea `PENDING`; pagos y anulaciones se implementarán cuando existan sus reglas.
 - Las relaciones financieras usan borrado restringido y las entidades se desactivan sin eliminar el historial.
+
+## Usuarios y permisos v1
+
+- `AdminUser` mantiene los roles técnicos existentes, presentados como Admisión (`RECEPTION`), Administración (`MANAGER`) y Dirección (`ADMINISTRATOR`).
+- Los permisos se definen por capacidad y se validan en la API. El frontend usa la misma matriz conceptual para mostrar únicamente módulos y acciones habilitados.
+- Admisión conserva la operación cotidiana de alumnos/inscripciones y lectura necesaria de oferta, tarifas y cuotas; no administra configuración, caja, usuarios, reportes ni liquidaciones.
+- Administración gestiona configuración y usuarios de Admisión/Administración, pero no puede acceder a cuentas de Dirección ni aprobar liquidaciones.
+- Dirección tiene el nivel completo. El sistema impide auto-desactivación y garantiza al menos una cuenta de Dirección activa.
