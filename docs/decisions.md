@@ -108,6 +108,13 @@
 64. **Selección asistida:** el ingreso rápido devuelve todas las inscripciones vigentes en la fecha. Si existen varias, cada una conserva su propia acción. Los horarios del día seleccionado se priorizan visualmente, pero nunca excluyen otras clases, deciden automáticamente ni aplican tolerancias.
 65. **Caso de uso reutilizable:** `GET /attendances/quick-search` concentra búsqueda de persona, vigencia de inscripciones, clase, profesor, horarios y asistencia existente. Un futuro módulo de Acceso podrá reutilizar esta capacidad, pero este incremento no automatiza ingresos ni incorpora dispositivos.
 
+## Decisiones de flujo diario de Asistencias
+
+66. **Jornada como entrada principal:** Asistencias se organiza alrededor de la fecha seleccionada. La pantalla inicial consulta las clases con un horario activo cuyo día semanal coincide con esa fecha, ordenadas por hora de inicio; la cantidad de alumnos usa la vigencia histórica de cada inscripción y no solamente su estado actual.
+67. **Búsqueda contextual:** la búsqueda principal exige una inscripción vigente en una clase programada para el día seleccionado y no devuelve alumnos cuando el texto está vacío. Consultar otras inscripciones vigentes se conserva como una acción secundaria explícita para excepciones todavía no modeladas.
+68. **Ausencia visual, confirmación explícita:** un alumno sin asistencia persistida parte visualmente como `ABSENT`, pero abrir el roster no escribe datos. `Guardar lista` confirma de forma transaccional los estados `PRESENT`, `ABSENT` y `JUSTIFIED`, creando faltantes y actualizando existentes mediante la identidad única `enrollmentId + attendanceDate`.
+69. **Una fuente de asistencia:** el ingreso rápido y el roster leen y modifican el mismo `StudentAttendance`. No se crean sesiones de clase, estadísticas persistidas ni dependencias con cuotas, pagos o deuda.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.

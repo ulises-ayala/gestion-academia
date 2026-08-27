@@ -45,7 +45,9 @@ describe('AttendancesService', () => {
       ),
       list: vi.fn(async () => []),
       roster: vi.fn(async () => []),
+      dayClasses: vi.fn(async () => []),
       quickSearch: vi.fn(async () => []),
+      saveRoster: vi.fn(async () => []),
     };
     enrollmentRepository = {
       findById: vi.fn(async () => enrollment()),
@@ -141,12 +143,36 @@ describe('AttendancesService', () => {
   it('delega quick-search con la consulta normalizada y la fecha seleccionada', async () => {
     const selectedDate = date('2026-08-15');
     await service.quickSearch('  Ana Paz  ', selectedDate);
-    expect(attendanceRepository.quickSearch).toHaveBeenCalledWith('Ana Paz', selectedDate);
+    expect(attendanceRepository.quickSearch).toHaveBeenCalledWith('Ana Paz', selectedDate, false);
   });
 
-  it('quick-search sin texto consulta sin filtro', async () => {
+  it('quick-search sin texto no consulta ni devuelve alumnos arbitrarios', async () => {
     const selectedDate = date('2026-08-15');
-    await service.quickSearch('   ', selectedDate);
-    expect(attendanceRepository.quickSearch).toHaveBeenCalledWith('', selectedDate);
+    expect(service.quickSearch('   ', selectedDate)).toEqual([]);
+    expect(attendanceRepository.quickSearch).not.toHaveBeenCalled();
+  });
+
+  it('delega la vista de clases del día seleccionado', async () => {
+    const selectedDate = date('2026-08-15');
+    await service.dayClasses(selectedDate);
+    expect(attendanceRepository.dayClasses).toHaveBeenCalledWith(selectedDate);
+  });
+
+  it('rechaza inscripciones repetidas antes de guardar un roster', async () => {
+    const enrollmentId = id();
+    expect(() =>
+      service.saveRoster(
+        {
+          classId: id(),
+          date: '2026-08-15',
+          attendances: [
+            { enrollmentId, status: 'PRESENT' },
+            { enrollmentId, status: 'ABSENT' },
+          ],
+        },
+        date('2026-08-15'),
+      ),
+    ).toThrowError(expect.objectContaining({ code: 'VALIDATION_ERROR' }));
+    expect(attendanceRepository.saveRoster).not.toHaveBeenCalled();
   });
 });

@@ -303,6 +303,40 @@ export type AttendanceRosterDto = Readonly<{
   items: readonly AttendanceRosterItemDto[];
 }>;
 
+export type AttendanceDayClassDto = Readonly<{
+  classId: string;
+  className: string;
+  danceType: string;
+  teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
+  room: Readonly<{ id: string; name: string }>;
+  branch: Readonly<{ id: string; name: string }>;
+  startTime: string;
+  endTime: string;
+  enrolledCount: number;
+  presentCount: number;
+}>;
+
+export type AttendanceDayDto = Readonly<{
+  date: string;
+  items: readonly AttendanceDayClassDto[];
+}>;
+
+export type SaveAttendanceRosterDto = Readonly<{
+  classId: string;
+  date: string;
+  attendances: readonly Readonly<{
+    enrollmentId: string;
+    status: AttendanceStatusDto;
+    notes?: string | null;
+  }>[];
+}>;
+
+export type SaveAttendanceRosterResultDto = Readonly<{
+  classId: string;
+  date: string;
+  items: readonly AttendanceDto[];
+}>;
+
 export type AttendanceQuickSearchEnrollmentDto = Readonly<{
   enrollmentId: string;
   classId: string;
