@@ -48,7 +48,9 @@ describe('Attendances authorization boundary', () => {
     const classId = crypto.randomUUID();
     const requests: [string, string][] = [
       ['/attendances', 'GET'],
+      ['/attendances/day?date=2026-08-15', 'GET'],
       [`/attendances/roster?classId=${classId}&date=2026-08-15`, 'GET'],
+      ['/attendances/roster', 'PUT'],
       ['/attendances/quick-search?q=Ana&date=2026-08-15', 'GET'],
       ['/attendances', 'POST'],
       [`/attendances/${attendanceId}`, 'GET'],

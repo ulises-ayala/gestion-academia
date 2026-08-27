@@ -132,10 +132,113 @@
   color: #6d5a5d;
   font-size: 0.9rem;
 }
+.attendance-date-title {
+  margin: 0.35rem 0 0;
+  color: #6d5a5d;
+  font-size: 1.05rem;
+  text-transform: capitalize;
+}
+.attendance-section-heading,
+.attendance-roster-heading,
+.attendance-summary,
+.attendance-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.attendance-section-heading h2,
+.attendance-day-card h3,
+.attendance-day-card p,
+.attendance-roster-heading h2,
+.attendance-roster-heading p {
+  margin: 0;
+}
+.attendance-section-heading {
+  margin: 1.5rem 0 1rem;
+}
+.attendance-day-list {
+  display: grid;
+  gap: 0.85rem;
+}
+.attendance-day-card {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  background: white;
+  border: 1px solid #e7dadd;
+  border-radius: 1rem;
+}
+.attendance-day-card time {
+  color: #8c1730;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+.attendance-day-card p {
+  margin-top: 0.25rem;
+  color: #6d5a5d;
+}
+.attendance-roster-panel {
+  margin-top: 1.25rem;
+}
+.attendance-roster-heading {
+  align-items: flex-start;
+  margin: 1.25rem 0;
+}
+.attendance-summary {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.attendance-summary span {
+  padding: 0.55rem 0.7rem;
+  background: #f7f3f0;
+  border-radius: 0.65rem;
+}
+.attendance-roster-search {
+  display: block;
+  max-width: 28rem;
+  margin-bottom: 1rem;
+}
+.attendance-toggle-row {
+  grid-template-columns: minmax(12rem, 1fr) 8rem auto;
+  align-items: center;
+}
+.attendance-student small {
+  display: block;
+  margin-top: 0.2rem;
+  color: #6d5a5d;
+}
+.attendance-status {
+  text-transform: uppercase;
+}
+.attendance-status.present {
+  color: #267044;
+}
+.attendance-status.absent {
+  color: #8c1730;
+}
+.attendance-status.justified {
+  color: #806315;
+}
+.attendance-row-actions {
+  justify-content: flex-end;
+}
 
 @media (max-width: 850px) {
   .attendance-row {
     grid-template-columns: 1fr 1fr;
+  }
+  .attendance-toggle-row {
+    grid-template-columns: 1fr auto;
+  }
+  .attendance-row-actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+  .attendance-row-actions button {
+    flex: 1;
   }
   .attendance-notes {
     grid-column: 1 / -1;
@@ -162,9 +265,19 @@
     grid-template-columns: 1fr;
   }
   .attendance-tabs,
-  .attendance-student-header {
+  .attendance-student-header,
+  .attendance-section-heading,
+  .attendance-roster-heading,
+  .attendance-day-card {
     align-items: stretch;
     flex-direction: column;
+  }
+  .attendance-day-card {
+    display: flex;
+  }
+  .attendance-summary,
+  .attendance-row-actions {
+    justify-content: stretch;
   }
 }
 * {

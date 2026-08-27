@@ -1,13 +1,15 @@
 'use client';
 
 import type {
+  AttendanceDayClassDto,
+  AttendanceDayDto,
   AttendanceDto,
   AttendanceQuickSearchDto,
   AttendanceRosterDto,
   AttendanceStatusDto,
-  ClassListDto,
+  SaveAttendanceRosterResultDto,
 } from '@academy/contracts';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AdminShell } from '../../components/admin-shell';
 import { RequirePermission } from '../../components/permission-gate';
 import { apiRequest, ApiClientError } from '../../lib/api-client';
@@ -16,97 +18,99 @@ import { businessToday } from '../../lib/dates';
 type AttendanceRow = {
   enrollmentId: string;
   studentName: string;
-  attendanceId?: string;
+  dni: string;
   status: AttendanceStatusDto;
   notes: string;
 };
-type Mode = 'quick' | 'roster';
 
 const statusLabel: Readonly<Record<AttendanceStatusDto, string>> = {
   PRESENT: 'Presente',
   ABSENT: 'Ausente',
   JUSTIFIED: 'Justificada',
 };
-const dayLabel: Readonly<Record<string, string>> = {
-  MONDAY: 'Lunes',
-  TUESDAY: 'Martes',
-  WEDNESDAY: 'Miércoles',
-  THURSDAY: 'Jueves',
-  FRIDAY: 'Viernes',
-  SATURDAY: 'Sábado',
-  SUNDAY: 'Domingo',
-};
 const errorMessage = (error: unknown, fallback: string) =>
   error instanceof ApiClientError ? error.message : fallback;
+const displayDate = (value: string) =>
+  new Intl.DateTimeFormat('es-AR', {
+    weekday: 'long',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date(`${value}T12:00:00`));
+const selectedDayOfWeek = (value: string) =>
+  ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][
+    new Date(`${value}T00:00:00.000Z`).getUTCDay()
+  ];
 
 export default function AttendancesPage() {
-  const [mode, setMode] = useState<Mode>('quick');
   const [date, setDate] = useState(businessToday);
   const [message, setMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
+  const [dayClasses, setDayClasses] = useState<AttendanceDayClassDto[]>([]);
+  const [loadingDay, setLoadingDay] = useState(true);
   const [query, setQuery] = useState('');
+  const [searchOutsideDay, setSearchOutsideDay] = useState(false);
   const [quickResults, setQuickResults] = useState<AttendanceQuickSearchDto['items']>([]);
-  const [quickSearched, setQuickSearched] = useState(false);
   const [quickLoading, setQuickLoading] = useState(false);
   const [savingEnrollmentId, setSavingEnrollmentId] = useState<string | null>(null);
   const searchSequence = useRef(0);
-
-  const [classes, setClasses] = useState<ClassListDto['items']>([]);
-  const [classId, setClassId] = useState('');
+  const [selectedClass, setSelectedClass] = useState<AttendanceDayClassDto | null>(null);
   const [rows, setRows] = useState<AttendanceRow[]>([]);
-  const [loadingClasses, setLoadingClasses] = useState(true);
+  const [rosterFilter, setRosterFilter] = useState('');
   const [loadingRoster, setLoadingRoster] = useState(false);
   const [savingRoster, setSavingRoster] = useState(false);
 
-  useEffect(() => {
-    const loadClasses = async () => {
-      try {
-        const result = await apiRequest<ClassListDto>('/classes?status=ACTIVE&pageSize=100');
-        setClasses(result.items);
-      } catch (error) {
-        setMessage(errorMessage(error, 'No se pudieron cargar las clases.'));
-      } finally {
-        setLoadingClasses(false);
-      }
-    };
-    void loadClasses();
-  }, []);
+  const loadDay = useCallback(async () => {
+    setLoadingDay(true);
+    try {
+      const result = await apiRequest<AttendanceDayDto>(
+        `/attendances/day?date=${encodeURIComponent(date)}`,
+      );
+      setDayClasses([...result.items]);
+    } catch (error) {
+      setDayClasses([]);
+      setMessage(errorMessage(error, 'No se pudieron cargar las clases del día.'));
+    } finally {
+      setLoadingDay(false);
+    }
+  }, [date]);
 
-  const searchStudents = useCallback(async () => {
+  useEffect(() => {
+    setSelectedClass(null);
+    setRows([]);
+    setRosterFilter('');
+    setMessage(null);
+    void loadDay();
+  }, [loadDay]);
+
+  useEffect(() => {
     const normalizedQuery = query.trim();
     const sequence = ++searchSequence.current;
-    setQuickLoading(true);
-    setMessage(null);
-    setSuccess(false);
-    try {
-      const result = await apiRequest<AttendanceQuickSearchDto>(
-        `/attendances/quick-search?q=${encodeURIComponent(normalizedQuery)}&date=${encodeURIComponent(date)}`,
-      );
-      if (sequence !== searchSequence.current) return;
-      setQuickResults(result.items);
-      setQuickSearched(true);
-    } catch (error) {
-      if (sequence !== searchSequence.current) return;
+    if (!normalizedQuery) {
       setQuickResults([]);
-      setQuickSearched(false);
-      setMessage(errorMessage(error, 'No se pudo buscar el alumno.'));
-    } finally {
-      if (sequence === searchSequence.current) setQuickLoading(false);
+      setQuickLoading(false);
+      return;
     }
-  }, [date, query]);
-
-  useEffect(() => {
-    if (mode !== 'quick') return;
-    const timeout = window.setTimeout(() => void searchStudents(), 300);
+    setQuickLoading(true);
+    const timeout = window.setTimeout(async () => {
+      try {
+        const result = await apiRequest<AttendanceQuickSearchDto>(
+          `/attendances/quick-search?q=${encodeURIComponent(normalizedQuery)}&date=${encodeURIComponent(date)}&includeOtherDays=${searchOutsideDay}`,
+        );
+        if (sequence === searchSequence.current) setQuickResults(result.items);
+      } catch (error) {
+        if (sequence === searchSequence.current) {
+          setQuickResults([]);
+          setMessage(errorMessage(error, 'No se pudo buscar el alumno.'));
+        }
+      } finally {
+        if (sequence === searchSequence.current) setQuickLoading(false);
+      }
+    }, 300);
     return () => window.clearTimeout(timeout);
-  }, [mode, searchStudents]);
+  }, [date, query, searchOutsideDay]);
 
-  const updateQuickAttendance = async (
-    enrollmentId: string,
-    attendance: AttendanceDto | null,
-    status: AttendanceStatusDto,
-  ) => {
+  const updateQuickAttendance = async (enrollmentId: string, attendance: AttendanceDto | null) => {
     setSavingEnrollmentId(enrollmentId);
     setMessage(null);
     setSuccess(false);
@@ -114,7 +118,7 @@ export default function AttendancesPage() {
       const saved = attendance
         ? await apiRequest<AttendanceDto>(`/attendances/${attendance.id}`, {
             method: 'PATCH',
-            body: JSON.stringify({ status }),
+            body: JSON.stringify({ status: 'PRESENT' }),
           })
         : await apiRequest<AttendanceDto>('/attendances', {
             method: 'POST',
@@ -130,12 +134,9 @@ export default function AttendancesPage() {
           ),
         })),
       );
+      await loadDay();
       setSuccess(true);
-      setMessage(
-        attendance
-          ? `Asistencia corregida a ${statusLabel[status].toLowerCase()}.`
-          : 'Presente registrada correctamente.',
-      );
+      setMessage('Presente registrada correctamente.');
     } catch (error) {
       setMessage(errorMessage(error, 'No se pudo guardar la asistencia.'));
     } finally {
@@ -143,76 +144,86 @@ export default function AttendancesPage() {
     }
   };
 
-  const loadRoster = useCallback(async () => {
-    if (!classId || !date) {
-      setRows([]);
-      return;
-    }
-    setLoadingRoster(true);
-    setMessage(null);
-    setSuccess(false);
-    try {
-      const result = await apiRequest<AttendanceRosterDto>(
-        `/attendances/roster?classId=${encodeURIComponent(classId)}&date=${encodeURIComponent(date)}`,
-      );
-      setRows(
-        result.items.map((item) => ({
-          enrollmentId: item.enrollmentId,
-          studentName: `${item.student.lastName}, ${item.student.firstName}`,
-          ...(item.attendance ? { attendanceId: item.attendance.id } : {}),
-          status: item.attendance?.status ?? 'PRESENT',
-          notes: item.attendance?.notes ?? '',
-        })),
-      );
-    } catch (error) {
-      setRows([]);
-      setMessage(errorMessage(error, 'No se pudo cargar el listado de asistencia.'));
-    } finally {
-      setLoadingRoster(false);
-    }
-  }, [classId, date]);
+  const loadRoster = useCallback(
+    async (dayClass: AttendanceDayClassDto) => {
+      setSelectedClass(dayClass);
+      setRosterFilter('');
+      setLoadingRoster(true);
+      setMessage(null);
+      try {
+        const result = await apiRequest<AttendanceRosterDto>(
+          `/attendances/roster?classId=${encodeURIComponent(dayClass.classId)}&date=${encodeURIComponent(date)}`,
+        );
+        setRows(
+          result.items.map((item) => ({
+            enrollmentId: item.enrollmentId,
+            studentName: `${item.student.firstName} ${item.student.lastName}`,
+            dni: item.student.dni,
+            status: item.attendance?.status ?? 'ABSENT',
+            notes: item.attendance?.notes ?? '',
+          })),
+        );
+      } catch (error) {
+        setRows([]);
+        setMessage(errorMessage(error, 'No se pudo cargar el listado de asistencia.'));
+      } finally {
+        setLoadingRoster(false);
+      }
+    },
+    [date],
+  );
 
-  useEffect(() => {
-    if (mode === 'roster') void loadRoster();
-  }, [loadRoster, mode]);
-
-  const updateRow = (enrollmentId: string, change: Partial<AttendanceRow>) =>
+  const updateRow = (enrollmentId: string, status: AttendanceStatusDto) =>
     setRows((current) =>
-      current.map((row) => (row.enrollmentId === enrollmentId ? { ...row, ...change } : row)),
+      current.map((row) => (row.enrollmentId === enrollmentId ? { ...row, status } : row)),
     );
 
   async function saveRoster() {
+    if (!selectedClass) return;
     setSavingRoster(true);
     setMessage(null);
     setSuccess(false);
     try {
-      await Promise.all(
-        rows.map((row) =>
-          row.attendanceId
-            ? apiRequest<AttendanceDto>(`/attendances/${row.attendanceId}`, {
-                method: 'PATCH',
-                body: JSON.stringify({ status: row.status, notes: row.notes || null }),
-              })
-            : apiRequest<AttendanceDto>('/attendances', {
-                method: 'POST',
-                body: JSON.stringify({
-                  enrollmentId: row.enrollmentId,
-                  attendanceDate: date,
-                  status: row.status,
-                  notes: row.notes || null,
-                }),
-              }),
-        ),
-      );
-      await loadRoster();
+      await apiRequest<SaveAttendanceRosterResultDto>('/attendances/roster', {
+        method: 'PUT',
+        body: JSON.stringify({
+          classId: selectedClass.classId,
+          date,
+          attendances: rows.map(({ enrollmentId, status, notes }) => ({
+            enrollmentId,
+            status,
+            notes: notes || null,
+          })),
+        }),
+      });
+      await Promise.all([loadRoster(selectedClass), loadDay()]);
       setSuccess(true);
-      setMessage('Asistencias guardadas correctamente.');
+      setMessage('Lista guardada correctamente.');
     } catch (error) {
-      setMessage(errorMessage(error, 'No se pudieron guardar las asistencias.'));
+      setMessage(errorMessage(error, 'No se pudo guardar la lista.'));
     } finally {
       setSavingRoster(false);
     }
   }
+
+  const counts = useMemo(
+    () => ({
+      PRESENT: rows.filter((row) => row.status === 'PRESENT').length,
+      ABSENT: rows.filter((row) => row.status === 'ABSENT').length,
+      JUSTIFIED: rows.filter((row) => row.status === 'JUSTIFIED').length,
+    }),
+    [rows],
+  );
+  const visibleRows = useMemo(() => {
+    const filter = rosterFilter.trim().toLocaleLowerCase('es');
+    if (!filter) return rows;
+    const digits = filter.replace(/\D/g, '');
+    return rows.filter(
+      (row) =>
+        row.studentName.toLocaleLowerCase('es').includes(filter) ||
+        (digits.length > 0 && row.dni.replace(/\D/g, '').includes(digits)),
+    );
+  }, [rosterFilter, rows]);
 
   return (
     <AdminShell>
@@ -221,70 +232,60 @@ export default function AttendancesPage() {
           <header className="attendance-header">
             <p className="attendance-eyebrow">Gestión de asistencias</p>
             <h1>Asistencias</h1>
+            <p className="attendance-date-title">{displayDate(date)}</p>
           </header>
+          <section className="attendance-filters attendance-quick-filters">
+            <label className="attendance-field">
+              Buscar alumno de este día
+              <input
+                type="search"
+                value={query}
+                maxLength={100}
+                placeholder="Nombre, apellido o DNI"
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </label>
+            <label className="attendance-field">
+              Fecha
+              <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+            </label>
+            <div className="attendance-search-status" aria-live="polite">
+              {quickLoading ? 'Buscando...' : 'La búsqueda se actualiza automáticamente.'}
+            </div>
+          </section>
 
-          <div className="attendance-tabs" role="tablist" aria-label="Modo de asistencia">
-            <button
-              type="button"
-              className={mode === 'quick' ? '' : 'secondary'}
-              aria-selected={mode === 'quick'}
-              onClick={() => setMode('quick')}
-            >
-              Ingreso rápido
-            </button>
-            <button
-              type="button"
-              className={mode === 'roster' ? '' : 'secondary'}
-              aria-selected={mode === 'roster'}
-              onClick={() => setMode('roster')}
-            >
-              Pasar lista
-            </button>
-          </div>
-
-          {mode === 'quick' ? (
-            <>
-              <div className="attendance-filters attendance-quick-filters">
-                <label className="attendance-field">
-                  Buscar alumno
-                  <input
-                    type="search"
-                    value={query}
-                    maxLength={100}
-                    placeholder="Nombre, apellido o DNI"
-                    onChange={(event) => setQuery(event.target.value)}
-                  />
-                </label>
-                <label className="attendance-field">
-                  Fecha
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(event) => setDate(event.target.value)}
-                  />
-                </label>
-                <div className="attendance-search-status" aria-live="polite">
-                  {quickLoading ? 'Buscando...' : 'La lista se actualiza automáticamente.'}
-                </div>
+          {query.trim() && (
+            <section className="attendance-search-section">
+              <div className="attendance-section-heading">
+                <h2>Resultados</h2>
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => setSearchOutsideDay((current) => !current)}
+                >
+                  {searchOutsideDay
+                    ? 'Buscar solo en clases de este día'
+                    : 'Buscar fuera de este día'}
+                </button>
               </div>
-
-              {quickSearched && quickResults.length === 0 && (
-                <p className="attendance-empty">No se encontraron alumnos.</p>
+              {!quickLoading && quickResults.length === 0 && (
+                <p className="attendance-empty">No se encontraron alumnos en este alcance.</p>
               )}
               <div className="attendance-quick-results">
-                {quickResults.map((item) => (
-                  <section className="attendance-panel" key={item.student.id}>
-                    <header className="attendance-student-header">
-                      <h2>
-                        {item.student.firstName} {item.student.lastName}
-                      </h2>
-                      <span>DNI {item.student.dni}</span>
-                    </header>
-                    {item.enrollments.length === 0 ? (
-                      <p>El alumno no tiene clases asignadas para esta fecha.</p>
-                    ) : (
+                {quickResults.map((item) => {
+                  const enrollments = searchOutsideDay
+                    ? item.enrollments
+                    : item.enrollments.filter((enrollment) => enrollment.scheduledOnSelectedDay);
+                  return (
+                    <section className="attendance-panel" key={item.student.id}>
+                      <header className="attendance-student-header">
+                        <h2>
+                          {item.student.firstName} {item.student.lastName}
+                        </h2>
+                        <span>DNI {item.student.dni}</span>
+                      </header>
                       <div className="attendance-class-list">
-                        {item.enrollments.map((enrollment) => (
+                        {enrollments.map((enrollment) => (
                           <article
                             className={`attendance-class-card ${enrollment.scheduledOnSelectedDay ? 'suggested' : ''}`}
                             key={enrollment.enrollmentId}
@@ -292,44 +293,23 @@ export default function AttendancesPage() {
                             <div>
                               <h3>{enrollment.className}</h3>
                               <p>
-                                Profesor: {enrollment.teacher.firstName}{' '}
-                                {enrollment.teacher.lastName}
+                                Prof. {enrollment.teacher.firstName} {enrollment.teacher.lastName}
                               </p>
-                              {enrollment.schedules.map((schedule) => (
-                                <p key={schedule.id}>
-                                  {dayLabel[schedule.dayOfWeek]} {schedule.startTime}–
-                                  {schedule.endTime} · {schedule.roomName}
-                                </p>
-                              ))}
-                              {enrollment.scheduledOnSelectedDay && (
-                                <span className="attendance-suggestion">
-                                  Horario del día seleccionado
-                                </span>
-                              )}
+                              {enrollment.schedules
+                                .filter(
+                                  (schedule) =>
+                                    searchOutsideDay ||
+                                    schedule.dayOfWeek === selectedDayOfWeek(date),
+                                )
+                                .map((schedule) => (
+                                  <p key={schedule.id}>
+                                    {schedule.startTime}–{schedule.endTime} · {schedule.roomName}
+                                  </p>
+                                ))}
                             </div>
                             <div className="attendance-quick-action">
-                              {enrollment.attendance ? (
-                                <>
-                                  <strong>
-                                    Estado actual: {statusLabel[enrollment.attendance.status]}
-                                  </strong>
-                                  <select
-                                    aria-label={`Corregir asistencia de ${enrollment.className}`}
-                                    value={enrollment.attendance.status}
-                                    disabled={savingEnrollmentId === enrollment.enrollmentId}
-                                    onChange={(event) =>
-                                      void updateQuickAttendance(
-                                        enrollment.enrollmentId,
-                                        enrollment.attendance,
-                                        event.target.value as AttendanceStatusDto,
-                                      )
-                                    }
-                                  >
-                                    <option value="PRESENT">Presente</option>
-                                    <option value="ABSENT">Ausente</option>
-                                    <option value="JUSTIFIED">Justificada</option>
-                                  </select>
-                                </>
+                              {enrollment.attendance?.status === 'PRESENT' ? (
+                                <strong className="attendance-status present">Presente</strong>
                               ) : (
                                 <button
                                   type="button"
@@ -337,109 +317,160 @@ export default function AttendancesPage() {
                                   onClick={() =>
                                     void updateQuickAttendance(
                                       enrollment.enrollmentId,
-                                      null,
-                                      'PRESENT',
+                                      enrollment.attendance,
                                     )
                                   }
                                 >
                                   {savingEnrollmentId === enrollment.enrollmentId
                                     ? 'Registrando...'
-                                    : 'Registrar presente'}
+                                    : '✓ Registrar presente'}
                                 </button>
                               )}
                             </div>
                           </article>
                         ))}
                       </div>
-                    )}
-                  </section>
+                    </section>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {!query.trim() && !selectedClass && (
+            <section>
+              <div className="attendance-section-heading">
+                <h2>Clases del día</h2>
+              </div>
+              {loadingDay && <p>Cargando clases...</p>}
+              {!loadingDay && dayClasses.length === 0 && (
+                <p className="attendance-empty">No hay clases programadas para este día.</p>
+              )}
+              <div className="attendance-day-list">
+                {dayClasses.map((dayClass) => (
+                  <article
+                    className="attendance-day-card"
+                    key={`${dayClass.classId}-${dayClass.startTime}-${dayClass.room.id}`}
+                  >
+                    <time>{dayClass.startTime}</time>
+                    <div>
+                      <h3>{dayClass.className}</h3>
+                      <p>
+                        {dayClass.danceType} · Prof. {dayClass.teacher.firstName}{' '}
+                        {dayClass.teacher.lastName}
+                      </p>
+                      <p>
+                        {dayClass.room.name} · {dayClass.branch.name} · {dayClass.startTime}–
+                        {dayClass.endTime}
+                      </p>
+                      <strong>
+                        {dayClass.enrolledCount} alumnos · {dayClass.presentCount} presentes
+                      </strong>
+                    </div>
+                    <button type="button" onClick={() => void loadRoster(dayClass)}>
+                      Pasar lista
+                    </button>
+                  </article>
                 ))}
               </div>
-            </>
-          ) : (
-            <>
-              <section className="attendance-filters">
-                <label className="attendance-field">
-                  Clase
-                  <select
-                    value={classId}
-                    disabled={loadingClasses || savingRoster}
-                    onChange={(event) => setClassId(event.target.value)}
-                  >
-                    <option value="">Seleccionar clase</option>
-                    {classes.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="attendance-field">
-                  Fecha
-                  <input
-                    type="date"
-                    value={date}
-                    disabled={savingRoster}
-                    onChange={(event) => setDate(event.target.value)}
-                  />
-                </label>
-              </section>
+            </section>
+          )}
 
+          {selectedClass && (
+            <section className="attendance-panel attendance-roster-panel">
+              <button type="button" className="secondary" onClick={() => setSelectedClass(null)}>
+                ← Volver a clases del día
+              </button>
+              <div className="attendance-roster-heading">
+                <div>
+                  <h2>{selectedClass.className}</h2>
+                  <p>
+                    {selectedClass.startTime}–{selectedClass.endTime} · Prof.{' '}
+                    {selectedClass.teacher.firstName} {selectedClass.teacher.lastName}
+                  </p>
+                </div>
+                <div className="attendance-summary">
+                  <span>
+                    Inscritos <strong>{rows.length}</strong>
+                  </span>
+                  <span>
+                    Presentes <strong>{counts.PRESENT}</strong>
+                  </span>
+                  <span>
+                    Ausentes <strong>{counts.ABSENT}</strong>
+                  </span>
+                  <span>
+                    Justificados <strong>{counts.JUSTIFIED}</strong>
+                  </span>
+                </div>
+              </div>
+              <label className="attendance-field attendance-roster-search">
+                Buscar dentro de esta clase
+                <input
+                  type="search"
+                  value={rosterFilter}
+                  placeholder="Nombre o DNI"
+                  onChange={(event) => setRosterFilter(event.target.value)}
+                />
+              </label>
               {loadingRoster && <p>Cargando alumnos...</p>}
-              {!loadingRoster && classId && rows.length === 0 && !message && (
+              {!loadingRoster && rows.length === 0 && (
                 <p className="attendance-empty">
                   No hay alumnos vigentes en esta clase para la fecha.
                 </p>
               )}
-              {!loadingRoster && rows.length > 0 && (
-                <section className="attendance-panel">
-                  <div className="attendance-list">
-                    {rows.map((row) => (
-                      <article className="attendance-row" key={row.enrollmentId}>
-                        <div className="attendance-student">
-                          <strong>{row.studentName}</strong>
-                        </div>
-                        <label className="attendance-field">
-                          Estado
-                          <select
-                            value={row.status}
-                            disabled={savingRoster}
-                            onChange={(event) =>
-                              updateRow(row.enrollmentId, {
-                                status: event.target.value as AttendanceStatusDto,
-                              })
-                            }
-                          >
-                            <option value="PRESENT">Presente</option>
-                            <option value="ABSENT">Ausente</option>
-                            <option value="JUSTIFIED">Justificada</option>
-                          </select>
-                        </label>
-                        <label className="attendance-field attendance-notes">
-                          Observación
-                          <input
-                            type="text"
-                            maxLength={1000}
-                            value={row.notes}
-                            disabled={savingRoster}
-                            onChange={(event) =>
-                              updateRow(row.enrollmentId, { notes: event.target.value })
-                            }
-                          />
-                        </label>
-                      </article>
-                    ))}
-                  </div>
-                  <div className="attendance-actions">
-                    <button type="button" disabled={savingRoster} onClick={() => void saveRoster()}>
-                      {savingRoster ? 'Guardando...' : 'Guardar asistencias'}
-                    </button>
-                  </div>
-                </section>
+              <div className="attendance-list">
+                {visibleRows.map((row) => (
+                  <article className="attendance-row attendance-toggle-row" key={row.enrollmentId}>
+                    <div className="attendance-student">
+                      <div>
+                        <strong>{row.studentName}</strong>
+                        <small>DNI {row.dni}</small>
+                      </div>
+                    </div>
+                    <strong className={`attendance-status ${row.status.toLowerCase()}`}>
+                      {statusLabel[row.status]}
+                    </strong>
+                    <div className="attendance-row-actions">
+                      <button
+                        type="button"
+                        className={row.status === 'PRESENT' ? 'secondary' : ''}
+                        disabled={savingRoster}
+                        onClick={() =>
+                          updateRow(
+                            row.enrollmentId,
+                            row.status === 'PRESENT' ? 'ABSENT' : 'PRESENT',
+                          )
+                        }
+                      >
+                        {row.status === 'PRESENT' ? 'Desmarcar' : '✓ Presente'}
+                      </button>
+                      <button
+                        type="button"
+                        className="secondary"
+                        disabled={savingRoster}
+                        onClick={() =>
+                          updateRow(
+                            row.enrollmentId,
+                            row.status === 'JUSTIFIED' ? 'ABSENT' : 'JUSTIFIED',
+                          )
+                        }
+                      >
+                        {row.status === 'JUSTIFIED' ? 'Quitar justificación' : 'Justificar'}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {rows.length > 0 && (
+                <div className="attendance-actions">
+                  <button type="button" disabled={savingRoster} onClick={() => void saveRoster()}>
+                    {savingRoster ? 'Guardando...' : 'Guardar lista'}
+                  </button>
+                </div>
               )}
-            </>
+            </section>
           )}
-
           {message && (
             <p className="attendance-message" role={success ? 'status' : 'alert'}>
               {message}
