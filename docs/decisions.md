@@ -115,6 +115,13 @@
 68. **Ausencia visual, confirmación explícita:** un alumno sin asistencia persistida parte visualmente como `ABSENT`, pero abrir el roster no escribe datos. `Guardar lista` confirma de forma transaccional los estados `PRESENT`, `ABSENT` y `JUSTIFIED`, creando faltantes y actualizando existentes mediante la identidad única `enrollmentId + attendanceDate`.
 69. **Una fuente de asistencia:** el ingreso rápido y el roster leen y modifican el mismo `StudentAttendance`. No se crean sesiones de clase, estadísticas persistidas ni dependencias con cuotas, pagos o deuda.
 
+## Decisiones de conflictos horarios de Inscripciones
+
+70. **Conflicto semanal del alumno:** el backend rechaza una inscripción cuando su clase y otra inscripción temporalmente coexistente del alumno tienen al menos dos horarios activos del mismo día que se superponen. Los intervalos son semiabiertos, por lo que horarios contiguos y horarios de días distintos se permiten; todas las combinaciones de horarios se evalúan.
+71. **Vigencia histórica de la inscripción:** la búsqueda de conflictos no depende solamente de `Enrollment.status`. Una inscripción finalizada participa si `endDate >= startDate` de la nueva inscripción; una finalizada antes no bloquea. La nueva inscripción no tiene fecha final y se considera abierta.
+72. **Autoridad y concurrencia:** el alta adquiere advisory locks transaccionales en orden determinístico para la clase y el alumno. Esto conserva la coordinación de cupo por clase y serializa dos altas simultáneas del mismo alumno antes de consultar conflictos. La API responde `ENROLLMENT_SCHEDULE_CONFLICT` con información mínima de la clase y horario conflictivos.
+73. **Límite histórico de horarios:** `ClassSchedule` conserva versiones inactivas, pero no registra desde/hasta de cada programación. Por lo tanto, la regla compara los horarios actualmente `ACTIVE` de las clases y no puede reconstruir qué versión estaba vigente durante períodos históricos. Resolver esa reconstrucción requiere un modelado separado y no forma parte de este incremento.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
@@ -131,7 +138,6 @@
 - Excepciones manuales de solapamiento, vigencias estacionales, clases canceladas, feriados y reemplazos.
 - Tolerancias, pausas y horas docentes liquidables.
 - Método de acceso y conducta ante deuda o vencimiento.
-- Conflictos de horario entre clases de un alumno: impedir, advertir o permitir.
 - Relación entre cupo de clase y capacidad de los salones.
 - Recuperos y cambios de clase.
 - Relación entre frecuencia semanal y tarifa.
