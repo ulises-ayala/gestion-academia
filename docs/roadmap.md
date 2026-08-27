@@ -6,7 +6,7 @@
 4. **Tarifas y cuotas v1 (terminado):** tarifa simple por clase, cuota mensual manual por inscripción, vencimiento 1–10 y snapshot monetario; prorrateos, descuentos y promociones siguen pendientes.
 5. **Usuarios y permisos v1 (terminado):** autorización por capacidad, navegación restringida y administración de cuentas según Admisión, Administración y Dirección.
 6. **Pagos y caja:** parciales, imputaciones, medios y cierres según reglas confirmadas.
-7. **Asistencias y acceso:** alumnos/docentes, búsqueda y auditoría; sin hardware.
+7. **Asistencias de alumnos v1 (terminado):** roster por vigencia, registro/corrección e historial. Asistencia docente, reglas especiales y acceso quedan pendientes.
 8. **Liquidación:** motor configurable después de validar fórmula y modalidades.
 9. **Reportes y robustez:** estadísticas, observabilidad, backups y seguridad.
 10. **Canal alumno:** nueva interfaz sobre la misma API e integraciones aisladas.

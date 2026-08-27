@@ -9,6 +9,7 @@ import type {
   StudentPersistenceInput,
   StudentRepository,
 } from '../application/student.repository';
+import { buildStudentSearchWhere } from './prisma-student-search';
 
 const toDomain = (student: Student): StudentData => ({
   ...student,
@@ -72,25 +73,7 @@ export class PrismaStudentRepository implements StudentRepository {
   private buildWhere(query: StudentListQuery): Prisma.StudentWhereInput {
     const q = query.q?.trim();
     if (!q) return query.status ? { status: query.status } : {};
-    const terms = q.split(/\s+/).filter(Boolean);
-    const digitQuery = /^[\d.\-\s()+]+$/.test(q) ? q.replace(/\D/g, '') : '';
-    const textMode = 'insensitive' as const;
-    const search: Prisma.StudentWhereInput = {
-      OR: [
-        { firstName: { contains: q, mode: textMode } },
-        { lastName: { contains: q, mode: textMode } },
-        { phone: { contains: q, mode: textMode } },
-        {
-          AND: terms.map((term) => ({
-            OR: [
-              { firstName: { contains: term, mode: textMode } },
-              { lastName: { contains: term, mode: textMode } },
-            ],
-          })),
-        },
-        ...(digitQuery ? [{ dni: { contains: digitQuery } }] : []),
-      ],
-    };
+    const search = buildStudentSearchWhere(q);
     return query.status ? { status: query.status, AND: [search] } : search;
   }
 }

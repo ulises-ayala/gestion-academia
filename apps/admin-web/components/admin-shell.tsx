@@ -18,6 +18,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     { href: '/branches', label: 'Sucursales', permission: 'offering:manage' },
     { href: '/rooms', label: 'Salones', permission: 'offering:manage' },
     { href: '/tariffs', label: 'Tarifas', permission: 'tariffs:read' },
+    { href: '/attendances', label: 'Asistencias', permission: 'attendance:manage' },
     { href: '/users', label: 'Usuarios', permission: 'users:manage' },
   ];
   return (

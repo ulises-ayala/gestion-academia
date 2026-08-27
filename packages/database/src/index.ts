@@ -6,6 +6,7 @@ export {
   DayOfWeek,
   EnrollmentStatus,
   MonthlyChargeStatus,
+  AttendanceStatus,
   type Student,
   type Teacher,
   type AdminUser,
@@ -17,4 +18,5 @@ export {
   type Enrollment,
   type Tariff,
   type MonthlyCharge,
+  type StudentAttendance,
 } from '@prisma/client';

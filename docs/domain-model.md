@@ -7,7 +7,7 @@
 - **Inscripciones:** `Enrollment` une `Student` y `Class` con vigencia y estado.
 - **Facturación:** `Tariff` y `MonthlyCharge`; pagos, imputaciones y descuentos quedan diferidos.
 - **Caja:** `CashRegister`, `CashSession`, `CashMovement`, `PaymentMethod`, `MovementCategory`.
-- **Asistencia:** `StudentAttendance`, `TeacherAttendance`.
+- **Asistencia:** `StudentAttendance` pertenece a una `Enrollment`; asistencia docente queda diferida.
 - **Acceso:** `AccessAttempt` registra decisión/mecanismo sin acoplar hardware.
 - **Liquidaciones:** `SettlementPolicy`, `TeacherSettlement`, `SettlementLine`; sin fórmula hasta relevarla.
 
@@ -23,9 +23,7 @@ erDiagram
   STUDENT ||--o{ MONTHLY_CHARGE : adeuda
   ENROLLMENT ||--o{ MONTHLY_CHARGE : origina
   TARIFF ||--o{ MONTHLY_CHARGE : valoriza
-  CLASS ||--o{ STUDENT_ATTENDANCE : registra
-  STUDENT ||--o{ STUDENT_ATTENDANCE : asiste
-  TEACHER ||--o{ TEACHER_ATTENDANCE : registra
+  ENROLLMENT ||--o{ STUDENT_ATTENDANCE : registra
   ADMIN_USER ||--o{ CASH_MOVEMENT : carga
   TEACHER ||--o{ TEACHER_SETTLEMENT : liquida
 ```
@@ -76,3 +74,17 @@ erDiagram
 - Admisión conserva la operación cotidiana de alumnos/inscripciones y lectura necesaria de oferta, tarifas y cuotas; no administra configuración, caja, usuarios, reportes ni liquidaciones.
 - Administración gestiona configuración y usuarios de Admisión/Administración, pero no puede acceder a cuentas de Dirección ni aprobar liquidaciones.
 - Dirección tiene el nivel completo. El sistema impide auto-desactivación y garantiza al menos una cuenta de Dirección activa.
+
+## Asistencias de alumnos v1
+
+- `StudentAttendance` pertenece a una `Enrollment`, no directamente a alumno, clase u horario.
+- Existe como máximo una asistencia por inscripción y fecha mediante la unicidad `enrollmentId + attendanceDate`.
+- Los estados admitidos son `PRESENT`, `ABSENT` y `JUSTIFIED`.
+- La fecha debe pertenecer a la vigencia real de la inscripción: desde `startDate` hasta `endDate` inclusive cuando exista.
+- El roster de una clase se calcula para la fecha consultada. Incluye inscripciones con `startDate <= fecha` y `endDate` nula o mayor/igual a la fecha, aunque actualmente estén `ENDED`.
+- La asistencia existente se devuelve junto con cada alumno del roster y puede corregirse modificando solamente estado y observación.
+- No existe borrado físico. Finalizar posteriormente una inscripción no elimina ni oculta su historial válido.
+- La interfaz ofrece dos flujos sobre el mismo modelo: pasar lista por clase e ingreso rápido buscando al alumno por DNI o nombre.
+- En ingreso rápido, `Student` identifica a la persona y cada resultado de `Enrollment` identifica la clase concreta sobre la que puede registrarse asistencia. Varias inscripciones vigentes se muestran por separado.
+- Los horarios del día seleccionado sirven para ordenar y sugerir una clase, sin excluir otras inscripciones vigentes ni formar parte de la identidad de `StudentAttendance`.
+- Asistencias no consulta cuotas, deuda ni vencimientos. El futuro contexto de Acceso podrá reutilizar la búsqueda, pero sus dispositivos y políticas permanecen fuera de este módulo.
