@@ -1,5 +1,6 @@
 import type { ClassScheduleInputDto, CreateClassDto, DayOfWeekDto } from '@academy/contracts';
 import { DomainError } from '../../shared/domain/domain-error';
+import { schedulesOverlap } from '../../shared/domain/schedule-overlap';
 const days: DayOfWeekDto[] = [
   'MONDAY',
   'TUESDAY',
@@ -79,7 +80,7 @@ export const validateClass = (
     for (let right = left + 1; right < schedules.length; right += 1) {
       const a = schedules[left]!;
       const b = schedules[right]!;
-      if (a.dayOfWeek === b.dayOfWeek && a.startTime < b.endTime && a.endTime > b.startTime)
+      if (schedulesOverlap(a, b))
         throw new DomainError(
           a.roomId === b.roomId ? 'ROOM_SCHEDULE_CONFLICT' : 'TEACHER_SCHEDULE_CONFLICT',
           a.roomId === b.roomId

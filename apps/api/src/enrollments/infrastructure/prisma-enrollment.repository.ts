@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { EnrollmentQuery, EnrollmentRepository } from '../application/enrollment.repository';
+import { findEnrollmentScheduleConflict } from '../domain/enrollment-schedule-conflict';
 
 const include = {
   student: {
@@ -90,7 +91,9 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
       try {
         return await this.prisma.$transaction(
           async (tx) => {
-            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${input.classId}))`;
+            const lockKeys = [input.classId, `student:${input.studentId}`].sort();
+            for (const lockKey of lockKeys)
+              await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
             const student = await tx.student.findUnique({
               where: { id: input.studentId },
               select: { status: true },
@@ -103,7 +106,14 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
               );
             const academicClass = await tx.academyClass.findUnique({
               where: { id: input.classId },
-              select: { status: true, capacity: true },
+              select: {
+                status: true,
+                capacity: true,
+                schedules: {
+                  where: { status: 'ACTIVE' },
+                  select: { dayOfWeek: true, startTime: true, endTime: true },
+                },
+              },
             });
             if (!academicClass) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
             if (academicClass.status !== 'ACTIVE')
@@ -119,6 +129,46 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
               throw new DomainError(
                 'ENROLLMENT_ALREADY_ACTIVE',
                 'El alumno ya tiene una inscripción activa en esta clase.',
+              );
+            const potentiallyConcurrentEnrollments = await tx.enrollment.findMany({
+              where: {
+                studentId: input.studentId,
+                OR: [{ endDate: null }, { endDate: { gte: input.startDate } }],
+              },
+              select: {
+                class: {
+                  select: {
+                    id: true,
+                    name: true,
+                    schedules: {
+                      where: { status: 'ACTIVE' },
+                      select: { dayOfWeek: true, startTime: true, endTime: true },
+                    },
+                  },
+                },
+              },
+            });
+            const conflict = findEnrollmentScheduleConflict(
+              academicClass.schedules.map((schedule) => ({
+                dayOfWeek: schedule.dayOfWeek,
+                startTime: time(schedule.startTime),
+                endTime: time(schedule.endTime),
+              })),
+              potentiallyConcurrentEnrollments.map((enrollment) => ({
+                classId: enrollment.class.id,
+                className: enrollment.class.name,
+                schedules: enrollment.class.schedules.map((schedule) => ({
+                  dayOfWeek: schedule.dayOfWeek,
+                  startTime: time(schedule.startTime),
+                  endTime: time(schedule.endTime),
+                })),
+              })),
+            );
+            if (conflict)
+              throw new DomainError(
+                'ENROLLMENT_SCHEDULE_CONFLICT',
+                `El alumno ya está inscripto en ${conflict.className}, que se superpone con este horario.`,
+                conflict,
               );
             const activeCount = await tx.enrollment.count({
               where: { classId: input.classId, status: 'ACTIVE' },

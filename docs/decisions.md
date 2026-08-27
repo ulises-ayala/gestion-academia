@@ -111,8 +111,30 @@
 ## Decisiones de datos de desarrollo
 
 66. **Seed local explícito y protegido:** los datos ficticios se cargan únicamente mediante `npm run db:seed`. El comando exige `NODE_ENV=development`, rechaza CI y limita `DATABASE_URL` a PostgreSQL local con base `academy`; no forma parte de builds, migraciones ni despliegues.
+
 67. **Identidades reservadas e idempotencia:** las entidades del dataset usan identificadores UUID reservados o claves naturales únicas y se actualizan mediante `upsert`. El seed no vacía tablas ni borra registros manuales, y puede repetirse sin duplicar el conjunto administrado.
+
 68. **Fechas útiles para QA:** el día actual, el período de cuota vigente y los escenarios históricos se calculan en `America/Argentina/Buenos_Aires`. Esto mantiene vigentes los casos de roster, asistencia y cuotas sin congelarlos a una fecha del equipo que ejecuta el comando.
+
+## Decisiones de flujo diario de Asistencias
+
+69. **Jornada como entrada principal:** Asistencias se organiza alrededor de la fecha seleccionada. La pantalla inicial consulta las clases con un horario activo cuyo día semanal coincide con esa fecha, ordenadas por hora de inicio; la cantidad de alumnos usa la vigencia histórica de cada inscripción y no solamente su estado actual.
+
+70. **Búsqueda contextual:** la búsqueda principal exige una inscripción vigente en una clase programada para el día seleccionado y no devuelve alumnos cuando el texto está vacío. Consultar otras inscripciones vigentes se conserva como una acción secundaria explícita para excepciones todavía no modeladas.
+
+71. **Ausencia visual, confirmación explícita:** un alumno sin asistencia persistida parte visualmente como `ABSENT`, pero abrir el roster no escribe datos. `Guardar lista` confirma de forma transaccional los estados `PRESENT`, `ABSENT` y `JUSTIFIED`, creando faltantes y actualizando existentes mediante la identidad única `enrollmentId + attendanceDate`.
+
+72. **Una fuente de asistencia:** el ingreso rápido y el roster leen y modifican el mismo `StudentAttendance`. No se crean sesiones de clase, estadísticas persistidas ni dependencias con cuotas, pagos o deuda.
+
+## Decisiones de conflictos horarios de Inscripciones
+
+73. **Conflicto semanal del alumno:** el backend rechaza una inscripción cuando su clase y otra inscripción temporalmente coexistente del alumno tienen al menos dos horarios activos del mismo día que se superponen. Los intervalos son semiabiertos, por lo que horarios contiguos y horarios de días distintos se permiten; todas las combinaciones de horarios se evalúan.
+
+74. **Vigencia histórica de la inscripción:** la búsqueda de conflictos no depende solamente de `Enrollment.status`. Una inscripción finalizada participa si `endDate >= startDate` de la nueva inscripción; una finalizada antes no bloquea. La nueva inscripción no tiene fecha final y se considera abierta.
+
+75. **Autoridad y concurrencia:** el alta adquiere advisory locks transaccionales en orden determinístico para la clase y el alumno. Esto conserva la coordinación de cupo por clase y serializa dos altas simultáneas del mismo alumno antes de consultar conflictos. La API responde `ENROLLMENT_SCHEDULE_CONFLICT` con información mínima de la clase y horario conflictivos.
+
+76. **Límite histórico de horarios:** `ClassSchedule` conserva versiones inactivas, pero no registra desde/hasta de cada programación. Por lo tanto, la regla compara los horarios actualmente `ACTIVE` de las clases y no puede reconstruir qué versión estaba vigente durante períodos históricos. Resolver esa reconstrucción requiere un modelado separado y no forma parte de este incremento.
 
 ## Reglas ambiguas: no implementar
 
@@ -130,7 +152,6 @@
 - Excepciones manuales de solapamiento, vigencias estacionales, clases canceladas, feriados y reemplazos.
 - Tolerancias, pausas y horas docentes liquidables.
 - Método de acceso y conducta ante deuda o vencimiento.
-- Conflictos de horario entre clases de un alumno: impedir, advertir o permitir.
 - Relación entre cupo de clase y capacidad de los salones.
 - Recuperos y cambios de clase.
 - Relación entre frecuencia semanal y tarifa.

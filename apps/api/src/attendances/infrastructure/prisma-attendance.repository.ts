@@ -8,6 +8,7 @@ import type {
   AttendanceListFilters,
   AttendancePersistenceInput,
   AttendanceRepository,
+  AttendanceRosterSaveItem,
   AttendanceUpdateInput,
 } from '../application/attendance.repository';
 import type { AttendanceData } from '../domain/attendance';
@@ -97,20 +98,98 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
     }));
   }
 
-  async quickSearch(query: string, attendanceDate: Date) {
-    const selectedDay = weekdays[attendanceDate.getUTCDay()];
+  async dayClasses(attendanceDate: Date) {
+    const selectedDay = weekdays[attendanceDate.getUTCDay()]!;
+    const classes = await this.prisma.academyClass.findMany({
+      where: {
+        schedules: { some: { status: 'ACTIVE', dayOfWeek: selectedDay } },
+      },
+      select: {
+        id: true,
+        name: true,
+        danceType: { select: { name: true } },
+        teacher: { select: { id: true, firstName: true, lastName: true } },
+        schedules: {
+          where: { status: 'ACTIVE', dayOfWeek: selectedDay },
+          select: {
+            startTime: true,
+            endTime: true,
+            room: {
+              select: {
+                id: true,
+                name: true,
+                branch: { select: { id: true, name: true } },
+              },
+            },
+          },
+          orderBy: { startTime: 'asc' },
+        },
+        enrollments: {
+          where: {
+            startDate: { lte: attendanceDate },
+            OR: [{ endDate: null }, { endDate: { gte: attendanceDate } }],
+          },
+          select: {
+            attendances: {
+              where: { attendanceDate, status: 'PRESENT' },
+              select: { id: true },
+              take: 1,
+            },
+          },
+        },
+      },
+    });
+
+    return classes
+      .flatMap((academyClass) =>
+        academyClass.schedules.map((schedule) => ({
+          classId: academyClass.id,
+          className: academyClass.name,
+          danceType: academyClass.danceType.name,
+          teacher: academyClass.teacher,
+          room: { id: schedule.room.id, name: schedule.room.name },
+          branch: schedule.room.branch,
+          startTime: isoTime(schedule.startTime),
+          endTime: isoTime(schedule.endTime),
+          enrolledCount: academyClass.enrollments.length,
+          presentCount: academyClass.enrollments.filter(
+            (enrollment) => enrollment.attendances.length > 0,
+          ).length,
+        })),
+      )
+      .sort(
+        (left, right) =>
+          left.startTime.localeCompare(right.startTime) ||
+          left.className.localeCompare(right.className, 'es'),
+      );
+  }
+
+  async quickSearch(query: string, attendanceDate: Date, includeOtherDays: boolean) {
+    const selectedDay = weekdays[attendanceDate.getUTCDay()]!;
+    const enrollmentIsValid: Prisma.EnrollmentWhereInput = {
+      startDate: { lte: attendanceDate },
+      OR: [{ endDate: null }, { endDate: { gte: attendanceDate } }],
+    };
+    const dayEnrollmentFilter: Prisma.EnrollmentWhereInput = {
+      ...enrollmentIsValid,
+      class: {
+        schedules: { some: { status: 'ACTIVE', dayOfWeek: selectedDay } },
+      },
+    };
+    const studentWhere: Prisma.StudentWhereInput = includeOtherDays
+      ? buildStudentSearchWhere(query)
+      : {
+          AND: [buildStudentSearchWhere(query), { enrollments: { some: dayEnrollmentFilter } }],
+        };
     const students = await this.prisma.student.findMany({
-      where: buildStudentSearchWhere(query),
+      where: studentWhere,
       select: {
         id: true,
         dni: true,
         firstName: true,
         lastName: true,
         enrollments: {
-          where: {
-            startDate: { lte: attendanceDate },
-            OR: [{ endDate: null }, { endDate: { gte: attendanceDate } }],
-          },
+          where: enrollmentIsValid,
           select: {
             id: true,
             class: {
@@ -170,5 +249,47 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
             left.className.localeCompare(right.className, 'es'),
         ),
     }));
+  }
+
+  async saveRoster(
+    classId: string,
+    attendanceDate: Date,
+    items: readonly AttendanceRosterSaveItem[],
+  ) {
+    return this.prisma.$transaction(async (transaction) => {
+      const enrollmentIds = items.map((item) => item.enrollmentId);
+      const validEnrollments = await transaction.enrollment.findMany({
+        where: {
+          id: { in: enrollmentIds },
+          classId,
+          startDate: { lte: attendanceDate },
+          OR: [{ endDate: null }, { endDate: { gte: attendanceDate } }],
+        },
+        select: { id: true },
+      });
+      if (validEnrollments.length !== enrollmentIds.length)
+        throw new DomainError(
+          'ATTENDANCE_OUTSIDE_ENROLLMENT_PERIOD',
+          'La lista contiene una inscripción de otra clase o fuera de vigencia',
+          { field: 'attendances' },
+        );
+
+      return Promise.all(
+        items.map(async (item) =>
+          toDomain(
+            await transaction.studentAttendance.upsert({
+              where: {
+                enrollmentId_attendanceDate: {
+                  enrollmentId: item.enrollmentId,
+                  attendanceDate,
+                },
+              },
+              create: { ...item, attendanceDate },
+              update: { status: item.status, notes: item.notes },
+            }),
+          ),
+        ),
+      );
+    });
   }
 }
