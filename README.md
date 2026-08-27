@@ -59,6 +59,24 @@ En PowerShell, use `Copy-Item .env.example .env`. Si la política de ejecución 
 
 En el primer ingreso, el panel solicita crear el administrador inicial. La contraseña debe tener al menos 12 caracteres. El bootstrap se deshabilita después de crear ese usuario.
 
+### Datos locales de desarrollo
+
+Con PostgreSQL local levantado y las migraciones aplicadas, se puede cargar un conjunto reproducible de datos ficticios:
+
+```bash
+npm run db:seed
+```
+
+El comando es manual, idempotente y exclusivo de desarrollo. Se cancela si `NODE_ENV` no es `development`, si corre en CI o si `DATABASE_URL` no apunta por `localhost`, `127.0.0.1` o `::1` a una base PostgreSQL llamada `academy`. No se ejecuta durante builds, migraciones ni despliegues.
+
+La contraseña común de los usuarios de prueba se toma de `DEV_SEED_PASSWORD`; `.env.example` incluye `AcademiaDev2026!` como valor exclusivamente local. Los accesos disponibles son:
+
+- `admision` (`RECEPTION`, nivel Admisión).
+- `administracion` (`MANAGER`, nivel Administración).
+- `direccion` (`ADMINISTRATOR`, nivel Dirección).
+
+El dataset incluye 28 alumnos, 6 profesores, 4 tipos de danza, 2 sedes, 4 salones, 9 clases con horarios, inscripciones activas/finalizadas, cuotas y asistencias. Las fechas se calculan según el día actual de Buenos Aires. Entre los casos preparados para QA están Ana Pérez (una clase, cuota pendiente y sin asistencia de hoy), Bruno Gómez (dos clases y asistencia ya cargada hoy), Carla Rodríguez (historial sobre inscripción finalizada) y Diego Fernández (sin inscripciones). Volver a ejecutar el comando actualiza estos registros reservados sin duplicarlos y sin borrar datos creados manualmente.
+
 ## API de alumnos
 
 - `GET /api/v1/students?q=&status=&page=1&pageSize=25`: buscar, filtrar y paginar.

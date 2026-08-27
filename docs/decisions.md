@@ -108,6 +108,12 @@
 64. **Selección asistida:** el ingreso rápido devuelve todas las inscripciones vigentes en la fecha. Si existen varias, cada una conserva su propia acción. Los horarios del día seleccionado se priorizan visualmente, pero nunca excluyen otras clases, deciden automáticamente ni aplican tolerancias.
 65. **Caso de uso reutilizable:** `GET /attendances/quick-search` concentra búsqueda de persona, vigencia de inscripciones, clase, profesor, horarios y asistencia existente. Un futuro módulo de Acceso podrá reutilizar esta capacidad, pero este incremento no automatiza ingresos ni incorpora dispositivos.
 
+## Decisiones de datos de desarrollo
+
+66. **Seed local explícito y protegido:** los datos ficticios se cargan únicamente mediante `npm run db:seed`. El comando exige `NODE_ENV=development`, rechaza CI y limita `DATABASE_URL` a PostgreSQL local con base `academy`; no forma parte de builds, migraciones ni despliegues.
+67. **Identidades reservadas e idempotencia:** las entidades del dataset usan identificadores UUID reservados o claves naturales únicas y se actualizan mediante `upsert`. El seed no vacía tablas ni borra registros manuales, y puede repetirse sin duplicar el conjunto administrado.
+68. **Fechas útiles para QA:** el día actual, el período de cuota vigente y los escenarios históricos se calculan en `America/Argentina/Buenos_Aires`. Esto mantiene vigentes los casos de roster, asistencia y cuotas sin congelarlos a una fecha del equipo que ejecuta el comando.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
