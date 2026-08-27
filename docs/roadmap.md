@@ -4,12 +4,13 @@
 2. **Oferta Académica v1 (terminado):** profesores, danzas, sucursales, salones, clases, horarios y conflictos de salón/profesor.
 3. **Inscripciones v1 (terminado):** `Enrollment`, altas/finalización, historia, cupos y fichas de alumno/clase.
 4. **Tarifas y cuotas v1 (terminado):** tarifa simple por clase, cuota mensual manual por inscripción, vencimiento 1–10 y snapshot monetario; prorrateos, descuentos y promociones siguen pendientes.
-5. **Pagos y caja:** parciales, imputaciones, medios y cierres según reglas confirmadas.
-6. **Asistencias y acceso:** alumnos/docentes, búsqueda y auditoría; sin hardware.
-7. **Liquidación:** motor configurable después de validar fórmula y modalidades.
-8. **Reportes y robustez:** estadísticas, permisos, observabilidad, backups y seguridad.
-9. **Canal alumno:** nueva interfaz sobre la misma API e integraciones aisladas.
+5. **Usuarios y permisos v1 (terminado):** autorización por capacidad, navegación restringida y administración de cuentas según Admisión, Administración y Dirección.
+6. **Pagos y caja:** parciales, imputaciones, medios y cierres según reglas confirmadas.
+7. **Asistencias y acceso:** alumnos/docentes, búsqueda y auditoría; sin hardware.
+8. **Liquidación:** motor configurable después de validar fórmula y modalidades.
+9. **Reportes y robustez:** estadísticas, observabilidad, backups y seguridad.
+10. **Canal alumno:** nueva interfaz sobre la misma API e integraciones aisladas.
 
 Cada etapa entrega migraciones, casos de uso, endpoints documentados, UI mínima y pruebas críticas.
 
-Antes de implementar administración de usuarios o módulos sensibles (tarifas, pagos, caja y liquidaciones), debe confirmarse una matriz de permisos por rol. Hasta entonces, todos los usuarios administrativos activos conservan igual acceso a Alumnos v1.
+La matriz inicial está confirmada. Toda nueva acción de pagos, caja, inventario, reportes o liquidaciones debe asociarse a uno de los permisos existentes o registrar explícitamente una ampliación de la matriz.

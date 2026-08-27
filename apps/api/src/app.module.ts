@@ -6,6 +6,7 @@ import { TeachersModule } from './teachers/teachers.module';
 import { OfferingModule } from './offering/offering.module';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
 import { BillingModule } from './billing/billing.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { BillingModule } from './billing/billing.module';
     HealthModule,
     EnrollmentsModule,
     BillingModule,
+    UsersModule,
     StudentsModule,
     TeachersModule,
     OfferingModule,

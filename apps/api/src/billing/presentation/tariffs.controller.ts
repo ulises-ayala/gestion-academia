@@ -13,29 +13,33 @@ import {
 } from '@nestjs/common';
 import { parseStatus, parseUuid } from '../../shared/presentation/request-validation';
 import { BillingService } from '../application/billing.service';
+import { Permissions } from '../../auth/presentation/permissions.decorator';
 
 @Controller('tariffs')
 export class TariffsController {
   constructor(@Inject(BillingService) private readonly service: BillingService) {}
-  @Get() list(@Query('status') status?: string) {
+  @Get() @Permissions('tariffs:read') list(@Query('status') status?: string) {
     return this.service.listTariffs(parseStatus(status));
   }
-  @Get('active') listActive() {
+  @Get('active') @Permissions('tariffs:read') listActive() {
     return this.service.listTariffs('ACTIVE');
   }
-  @Get(':id') get(@Param('id') id: string) {
+  @Get(':id') @Permissions('tariffs:read') get(@Param('id') id: string) {
     return this.service.getTariff(parseUuid(id));
   }
-  @Post() create(@Body() input: CreateTariffDto) {
+  @Post() @Permissions('tariffs:manage') create(@Body() input: CreateTariffDto) {
     return this.service.createTariff(input);
   }
-  @Patch(':id') update(@Param('id') id: string, @Body() input: UpdateTariffDto) {
+  @Patch(':id') @Permissions('tariffs:manage') update(
+    @Param('id') id: string,
+    @Body() input: UpdateTariffDto,
+  ) {
     return this.service.updateTariff(parseUuid(id), input);
   }
-  @Delete(':id') @HttpCode(200) deactivate(@Param('id') id: string) {
+  @Delete(':id') @HttpCode(200) @Permissions('tariffs:manage') deactivate(@Param('id') id: string) {
     return this.service.updateTariff(parseUuid(id), { status: 'INACTIVE' });
   }
-  @Post(':id/reactivate') reactivate(@Param('id') id: string) {
+  @Post(':id/reactivate') @Permissions('tariffs:manage') reactivate(@Param('id') id: string) {
     return this.service.updateTariff(parseUuid(id), { status: 'ACTIVE' });
   }
 }
