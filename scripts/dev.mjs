@@ -1,9 +1,15 @@
 import { spawn } from 'node:child_process';
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const npmCli = process.env.npm_execpath;
+const command = process.platform === 'win32' && npmCli ? process.execPath : npmCommand;
+const commandPrefix = process.platform === 'win32' && npmCli ? [npmCli] : [];
 const workspaces = ['@academy/api', '@academy/admin-web'];
 const children = workspaces.map((workspace) =>
-  spawn(npmCommand, ['run', 'dev', '-w', workspace], { stdio: 'inherit', env: process.env }),
+  spawn(command, [...commandPrefix, 'run', 'dev', '-w', workspace], {
+    stdio: 'inherit',
+    env: process.env,
+  }),
 );
 
 let stopping = false;

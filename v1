@@ -1,0 +1,21 @@
+[1mdiff --git a/scripts/dev.mjs b/scripts/dev.mjs[m
+[1mindex 478ca04..36142c7 100644[m
+[1m--- a/scripts/dev.mjs[m
+[1m+++ b/scripts/dev.mjs[m
+[36m@@ -1,9 +1,15 @@[m
+ import { spawn } from 'node:child_process';[m
+ [m
+ const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';[m
+[32m+[m[32mconst npmCli = process.env.npm_execpath;[m
+[32m+[m[32mconst command = process.platform === 'win32' && npmCli ? process.execPath : npmCommand;[m
+[32m+[m[32mconst commandPrefix = process.platform === 'win32' && npmCli ? [npmCli] : [];[m
+ const workspaces = ['@academy/api', '@academy/admin-web'];[m
+ const children = workspaces.map((workspace) =>[m
+[31m-  spawn(npmCommand, ['run', 'dev', '-w', workspace], { stdio: 'inherit', env: process.env }),[m
+[32m+[m[32m  spawn(command, [...commandPrefix, 'run', 'dev', '-w', workspace], {[m
+[32m+[m[32m    stdio: 'inherit',[m
+[32m+[m[32m    env: process.env,[m
+[32m+[m[32m  }),[m
+ );[m
+ [m
+ let stopping = false;[m
