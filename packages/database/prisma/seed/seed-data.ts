@@ -4,6 +4,8 @@ import {
   DayOfWeek,
   EnrollmentStatus,
   MonthlyChargeStatus,
+  PaymentMethod,
+  PaymentStatus,
   PrismaClient,
   RecordStatus,
 } from '@prisma/client';
@@ -169,8 +171,25 @@ export const applySeedData = async (
       .map((enrollmentIndex) => ({
         enrollmentIndex,
         period: 'current',
+        status: 'PENDING' as const,
       }))
-      .concat([{ enrollmentIndex: 3, period: 'previous' }]),
+      .concat([{ enrollmentIndex: 3, period: 'previous', status: 'PAID' as const }]),
+    payments: [
+      {
+        studentIndex: 2,
+        amount: 35000,
+        status: PaymentStatus.CONFIRMED,
+        paymentMethod: PaymentMethod.CASH,
+        allocations: [{ chargeIndex: 12, studentIndex: 2, amount: 35000 }],
+      },
+      {
+        studentIndex: 4,
+        amount: 40000,
+        status: PaymentStatus.VOID,
+        paymentMethod: PaymentMethod.MERCADO_PAGO,
+        allocations: [{ chargeIndex: 3, studentIndex: 4, amount: 40000 }],
+      },
+    ],
   });
   const passwordHash = await hashPassword(options.password);
 
@@ -447,6 +466,47 @@ export const applySeedData = async (
         update: historicalCharge,
       });
 
+      const paymentDefinitions = [
+        {
+          id: uuid('d', 1),
+          studentId: studentIds[2]!,
+          amount: 35000,
+          paymentMethod: PaymentMethod.CASH,
+          status: PaymentStatus.CONFIRMED,
+          paidAt: addDays(today, -15),
+          createdByUserId: uuid('b', 1),
+          voidedAt: null,
+          voidedByUserId: null,
+          chargeId: uuid('a', 13),
+        },
+        {
+          id: uuid('d', 2),
+          studentId: studentIds[4]!,
+          amount: 40000,
+          paymentMethod: PaymentMethod.MERCADO_PAGO,
+          status: PaymentStatus.VOID,
+          paidAt: addDays(today, -10),
+          createdByUserId: uuid('b', 1),
+          voidedAt: addDays(today, -9),
+          voidedByUserId: uuid('b', 2),
+          chargeId: uuid('a', 4),
+        },
+      ] as const;
+      for (const [index, definition] of paymentDefinitions.entries()) {
+        const { chargeId, ...payment } = definition;
+        await tx.payment.upsert({ where: { id: payment.id }, create: payment, update: payment });
+        const allocation = {
+          paymentId: payment.id,
+          monthlyChargeId: chargeId,
+          amount: payment.amount,
+        };
+        await tx.paymentAllocation.upsert({
+          where: { id: uuid('e', index + 1) },
+          create: { id: uuid('e', index + 1), ...allocation },
+          update: allocation,
+        });
+      }
+
       const attendanceDefinitions = [
         [1, 0, AttendanceStatus.PRESENT, 'Ya cargada para probar corrección'],
         [4, -1, AttendanceStatus.ABSENT, null],
@@ -468,6 +528,16 @@ export const applySeedData = async (
           status,
           notes,
         };
+        const occupiedAttendance = await tx.studentAttendance.findUnique({
+          where: {
+            enrollmentId_attendanceDate: {
+              enrollmentId: data.enrollmentId,
+              attendanceDate: data.attendanceDate,
+            },
+          },
+          select: { id: true },
+        });
+        if (occupiedAttendance && occupiedAttendance.id !== id) continue;
         await tx.studentAttendance.upsert({ where: { id }, create: { id, ...data }, update: data });
       }
 
@@ -484,16 +554,28 @@ export const applySeedData = async (
         tariffs: tariffDefinitions.length,
         monthlyCharges: chargeEnrollmentIndexes.length + 1,
         attendances: attendanceDefinitions.length,
+        payments: paymentDefinitions.length,
       };
     },
     { maxWait: 10_000, timeout: 30_000 },
   );
 
+  const managedEnrollmentIds = Array.from({ length: 25 }, (_, index) => uuid('7', index + 1));
+  const managedChargeIds = Array.from({ length: 13 }, (_, index) => uuid('a', index + 1));
+  const managedAttendanceIds = Array.from({ length: 8 }, (_, index) => uuid('8', index + 1));
   const [ana, bruno, carla, diego] = await Promise.all(
     ['30100001', '30100002', '30100003', '30100004'].map((dni) =>
       prisma.student.findUniqueOrThrow({
         where: { dni },
-        include: { enrollments: { include: { monthlyCharges: true, attendances: true } } },
+        include: {
+          enrollments: {
+            where: { id: { in: managedEnrollmentIds } },
+            include: {
+              monthlyCharges: { where: { id: { in: managedChargeIds } } },
+              attendances: { where: { id: { in: managedAttendanceIds } } },
+            },
+          },
+        },
       }),
     ),
   );

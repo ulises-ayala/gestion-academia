@@ -2,7 +2,11 @@ import type { MonthlyChargeDto, TariffDto } from '@academy/contracts';
 
 export const BILLING_REPOSITORY = Symbol('BILLING_REPOSITORY');
 
-export type ChargeQuery = Readonly<{ studentId?: string; period?: string }>;
+export type ChargeQuery = Readonly<{
+  studentId?: string;
+  period?: string;
+  status?: 'PENDING' | 'PAID' | 'VOID';
+}>;
 export type EnrollmentForCharge = Readonly<{
   id: string;
   studentId: string;

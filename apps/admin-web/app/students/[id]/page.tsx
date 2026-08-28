@@ -7,7 +7,7 @@ import { StudentForm } from '../../../components/student-form';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { calculateAge, formatDate } from '../../../lib/dates';
 import { dayLabels } from '../../../lib/offering';
-const futureSections = ['Pagos', 'Descuentos', 'Asistencias'];
+const futureSections = ['Descuentos'];
 const money = (value: string) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const chargeStatus = { PENDING: 'Pendiente', PAID: 'Pagada', VOID: 'Anulada' } as const;
@@ -90,6 +90,9 @@ export default function StudentDetailPage() {
           </h1>
         </div>
         <div className="actions">
+          <Link className="button secondary" href={`/payments?studentId=${id}`}>
+            Cobrar cuotas
+          </Link>
           {student.status === 'ACTIVE' && (
             <Link className="button" href={`/students/${id}/enrollments/new`}>
               Inscribir en clase

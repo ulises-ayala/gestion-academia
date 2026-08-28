@@ -39,6 +39,17 @@ enum MonthlyChargeStatus {
   VOID
 }
 
+enum PaymentMethod {
+  CASH
+  MERCADO_PAGO
+  CARD
+}
+
+enum PaymentStatus {
+  CONFIRMED
+  VOID
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -60,6 +71,7 @@ model Student {
   updatedAt      DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
   enrollments    Enrollment[]
   monthlyCharges MonthlyCharge[]
+  payments       Payment[]
 
   @@index([lastName, firstName])
   @@map("students")
@@ -147,16 +159,16 @@ model AcademyClass {
 }
 
 model Enrollment {
-  id             String           @id @default(uuid()) @db.Uuid
-  studentId      String           @map("student_id") @db.Uuid
-  classId        String           @map("class_id") @db.Uuid
-  startDate      DateTime         @map("start_date") @db.Date
-  endDate        DateTime?        @map("end_date") @db.Date
-  status         EnrollmentStatus @default(ACTIVE)
-  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
-  student        Student          @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  class          AcademyClass     @relation(fields: [classId], references: [id], onDelete: Restrict)
+  id             String              @id @default(uuid()) @db.Uuid
+  studentId      String              @map("student_id") @db.Uuid
+  classId        String              @map("class_id") @db.Uuid
+  startDate      DateTime            @map("start_date") @db.Date
+  endDate        DateTime?           @map("end_date") @db.Date
+  status         EnrollmentStatus    @default(ACTIVE)
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  student        Student             @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  class          AcademyClass        @relation(fields: [classId], references: [id], onDelete: Restrict)
   monthlyCharges MonthlyCharge[]
   attendances    StudentAttendance[]
 
@@ -197,6 +209,7 @@ model MonthlyCharge {
   student        Student             @relation(fields: [studentId], references: [id], onDelete: Restrict)
   enrollment     Enrollment          @relation(fields: [enrollmentId], references: [id], onDelete: Restrict)
   tariff         Tariff              @relation(fields: [tariffId], references: [id], onDelete: Restrict)
+  allocations    PaymentAllocation[]
 
   @@unique([enrollmentId, period])
   @@index([studentId, period, status])
@@ -204,6 +217,43 @@ model MonthlyCharge {
   @@index([period, status])
   @@index([tariffId])
   @@map("monthly_charges")
+}
+
+model Payment {
+  id              String              @id @default(uuid()) @db.Uuid
+  studentId       String              @map("student_id") @db.Uuid
+  amount          Decimal             @db.Decimal(12, 2)
+  paymentMethod   PaymentMethod       @map("payment_method")
+  status          PaymentStatus       @default(CONFIRMED)
+  paidAt          DateTime            @default(now()) @map("paid_at") @db.Timestamptz(3)
+  createdByUserId String              @map("created_by_user_id") @db.Uuid
+  voidedAt        DateTime?           @map("voided_at") @db.Timestamptz(3)
+  voidedByUserId  String?             @map("voided_by_user_id") @db.Uuid
+  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  student         Student             @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  createdBy       AdminUser           @relation("PaymentCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  voidedBy        AdminUser?          @relation("PaymentVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
+  allocations     PaymentAllocation[]
+
+  @@index([studentId, paidAt])
+  @@index([status, paidAt])
+  @@index([paymentMethod, paidAt])
+  @@map("payments")
+}
+
+model PaymentAllocation {
+  id              String        @id @default(uuid()) @db.Uuid
+  paymentId       String        @map("payment_id") @db.Uuid
+  monthlyChargeId String        @map("monthly_charge_id") @db.Uuid
+  amount          Decimal       @db.Decimal(12, 2)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  payment         Payment       @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  monthlyCharge   MonthlyCharge @relation(fields: [monthlyChargeId], references: [id], onDelete: Restrict)
+
+  @@unique([paymentId, monthlyChargeId])
+  @@index([monthlyChargeId])
+  @@map("payment_allocations")
 }
 
 model ClassSchedule {
@@ -240,14 +290,16 @@ model StudentAttendance {
 }
 
 model AdminUser {
-  id           String         @id @default(uuid()) @db.Uuid
-  username     String         @unique @db.VarChar(100)
-  passwordHash String         @map("password_hash")
-  role         AdminRole      @default(RECEPTION)
-  status       RecordStatus   @default(ACTIVE)
-  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
-  sessions     AdminSession[]
+  id              String         @id @default(uuid()) @db.Uuid
+  username        String         @unique @db.VarChar(100)
+  passwordHash    String         @map("password_hash")
+  role            AdminRole      @default(RECEPTION)
+  status          RecordStatus   @default(ACTIVE)
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sessions        AdminSession[]
+  paymentsCreated Payment[]      @relation("PaymentCreatedBy")
+  paymentsVoided  Payment[]      @relation("PaymentVoidedBy")
 
   @@map("admin_users")
 }
