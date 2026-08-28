@@ -4,6 +4,7 @@ import type { AddressInfo } from 'node:net';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { DomainExceptionFilter } from '../../shared/presentation/domain-exception.filter';
 import { STUDENT_REPOSITORY } from '../application/student.repository';
+import { StudentOnboardingService } from '../application/student-onboarding.service';
 import { StudentsService } from '../application/students.service';
 import { MemoryStudentRepository } from '../testing/memory-student.repository';
 import { StudentsController } from './students.controller';
@@ -17,6 +18,7 @@ describe('Students HTTP contract', () => {
       controllers: [StudentsController],
       providers: [
         StudentsService,
+        { provide: StudentOnboardingService, useValue: { create: async () => undefined } },
         { provide: STUDENT_REPOSITORY, useClass: MemoryStudentRepository },
       ],
     }).compile();
