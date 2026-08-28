@@ -241,22 +241,49 @@ Cada cuota nace `PENDING`, con descuento cero y montos históricos. No hay endpo
 
 Todos los endpoints requieren `attendance:manage`. No existe borrado físico.
 
-## Usuarios y permisos
+## Roles y permisos
 
-Los valores internos se presentan de esta manera:
+Los roles administrativos son acumulativos: **Admisión** (`RECEPTION`) se ocupa de la operación cotidiana; **Administración** (`MANAGER`) hereda Admisión y agrega capacidades de gestión y configuración; **Dirección** (`ADMINISTRATOR`) es el nivel más alto, hereda Administración y agrega acciones sensibles.
 
-- `RECEPTION`: Admisión.
-- `MANAGER`: Administración.
-- `ADMINISTRATOR`: Dirección.
+| Capacidad                        | Admisión (`RECEPTION`) | Administración (`MANAGER`) | Dirección (`ADMINISTRATOR`) |
+| -------------------------------- | :--------------------: | :------------------------: | :-------------------------: |
+| Gestionar alumnos                |           ✅           |             ✅             |             ✅              |
+| Gestionar inscripciones          |           ✅           |             ✅             |             ✅              |
+| Consultar oferta académica       |           ✅           |             ✅             |             ✅              |
+| Administrar oferta académica     |           —            |             ✅             |             ✅              |
+| Consultar tarifas                |           ✅           |             ✅             |             ✅              |
+| Administrar tarifas              |           —            |             ✅             |             ✅              |
+| Consultar cuotas                 |           ✅           |             ✅             |             ✅              |
+| Administrar cuotas               |           —            |             ✅             |             ✅              |
+| Consultar pagos                  |           ✅           |             ✅             |             ✅              |
+| Registrar/cobrar pagos           |           ✅           |             ✅             |             ✅              |
+| Anular pagos                     |           —            |             ✅             |             ✅              |
+| Gestionar caja                   |           —            |             ✅             |             ✅              |
+| Arqueos/reconciliación           |           —            |             ✅             |             ✅              |
+| Gestionar asistencias            |           ✅           |             ✅             |             ✅              |
+| Gestionar usuarios               |           —            |             ✅             |             ✅              |
+| Gestionar usuarios de Dirección  |           —            |             —              |             ✅              |
+| Vender indumentaria              |           ✅           |             ✅             |             ✅              |
+| Administrar inventario           |           —            |             ✅             |             ✅              |
+| Registrar alumnos en formaciones |           ✅           |             ✅             |             ✅              |
+| Administrar formaciones          |           —            |             ✅             |             ✅              |
+| Reportes operativos              |           —            |             ✅             |             ✅              |
+| Reportes completos               |           —            |             —              |             ✅              |
+| Gestionar liquidaciones          |           —            |             ✅             |             ✅              |
+| Aprobar liquidaciones            |           —            |             —              |             ✅              |
 
-Admisión opera alumnos e inscripciones y consulta clases, tarifas y cuotas. Administración agrega configuración académica, gestión de tarifas y usuarios de Admisión/Administración. Dirección agrega la gestión de cuentas de Dirección y las capacidades reservadas de aprobación/reportes completos.
+Algunos permisos ya están definidos como parte de la matriz de autorización aunque los módulos correspondientes todavía no estén implementados completamente.
+
+La API es la autoridad real de permisos. Ocultar módulos, opciones o acciones en el frontend mejora la experiencia de uso, pero no reemplaza la validación de autorización en el backend.
+
+### Gestión de usuarios
 
 - `GET /api/v1/users`: listar usuarios permitidos para el nivel actual.
 - `GET /api/v1/users/:id`: consultar.
 - `POST /api/v1/users`: crear.
 - `PATCH /api/v1/users/:id`: cambiar usuario, contraseña, rol o estado.
 
-No se eliminan usuarios físicamente. Una cuenta no puede desactivarse ni cambiar su propio rol, y siempre debe quedar una cuenta activa de Dirección. El frontend oculta módulos/acciones no habilitados, pero la autorización efectiva siempre se controla en la API.
+No se eliminan usuarios físicamente. Una cuenta no puede desactivarse ni cambiar su propio rol, y siempre debe quedar una cuenta activa de Dirección.
 
 ## Próxima etapa
 
