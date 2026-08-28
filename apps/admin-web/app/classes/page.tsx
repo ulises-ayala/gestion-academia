@@ -156,7 +156,11 @@ export default function Page() {
                   <td>
                     {item.activeEnrollmentCount ?? 0} / {item.capacity}
                   </td>
-                  <td>{item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}</td>
+                  <td>
+                    <span className={`status ${item.status.toLowerCase()}`}>
+                      {item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}
+                    </span>
+                  </td>
                   <td>
                     <Link className="text-link" href={`/classes/${item.id}`}>
                       Ver

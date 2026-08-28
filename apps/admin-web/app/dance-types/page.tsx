@@ -86,7 +86,11 @@ export default function Page() {
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td>{item.description ?? '—'}</td>
-                <td>{item.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}</td>
+                <td>
+                  <span className={`status ${item.status.toLowerCase()}`}>
+                    {item.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
+                  </span>
+                </td>
                 <td className="actions">
                   <button
                     className="secondary"
