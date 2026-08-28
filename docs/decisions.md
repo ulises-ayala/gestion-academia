@@ -157,6 +157,14 @@
 87. **Repago permitido:** una cuota liberada puede pagarse nuevamente; la unicidad se limita a `paymentId + monthlyChargeId`.
 88. **Caja diferida:** `Payment` queda como fuente financiera futura, pero Pagos v1 no crea sesiones ni movimientos de caja.
 
+## Decisiones de Alta rápida de alumnos v1
+
+89. **Caso de uso compuesto, no dominio nuevo:** Alta rápida orquesta Students, Enrollments, Billing y Payments mediante reglas existentes. No persiste una entidad `StudentOnboarding` ni modifica el schema; `POST /students` continúa disponible para el alta simple.
+90. **Inscripción y cuota inicial opcionales:** el alta admite cero, una o varias clases. Cada clase seleccionada crea un `Enrollment` y una `MonthlyCharge` completa para la tarifa y período elegidos, sin prorrateo ni cuotas futuras automáticas.
+91. **Pago único opcional:** las cuotas iniciales pueden quedar `PENDING` o cancelarse mediante un solo `Payment`, con una imputación por cuota. El cliente no envía un importe; Payments conserva la autoridad sobre `finalAmount`, suma, actor y fecha.
+92. **Atomicidad con las protecciones vigentes:** el orquestador ejecuta todo en una transacción serializable. Los repositorios se vinculan al cliente transaccional compartido y conservan advisory locks de inscripción, locks de cuotas y reintentos ante conflictos; cualquier error revierte alumno, inscripciones, cuotas y pago.
+93. **Permiso operativo acotado:** generar las cuotas iniciales forma parte del caso de uso autorizado por `students:manage` y `enrollments:manage`; no concede `charges:manage` ni acceso global a administración de cuotas. Cobrar además exige `payments:collect`. La matriz de roles no cambia.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.

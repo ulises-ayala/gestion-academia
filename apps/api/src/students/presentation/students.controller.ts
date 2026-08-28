@@ -10,16 +10,28 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import type { CreateStudentDto, UpdateStudentDto } from '@academy/contracts';
+import type {
+  CreateStudentDto,
+  CreateStudentOnboardingDto,
+  UpdateStudentDto,
+} from '@academy/contracts';
 import { DomainError } from '../../shared/domain/domain-error';
 import { StudentsService } from '../application/students.service';
 import type { StudentStatus } from '../domain/student';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
+import { CurrentUser } from '../../auth/presentation/current-user.decorator';
+import type { PublicAuthUser } from '../../auth/application/auth.repository';
+import { hasPermissions, type Permission } from '../../auth/domain/permissions';
+import { StudentOnboardingService } from '../application/student-onboarding.service';
+import { parseUuid } from '../../shared/presentation/request-validation';
 
 @Controller('students')
 @Permissions('students:manage')
 export class StudentsController {
-  constructor(@Inject(StudentsService) private readonly students: StudentsService) {}
+  constructor(
+    @Inject(StudentsService) private readonly students: StudentsService,
+    @Inject(StudentOnboardingService) private readonly onboarding: StudentOnboardingService,
+  ) {}
 
   @Get()
   list(
@@ -56,6 +68,25 @@ export class StudentsController {
   @Post()
   create(@Body() input: CreateStudentDto) {
     return this.students.create(input);
+  }
+
+  @Post('onboarding')
+  createOnboarding(@Body() input: CreateStudentOnboardingDto, @CurrentUser() user: PublicAuthUser) {
+    const selections = Array.isArray(input.enrollments) ? input.enrollments : [];
+    const required: Permission[] = selections.length ? ['enrollments:manage'] : [];
+    if (input.payment) required.push('payments:collect');
+    if (!hasPermissions(user, required))
+      throw new DomainError('FORBIDDEN', 'No tenés permisos para completar esta alta');
+    return this.onboarding.create(
+      {
+        ...input,
+        enrollments: selections.map((item) => ({
+          classId: parseUuid(item.classId, 'classId'),
+          tariffId: parseUuid(item.tariffId, 'tariffId'),
+        })),
+      },
+      user.id,
+    );
   }
 
   @Patch(':id')
