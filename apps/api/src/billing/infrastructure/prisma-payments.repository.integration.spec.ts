@@ -8,30 +8,105 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
   const prisma = new PrismaClient();
   const repository = new PrismaPaymentsRepository(prisma as PrismaService);
 
+  const createFixture = async () => {
+    const token = crypto.randomUUID();
+    return prisma.$transaction(async (tx) => {
+      const actor = await tx.adminUser.create({
+        data: {
+          username: `payments-test-${token}`,
+          passwordHash: 'integration-test-not-a-real-password',
+          role: 'MANAGER',
+          status: 'ACTIVE',
+        },
+      });
+      const student = await tx.student.create({
+        data: {
+          dni: token.replaceAll('-', '').slice(0, 32),
+          firstName: 'Pago',
+          lastName: 'Prueba',
+          joinedAt: new Date('2026-08-01T00:00:00.000Z'),
+        },
+      });
+      const teacher = await tx.teacher.create({
+        data: {
+          dni: `9${token.replaceAll('-', '').slice(0, 31)}`,
+          firstName: 'Docente',
+          lastName: 'Prueba',
+        },
+      });
+      const danceType = await tx.danceType.create({
+        data: { name: `Danza ${token}`, normalizedName: `payments-test-${token}` },
+      });
+      const academicClass = await tx.academyClass.create({
+        data: {
+          name: `Clase pagos ${token}`,
+          danceTypeId: danceType.id,
+          teacherId: teacher.id,
+          capacity: 10,
+        },
+      });
+      const enrollment = await tx.enrollment.create({
+        data: {
+          studentId: student.id,
+          classId: academicClass.id,
+          startDate: new Date('2026-08-01T00:00:00.000Z'),
+        },
+      });
+      const tariff = await tx.tariff.create({
+        data: {
+          name: `Tarifa pagos ${token}`,
+          amount: '40000.00',
+          validFrom: new Date('2026-08-01T00:00:00.000Z'),
+        },
+      });
+      const charge = await tx.monthlyCharge.create({
+        data: {
+          studentId: student.id,
+          enrollmentId: enrollment.id,
+          tariffId: tariff.id,
+          period: new Date('2026-08-01T00:00:00.000Z'),
+          baseAmount: '40000.00',
+          discountAmount: '0.00',
+          finalAmount: '40000.00',
+          dueDate: new Date('2026-08-10T00:00:00.000Z'),
+        },
+      });
+      return { actor, student, teacher, danceType, academicClass, enrollment, tariff, charge };
+    });
+  };
+
+  const cleanupFixture = async (fixture: Awaited<ReturnType<typeof createFixture>>) => {
+    await prisma.$transaction(async (tx) => {
+      const paymentIds = (
+        await tx.payment.findMany({
+          where: { allocations: { some: { monthlyChargeId: fixture.charge.id } } },
+          select: { id: true },
+        })
+      ).map(({ id }) => id);
+      if (paymentIds.length) {
+        await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
+        await tx.payment.deleteMany({ where: { id: { in: paymentIds } } });
+      }
+      await tx.monthlyCharge.delete({ where: { id: fixture.charge.id } });
+      await tx.tariff.delete({ where: { id: fixture.tariff.id } });
+      await tx.enrollment.delete({ where: { id: fixture.enrollment.id } });
+      await tx.academyClass.delete({ where: { id: fixture.academicClass.id } });
+      await tx.danceType.delete({ where: { id: fixture.danceType.id } });
+      await tx.teacher.delete({ where: { id: fixture.teacher.id } });
+      await tx.student.delete({ where: { id: fixture.student.id } });
+      await tx.adminUser.delete({ where: { id: fixture.actor.id } });
+    });
+  };
+
   beforeAll(() => prisma.$connect());
   afterAll(() => prisma.$disconnect());
 
   it('confirma una sola vez cuando dos cajas cobran la misma cuota', async () => {
-    const charge = await prisma.monthlyCharge.findFirst({
-      where: { status: 'PENDING' },
-      orderBy: { id: 'asc' },
-    });
-    const actor = await prisma.adminUser.findFirst({
-      where: { status: 'ACTIVE' },
-      orderBy: { id: 'asc' },
-    });
-    expect(charge).not.toBeNull();
-    expect(actor).not.toBeNull();
-    const beforeIds = (
-      await prisma.paymentAllocation.findMany({
-        where: { monthlyChargeId: charge!.id },
-        select: { paymentId: true },
-      })
-    ).map((item) => item.paymentId);
+    const fixture = await createFixture();
     try {
       const results = await Promise.allSettled([
-        repository.create([charge!.id], 'CASH', actor!.id),
-        repository.create([charge!.id], 'CARD', actor!.id),
+        repository.create([fixture.charge.id], 'CASH', fixture.actor.id),
+        repository.create([fixture.charge.id], 'CARD', fixture.actor.id),
       ]);
       expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
       expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
@@ -40,71 +115,53 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       });
       expect(
         await prisma.payment.count({
-          where: { status: 'CONFIRMED', allocations: { some: { monthlyChargeId: charge!.id } } },
+          where: {
+            status: 'CONFIRMED',
+            allocations: { some: { monthlyChargeId: fixture.charge.id } },
+          },
         }),
       ).toBe(1);
       expect(
         await prisma.monthlyCharge.findUnique({
-          where: { id: charge!.id },
+          where: { id: fixture.charge.id },
           select: { status: true },
         }),
       ).toEqual({ status: 'PAID' });
     } finally {
-      const created = await prisma.payment.findMany({
-        where: { allocations: { some: { monthlyChargeId: charge!.id } }, id: { notIn: beforeIds } },
-        select: { id: true },
-      });
-      const createdIds = created.map((item) => item.id);
-      if (createdIds.length) {
-        await prisma.paymentAllocation.deleteMany({ where: { paymentId: { in: createdIds } } });
-        await prisma.payment.deleteMany({ where: { id: { in: createdIds } } });
-      }
-      await prisma.monthlyCharge.update({ where: { id: charge!.id }, data: { status: 'PENDING' } });
+      await cleanupFixture(fixture);
     }
   });
 
   it('permite pagar, anular y volver a pagar conservando ambos historiales', async () => {
-    const charge = await prisma.monthlyCharge.findFirst({
-      where: { status: 'PENDING' },
-      orderBy: { id: 'desc' },
-    });
-    const actors = await prisma.adminUser.findMany({
-      where: { status: 'ACTIVE' },
-      orderBy: { id: 'asc' },
-      take: 2,
-    });
-    expect(charge).not.toBeNull();
-    expect(actors.length).toBeGreaterThan(0);
-    const createdIds: string[] = [];
+    const fixture = await createFixture();
     try {
-      const first = await repository.create([charge!.id], 'CASH', actors[0]!.id);
-      createdIds.push(first.id);
-      const voided = await repository.void(first.id, actors.at(1)?.id ?? actors[0]!.id);
-      const second = await repository.create([charge!.id], 'CARD', actors[0]!.id);
-      createdIds.push(second.id);
+      const first = await repository.create([fixture.charge.id], 'CASH', fixture.actor.id);
+      const voided = await repository.void(first.id, fixture.actor.id);
+      const second = await repository.create([fixture.charge.id], 'CARD', fixture.actor.id);
       expect(voided).toMatchObject({
         status: 'VOID',
-        allocations: [{ monthlyChargeId: charge!.id }],
+        allocations: [{ monthlyChargeId: fixture.charge.id }],
       });
       expect(second).toMatchObject({
         status: 'CONFIRMED',
-        allocations: [{ monthlyChargeId: charge!.id }],
+        allocations: [{ monthlyChargeId: fixture.charge.id }],
       });
       expect(
         await prisma.payment.findUnique({ where: { id: first.id }, select: { status: true } }),
       ).toEqual({ status: 'VOID' });
       expect(
         await prisma.monthlyCharge.findUnique({
-          where: { id: charge!.id },
+          where: { id: fixture.charge.id },
           select: { status: true },
         }),
       ).toEqual({ status: 'PAID' });
+      expect(
+        await prisma.paymentAllocation.count({
+          where: { monthlyChargeId: fixture.charge.id },
+        }),
+      ).toBe(2);
     } finally {
-      if (createdIds.length) {
-        await prisma.paymentAllocation.deleteMany({ where: { paymentId: { in: createdIds } } });
-        await prisma.payment.deleteMany({ where: { id: { in: createdIds } } });
-      }
-      await prisma.monthlyCharge.update({ where: { id: charge!.id }, data: { status: 'PENDING' } });
+      await cleanupFixture(fixture);
     }
   });
 });
