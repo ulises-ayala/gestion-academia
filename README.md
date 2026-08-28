@@ -77,6 +77,30 @@ La contraseña común de los usuarios de prueba se toma de `DEV_SEED_PASSWORD`; 
 
 El dataset incluye 28 alumnos, 6 profesores, 4 tipos de danza, 2 sedes, 4 salones, 9 clases con horarios, inscripciones activas/finalizadas, cuotas y asistencias. Las fechas se calculan según el día actual de Buenos Aires. Entre los casos preparados para QA están Ana Pérez (una clase, cuota pendiente y sin asistencia de hoy), Bruno Gómez (dos clases y asistencia ya cargada hoy), Carla Rodríguez (historial sobre inscripción finalizada) y Diego Fernández (sin inscripciones). Volver a ejecutar el comando actualiza estos registros reservados sin duplicarlos y sin borrar datos creados manualmente.
 
+## Seed de staging
+
+Staging dispone de un comando administrativo separado que carga exclusivamente datos ficticios en una base PostgreSQL llamada exactamente `academy_staging`. Es manual, idempotente, nunca forma parte del build, CI, migraciones, deploy o arranque, y no borra ni modifica registros ajenos al conjunto reservado del seed.
+
+Debe ejecutarse en un entorno que ya proporcione `DATABASE_URL` (no carga un archivo `.env`) y exige simultáneamente:
+
+```text
+NODE_ENV=production
+ALLOW_STAGING_SEED=true
+STAGING_SEED_TARGET=academy_staging
+STAGING_SEED_CONFIRM=SEED_ACADEMY_STAGING
+STAGING_SEED_PASSWORD=<secret>
+```
+
+`STAGING_SEED_PASSWORD` no tiene valor predeterminado, debe cumplir la validación de la aplicación (entre 12 y 200 caracteres), se procesa con el mismo hash `scrypt` y nunca se imprime. Las cuentas reservadas son `demo-admision`, `demo-administracion` y `demo-direccion`; así no se pisan cuentas administrativas creadas manualmente.
+
+Después de configurar esas variables explícitamente en el entorno administrativo de staging, ejecutar:
+
+```bash
+npm run db:seed:staging
+```
+
+El comando comprueba el protocolo y extrae de `DATABASE_URL` el nombre real de la base; rechaza `academy`, cualquier nombre productivo y variantes como `academy_staging_backup`.
+
 ## API de alumnos
 
 - `GET /api/v1/students?q=&status=&page=1&pageSize=25`: buscar, filtrar y paginar.

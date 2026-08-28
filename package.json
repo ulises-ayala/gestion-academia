@@ -19,6 +19,7 @@
     "db:migrate": "prisma migrate dev --schema packages/database/prisma/schema.prisma",
     "db:deploy": "prisma migrate deploy --schema packages/database/prisma/schema.prisma",
     "db:seed": "tsx --env-file=.env packages/database/prisma/seed.ts",
+    "db:seed:staging": "tsx packages/database/prisma/seed-staging.ts",
     "render:build:api": "npm ci --include=dev && npm run db:generate && npm run build --workspace=@academy/api",
     "render:start:api": "npm run db:deploy && npm run start --workspace=@academy/api",
     "render:build:web": "npm ci --include=dev && npm run build --workspace=@academy/admin-web",

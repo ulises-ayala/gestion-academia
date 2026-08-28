@@ -136,6 +136,16 @@
 
 76. **Límite histórico de horarios:** `ClassSchedule` conserva versiones inactivas, pero no registra desde/hasta de cada programación. Por lo tanto, la regla compara los horarios actualmente `ACTIVE` de las clases y no puede reconstruir qué versión estaba vigente durante períodos históricos. Resolver esa reconstrucción requiere un modelado separado y no forma parte de este incremento.
 
+## Decisiones del seed de staging
+
+77. **Seeds separados por entorno:** `npm run db:seed` conserva sus restricciones de desarrollo local y base `academy`; `npm run db:seed:staging` es un comando distinto, manual y exclusivo de `academy_staging`. Ningún seed forma parte del deploy y producción real no admite seeds.
+
+78. **Confirmación y destino verificado:** staging exige `NODE_ENV=production`, `ALLOW_STAGING_SEED=true`, `STAGING_SEED_TARGET=academy_staging`, `STAGING_SEED_CONFIRM=SEED_ACADEMY_STAGING`, contraseña obligatoria y que el nombre extraído de una URL PostgreSQL sea exactamente `academy_staging`. Estas condiciones conjuntas evitan interpretar `NODE_ENV=production` como autorización suficiente.
+
+79. **Dataset compartido y aislado:** desarrollo y staging aplican el mismo escenario ficticio, fechas y entidades reservadas mediante una única implementación transaccional e idempotente. El seed sólo actualiza identidades propias, no vacía tablas y no borra ni modifica datos manuales ajenos.
+
+80. **Cuentas demo de staging:** los tres roles usan identidades reservadas `demo-*` y una contraseña recibida únicamente mediante `STAGING_SEED_PASSWORD`, validada y hasheada con las mismas funciones de la aplicación. No existe valor predeterminado ni se registra el secreto.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
