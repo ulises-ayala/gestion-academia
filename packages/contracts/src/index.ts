@@ -262,6 +262,36 @@ export type MonthlyChargeListDto = Readonly<{
   total: number;
 }>;
 
+export type PaymentMethodDto = 'CASH' | 'MERCADO_PAGO' | 'CARD';
+export type PaymentStatusDto = 'CONFIRMED' | 'VOID';
+export type CreatePaymentDto = Readonly<{
+  monthlyChargeIds: readonly string[];
+  paymentMethod: PaymentMethodDto;
+}>;
+export type PaymentAllocationDto = Readonly<{
+  monthlyChargeId: string;
+  amount: string;
+  period: string;
+  dueDate: string;
+  academicClass: Readonly<{ id: string; name: string }>;
+  finalAmount: string;
+}>;
+export type PaymentDto = Readonly<{
+  id: string;
+  student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
+  amount: string;
+  paymentMethod: PaymentMethodDto;
+  status: PaymentStatusDto;
+  paidAt: string;
+  createdBy: Readonly<{ id: string; username: string }>;
+  voidedAt: string | null;
+  voidedBy: Readonly<{ id: string; username: string }> | null;
+  allocations: readonly PaymentAllocationDto[];
+  createdAt: string;
+  updatedAt: string;
+}>;
+export type PaymentListDto = PageDto<PaymentDto>;
+
 export type AttendanceStatusDto = 'PRESENT' | 'ABSENT' | 'JUSTIFIED';
 
 export type AttendanceDto = Readonly<{

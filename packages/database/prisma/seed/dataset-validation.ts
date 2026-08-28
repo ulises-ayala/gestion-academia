@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@prisma/client';
+import { DayOfWeek, PaymentMethod, PaymentStatus } from '@prisma/client';
 
 type Schedule = Readonly<{
   classIndex: number;
@@ -19,7 +19,18 @@ export type SeedDatasetSnapshot = Readonly<{
   schedules: readonly Schedule[];
   enrollments: readonly Enrollment[];
   attendances: readonly Readonly<{ enrollmentIndex: number; dateOffset: number }>[];
-  charges: readonly Readonly<{ enrollmentIndex: number; period: string }>[];
+  charges: readonly Readonly<{
+    enrollmentIndex: number;
+    period: string;
+    status: 'PENDING' | 'PAID' | 'VOID';
+  }>[];
+  payments: readonly Readonly<{
+    studentIndex: number;
+    amount: number;
+    status: PaymentStatus;
+    paymentMethod: PaymentMethod;
+    allocations: readonly Readonly<{ chargeIndex: number; studentIndex: number; amount: number }>[];
+  }>[];
 }>;
 
 const periodsOverlap = (left: Enrollment, right: Enrollment) =>
@@ -97,5 +108,49 @@ export const validateSeedDataset = (dataset: SeedDatasetSnapshot) => {
     const key = `${charge.enrollmentIndex}:${charge.period}`;
     if (chargeKeys.has(key)) throw new Error('Dataset inválido: existe cuota mensual duplicada.');
     chargeKeys.add(key);
+  }
+
+  const methods = new Set(Object.values(PaymentMethod));
+  for (const payment of dataset.payments) {
+    if (
+      payment.amount <= 0 ||
+      !methods.has(payment.paymentMethod) ||
+      payment.allocations.length === 0
+    )
+      throw new Error('Dataset inválido: existe un pago inválido.');
+    const chargeIds = payment.allocations.map((allocation) => allocation.chargeIndex);
+    if (new Set(chargeIds).size !== chargeIds.length)
+      throw new Error('Dataset inválido: una cuota se repite dentro del pago.');
+    if (
+      payment.allocations.some(
+        (allocation) => allocation.amount <= 0 || allocation.studentIndex !== payment.studentIndex,
+      )
+    )
+      throw new Error(
+        'Dataset inválido: una imputación no pertenece al alumno o tiene importe inválido.',
+      );
+    const total = payment.allocations.reduce((sum, allocation) => sum + allocation.amount, 0);
+    if (total !== payment.amount)
+      throw new Error('Dataset inválido: el importe del pago no coincide con sus imputaciones.');
+    if (payment.status !== PaymentStatus.CONFIRMED && payment.status !== PaymentStatus.VOID)
+      throw new Error('Dataset inválido: estado de pago inválido.');
+    for (const allocation of payment.allocations) {
+      const charge = dataset.charges[allocation.chargeIndex];
+      if (
+        !charge ||
+        dataset.enrollments[charge.enrollmentIndex]?.studentIndex !== payment.studentIndex
+      )
+        throw new Error('Dataset inválido: una imputación no pertenece a una cuota del alumno.');
+      if (payment.status === PaymentStatus.CONFIRMED && charge.status !== 'PAID')
+        throw new Error('Dataset inválido: un pago confirmado no tiene su cuota pagada.');
+      const anotherConfirmed = dataset.payments.some(
+        (candidate) =>
+          candidate !== payment &&
+          candidate.status === PaymentStatus.CONFIRMED &&
+          candidate.allocations.some((item) => item.chargeIndex === allocation.chargeIndex),
+      );
+      if (payment.status === PaymentStatus.VOID && charge.status === 'PAID' && !anotherConfirmed)
+        throw new Error('Dataset inválido: un pago anulado dejó la cuota pagada sin repago.');
+    }
   }
 };

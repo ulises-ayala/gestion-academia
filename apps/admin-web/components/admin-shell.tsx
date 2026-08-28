@@ -26,6 +26,10 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
       ],
     },
     {
+      label: 'Finanzas',
+      links: [{ href: '/payments', label: 'Pagos', permission: 'payments:read' }],
+    },
+    {
       label: 'Configuración',
       links: [
         { href: '/dance-types', label: 'Tipos de danza', permission: 'offering:manage' },
