@@ -292,6 +292,20 @@ export type PaymentDto = Readonly<{
 }>;
 export type PaymentListDto = PageDto<PaymentDto>;
 
+export type CreateStudentOnboardingDto = Readonly<{
+  student: CreateStudentDto;
+  enrollments: readonly Readonly<{ classId: string; tariffId: string }>[];
+  period?: string;
+  dueDate?: string;
+  payment?: Readonly<{ paymentMethod: PaymentMethodDto }> | null;
+}>;
+export type StudentOnboardingResultDto = Readonly<{
+  student: StudentDto;
+  enrollments: readonly EnrollmentDto[];
+  charges: readonly MonthlyChargeDto[];
+  payment: PaymentDto | null;
+}>;
+
 export type AttendanceStatusDto = 'PRESENT' | 'ABSENT' | 'JUSTIFIED';
 
 export type AttendanceDto = Readonly<{

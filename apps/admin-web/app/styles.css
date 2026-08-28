@@ -400,6 +400,60 @@ p {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-4);
 }
+.onboarding-form,
+.onboarding-classes {
+  display: grid;
+  gap: var(--space-4);
+}
+.onboarding-heading,
+.charge-summary p,
+.payment-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.onboarding-heading h2,
+.onboarding-heading p,
+.charge-summary p {
+  margin: 0;
+}
+.onboarding-fields,
+.onboarding-period {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.class-summary {
+  margin-bottom: 0;
+  color: var(--text-muted);
+}
+.charge-summary {
+  margin-top: var(--space-4);
+}
+.charge-summary p {
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+.charge-total {
+  font-size: 1rem;
+}
+.payment-options {
+  justify-content: flex-start;
+}
+.payment-options label {
+  display: flex;
+  align-items: center;
+  grid-auto-flow: column;
+}
+.payment-options input[type='radio'] {
+  width: auto;
+  min-height: auto;
+}
+.onboarding-success {
+  max-width: 44rem;
+}
 .catalog-form {
   grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
 }

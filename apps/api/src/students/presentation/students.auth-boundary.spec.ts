@@ -13,6 +13,7 @@ import { AuthController } from '../../auth/presentation/auth.controller';
 import { AuthGuard } from '../../auth/presentation/auth.guard';
 import { DomainExceptionFilter } from '../../shared/presentation/domain-exception.filter';
 import { STUDENT_REPOSITORY } from '../application/student.repository';
+import { StudentOnboardingService } from '../application/student-onboarding.service';
 import { StudentsService } from '../application/students.service';
 import { MemoryStudentRepository } from '../testing/memory-student.repository';
 import { StudentsController } from './students.controller';
@@ -61,6 +62,7 @@ describe('Students authentication boundary', () => {
       providers: [
         AuthService,
         StudentsService,
+        { provide: StudentOnboardingService, useValue: { create: async () => undefined } },
         { provide: AUTH_REPOSITORY, useClass: BoundaryAuthRepository },
         { provide: STUDENT_REPOSITORY, useClass: MemoryStudentRepository },
         { provide: APP_GUARD, useClass: AuthGuard },

@@ -105,10 +105,13 @@ El comando comprueba el protocolo y extrae de `DATABASE_URL` el nombre real de l
 
 - `GET /api/v1/students?q=&status=&page=1&pageSize=25`: buscar, filtrar y paginar.
 - `POST /api/v1/students`: crear.
+- `POST /api/v1/students/onboarding`: crear un alumno y, opcionalmente, sus inscripciones, cuotas iniciales y un único pago.
 - `GET /api/v1/students/:id`: obtener ficha.
 - `PATCH /api/v1/students/:id`: editar datos o estado.
 - `DELETE /api/v1/students/:id`: desactivar sin borrar.
 - `POST /api/v1/students/:id/reactivate`: reactivar.
+
+La pantalla **Nuevo alumno** conserva el alta sin clases y permite agregar una o varias clases con una tarifa por clase. Cada selección genera una inscripción y una cuota mensual completa, sin prorrateo. El cobro inicial es opcional; si se cobra, la API calcula el total de las cuotas y crea un solo pago con sus imputaciones. Todo el flujo compuesto se confirma o revierte como una única operación.
 
 Todos estos endpoints requieren una sesión administrativa activa.
 
