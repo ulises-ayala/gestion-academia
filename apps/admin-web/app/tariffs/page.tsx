@@ -136,7 +136,11 @@ export default function TariffsPage() {
                   <td>
                     {formatDate(item.validFrom)} – {formatDate(item.validTo)}
                   </td>
-                  <td>{item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}</td>
+                  <td>
+                    <span className={`status ${item.status.toLowerCase()}`}>
+                      {item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}
+                    </span>
+                  </td>
                   <td className="actions">
                     <PermissionGate permission="tariffs:manage">
                       <button

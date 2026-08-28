@@ -107,7 +107,11 @@ export default function UsersPage() {
                 <tr key={user.id}>
                   <td>{user.username}</td>
                   <td>{roleLabel[user.role]}</td>
-                  <td>{user.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}</td>
+                  <td>
+                    <span className={`status ${user.status.toLowerCase()}`}>
+                      {user.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </td>
                   <td>
                     <button
                       className="secondary"
