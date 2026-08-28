@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@prisma/client';
+import { DayOfWeek, PaymentMethod, PaymentStatus } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 import { validateSeedDataset, type SeedDatasetSnapshot } from './dataset-validation';
 import { students } from './seed-data';
@@ -15,7 +15,16 @@ const valid: SeedDatasetSnapshot = {
     { studentIndex: 0, classIndex: 1, startOffset: -20, endOffset: null },
   ],
   attendances: [{ enrollmentIndex: 0, dateOffset: -1 }],
-  charges: [{ enrollmentIndex: 0, period: 'current' }],
+  charges: [{ enrollmentIndex: 0, period: 'current', status: 'PAID' }],
+  payments: [
+    {
+      studentIndex: 0,
+      amount: 40000,
+      status: PaymentStatus.CONFIRMED,
+      paymentMethod: PaymentMethod.CASH,
+      allocations: [{ chargeIndex: 0, studentIndex: 0, amount: 40000 }],
+    },
+  ],
 };
 
 describe('seed dataset validation', () => {
@@ -57,4 +66,9 @@ describe('seed dataset validation', () => {
       validateSeedDataset({ ...valid, charges: [valid.charges[0]!, valid.charges[0]!] }),
     ).toThrow(/cuota mensual duplicada/);
   });
+
+  it('rechaza importes e imputaciones inconsistentes', () =>
+    expect(() =>
+      validateSeedDataset({ ...valid, payments: [{ ...valid.payments[0]!, amount: 1 }] }),
+    ).toThrow(/importe/));
 });
