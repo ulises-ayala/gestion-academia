@@ -5,7 +5,7 @@
 - **Personas:** `Student`, `Teacher`, `AdminUser`, `Role`, `Permission`.
 - **Oferta:** `DanceType`, `Class`, `ClassSchedule`, `Branch`, `Room`.
 - **Inscripciones:** `Enrollment` une `Student` y `Class` con vigencia y estado.
-- **Facturación:** `Tariff` y `MonthlyCharge`; pagos, imputaciones y descuentos quedan diferidos.
+- **Facturación:** `Tariff`, `MonthlyCharge`, `Payment` y `PaymentAllocation`; descuentos quedan diferidos.
 - **Caja:** `CashRegister`, `CashSession`, `CashMovement`, `PaymentMethod`, `MovementCategory`.
 - **Asistencia:** `StudentAttendance` pertenece a una `Enrollment`; asistencia docente queda diferida.
 - **Acceso:** `AccessAttempt` registra decisión/mecanismo sin acoplar hardware.
@@ -23,6 +23,10 @@ erDiagram
   STUDENT ||--o{ MONTHLY_CHARGE : adeuda
   ENROLLMENT ||--o{ MONTHLY_CHARGE : origina
   TARIFF ||--o{ MONTHLY_CHARGE : valoriza
+  STUDENT ||--o{ PAYMENT : realiza
+  PAYMENT ||--|{ PAYMENT_ALLOCATION : imputa
+  MONTHLY_CHARGE ||--o{ PAYMENT_ALLOCATION : recibe
+  ADMIN_USER ||--o{ PAYMENT : registra
   ENROLLMENT ||--o{ STUDENT_ATTENDANCE : registra
   ADMIN_USER ||--o{ CASH_MOVEMENT : carga
   TEACHER ||--o{ TEACHER_SETTLEMENT : liquida
@@ -68,6 +72,14 @@ erDiagram
 - La cuota congela `baseAmount`, `discountAmount` y `finalAmount`. Cambiar una tarifa después no modifica cuotas existentes.
 - `discountAmount` es cero en v1. Los estados disponibles son `PENDING`, `PAID` y `VOID`, pero v1 solamente crea `PENDING`; pagos y anulaciones se implementarán cuando existan sus reglas.
 - Las relaciones financieras usan borrado restringido y las entidades se desactivan sin eliminar el historial.
+
+## Pagos v1
+
+- `Payment` pertenece a un alumno y conserva importe, medio, instante y usuario responsable.
+- `PaymentAllocation` congela el importe completo de cada cuota; varias cuotas sólo pueden agruparse si pertenecen al mismo alumno.
+- El backend calcula con decimales exactos. No existen pagos parciales, sobrepagos ni saldo a favor.
+- El cobro bloquea cuotas y cambia `PENDING` a `PAID` atómicamente. La anulación conserva el historial, marca el pago `VOID` y devuelve las cuotas a `PENDING`.
+- Una cuota liberada puede pagarse nuevamente. Los medios v1 son `CASH`, `MERCADO_PAGO` y `CARD`; Caja queda diferida.
 
 ## Usuarios y permisos v1
 

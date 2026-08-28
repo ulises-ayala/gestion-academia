@@ -1,6 +1,6 @@
 # Gestión Academia
 
-Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1, Inscripciones v1 y Tarifas/Cuotas v1.
+Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1, Inscripciones v1, Tarifas/Cuotas v1 y Pagos v1.
 
 ## Arquitectura
 
@@ -30,7 +30,7 @@ futura app alumno ----------------^          |
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
 Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. El cupo de una clase no puede reducirse por debajo de sus inscripciones activas.
-Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Los montos quedan congelados en cada cuota. Asistencias de alumnos v1 permite tomar y corregir asistencia sobre el roster vigente de una clase y fecha. No están implementados pagos, caja, descuentos, promociones, Formación, asistencia docente, control de acceso ni liquidaciones.
+Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Pagos v1 permite cancelar una o varias cuotas completas del mismo alumno mediante efectivo, Mercado Pago o tarjeta, preservando imputaciones, actor y anulaciones. Asistencias de alumnos v1 permite tomar y corregir asistencia. No están implementados caja, pagos parciales, descuentos, promociones, Formación, asistencia docente, control de acceso ni liquidaciones.
 
 ## Stack
 
@@ -228,7 +228,16 @@ El Blueprint usa los planes gratuitos para minimizar costo. Los web services gra
 - `GET /api/v1/monthly-charges?studentId=&period=`: listar por alumno y/o período.
 - `GET /api/v1/monthly-charges/:id`: obtener detalle.
 
-Cada cuota nace `PENDING`, con descuento cero y montos históricos. No hay endpoints de pago, anulación ni generación automática.
+Cada cuota nace `PENDING`, con descuento cero y montos históricos. No existe generación automática.
+
+## API de pagos
+
+- `GET /api/v1/payments?studentId=&status=&paymentMethod=&page=1&pageSize=25`: listar pagos paginados.
+- `GET /api/v1/payments/:id`: consultar un pago con sus imputaciones.
+- `POST /api/v1/payments`: cobrar cuotas completas con `{ monthlyChargeIds, paymentMethod }`.
+- `POST /api/v1/payments/:id/void`: anular sin borrar el historial y devolver las cuotas a `PENDING`.
+
+El servidor deriva alumno, importe, imputaciones, fecha y usuario responsable. Pagos v1 no incluye Caja, devoluciones, transferencia bancaria ni pagos parciales.
 
 ## API de asistencias
 

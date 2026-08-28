@@ -388,7 +388,7 @@ p {
 .class-filters,
 .schedule-builder {
   display: grid;
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-4);
 }
 .filters {
@@ -587,6 +587,40 @@ td button.secondary {
   margin-top: var(--space-4);
   color: var(--text-muted);
   font-size: 0.82rem;
+}
+
+.selection-list,
+.payment-charge-list {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.selection-list {
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.payment-charge-list .enrollment-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  cursor: pointer;
+}
+.payment-charge-list input {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.payment-summary {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.payment-summary label {
+  min-width: 12rem;
 }
 .pagination button {
   min-height: 2.25rem;

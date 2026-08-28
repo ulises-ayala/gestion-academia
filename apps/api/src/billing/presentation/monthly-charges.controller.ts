@@ -4,6 +4,7 @@ import { parseUuid } from '../../shared/presentation/request-validation';
 import { BillingService } from '../application/billing.service';
 import { parsePeriod } from '../domain/billing';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
+import { DomainError } from '../../shared/domain/domain-error';
 
 @Controller('monthly-charges')
 export class MonthlyChargesController {
@@ -11,10 +12,14 @@ export class MonthlyChargesController {
   @Get() @Permissions('charges:read') list(
     @Query('studentId') studentId?: string,
     @Query('period') period?: string,
+    @Query('status') status?: string,
   ) {
+    if (status && status !== 'PENDING' && status !== 'PAID' && status !== 'VOID')
+      throw new DomainError('VALIDATION_ERROR', 'Estado de cuota inválido', { field: 'status' });
     return this.service.listCharges({
       ...(studentId ? { studentId: parseUuid(studentId, 'studentId') } : {}),
       ...(period ? { period: parsePeriod(period) } : {}),
+      ...(status ? { status: status as 'PENDING' | 'PAID' | 'VOID' } : {}),
     });
   }
   @Get(':id') @Permissions('charges:read') get(@Param('id') id: string) {

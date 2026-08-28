@@ -134,6 +134,7 @@ export class PrismaBillingRepository implements BillingRepository {
     const where = {
       ...(query.studentId ? { studentId: query.studentId } : {}),
       ...(query.period ? { period: new Date(`${query.period}T00:00:00.000Z`) } : {}),
+      ...(query.status ? { status: query.status } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
       this.prisma.monthlyCharge.findMany({

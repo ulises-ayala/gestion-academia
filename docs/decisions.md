@@ -146,6 +146,17 @@
 
 80. **Cuentas demo de staging:** los tres roles usan identidades reservadas `demo-*` y una contraseña recibida únicamente mediante `STAGING_SEED_PASSWORD`, validada y hasheada con las mismas funciones de la aplicación. No existe valor predeterminado ni se registra el secreto.
 
+## Decisiones de Pagos v1
+
+81. **Cuotas completas y mismo alumno:** un `Payment` cancela una o varias cuotas completas pertenecientes a un único alumno. No existen pagos parciales, crédito ni sobrepago.
+82. **Importe bajo autoridad del servidor:** el cliente envía solamente IDs de cuotas y medio. El servidor copia cada `finalAmount`, suma con `Decimal` y deriva `studentId`.
+83. **Actor y fecha reales:** `createdByUserId` proviene de `CurrentUser` y `paidAt` del reloj del servidor; v1 no admite fechas retroactivas.
+84. **Medio único confirmado:** cada pago usa exactamente uno entre efectivo, Mercado Pago o tarjeta. Transferencia y medios combinados quedan diferidos.
+85. **Concurrencia de cobro:** las cuotas se ordenan y bloquean dentro de una transacción serializable con reintentos de `P2034`; después del lock se revalida `PENDING`.
+86. **Anulación histórica:** un pago nunca se elimina. Anularlo lo marca `VOID`, registra actor/instante y devuelve sus cuotas a `PENDING`.
+87. **Repago permitido:** una cuota liberada puede pagarse nuevamente; la unicidad se limita a `paymentId + monthlyChargeId`.
+88. **Caja diferida:** `Payment` queda como fuente financiera futura, pero Pagos v1 no crea sesiones ni movimientos de caja.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
