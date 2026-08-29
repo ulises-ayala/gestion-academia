@@ -198,11 +198,11 @@ export default function StudentDetailPage() {
               <tbody>
                 {charges.map((charge) => (
                   <tr key={charge.id}>
-                    <td>{charge.period}</td>
-                    <td>{charge.academicClass.name}</td>
-                    <td>{money(charge.finalAmount)}</td>
-                    <td>{formatDate(charge.dueDate)}</td>
-                    <td>{chargeStatus[charge.status]}</td>
+                    <td data-label="Período">{charge.period}</td>
+                    <td data-label="Clase">{charge.academicClass.name}</td>
+                    <td data-label="Importe">{money(charge.finalAmount)}</td>
+                    <td data-label="Vencimiento">{formatDate(charge.dueDate)}</td>
+                    <td data-label="Estado">{chargeStatus[charge.status]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -228,12 +228,12 @@ export default function StudentDetailPage() {
               <tbody>
                 {history.map((item) => (
                   <tr key={item.id}>
-                    <td>{item.academicClass.name}</td>
-                    <td>
+                    <td data-label="Clase">{item.academicClass.name}</td>
+                    <td data-label="Profesor">
                       {item.academicClass.teacher.firstName} {item.academicClass.teacher.lastName}
                     </td>
-                    <td>{formatDate(item.startDate)}</td>
-                    <td>{formatDate(item.endDate)}</td>
+                    <td data-label="Inicio">{formatDate(item.startDate)}</td>
+                    <td data-label="Fin">{formatDate(item.endDate)}</td>
                   </tr>
                 ))}
               </tbody>

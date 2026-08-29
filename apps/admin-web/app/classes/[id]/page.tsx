@@ -143,13 +143,13 @@ export default function ClassDetailPage() {
               <tbody>
                 {enrollments.items.map((enrollment) => (
                   <tr key={enrollment.id}>
-                    <td>
+                    <td data-label="Alumno">
                       {enrollment.student.firstName} {enrollment.student.lastName}
                     </td>
-                    <td>{enrollment.student.dni}</td>
-                    <td>{enrollment.student.phone ?? '—'}</td>
-                    <td>{formatDate(enrollment.startDate)}</td>
-                    <td>
+                    <td data-label="DNI">{enrollment.student.dni}</td>
+                    <td data-label="Teléfono">{enrollment.student.phone ?? '—'}</td>
+                    <td data-label="Desde">{formatDate(enrollment.startDate)}</td>
+                    <td data-label="Acciones">
                       <Link className="text-link" href={`/students/${enrollment.studentId}`}>
                         Ver ficha
                       </Link>

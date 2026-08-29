@@ -136,16 +136,16 @@ export default function Page() {
             <tbody>
               {data.items.map((item) => (
                 <tr key={item.id}>
-                  <td>
+                  <td data-label="Clase">
                     <strong>{item.name}</strong>
                     <br />
                     {item.level ?? '—'}
                   </td>
-                  <td>{item.danceType.name}</td>
-                  <td>
+                  <td data-label="Danza">{item.danceType.name}</td>
+                  <td data-label="Profesor">
                     {item.teacher.firstName} {item.teacher.lastName}
                   </td>
-                  <td>
+                  <td data-label="Horarios">
                     {item.schedules
                       .map(
                         (s) =>
@@ -153,15 +153,15 @@ export default function Page() {
                       )
                       .join(' | ')}
                   </td>
-                  <td>
+                  <td data-label="Cupo">
                     {item.activeEnrollmentCount ?? 0} / {item.capacity}
                   </td>
-                  <td>
+                  <td data-label="Estado">
                     <span className={`status ${item.status.toLowerCase()}`}>
                       {item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}
                     </span>
                   </td>
-                  <td>
+                  <td data-label="Acción">
                     <Link className="text-link" href={`/classes/${item.id}`}>
                       Ver
                     </Link>

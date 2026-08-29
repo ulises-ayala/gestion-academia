@@ -76,17 +76,17 @@ export default function TeachersPage() {
             <tbody>
               {data.items.map((item) => (
                 <tr key={item.id}>
-                  <td>
+                  <td data-label="Profesor">
                     {item.lastName}, {item.firstName}
                   </td>
-                  <td>{item.dni}</td>
-                  <td>{item.email || item.phone || '—'}</td>
-                  <td>
+                  <td data-label="DNI">{item.dni}</td>
+                  <td data-label="Contacto">{item.email || item.phone || '—'}</td>
+                  <td data-label="Estado">
                     <span className={`status ${item.status.toLowerCase()}`}>
                       {item.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
-                  <td>
+                  <td data-label="Acción">
                     <Link className="text-link" href={`/teachers/${item.id}`}>
                       Ver ficha
                     </Link>
