@@ -62,8 +62,23 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
     return attendance ? toDomain(attendance) : null;
   }
 
-  async update(id: string, input: AttendanceUpdateInput) {
-    return toDomain(await this.prisma.studentAttendance.update({ where: { id }, data: input }));
+  async update(id: string, input: AttendanceUpdateInput, actorId?: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const before = await tx.studentAttendance.findUniqueOrThrow({ where: { id } });
+      const updated = await tx.studentAttendance.update({ where: { id }, data: input });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: 'CORRECTION',
+            entityType: 'ATTENDANCE',
+            entityId: id,
+            before: { status: before.status, notes: before.notes },
+            after: { status: updated.status, notes: updated.notes },
+          },
+        });
+      return toDomain(updated);
+    });
   }
 
   async list(filters: AttendanceListFilters) {

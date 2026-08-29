@@ -77,6 +77,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
 
   const cleanupFixture = async (fixture: Awaited<ReturnType<typeof createFixture>>) => {
     await prisma.$transaction(async (tx) => {
+      await tx.auditLog.deleteMany({ where: { actorUserId: fixture.actor.id } });
       const paymentIds = (
         await tx.payment.findMany({
           where: { allocations: { some: { monthlyChargeId: fixture.charge.id } } },
@@ -136,7 +137,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
     const fixture = await createFixture();
     try {
       const first = await repository.create([fixture.charge.id], 'CASH', fixture.actor.id);
-      const voided = await repository.void(first.id, fixture.actor.id);
+      const voided = await repository.void(first.id, fixture.actor.id, 'Pago registrado por error');
       const second = await repository.create([fixture.charge.id], 'CARD', fixture.actor.id);
       expect(voided).toMatchObject({
         status: 'VOID',

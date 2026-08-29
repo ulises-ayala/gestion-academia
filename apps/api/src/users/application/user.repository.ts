@@ -21,5 +21,6 @@ export interface UserRepository {
       role: AdminRoleDto;
       status: RecordStatusDto;
     },
+    actorId?: string,
   ): Promise<AdminUserDto>;
 }

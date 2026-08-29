@@ -31,7 +31,7 @@ export class CatalogService {
       );
     return this.repo.createDanceType(data);
   }
-  async updateDanceType(id: string, patch: UpdateDanceTypeDto) {
+  async updateDanceType(id: string, patch: UpdateDanceTypeDto, actorId?: string) {
     const current = await this.getDanceType(id);
     if (
       patch.status === 'INACTIVE' &&
@@ -54,7 +54,7 @@ export class CatalogService {
         'Ya existe un tipo de danza con ese nombre',
         { field: 'name' },
       );
-    return this.repo.updateDanceType(id, data);
+    return this.repo.updateDanceType(id, data, actorId);
   }
 
   listBranches(status?: Status) {
@@ -68,7 +68,7 @@ export class CatalogService {
   async createBranch(input: CreateBranchDto) {
     return this.repo.createBranch(validateBranch(input));
   }
-  async updateBranch(id: string, patch: UpdateBranchDto) {
+  async updateBranch(id: string, patch: UpdateBranchDto, actorId?: string) {
     const current = await this.getBranch(id);
     if (
       patch.status === 'INACTIVE' &&
@@ -86,6 +86,7 @@ export class CatalogService {
         address: patch.address ?? current.address,
         status: patch.status ?? current.status,
       }),
+      actorId,
     );
   }
 
@@ -108,7 +109,7 @@ export class CatalogService {
       );
     return this.repo.createRoom(data);
   }
-  async updateRoom(id: string, patch: UpdateRoomDto) {
+  async updateRoom(id: string, patch: UpdateRoomDto, actorId?: string) {
     const current = await this.getRoom(id);
     if (
       patch.status === 'INACTIVE' &&
@@ -131,6 +132,6 @@ export class CatalogService {
       throw new DomainError('BRANCH_INACTIVE', 'La sucursal seleccionada está inactiva', {
         field: 'branchId',
       });
-    return this.repo.updateRoom(id, data);
+    return this.repo.updateRoom(id, data, actorId);
   }
 }

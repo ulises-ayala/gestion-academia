@@ -7,6 +7,8 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { parsePage, parseUuid } from '../../shared/presentation/request-validation';
 import { EnrollmentsService } from '../application/enrollments.service';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
+import { CurrentUser } from '../../auth/presentation/current-user.decorator';
+import type { PublicAuthUser } from '../../auth/application/auth.repository';
 
 @Controller('enrollments')
 @Permissions('enrollments:manage')
@@ -37,7 +39,11 @@ export class EnrollmentsController {
       classId: parseUuid(body.classId),
     });
   }
-  @Post(':id/end') end(@Param('id') id: string, @Body() body: EndEnrollmentDto) {
-    return this.service.end(parseUuid(id), body);
+  @Post(':id/end') end(
+    @Param('id') id: string,
+    @Body() body: EndEnrollmentDto,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.end(parseUuid(id), body, user.id);
   }
 }

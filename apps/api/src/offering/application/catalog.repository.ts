@@ -10,12 +10,17 @@ export interface CatalogRepository {
   updateDanceType(
     id: string,
     data: Omit<DanceType, 'id' | 'createdAt' | 'updatedAt'>,
+    actorId?: string,
   ): Promise<DanceType>;
   danceTypeHasActiveClasses(id: string): Promise<boolean>;
   listBranches(status?: CatalogStatus): Promise<Branch[]>;
   findBranch(id: string): Promise<Branch | null>;
   createBranch(data: Omit<Branch, 'id' | 'createdAt' | 'updatedAt'>): Promise<Branch>;
-  updateBranch(id: string, data: Omit<Branch, 'id' | 'createdAt' | 'updatedAt'>): Promise<Branch>;
+  updateBranch(
+    id: string,
+    data: Omit<Branch, 'id' | 'createdAt' | 'updatedAt'>,
+    actorId?: string,
+  ): Promise<Branch>;
   branchHasActiveRooms(id: string): Promise<boolean>;
   listRooms(status?: CatalogStatus, branchId?: string): Promise<RoomWithBranch[]>;
   findRoom(id: string): Promise<RoomWithBranch | null>;
@@ -23,6 +28,7 @@ export interface CatalogRepository {
   updateRoom(
     id: string,
     data: Omit<Room, 'id' | 'createdAt' | 'updatedAt'>,
+    actorId?: string,
   ): Promise<RoomWithBranch>;
   roomHasActiveSchedules(id: string): Promise<boolean>;
 }

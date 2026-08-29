@@ -19,7 +19,7 @@ export class BillingService {
   createTariff(input: CreateTariffDto) {
     return this.repository.createTariff(validateTariff(input));
   }
-  async updateTariff(id: string, patch: UpdateTariffDto) {
+  async updateTariff(id: string, patch: UpdateTariffDto, actorId?: string) {
     const current = await this.getTariff(id);
     return this.repository.updateTariff(
       id,
@@ -30,6 +30,7 @@ export class BillingService {
         validTo: patch.validTo === undefined ? current.validTo : patch.validTo,
         status: patch.status ?? current.status,
       }),
+      actorId,
     );
   }
 

@@ -26,7 +26,7 @@ export class TeachersService {
       });
     return this.repository.create(data);
   }
-  async update(id: string, patch: Partial<TeacherInput>) {
+  async update(id: string, patch: Partial<TeacherInput>, actorId?: string) {
     const current = await this.get(id);
     if (
       patch.status === 'INACTIVE' &&
@@ -51,12 +51,12 @@ export class TeachersService {
       throw new DomainError('DNI_ALREADY_EXISTS', 'Ya existe un profesor con ese DNI', {
         field: 'dni',
       });
-    return this.repository.update(id, data);
+    return this.repository.update(id, data, actorId);
   }
-  deactivate(id: string) {
-    return this.update(id, { status: 'INACTIVE' });
+  deactivate(id: string, actorId?: string) {
+    return this.update(id, { status: 'INACTIVE' }, actorId);
   }
-  reactivate(id: string) {
-    return this.update(id, { status: 'ACTIVE' });
+  reactivate(id: string, actorId?: string) {
+    return this.update(id, { status: 'ACTIVE' }, actorId);
   }
 }

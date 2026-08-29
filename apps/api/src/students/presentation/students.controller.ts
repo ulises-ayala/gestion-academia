@@ -90,19 +90,23 @@ export class StudentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() input: UpdateStudentDto) {
-    return this.students.update(this.parseId(id), input);
+  update(
+    @Param('id') id: string,
+    @Body() input: UpdateStudentDto,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.students.update(this.parseId(id), input, user?.id);
   }
 
   @Delete(':id')
   @HttpCode(200)
-  deactivate(@Param('id') id: string) {
-    return this.students.deactivate(this.parseId(id));
+  deactivate(@Param('id') id: string, @CurrentUser() user: PublicAuthUser) {
+    return this.students.deactivate(this.parseId(id), user?.id);
   }
 
   @Post(':id/reactivate')
-  reactivate(@Param('id') id: string) {
-    return this.students.reactivate(this.parseId(id));
+  reactivate(@Param('id') id: string, @CurrentUser() user: PublicAuthUser) {
+    return this.students.reactivate(this.parseId(id), user?.id);
   }
 
   private parseId(id: string): string {

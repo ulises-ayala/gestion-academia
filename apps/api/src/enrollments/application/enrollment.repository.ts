@@ -15,7 +15,7 @@ export interface EnrollmentRepository {
     query: EnrollmentQuery,
   ): Promise<{ items: EnrollmentDto[]; total: number; page: number; pageSize: number }>;
   create(input: { studentId: string; classId: string; startDate: Date }): Promise<EnrollmentDto>;
-  end(id: string, endDate: Date): Promise<EnrollmentDto>;
+  end(id: string, endDate: Date, actorId?: string): Promise<EnrollmentDto>;
   hasActiveForStudent(studentId: string): Promise<boolean>;
   hasActiveForClass(classId: string): Promise<boolean>;
 }
