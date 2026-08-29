@@ -205,3 +205,12 @@
 - Administración y Dirección poseen `audit:read`; Admisión no puede consultar el historial.
 - Auditoría de negocio no reemplaza logs técnicos u observabilidad. No se auditan lecturas, búsquedas, sesiones, cargas de páginas ni la creación inicial habitual de asistencias.
 - No existe borrado ni política de retención automática para auditoría en v1.
+
+## Decisiones de ficha integral del alumno v1
+
+102. **Composición sobre recursos existentes:** la ficha 360 combina alumno, inscripciones, cuotas, pagos y asistencias sin crear un agregado general ni persistencia nuevos. Asistencias amplía su listado con filtros `studentId` y `limit`; Payments expone una agregación read-only del total confirmado. Así se evitan consultas por cada clase y la carga de todo el historial de pagos.
+103. **Métricas derivadas y fecha de negocio:** clases activas, deuda, vencimientos y total pagado se calculan en la interfaz a partir de datos autorizados por la API. Una cuota vence cuando sigue pendiente y su fecha es anterior al día de negocio de Buenos Aires; los pagos anulados no integran el total pagado.
+104. **Historia sin snapshots implícitos:** las inscripciones finalizadas conservan clase y fechas, pero la ficha no presenta al profesor actual como si fuera necesariamente el profesor histórico. No se agregan snapshots ni migraciones.
+105. **Visibilidad por capacidades:** cada bloque y acción respeta los permisos existentes. Ocultar una opción en la interfaz no reemplaza la autorización de la API.
+106. **Alcance administrativo confirmado:** la ficha reutiliza los casos de uso vigentes para editar, cambiar estado y finalizar inscripciones, incluidos sus registros de auditoría. No incorpora pausas, becas, motivos de baja, alertas automáticas ni acciones financieras nuevas.
+107. **Asistencia observada, no esperada:** el resumen cuenta únicamente registros recientes `PRESENT`, `ABSENT` y `JUSTIFIED`. No calcula porcentajes ni sesiones esperadas porque el modelo no representa todas las ocurrencias reales de una clase.

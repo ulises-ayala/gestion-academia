@@ -16,6 +16,21 @@ const attendance = {
 };
 
 describe('PrismaAttendanceRepository', () => {
+  it('lista las asistencias recientes de un alumno sin consultar una clase por vez', async () => {
+    const studentId = crypto.randomUUID();
+    const findMany = vi.fn(async () => [attendance]);
+    const repository = new PrismaAttendanceRepository({
+      studentAttendance: { findMany },
+    } as unknown as PrismaService);
+
+    await expect(repository.list({ studentId, limit: 10 })).resolves.toHaveLength(1);
+    expect(findMany).toHaveBeenCalledWith({
+      where: { enrollment: { studentId } },
+      orderBy: [{ attendanceDate: 'desc' }, { createdAt: 'asc' }],
+      take: 10,
+    });
+  });
+
   it('traduce la carrera de unicidad P2002 a conflicto de dominio', async () => {
     const prisma = {
       studentAttendance: {

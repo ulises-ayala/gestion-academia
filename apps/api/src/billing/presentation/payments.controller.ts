@@ -2,6 +2,7 @@ import type {
   CreatePaymentDto,
   PaymentMethodDto,
   PaymentStatusDto,
+  PaymentSummaryDto,
   VoidPaymentDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
@@ -43,6 +44,12 @@ export class PaymentsController {
       page: parsePage(page, 'page', 1, 1_000_000),
       pageSize: parsePage(pageSize, 'pageSize', 25, 100),
     });
+  }
+
+  @Get('summary')
+  @Permissions('payments:read')
+  summary(@Query('studentId') studentId: string): Promise<PaymentSummaryDto> {
+    return this.service.summary(parseUuid(studentId, 'studentId'));
   }
 
   @Get(':id')
