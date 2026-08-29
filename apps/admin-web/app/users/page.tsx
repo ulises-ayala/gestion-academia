@@ -105,14 +105,14 @@ export default function UsersPage() {
             <tbody>
               {users.map((user) => (
                 <tr key={user.id}>
-                  <td>{user.username}</td>
-                  <td>{roleLabel[user.role]}</td>
-                  <td>
+                  <td data-label="Usuario">{user.username}</td>
+                  <td data-label="Rol">{roleLabel[user.role]}</td>
+                  <td data-label="Estado">
                     <span className={`status ${user.status.toLowerCase()}`}>
                       {user.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
-                  <td>
+                  <td data-label="Acciones">
                     <button
                       className="secondary"
                       disabled={user.id === actor.id}

@@ -84,14 +84,14 @@ export default function Page() {
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.description ?? '—'}</td>
-                <td>
+                <td data-label="Nombre">{item.name}</td>
+                <td data-label="Descripción">{item.description ?? '—'}</td>
+                <td data-label="Estado">
                   <span className={`status ${item.status.toLowerCase()}`}>
                     {item.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
                   </span>
                 </td>
-                <td className="actions">
+                <td className="actions" data-label="Acciones">
                   <button
                     className="secondary"
                     onClick={() => {

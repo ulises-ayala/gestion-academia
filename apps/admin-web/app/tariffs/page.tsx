@@ -131,17 +131,17 @@ export default function TariffsPage() {
             <tbody>
               {items.map((item) => (
                 <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td>{money(item.amount)}</td>
-                  <td>
+                  <td data-label="Nombre">{item.name}</td>
+                  <td data-label="Monto">{money(item.amount)}</td>
+                  <td data-label="Vigencia">
                     {formatDate(item.validFrom)} – {formatDate(item.validTo)}
                   </td>
-                  <td>
+                  <td data-label="Estado">
                     <span className={`status ${item.status.toLowerCase()}`}>
                       {item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}
                     </span>
                   </td>
-                  <td className="actions">
+                  <td className="actions" data-label="Acciones">
                     <PermissionGate permission="tariffs:manage">
                       <button
                         className="secondary"
