@@ -57,6 +57,15 @@ export default function PaymentsPage() {
         .catch(() => setMessage('No se pudo seleccionar el alumno indicado.'));
   }, [loadStudent]);
 
+  useEffect(() => {
+    if (!voidTarget) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !voiding) setVoidTarget(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [voidTarget, voiding]);
+
   async function search(event: FormEvent) {
     event.preventDefault();
     setMessage('');
@@ -297,7 +306,12 @@ export default function PaymentsPage() {
         </>
       )}
       {voidTarget && (
-        <div className="modal-backdrop">
+        <div
+          className="modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !voiding) setVoidTarget(null);
+          }}
+        >
           <section
             aria-labelledby="void-title"
             aria-modal="true"
@@ -305,7 +319,7 @@ export default function PaymentsPage() {
             role="dialog"
           >
             <h2 id="void-title">Anular pago</h2>
-            <p>Esta operación devolverá las cuotas asociadas a estado pendiente.</p>
+            <p className="modal-copy">Indicá por qué necesitás anular este pago.</p>
             <label>
               Motivo
               <textarea
@@ -316,12 +330,19 @@ export default function PaymentsPage() {
                 placeholder="Pago registrado por error"
               />
             </label>
-            <p>Esta acción conservará el pago en el historial como anulado.</p>
+            <p className="modal-note">
+              El pago se conservará en el historial como anulado y las cuotas volverán a quedar
+              pendientes.
+            </p>
             <div className="modal-actions">
               <button className="secondary" disabled={voiding} onClick={() => setVoidTarget(null)}>
                 Cancelar
               </button>
-              <button disabled={!voidReason.trim() || voiding} onClick={() => void voidPayment()}>
+              <button
+                className="danger-button"
+                disabled={!voidReason.trim() || voiding}
+                onClick={() => void voidPayment()}
+              >
                 {voiding ? 'Anulando…' : 'Anular pago'}
               </button>
             </div>
