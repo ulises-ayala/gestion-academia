@@ -85,9 +85,17 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
     const attendances = await this.prisma.studentAttendance.findMany({
       where: {
         ...(filters.attendanceDate ? { attendanceDate: filters.attendanceDate } : {}),
-        ...(filters.classId ? { enrollment: { classId: filters.classId } } : {}),
+        ...(filters.classId || filters.studentId
+          ? {
+              enrollment: {
+                ...(filters.classId ? { classId: filters.classId } : {}),
+                ...(filters.studentId ? { studentId: filters.studentId } : {}),
+              },
+            }
+          : {}),
       },
       orderBy: [{ attendanceDate: 'desc' }, { createdAt: 'asc' }],
+      ...(filters.limit ? { take: filters.limit } : {}),
     });
     return attendances.map(toDomain);
   }
