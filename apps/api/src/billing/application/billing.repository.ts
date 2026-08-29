@@ -20,6 +20,7 @@ export interface BillingRepository {
   updateTariff(
     id: string,
     data: Omit<TariffDto, 'id' | 'createdAt' | 'updatedAt'>,
+    actorId?: string,
   ): Promise<TariffDto>;
   findEnrollment(id: string): Promise<EnrollmentForCharge | null>;
   createCharge(data: {

@@ -9,7 +9,7 @@ export type TeacherQuery = Readonly<{
 }>;
 export interface TeacherRepository {
   create(data: TeacherWrite): Promise<TeacherData>;
-  update(id: string, data: TeacherWrite): Promise<TeacherData>;
+  update(id: string, data: TeacherWrite, actorId?: string): Promise<TeacherData>;
   findById(id: string): Promise<TeacherData | null>;
   findByDni(dni: string): Promise<TeacherData | null>;
   findPage(

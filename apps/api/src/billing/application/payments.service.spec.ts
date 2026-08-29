@@ -80,7 +80,9 @@ describe('PaymentsService', () => {
   it('conserva el pago anulado en el historial', async () => {
     const repository = new MemoryPayments();
     const service = new PaymentsService(repository);
-    await expect(service.void(repository.item.id, actorId)).resolves.toMatchObject({
+    await expect(
+      service.void(repository.item.id, actorId, 'Pago registrado por error'),
+    ).resolves.toMatchObject({
       status: 'VOID',
       allocations: [{ monthlyChargeId: chargeId }],
     });

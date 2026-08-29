@@ -16,6 +16,8 @@ import { parseUuid } from '../../shared/presentation/request-validation';
 import { AttendancesService } from '../application/attendances.service';
 import type { AttendanceData } from '../domain/attendance';
 import { parseAttendanceDate } from '../domain/attendance';
+import { CurrentUser } from '../../auth/presentation/current-user.decorator';
+import type { PublicAuthUser } from '../../auth/application/auth.repository';
 
 const toDto = (attendance: AttendanceData): AttendanceDto => ({
   id: attendance.id,
@@ -139,7 +141,8 @@ export class AttendancesController {
   async update(
     @Param('id') id: string,
     @Body() input: UpdateAttendanceDto,
+    @CurrentUser() user: PublicAuthUser,
   ): Promise<AttendanceDto> {
-    return toDto(await this.service.update(parseUuid(id), input));
+    return toDto(await this.service.update(parseUuid(id), input, user.id));
   }
 }

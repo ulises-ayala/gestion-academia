@@ -24,7 +24,8 @@ export type UiPermission =
   | 'reports:operational'
   | 'reports:all'
   | 'settlements:manage'
-  | 'settlements:approve';
+  | 'settlements:approve'
+  | 'audit:read';
 
 const admissionPermissions: readonly UiPermission[] = [
   'students:manage',
@@ -51,6 +52,7 @@ const administrationPermissions: readonly UiPermission[] = [
   'trainings:manage',
   'reports:operational',
   'settlements:manage',
+  'audit:read',
 ];
 
 const byRole: Readonly<Record<AdminRoleDto, readonly UiPermission[]>> = {

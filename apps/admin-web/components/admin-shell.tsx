@@ -40,7 +40,10 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     },
     {
       label: 'Administración',
-      links: [{ href: '/users', label: 'Usuarios', permission: 'users:manage' }],
+      links: [
+        { href: '/users', label: 'Usuarios', permission: 'users:manage' },
+        { href: '/audit', label: 'Auditoría', permission: 'audit:read' },
+      ],
     },
   ];
   const initials = user.username.slice(0, 2).toUpperCase();

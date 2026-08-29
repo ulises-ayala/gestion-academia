@@ -73,17 +73,46 @@ export class PrismaBillingRepository implements BillingRepository {
       }),
     );
   }
-  async updateTariff(id: string, data: Omit<TariffDto, 'id' | 'createdAt' | 'updatedAt'>) {
-    return mapTariff(
-      await this.prisma.tariff.update({
+  async updateTariff(
+    id: string,
+    data: Omit<TariffDto, 'id' | 'createdAt' | 'updatedAt'>,
+    actorId?: string,
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const before = await tx.tariff.findUniqueOrThrow({ where: { id } });
+      const updated = await tx.tariff.update({
         where: { id },
         data: {
           ...data,
           validFrom: new Date(`${data.validFrom}T00:00:00.000Z`),
           validTo: data.validTo ? new Date(`${data.validTo}T00:00:00.000Z`) : null,
         },
-      }),
-    );
+      });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: before.status !== updated.status ? 'STATUS_CHANGE' : 'UPDATE',
+            entityType: 'TARIFF',
+            entityId: id,
+            before: {
+              name: before.name,
+              amount: before.amount.toFixed(2),
+              validFrom: isoDate(before.validFrom),
+              validTo: before.validTo ? isoDate(before.validTo) : null,
+              status: before.status,
+            },
+            after: {
+              name: updated.name,
+              amount: updated.amount.toFixed(2),
+              validFrom: isoDate(updated.validFrom),
+              validTo: updated.validTo ? isoDate(updated.validTo) : null,
+              status: updated.status,
+            },
+          },
+        });
+      return mapTariff(updated);
+    });
   }
   findEnrollment(id: string) {
     return this.prisma.enrollment.findUnique({

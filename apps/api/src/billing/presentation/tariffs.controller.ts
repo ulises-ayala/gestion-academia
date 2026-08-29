@@ -14,6 +14,8 @@ import {
 import { parseStatus, parseUuid } from '../../shared/presentation/request-validation';
 import { BillingService } from '../application/billing.service';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
+import { CurrentUser } from '../../auth/presentation/current-user.decorator';
+import type { PublicAuthUser } from '../../auth/application/auth.repository';
 
 @Controller('tariffs')
 export class TariffsController {
@@ -33,13 +35,20 @@ export class TariffsController {
   @Patch(':id') @Permissions('tariffs:manage') update(
     @Param('id') id: string,
     @Body() input: UpdateTariffDto,
+    @CurrentUser() user: PublicAuthUser,
   ) {
-    return this.service.updateTariff(parseUuid(id), input);
+    return this.service.updateTariff(parseUuid(id), input, user.id);
   }
-  @Delete(':id') @HttpCode(200) @Permissions('tariffs:manage') deactivate(@Param('id') id: string) {
-    return this.service.updateTariff(parseUuid(id), { status: 'INACTIVE' });
+  @Delete(':id') @HttpCode(200) @Permissions('tariffs:manage') deactivate(
+    @Param('id') id: string,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.updateTariff(parseUuid(id), { status: 'INACTIVE' }, user.id);
   }
-  @Post(':id/reactivate') @Permissions('tariffs:manage') reactivate(@Param('id') id: string) {
-    return this.service.updateTariff(parseUuid(id), { status: 'ACTIVE' });
+  @Post(':id/reactivate') @Permissions('tariffs:manage') reactivate(
+    @Param('id') id: string,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.updateTariff(parseUuid(id), { status: 'ACTIVE' }, user.id);
   }
 }

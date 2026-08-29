@@ -36,7 +36,7 @@ export class StudentsService {
     return this.repository.create(data);
   }
 
-  async update(id: string, patch: Partial<StudentInput>): Promise<StudentData> {
+  async update(id: string, patch: Partial<StudentInput>, actorId?: string): Promise<StudentData> {
     const current = await this.get(id);
     const input: StudentInput = {
       dni: patch.dni ?? current.dni,
@@ -58,16 +58,16 @@ export class StudentsService {
         field: 'dni',
       });
     }
-    return this.repository.update(id, data);
+    return this.repository.update(id, data, actorId);
   }
 
-  async deactivate(id: string): Promise<StudentData> {
+  async deactivate(id: string, actorId?: string): Promise<StudentData> {
     await this.get(id);
     await this.enrollments?.assertStudentCanDeactivate(id);
-    return this.update(id, { status: 'INACTIVE' });
+    return this.update(id, { status: 'INACTIVE' }, actorId);
   }
 
-  async reactivate(id: string): Promise<StudentData> {
-    return this.update(id, { status: 'ACTIVE' });
+  async reactivate(id: string, actorId?: string): Promise<StudentData> {
+    return this.update(id, { status: 'ACTIVE' }, actorId);
   }
 }

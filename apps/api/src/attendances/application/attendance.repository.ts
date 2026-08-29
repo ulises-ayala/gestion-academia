@@ -66,7 +66,7 @@ export interface AttendanceRepository {
     attendanceDate: Date,
   ): Promise<AttendanceData | null>;
 
-  update(id: string, input: AttendanceUpdateInput): Promise<AttendanceData>;
+  update(id: string, input: AttendanceUpdateInput, actorId?: string): Promise<AttendanceData>;
 
   list(filters: AttendanceListFilters): Promise<readonly AttendanceData[]>;
 
