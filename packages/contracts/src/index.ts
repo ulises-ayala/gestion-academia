@@ -291,6 +291,7 @@ export type PaymentDto = Readonly<{
   updatedAt: string;
 }>;
 export type PaymentListDto = PageDto<PaymentDto>;
+export type PaymentSummaryDto = Readonly<{ confirmedTotal: string }>;
 export type VoidPaymentDto = Readonly<{ reason: string }>;
 
 export type AuditActionDto =

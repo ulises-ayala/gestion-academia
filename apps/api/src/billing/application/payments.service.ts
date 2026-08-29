@@ -36,6 +36,10 @@ export class PaymentsService {
     return this.repository.findPage(query);
   }
 
+  async summary(studentId: string) {
+    return { confirmedTotal: await this.repository.confirmedTotal(studentId) };
+  }
+
   void(id: string, actorId: string, reason: unknown) {
     return this.repository.void(id, actorId, validateReason(reason));
   }
