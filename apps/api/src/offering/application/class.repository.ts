@@ -39,7 +39,12 @@ export interface ClassRepository {
     readonly { id: string; status: 'ACTIVE' | 'INACTIVE'; branchStatus: 'ACTIVE' | 'INACTIVE' }[]
   >;
   create(data: ValidClassInput): Promise<ClassData>;
-  update(id: string, data: ValidClassInput, validateCapacity?: boolean): Promise<ClassData>;
+  update(
+    id: string,
+    data: ValidClassInput,
+    validateCapacity?: boolean,
+    actorId?: string,
+  ): Promise<ClassData>;
   findPage(
     query: ClassQuery,
   ): Promise<{ items: ClassData[]; total: number; page: number; pageSize: number }>;

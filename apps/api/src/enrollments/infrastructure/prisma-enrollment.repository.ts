@@ -199,14 +199,33 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
       'No se pudo confirmar la inscripción. Intentá nuevamente.',
     );
   }
-  async end(id: string, endDate: Date) {
-    return map(
-      await this.prisma.enrollment.update({
+  async end(id: string, endDate: Date, actorId?: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const before = await tx.enrollment.findUniqueOrThrow({ where: { id } });
+      const updated = await tx.enrollment.update({
         where: { id },
         data: { status: 'ENDED', endDate },
         include,
-      }),
-    );
+      });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: 'END',
+            entityType: 'ENROLLMENT',
+            entityId: id,
+            before: {
+              status: before.status,
+              endDate: before.endDate?.toISOString().slice(0, 10) ?? null,
+            },
+            after: {
+              status: updated.status,
+              endDate: updated.endDate?.toISOString().slice(0, 10) ?? null,
+            },
+          },
+        });
+      return map(updated);
+    });
   }
   async hasActiveForStudent(studentId: string) {
     return (await this.prisma.enrollment.count({ where: { studentId, status: 'ACTIVE' } })) > 0;

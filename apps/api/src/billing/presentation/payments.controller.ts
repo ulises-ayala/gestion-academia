@@ -1,4 +1,9 @@
-import type { CreatePaymentDto, PaymentMethodDto, PaymentStatusDto } from '@academy/contracts';
+import type {
+  CreatePaymentDto,
+  PaymentMethodDto,
+  PaymentStatusDto,
+  VoidPaymentDto,
+} from '@academy/contracts';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
 import { CurrentUser } from '../../auth/presentation/current-user.decorator';
@@ -60,7 +65,7 @@ export class PaymentsController {
 
   @Post(':id/void')
   @Permissions('payments:void')
-  void(@Param('id') id: string, @CurrentUser() user: PublicAuthUser) {
-    return this.service.void(parseUuid(id), user.id);
+  void(@Param('id') id: string, @Body() body: VoidPaymentDto, @CurrentUser() user: PublicAuthUser) {
+    return this.service.void(parseUuid(id), user.id, body?.reason);
   }
 }

@@ -23,7 +23,7 @@ export class ClassesService {
     await this.validateReferences(data);
     return this.repo.create(data);
   }
-  async update(id: string, patch: UpdateClassDto) {
+  async update(id: string, patch: UpdateClassDto, actorId?: string) {
     const current = await this.get(id);
     const data = validateClass({
       name: patch.name ?? current.name,
@@ -42,15 +42,15 @@ export class ClassesService {
       status: patch.status ?? current.status,
     });
     if (data.status === 'ACTIVE') await this.validateReferences(data);
-    return this.repo.update(id, data, patch.capacity !== undefined);
+    return this.repo.update(id, data, patch.capacity !== undefined, actorId);
   }
-  async deactivate(id: string) {
+  async deactivate(id: string, actorId?: string) {
     await this.get(id);
     await this.enrollments?.assertClassCanDeactivate(id);
-    return this.update(id, { status: 'INACTIVE' });
+    return this.update(id, { status: 'INACTIVE' }, actorId);
   }
-  reactivate(id: string) {
-    return this.update(id, { status: 'ACTIVE' });
+  reactivate(id: string, actorId?: string) {
+    return this.update(id, { status: 'ACTIVE' }, actorId);
   }
   private async validateReferences(data: ReturnType<typeof validateClass>) {
     const teacher = await this.repo.findTeacher(data.teacherId);

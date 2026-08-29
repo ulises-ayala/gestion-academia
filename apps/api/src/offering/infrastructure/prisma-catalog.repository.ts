@@ -19,8 +19,12 @@ export class PrismaCatalogRepository implements CatalogRepository {
   createDanceType(data: Parameters<typeof this.prisma.danceType.create>[0]['data']) {
     return this.prisma.danceType.create({ data });
   }
-  updateDanceType(id: string, data: Parameters<typeof this.prisma.danceType.update>[0]['data']) {
-    return this.prisma.danceType.update({ where: { id }, data });
+  updateDanceType(
+    id: string,
+    data: Parameters<typeof this.prisma.danceType.update>[0]['data'],
+    actorId?: string,
+  ) {
+    return this.auditedUpdate('danceType', 'DANCE_TYPE', id, data, actorId);
   }
   async danceTypeHasActiveClasses(id: string) {
     return (
@@ -39,8 +43,12 @@ export class PrismaCatalogRepository implements CatalogRepository {
   createBranch(data: Parameters<typeof this.prisma.branch.create>[0]['data']) {
     return this.prisma.branch.create({ data });
   }
-  updateBranch(id: string, data: Parameters<typeof this.prisma.branch.update>[0]['data']) {
-    return this.prisma.branch.update({ where: { id }, data });
+  updateBranch(
+    id: string,
+    data: Parameters<typeof this.prisma.branch.update>[0]['data'],
+    actorId?: string,
+  ) {
+    return this.auditedUpdate('branch', 'BRANCH', id, data, actorId);
   }
   async branchHasActiveRooms(id: string) {
     return (await this.prisma.room.count({ where: { branchId: id, status: 'ACTIVE' } })) > 0;
@@ -64,11 +72,40 @@ export class PrismaCatalogRepository implements CatalogRepository {
       include: { branch: { select: { id: true, name: true } } },
     });
   }
-  updateRoom(id: string, data: Parameters<typeof this.prisma.room.update>[0]['data']) {
-    return this.prisma.room.update({
-      where: { id },
-      data,
-      include: { branch: { select: { id: true, name: true } } },
+  updateRoom(
+    id: string,
+    data: Parameters<typeof this.prisma.room.update>[0]['data'],
+    actorId?: string,
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const before = await tx.room.findUniqueOrThrow({ where: { id } });
+      const updated = await tx.room.update({
+        where: { id },
+        data,
+        include: { branch: { select: { id: true, name: true } } },
+      });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: before.status !== updated.status ? 'STATUS_CHANGE' : 'UPDATE',
+            entityType: 'ROOM',
+            entityId: id,
+            before: {
+              name: before.name,
+              capacity: before.capacity,
+              branchId: before.branchId,
+              status: before.status,
+            },
+            after: {
+              name: updated.name,
+              capacity: updated.capacity,
+              branchId: updated.branchId,
+              status: updated.status,
+            },
+          },
+        });
+      return updated;
     });
   }
   async roomHasActiveSchedules(id: string) {
@@ -77,5 +114,30 @@ export class PrismaCatalogRepository implements CatalogRepository {
         where: { roomId: id, status: 'ACTIVE', class: { status: 'ACTIVE' } },
       })) > 0
     );
+  }
+  private auditedUpdate(
+    model: 'danceType' | 'branch',
+    entityType: 'DANCE_TYPE' | 'BRANCH',
+    id: string,
+    data: object,
+    actorId?: string,
+  ): Promise<any> {
+    return this.prisma.$transaction(async (tx) => {
+      const delegate = tx[model] as any;
+      const before = await delegate.findUniqueOrThrow({ where: { id } });
+      const updated = await delegate.update({ where: { id }, data });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: before.status !== updated.status ? 'STATUS_CHANGE' : 'UPDATE',
+            entityType,
+            entityId: id,
+            before: { ...before, id: undefined, createdAt: undefined, updatedAt: undefined },
+            after: { ...updated, id: undefined, createdAt: undefined, updatedAt: undefined },
+          },
+        });
+      return updated;
+    });
   }
 }

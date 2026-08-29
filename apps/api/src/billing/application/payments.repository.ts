@@ -20,5 +20,5 @@ export interface PaymentsRepository {
   findPage(
     query: PaymentQuery,
   ): Promise<{ items: PaymentDto[]; total: number; page: number; pageSize: number }>;
-  void(id: string, actorId: string): Promise<PaymentDto>;
+  void(id: string, actorId: string, reason: string): Promise<PaymentDto>;
 }

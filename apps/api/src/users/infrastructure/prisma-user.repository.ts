@@ -35,7 +35,36 @@ export class PrismaUserRepository implements UserRepository {
   async create(data: Parameters<typeof this.prisma.adminUser.create>[0]['data']) {
     return publicUser(await this.prisma.adminUser.create({ data }));
   }
-  async update(id: string, data: Parameters<typeof this.prisma.adminUser.update>[0]['data']) {
-    return publicUser(await this.prisma.adminUser.update({ where: { id }, data }));
+  async update(
+    id: string,
+    data: Parameters<typeof this.prisma.adminUser.update>[0]['data'],
+    actorId?: string,
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const before = await tx.adminUser.findUniqueOrThrow({ where: { id } });
+      const updated = await tx.adminUser.update({ where: { id }, data });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action:
+              before.role !== updated.role
+                ? 'ROLE_CHANGE'
+                : before.status !== updated.status
+                  ? 'STATUS_CHANGE'
+                  : 'UPDATE',
+            entityType: 'ADMIN_USER',
+            entityId: id,
+            before: { username: before.username, role: before.role, status: before.status },
+            after: {
+              username: updated.username,
+              role: updated.role,
+              status: updated.status,
+              ...(data.passwordHash ? { passwordChanged: true } : {}),
+            },
+          },
+        });
+      return publicUser(updated);
+    });
   }
 }

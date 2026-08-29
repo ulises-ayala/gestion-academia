@@ -1,6 +1,7 @@
 import type { CreatePaymentDto, PaymentMethodDto } from '@academy/contracts';
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../shared/domain/domain-error';
+import { validateReason } from '../../audit/domain/audit';
 import {
   PAYMENTS_REPOSITORY,
   type PaymentQuery,
@@ -35,7 +36,7 @@ export class PaymentsService {
     return this.repository.findPage(query);
   }
 
-  void(id: string, actorId: string) {
-    return this.repository.void(id, actorId);
+  void(id: string, actorId: string, reason: unknown) {
+    return this.repository.void(id, actorId, validateReason(reason));
   }
 }

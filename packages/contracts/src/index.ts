@@ -291,6 +291,41 @@ export type PaymentDto = Readonly<{
   updatedAt: string;
 }>;
 export type PaymentListDto = PageDto<PaymentDto>;
+export type VoidPaymentDto = Readonly<{ reason: string }>;
+
+export type AuditActionDto =
+  | 'UPDATE'
+  | 'STATUS_CHANGE'
+  | 'VOID'
+  | 'END'
+  | 'CORRECTION'
+  | 'ROLE_CHANGE';
+export type AuditEntityTypeDto =
+  | 'STUDENT'
+  | 'TEACHER'
+  | 'DANCE_TYPE'
+  | 'BRANCH'
+  | 'ROOM'
+  | 'ACADEMY_CLASS'
+  | 'TARIFF'
+  | 'ADMIN_USER'
+  | 'PAYMENT'
+  | 'ATTENDANCE'
+  | 'ENROLLMENT';
+export type AuditSnapshotDto = Readonly<Record<string, unknown>>;
+export type AuditLogDto = Readonly<{
+  id: string;
+  action: string;
+  entityType: string;
+  entityId: string | null;
+  reason: string | null;
+  before: AuditSnapshotDto | null;
+  after: AuditSnapshotDto | null;
+  metadata: AuditSnapshotDto | null;
+  createdAt: string;
+  actor: Readonly<{ id: string; username: string }>;
+}>;
+export type AuditLogListDto = PageDto<AuditLogDto>;
 
 export type CreateStudentOnboardingDto = Readonly<{
   student: CreateStudentDto;

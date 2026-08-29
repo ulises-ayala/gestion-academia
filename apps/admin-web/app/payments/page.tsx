@@ -33,6 +33,9 @@ export default function PaymentsPage() {
   const [method, setMethod] = useState<PaymentMethodDto>('CASH');
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [voidTarget, setVoidTarget] = useState<PaymentDto | null>(null);
+  const [voidReason, setVoidReason] = useState('');
+  const [voiding, setVoiding] = useState(false);
 
   const loadStudent = useCallback(async (selectedStudent: StudentDto) => {
     setStudent(selectedStudent);
@@ -104,14 +107,21 @@ export default function PaymentsPage() {
     }
   }
 
-  async function voidPayment(payment: PaymentDto) {
-    if (!confirm('¿Confirmás la anulación de este pago? Las cuotas volverán a quedar pendientes.'))
-      return;
+  async function voidPayment() {
+    if (!voidTarget || !voidReason.trim() || voiding) return;
+    setVoiding(true);
     try {
-      await apiRequest(`/payments/${payment.id}/void`, { method: 'POST' });
+      await apiRequest(`/payments/${voidTarget.id}/void`, {
+        method: 'POST',
+        body: JSON.stringify({ reason: voidReason.trim() }),
+      });
+      setVoidTarget(null);
+      setVoidReason('');
       if (student) await loadStudent(student);
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo anular el pago');
+    } finally {
+      setVoiding(false);
     }
   }
 
@@ -267,7 +277,10 @@ export default function PaymentsPage() {
                             {payment.status === 'CONFIRMED' && (
                               <button
                                 className="secondary"
-                                onClick={() => void voidPayment(payment)}
+                                onClick={() => {
+                                  setVoidTarget(payment);
+                                  setVoidReason('');
+                                }}
                               >
                                 Anular
                               </button>
@@ -282,6 +295,38 @@ export default function PaymentsPage() {
             )}
           </section>
         </>
+      )}
+      {voidTarget && (
+        <div className="modal-backdrop">
+          <section
+            aria-labelledby="void-title"
+            aria-modal="true"
+            className="modal card"
+            role="dialog"
+          >
+            <h2 id="void-title">Anular pago</h2>
+            <p>Esta operación devolverá las cuotas asociadas a estado pendiente.</p>
+            <label>
+              Motivo
+              <textarea
+                autoFocus
+                maxLength={500}
+                value={voidReason}
+                onChange={(event) => setVoidReason(event.target.value)}
+                placeholder="Pago registrado por error"
+              />
+            </label>
+            <p>Esta acción conservará el pago en el historial como anulado.</p>
+            <div className="modal-actions">
+              <button className="secondary" disabled={voiding} onClick={() => setVoidTarget(null)}>
+                Cancelar
+              </button>
+              <button disabled={!voidReason.trim() || voiding} onClick={() => void voidPayment()}>
+                {voiding ? 'Anulando…' : 'Anular pago'}
+              </button>
+            </div>
+          </section>
+        </div>
       )}
     </>
   );
