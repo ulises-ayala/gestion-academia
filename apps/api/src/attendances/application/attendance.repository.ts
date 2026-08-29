@@ -9,7 +9,9 @@ export type AttendanceUpdateInput = Partial<Pick<AttendanceData, 'status' | 'not
 
 export type AttendanceListFilters = Readonly<{
   classId?: string;
+  studentId?: string;
   attendanceDate?: Date;
+  limit?: number;
 }>;
 
 export type AttendanceRosterItem = Readonly<{

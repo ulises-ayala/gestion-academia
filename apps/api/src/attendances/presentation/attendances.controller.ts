@@ -123,11 +123,23 @@ export class AttendancesController {
   @Get()
   async list(
     @Query('classId') classId?: string,
+    @Query('studentId') studentId?: string,
     @Query('date') date?: string,
+    @Query('limit') limit?: string,
   ): Promise<AttendanceListDto> {
+    const parsedLimit = limit === undefined ? undefined : Number(limit);
+    if (
+      parsedLimit !== undefined &&
+      (!Number.isInteger(parsedLimit) || parsedLimit < 1 || parsedLimit > 100)
+    )
+      throw new DomainError('VALIDATION_ERROR', 'limit debe estar entre 1 y 100', {
+        field: 'limit',
+      });
     const attendances = await this.service.list({
       ...(classId ? { classId: parseUuid(classId, 'classId') } : {}),
+      ...(studentId ? { studentId: parseUuid(studentId, 'studentId') } : {}),
       ...(date ? { attendanceDate: parseAttendanceDate(date, 'date') } : {}),
+      ...(parsedLimit ? { limit: parsedLimit } : {}),
     });
     return { items: attendances.map(toDto), total: attendances.length };
   }

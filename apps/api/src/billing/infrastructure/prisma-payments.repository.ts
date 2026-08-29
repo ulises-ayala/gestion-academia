@@ -145,6 +145,14 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     return { items: items.map(mapPayment), total, page: query.page, pageSize: query.pageSize };
   }
 
+  async confirmedTotal(studentId: string) {
+    const aggregate = await this.prisma.payment.aggregate({
+      where: { studentId, status: 'CONFIRMED' },
+      _sum: { amount: true },
+    });
+    return aggregate._sum.amount?.toFixed(2) ?? '0.00';
+  }
+
   async void(id: string, actorId: string, reason: string) {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {

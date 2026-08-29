@@ -20,5 +20,6 @@ export interface PaymentsRepository {
   findPage(
     query: PaymentQuery,
   ): Promise<{ items: PaymentDto[]; total: number; page: number; pageSize: number }>;
+  confirmedTotal(studentId: string): Promise<string>;
   void(id: string, actorId: string, reason: string): Promise<PaymentDto>;
 }

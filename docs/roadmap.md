@@ -11,6 +11,7 @@
 9. **Liquidación:** motor configurable después de validar fórmula y modalidades.
 10. **Reportes y robustez:** estadísticas, observabilidad, backups y seguridad.
 11. **Canal alumno:** nueva interfaz sobre la misma API e integraciones aisladas.
+12. **Ficha integral del alumno v1 (terminado):** vista administrativa central con inscripciones, estado de cuenta, pagos y asistencias recientes; mantiene las reglas y permisos de cada recurso.
 
 Cada etapa entrega migraciones, casos de uso, endpoints documentados, UI mínima y pruebas críticas.
 

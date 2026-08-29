@@ -41,6 +41,9 @@ class MemoryPayments implements PaymentsRepository {
   async findPage(query: PaymentQuery) {
     return { items: [this.item], total: 1, page: query.page, pageSize: query.pageSize };
   }
+  async confirmedTotal() {
+    return this.item.status === 'CONFIRMED' ? this.item.amount : '0.00';
+  }
   async void() {
     this.item = {
       ...this.item,
@@ -89,6 +92,17 @@ describe('PaymentsService', () => {
     await expect(service.list({ page: 1, pageSize: 25 })).resolves.toMatchObject({
       total: 1,
       items: [{ status: 'VOID' }],
+    });
+  });
+  it('expone el total confirmado sin sumar pagos anulados', async () => {
+    const repository = new MemoryPayments();
+    const service = new PaymentsService(repository);
+    await expect(service.summary(repository.item.student.id)).resolves.toEqual({
+      confirmedTotal: '40000.00',
+    });
+    await repository.void();
+    await expect(service.summary(repository.item.student.id)).resolves.toEqual({
+      confirmedTotal: '0.00',
     });
   });
 });
