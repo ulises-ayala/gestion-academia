@@ -24,5 +24,5 @@ export interface StudentRepository {
   findPage(query: StudentListQuery): Promise<StudentPage>;
   findById(id: string): Promise<StudentData | null>;
   findByDni(dni: string): Promise<StudentData | null>;
-  update(id: string, input: StudentPersistenceInput): Promise<StudentData>;
+  update(id: string, input: StudentPersistenceInput, actorId?: string): Promise<StudentData>;
 }

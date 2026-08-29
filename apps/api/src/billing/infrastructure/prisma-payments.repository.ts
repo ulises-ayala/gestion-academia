@@ -145,7 +145,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     return { items: items.map(mapPayment), total, page: query.page, pageSize: query.pageSize };
   }
 
-  async void(id: string, actorId: string) {
+  async void(id: string, actorId: string, reason: string) {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         return await this.prisma.$transaction(
@@ -166,13 +166,28 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               where: { id: { in: chargeIds } },
               data: { status: 'PENDING' },
             });
-            return mapPayment(
-              await tx.payment.update({
-                where: { id },
-                data: { status: 'VOID', voidedAt: new Date(), voidedByUserId: actorId },
-                include,
-              }),
-            );
+            const updated = await tx.payment.update({
+              where: { id },
+              data: { status: 'VOID', voidedAt: new Date(), voidedByUserId: actorId },
+              include,
+            });
+            await tx.auditLog.create({
+              data: {
+                actorUserId: actorId,
+                action: 'VOID',
+                entityType: 'PAYMENT',
+                entityId: id,
+                reason,
+                before: { status: current.status },
+                after: { status: updated.status },
+                metadata: {
+                  studentId: current.studentId,
+                  amount: current.amount.toFixed(2),
+                  paymentMethod: current.paymentMethod,
+                },
+              },
+            });
+            return mapPayment(updated);
           },
           { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
         );

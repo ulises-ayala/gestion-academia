@@ -15,6 +15,8 @@ import { DomainError } from '../../shared/domain/domain-error';
 import { parsePage, parseStatus, parseUuid } from '../../shared/presentation/request-validation';
 import { ClassesService } from '../application/classes.service';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
+import { CurrentUser } from '../../auth/presentation/current-user.decorator';
+import type { PublicAuthUser } from '../../auth/application/auth.repository';
 @Controller('classes')
 export class ClassesController {
   constructor(@Inject(ClassesService) private readonly service: ClassesService) {}
@@ -51,15 +53,20 @@ export class ClassesController {
   @Patch(':id') @Permissions('offering:manage') update(
     @Param('id') id: string,
     @Body() input: UpdateClassDto,
+    @CurrentUser() user: PublicAuthUser,
   ) {
-    return this.service.update(parseUuid(id), input);
+    return this.service.update(parseUuid(id), input, user.id);
   }
   @Delete(':id') @HttpCode(200) @Permissions('offering:manage') deactivate(
     @Param('id') id: string,
+    @CurrentUser() user: PublicAuthUser,
   ) {
-    return this.service.deactivate(parseUuid(id));
+    return this.service.deactivate(parseUuid(id), user.id);
   }
-  @Post(':id/reactivate') @Permissions('offering:manage') reactivate(@Param('id') id: string) {
-    return this.service.reactivate(parseUuid(id));
+  @Post(':id/reactivate') @Permissions('offering:manage') reactivate(
+    @Param('id') id: string,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.reactivate(parseUuid(id), user.id);
   }
 }

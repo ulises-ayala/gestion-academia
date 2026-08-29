@@ -67,8 +67,8 @@ export class PrismaClassRepository implements ClassRepository {
   create(data: ValidClassInput) {
     return this.write(undefined, data);
   }
-  update(id: string, data: ValidClassInput, validateCapacity = false) {
-    return this.write(id, data, validateCapacity);
+  update(id: string, data: ValidClassInput, validateCapacity = false, actorId?: string) {
+    return this.write(id, data, validateCapacity, actorId);
   }
   async findPage(query: ClassQuery) {
     const where: Prisma.AcademyClassWhereInput = {
@@ -96,9 +96,13 @@ export class PrismaClassRepository implements ClassRepository {
     id: string | undefined,
     data: ValidClassInput,
     validateCapacity = false,
+    actorId?: string,
   ): Promise<ClassData> {
     return this.prisma.$transaction(
       async (tx) => {
+        const before = id
+          ? await tx.academyClass.findUniqueOrThrow({ where: { id }, include })
+          : null;
         if (id && validateCapacity) {
           await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${id}))`;
           const activeEnrollmentCount = await tx.enrollment.count({
@@ -142,6 +146,43 @@ export class PrismaClassRepository implements ClassRepository {
           })),
         });
         const saved = await tx.academyClass.findUniqueOrThrow({ where: { id: classId }, include });
+        if (id && before && actorId)
+          await tx.auditLog.create({
+            data: {
+              actorUserId: actorId,
+              action: before.status !== saved.status ? 'STATUS_CHANGE' : 'UPDATE',
+              entityType: 'ACADEMY_CLASS',
+              entityId: id,
+              before: {
+                name: before.name,
+                danceTypeId: before.danceTypeId,
+                teacherId: before.teacherId,
+                level: before.level,
+                capacity: before.capacity,
+                status: before.status,
+                schedules: before.schedules.map((item) => ({
+                  dayOfWeek: item.dayOfWeek,
+                  startTime: fromTime(item.startTime),
+                  endTime: fromTime(item.endTime),
+                  roomId: item.roomId,
+                })),
+              },
+              after: {
+                name: saved.name,
+                danceTypeId: saved.danceTypeId,
+                teacherId: saved.teacherId,
+                level: saved.level,
+                capacity: saved.capacity,
+                status: saved.status,
+                schedules: saved.schedules.map((item) => ({
+                  dayOfWeek: item.dayOfWeek,
+                  startTime: fromTime(item.startTime),
+                  endTime: fromTime(item.endTime),
+                  roomId: item.roomId,
+                })),
+              },
+            },
+          });
         return mapClass(saved);
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },

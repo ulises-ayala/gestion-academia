@@ -24,7 +24,8 @@ export type Permission =
   | 'reports:operational'
   | 'reports:all'
   | 'settlements:manage'
-  | 'settlements:approve';
+  | 'settlements:approve'
+  | 'audit:read';
 
 const admissionPermissions: readonly Permission[] = [
   'students:manage',
@@ -51,6 +52,7 @@ const administrationPermissions: readonly Permission[] = [
   'trainings:manage',
   'reports:operational',
   'settlements:manage',
+  'audit:read',
 ];
 
 export const rolePermissions: Readonly<Record<PublicAuthUser['role'], readonly Permission[]>> = {

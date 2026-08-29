@@ -26,13 +26,14 @@ export class EnrollmentsService {
       startDate: parseEnrollmentDate(input.startDate, 'startDate'),
     });
   }
-  async end(id: string, input: EndEnrollmentDto) {
+  async end(id: string, input: EndEnrollmentDto, actorId?: string) {
     const enrollment = await this.get(id);
     if (enrollment.status === 'ENDED')
       throw new DomainError('ENROLLMENT_ALREADY_ENDED', 'La inscripción ya está finalizada');
     return this.repository.end(
       id,
       validateEndDate(new Date(`${enrollment.startDate}T00:00:00.000Z`), input.endDate),
+      actorId,
     );
   }
   assertStudentCanDeactivate(studentId: string) {

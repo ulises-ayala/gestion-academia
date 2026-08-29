@@ -20,9 +20,40 @@ export class PrismaTeacherRepository implements TeacherRepository {
       throw error;
     }
   }
-  async update(id: string, data: TeacherWrite) {
+  async update(id: string, data: TeacherWrite, actorId?: string) {
     try {
-      return map(await this.prisma.teacher.update({ where: { id }, data }));
+      return await this.prisma.$transaction(async (tx) => {
+        const before = await tx.teacher.findUniqueOrThrow({ where: { id } });
+        const updated = await tx.teacher.update({ where: { id }, data });
+        if (actorId)
+          await tx.auditLog.create({
+            data: {
+              actorUserId: actorId,
+              action: before.status !== updated.status ? 'STATUS_CHANGE' : 'UPDATE',
+              entityType: 'TEACHER',
+              entityId: id,
+              before: {
+                dni: before.dni,
+                firstName: before.firstName,
+                lastName: before.lastName,
+                phone: before.phone,
+                email: before.email,
+                address: before.address,
+                status: before.status,
+              },
+              after: {
+                dni: updated.dni,
+                firstName: updated.firstName,
+                lastName: updated.lastName,
+                phone: updated.phone,
+                email: updated.email,
+                address: updated.address,
+                status: updated.status,
+              },
+            },
+          });
+        return map(updated);
+      });
     } catch (error) {
       this.unique(error);
       throw error;

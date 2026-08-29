@@ -15,3 +15,7 @@
 Cada etapa entrega migraciones, casos de uso, endpoints documentados, UI mínima y pruebas críticas.
 
 La matriz inicial está confirmada. Toda nueva acción de pagos, caja, inventario, reportes o liquidaciones debe asociarse a uno de los permisos existentes o registrar explícitamente una ampliación de la matriz.
+
+# Base transversal de auditoría
+
+Auditoría y trazabilidad v1 establece el historial append-only y atómico requerido antes de incorporar Caja, correcciones financieras, inventario y liquidaciones. Esos módulos continúan fuera del alcance actual.

@@ -53,9 +53,42 @@ export class PrismaStudentRepository implements StudentRepository {
     return student ? toDomain(student) : null;
   }
 
-  async update(id: string, input: StudentPersistenceInput): Promise<StudentData> {
+  async update(id: string, input: StudentPersistenceInput, actorId?: string): Promise<StudentData> {
     try {
-      return toDomain(await this.prisma.student.update({ where: { id }, data: input }));
+      return await this.prisma.$transaction(async (tx) => {
+        const before = await tx.student.findUniqueOrThrow({ where: { id } });
+        const updated = await tx.student.update({ where: { id }, data: input });
+        if (actorId)
+          await tx.auditLog.create({
+            data: {
+              actorUserId: actorId,
+              action: before.status !== updated.status ? 'STATUS_CHANGE' : 'UPDATE',
+              entityType: 'STUDENT',
+              entityId: id,
+              before: {
+                dni: before.dni,
+                firstName: before.firstName,
+                lastName: before.lastName,
+                birthDate: before.birthDate?.toISOString().slice(0, 10) ?? null,
+                phone: before.phone,
+                email: before.email,
+                address: before.address,
+                status: before.status,
+              },
+              after: {
+                dni: updated.dni,
+                firstName: updated.firstName,
+                lastName: updated.lastName,
+                birthDate: updated.birthDate?.toISOString().slice(0, 10) ?? null,
+                phone: updated.phone,
+                email: updated.email,
+                address: updated.address,
+                status: updated.status,
+              },
+            },
+          });
+        return toDomain(updated);
+      });
     } catch (error) {
       this.translateUniqueError(error);
       throw error;

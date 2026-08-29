@@ -194,3 +194,14 @@
 - Promociones 2x1 y reglas concretas de Formación.
 - Efectos de la cancelación general de una clase.
 - Snapshot histórico de `Enrollment`: debe definirse antes de reportes financieros, asistencia histórica o liquidaciones si clase, profesor y horarios deben conservarse como estaban durante el período inscripto.
+
+# Auditoría y trazabilidad v1
+
+- `AuditLog` es un historial de negocio append-only: la API sólo expone lectura y no existen endpoints de edición o eliminación.
+- El actor se deriva exclusivamente de `CurrentUser`; `createdAt` lo genera PostgreSQL en UTC.
+- Las modificaciones sensibles y su auditoría se escriben en una única transacción Prisma. Si el registro de auditoría falla, también se revierte la mutación.
+- Los snapshots `before`/`after` son selecciones intencionales. La sanitización central excluye contraseñas, hashes, tokens, cookies, credenciales y secretos; un cambio de contraseña se representa únicamente como `passwordChanged: true`.
+- La anulación de pagos exige un motivo no vacío de hasta 500 caracteres y conserva el pago anulado y sus datos propios de anulación.
+- Administración y Dirección poseen `audit:read`; Admisión no puede consultar el historial.
+- Auditoría de negocio no reemplaza logs técnicos u observabilidad. No se auditan lecturas, búsquedas, sesiones, cargas de páginas ni la creación inicial habitual de asistencias.
+- No existe borrado ni política de retención automática para auditoría en v1.

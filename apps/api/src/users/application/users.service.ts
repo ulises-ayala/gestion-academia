@@ -64,14 +64,18 @@ export class UsersService {
       throw new DomainError('USERNAME_ALREADY_EXISTS', 'Ya existe un usuario con ese nombre', {
         field: 'username',
       });
-    return this.repository.update(id, {
-      username,
-      ...(patch.password
-        ? { passwordHash: await hashPassword(validatePassword(patch.password)) }
-        : {}),
-      role,
-      status: patch.status ?? current.status,
-    });
+    return this.repository.update(
+      id,
+      {
+        username,
+        ...(patch.password
+          ? { passwordHash: await hashPassword(validatePassword(patch.password)) }
+          : {}),
+        role,
+        status: patch.status ?? current.status,
+      },
+      actor.id,
+    );
   }
   private assertCanManageRole(actor: PublicAuthUser, role: PublicAuthUser['role']) {
     if (actor.role === 'RECEPTION' || (role === 'ADMINISTRATOR' && actor.role !== 'ADMINISTRATOR'))

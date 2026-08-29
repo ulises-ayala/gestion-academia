@@ -64,18 +64,21 @@ export class AttendancesService {
     return attendance;
   }
 
-  async update(id: string, input: UpdateAttendanceDto) {
+  async update(id: string, input: UpdateAttendanceDto, actorId?: string) {
     await this.findById(id);
     if (input.status === undefined && input.notes === undefined)
       throw new DomainError('VALIDATION_ERROR', 'Debe indicar status o notes para modificar', {
         field: 'body',
       });
-    return this.attendanceRepository.update(id, {
+    const patch = {
       ...(input.status !== undefined ? { status: parseAttendanceStatus(input.status) } : {}),
       ...(input.notes !== undefined
         ? { notes: normalizeAttendanceNotes(input.notes) ?? null }
         : {}),
-    });
+    };
+    return actorId
+      ? this.attendanceRepository.update(id, patch, actorId)
+      : this.attendanceRepository.update(id, patch);
   }
 
   list(filters: AttendanceListFilters) {
