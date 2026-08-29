@@ -1266,37 +1266,184 @@ dd {
     transition-duration: 0.01ms !important;
   }
 }
+.audit-filter-card {
+  padding: var(--space-4);
+}
+.audit-filters {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.8fr) minmax(11rem, 1fr) minmax(13rem, 1.25fr);
+  gap: var(--space-3);
+  align-items: end;
+}
+.audit-filters label {
+  min-width: 0;
+}
+.audit-user-filter {
+  min-width: 0;
+}
+.audit-filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  align-self: end;
+}
 .audit-list {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-3);
 }
-.audit-card header {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+.audit-card {
+  padding: var(--space-4);
+  overflow: hidden;
 }
-.audit-card header div {
+.audit-event-header {
   display: grid;
-  gap: 0.25rem;
+  grid-template-columns: minmax(14rem, 1.3fr) minmax(10rem, 1fr) auto;
+  gap: var(--space-4);
+  align-items: start;
+}
+.audit-event-context,
+.audit-entity {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.audit-event-context time {
+  font-weight: 700;
+  color: var(--text);
+}
+.audit-event-context span,
+.audit-entity span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  overflow-wrap: anywhere;
+}
+.audit-event-context strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.audit-entity strong {
+  font-size: 1.08rem;
+}
+.audit-action-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.audit-action-badge.brand {
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+.audit-action-badge.warning {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+.audit-action-badge.danger {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.audit-metadata {
+  display: flex;
+  gap: var(--space-6);
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+.audit-metadata div {
+  display: grid;
+  gap: var(--space-1);
+}
+.audit-metadata dt,
+.audit-section-label,
+.audit-reason span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.audit-metadata dd {
+  margin: 0;
+  font-weight: 700;
+}
+.audit-change-section {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+.audit-section-label {
+  margin: 0 0 var(--space-2);
 }
 .audit-changes {
   display: grid;
-  gap: 0.5rem;
+  gap: var(--space-2);
+  margin: 0;
 }
-.audit-changes div {
+.audit-changes > div {
   display: grid;
-  grid-template-columns: minmax(8rem, 1fr) 3fr;
-  gap: 1rem;
+  grid-template-columns: minmax(9rem, 0.55fr) minmax(0, 2fr);
+  gap: var(--space-3);
+  align-items: center;
 }
 .audit-changes dt {
   font-weight: 700;
 }
 .audit-changes dd {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
   margin: 0;
+  min-width: 0;
+}
+.audit-changes dd > span:not(.audit-change-arrow) {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
   overflow-wrap: anywhere;
+}
+.audit-changes small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.audit-change-arrow {
+  color: var(--brand);
+  font-weight: 800;
+}
+.audit-reason {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+.audit-reason p {
+  margin: var(--space-1) 0 0;
+  overflow-wrap: anywhere;
+}
+.audit-feedback,
+.audit-empty {
+  text-align: center;
+}
+.audit-feedback p,
+.audit-empty p {
+  color: var(--muted);
+}
+.audit-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+.audit-pagination div {
+  display: flex;
+  gap: var(--space-2);
 }
 .modal-backdrop {
   position: fixed;
@@ -1309,6 +1456,7 @@ dd {
 }
 .modal {
   width: min(32rem, 100%);
+  padding: var(--space-5);
 }
 .modal label,
 .modal textarea {
@@ -1324,12 +1472,60 @@ dd {
   justify-content: flex-end;
   gap: 0.75rem;
 }
+.modal-copy {
+  color: var(--muted);
+}
+.modal-note {
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.danger-button {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: var(--brand-on-fill);
+}
 @media (max-width: 720px) {
-  .audit-changes div {
-    grid-template-columns: 1fr;
-    gap: 0.25rem;
+  .audit-filter-card,
+  .audit-card {
+    padding: var(--space-3);
   }
-  .audit-filters {
+  .audit-filters,
+  .audit-event-header,
+  .audit-changes > div {
     grid-template-columns: 1fr;
+  }
+  .audit-filter-actions button {
+    flex: 1;
+  }
+  .audit-action-badge {
+    justify-self: start;
+    grid-row: 1;
+  }
+  .audit-event-context {
+    grid-row: 2;
+  }
+  .audit-entity {
+    grid-row: 3;
+  }
+  .audit-changes dd {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+  .audit-change-arrow {
+    transform: rotate(90deg);
+    justify-self: start;
+  }
+  .audit-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .audit-pagination div,
+  .audit-pagination button {
+    flex: 1;
+  }
+  .modal-actions button {
+    flex: 1;
   }
 }
