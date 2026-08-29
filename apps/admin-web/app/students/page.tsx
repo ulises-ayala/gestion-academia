@@ -114,21 +114,21 @@ export default function StudentsPage() {
               <tbody>
                 {result.items.map((student) => (
                   <tr key={student.id}>
-                    <td>
+                    <td data-label="Alumno">
                       <strong>
                         {student.lastName}, {student.firstName}
                       </strong>
                     </td>
-                    <td>{student.dni}</td>
-                    <td>{student.email || student.phone || '—'}</td>
-                    <td>{calculateAge(student.birthDate) ?? '—'}</td>
-                    <td>
+                    <td data-label="DNI">{student.dni}</td>
+                    <td data-label="Contacto">{student.email || student.phone || '—'}</td>
+                    <td data-label="Edad">{calculateAge(student.birthDate) ?? '—'}</td>
+                    <td data-label="Estado">
                       <span className={`status ${student.status.toLowerCase()}`}>
                         {student.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
-                    <td>{formatDate(student.joinedAt)}</td>
-                    <td>
+                    <td data-label="Fecha de alta">{formatDate(student.joinedAt)}</td>
+                    <td data-label="Acciones">
                       <Link className="text-link" href={`/students/${student.id}`}>
                         Ver ficha
                       </Link>
