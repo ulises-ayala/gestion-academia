@@ -30,5 +30,8 @@
   "devDependencies": {
     "prettier": "3.6.2",
     "tsx": "^4.23.12"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
   }
 }
