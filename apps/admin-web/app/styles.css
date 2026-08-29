@@ -81,6 +81,20 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+*,
+*::before,
+*::after {
+  min-width: 0;
+}
+img,
+svg {
+  max-width: 100%;
+}
 :root[data-theme='dark'] .sidebar-header {
   border-color: rgb(255 255 255 / 7%);
   background: rgb(255 255 255 / 4%);
@@ -381,6 +395,9 @@ p {
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .filters,
@@ -428,6 +445,7 @@ p {
 .class-summary {
   margin-bottom: 0;
   color: var(--text-muted);
+  overflow-wrap: anywhere;
 }
 .charge-summary {
   margin-top: var(--space-4);
@@ -572,6 +590,10 @@ td {
   border-bottom: 1px solid var(--border);
   text-align: left;
   vertical-align: middle;
+}
+td,
+th {
+  overflow-wrap: anywhere;
 }
 th {
   background: var(--surface-muted);
@@ -1005,10 +1027,13 @@ dd {
     grid-column: 1 / -1;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .topbar {
     min-height: 3.75rem;
     padding: var(--space-2) var(--space-4);
+  }
+  .topbar-spacer {
+    min-width: 0;
   }
   .topbar > button:last-child {
     min-height: 2.25rem;
@@ -1049,11 +1074,113 @@ dd {
   .schedule-builder,
   .catalog-form,
   .tariff-form,
+  .onboarding-fields,
+  .onboarding-period,
   .attendance-filters,
   .attendance-row,
   .attendance-quick-filters,
   .attendance-class-card {
     grid-template-columns: 1fr;
+  }
+  .onboarding-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .onboarding-heading > button {
+    align-self: flex-start;
+  }
+  .payment-options {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .payment-options label {
+    min-height: 2.75rem;
+  }
+  .payment-charge-list .enrollment-card {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    align-items: start;
+  }
+  .payment-charge-list .enrollment-card > strong:last-child {
+    grid-column: 2;
+    font-size: 1rem;
+  }
+  .payment-charge-list input {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-top: 0.15rem;
+  }
+  .payment-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .payment-summary label {
+    min-width: 0;
+  }
+  .schedule-list li {
+    align-items: stretch;
+    flex-direction: column;
+    overflow-wrap: anywhere;
+  }
+  .table-wrap,
+  section.card:has(> table) {
+    overflow: visible;
+  }
+  table,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+  thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+  tbody {
+    display: grid;
+    gap: var(--space-3);
+  }
+  tbody tr {
+    padding: var(--space-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-hover);
+  }
+  tbody tr:hover {
+    background: var(--surface-hover);
+  }
+  td,
+  tbody tr:last-child td {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 38%) minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+  td:last-child {
+    border-bottom: 0;
+  }
+  td::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  td.actions {
+    min-width: 0;
+    align-items: stretch;
+  }
+  td.actions button,
+  td button.secondary,
+  td .button {
+    min-height: 2.75rem;
   }
   .wide,
   .attendance-notes,
@@ -1071,6 +1198,9 @@ dd {
   .pagination {
     justify-content: space-between;
     gap: var(--space-2);
+  }
+  .pagination button {
+    min-height: 2.75rem;
   }
   .attendance-tabs,
   .attendance-student-header,
@@ -1090,6 +1220,43 @@ dd {
   .attendance-summary,
   .attendance-row-actions {
     justify-content: stretch;
+  }
+}
+@media (max-width: 390px) {
+  .admin-layout {
+    padding: var(--space-1);
+  }
+  .topbar {
+    top: var(--space-1);
+    gap: var(--space-2);
+    padding-inline: var(--space-2);
+  }
+  .user-context {
+    display: none;
+  }
+  .admin-content > main {
+    padding: var(--space-5) var(--space-2) var(--space-10);
+  }
+  .card,
+  .attendance-filters,
+  .attendance-panel,
+  .attendance-empty {
+    padding: var(--space-3);
+  }
+  .selection-list {
+    grid-template-columns: 1fr;
+  }
+  td {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+  .pagination {
+    flex-wrap: wrap;
+  }
+  .pagination span {
+    order: -1;
+    width: 100%;
+    text-align: center;
   }
 }
 @media (prefers-reduced-motion: reduce) {

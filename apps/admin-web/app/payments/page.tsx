@@ -243,8 +243,8 @@ export default function PaymentsPage() {
                   <tbody>
                     {payments.map((payment) => (
                       <tr key={payment.id}>
-                        <td>{dateTime(payment.paidAt)}</td>
-                        <td>
+                        <td data-label="Fecha">{dateTime(payment.paidAt)}</td>
+                        <td data-label="Cuotas">
                           {payment.allocations
                             .map(
                               (allocation) =>
@@ -252,17 +252,17 @@ export default function PaymentsPage() {
                             )
                             .join(', ')}
                         </td>
-                        <td>{paymentMethodLabels[payment.paymentMethod]}</td>
-                        <td>{money(payment.amount)}</td>
-                        <td>{payment.createdBy.username}</td>
-                        <td>
+                        <td data-label="Medio">{paymentMethodLabels[payment.paymentMethod]}</td>
+                        <td data-label="Importe">{money(payment.amount)}</td>
+                        <td data-label="Registrado por">{payment.createdBy.username}</td>
+                        <td data-label="Estado">
                           <span
                             className={`status ${payment.status === 'CONFIRMED' ? 'active' : 'void'}`}
                           >
                             {payment.status === 'CONFIRMED' ? 'Confirmado' : 'Anulado'}
                           </span>
                         </td>
-                        <td>
+                        <td data-label="Acciones">
                           <PermissionGate permission="payments:void">
                             {payment.status === 'CONFIRMED' && (
                               <button

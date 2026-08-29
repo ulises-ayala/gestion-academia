@@ -165,6 +165,13 @@
 92. **Atomicidad con las protecciones vigentes:** el orquestador ejecuta todo en una transacción serializable. Los repositorios se vinculan al cliente transaccional compartido y conservan advisory locks de inscripción, locks de cuotas y reintentos ante conflictos; cualquier error revierte alumno, inscripciones, cuotas y pago.
 93. **Permiso operativo acotado:** generar las cuotas iniciales forma parte del caso de uso autorizado por `students:manage` y `enrollments:manage`; no concede `charges:manage` ni acceso global a administración de cuotas. Cobrar además exige `payments:collect`. La matriz de roles no cambia.
 
+## Decisiones de Responsive administrativo v1
+
+98. **Mobile utilizable sin rediseñar desktop:** todas las pantallas administrativas deben conservar su información y acciones desde 320 px. Desktop mantiene la composición aprobada; formularios, filtros, pagos y asistencias se apilan sólo cuando el viewport lo requiere.
+99. **Tablas legibles como fichas:** debajo de 640 px las tablas densas conservan un único markup semántico, pero cada fila se presenta verticalmente con etiquetas `data-label`. No se ocultan columnas ni se depende de scroll horizontal para comprender datos de negocio.
+100.  **Sin overflow global:** shell, cards, textos largos y grids usan límites flexibles y wrapping. El scroll horizontal global no forma parte de la navegación; cualquier necesidad especializada debe quedar contenida localmente.
+101.  **Browser antes que empaquetado:** la experiencia responsive del navegador es prioritaria. PWA, manifest, service worker y aplicaciones instalables quedan fuera de este incremento.
+
 ## Reglas ambiguas: no implementar
 
 - Fórmula docente: base 50 %, umbral del alumno 11, alcance del 70 %, redondeo, ausencias y devoluciones.
