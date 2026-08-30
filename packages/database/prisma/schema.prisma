@@ -56,6 +56,47 @@ enum AttendanceStatus {
   JUSTIFIED
 }
 
+enum LeadSource {
+  WHATSAPP
+  INSTAGRAM
+  IN_PERSON
+}
+
+enum LeadStatus {
+  INQUIRY
+  INTERESTED
+  TRIAL
+  ENROLLED
+  NOT_CONVERTED
+}
+
+model Lead {
+  id                  String     @id @default(uuid()) @db.Uuid
+  name                String     @db.VarChar(180)
+  phone               String?    @db.VarChar(80)
+  normalizedPhone     String?    @map("normalized_phone") @db.VarChar(50)
+  email               String?    @db.VarChar(254)
+  normalizedEmail     String?    @map("normalized_email") @db.VarChar(254)
+  instagram           String?    @db.VarChar(100)
+  normalizedInstagram String?    @map("normalized_instagram") @db.VarChar(100)
+  source              LeadSource
+  status              LeadStatus @default(INQUIRY)
+  notes               String?
+  nextFollowUpAt      DateTime?  @map("next_follow_up_at") @db.Timestamptz(3)
+  lastContactAt       DateTime?  @map("last_contact_at") @db.Timestamptz(3)
+  createdAt           DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([name])
+  @@index([status, updatedAt(sort: Desc)])
+  @@index([source, updatedAt(sort: Desc)])
+  @@index([nextFollowUpAt])
+  @@index([normalizedPhone])
+  @@index([normalizedEmail])
+  @@index([normalizedInstagram])
+  @@map("leads")
+}
+
 model Student {
   id             String          @id @default(uuid()) @db.Uuid
   dni            String          @unique @db.VarChar(32)
@@ -300,7 +341,7 @@ model AdminUser {
   sessions        AdminSession[]
   paymentsCreated Payment[]      @relation("PaymentCreatedBy")
   paymentsVoided  Payment[]      @relation("PaymentVoidedBy")
-  auditLogs        AuditLog[]
+  auditLogs       AuditLog[]
 
   @@map("admin_users")
 }

@@ -2,6 +2,7 @@ import type { PublicAuthUser } from '../application/auth.repository';
 
 export type Permission =
   | 'students:manage'
+  | 'leads:manage'
   | 'enrollments:manage'
   | 'offering:read'
   | 'offering:manage'
@@ -29,6 +30,7 @@ export type Permission =
 
 const admissionPermissions: readonly Permission[] = [
   'students:manage',
+  'leads:manage',
   'enrollments:manage',
   'offering:read',
   'tariffs:read',

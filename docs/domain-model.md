@@ -2,7 +2,7 @@
 
 ## Contextos y entidades
 
-- **Personas:** `Student`, `Teacher`, `AdminUser`, `Role`, `Permission`.
+- **Personas:** `Lead`, `Student`, `Teacher`, `AdminUser`, `Role`, `Permission`.
 - **Oferta:** `DanceType`, `Class`, `ClassSchedule`, `Branch`, `Room`.
 - **Inscripciones:** `Enrollment` une `Student` y `Class` con vigencia y estado.
 - **Facturación:** `Tariff`, `MonthlyCharge`, `Payment` y `PaymentAllocation`; descuentos quedan diferidos.
@@ -88,6 +88,14 @@ erDiagram
 - Admisión conserva la operación cotidiana de alumnos/inscripciones y lectura necesaria de oferta, tarifas y cuotas; no administra configuración, caja, usuarios, reportes ni liquidaciones.
 - Administración gestiona configuración y usuarios de Admisión/Administración, pero no puede acceder a cuentas de Dirección ni aprobar liquidaciones.
 - Dirección tiene el nivel completo. El sistema impide auto-desactivación y garantiza al menos una cuenta de Dirección activa.
+
+## Potenciales alumnos v1
+
+- `Lead` representa una consulta comercial previa al alta como alumno y utiliza un único `name` flexible; DNI, nacimiento y domicilio no forman parte de esta identidad.
+- Los orígenes manuales son WhatsApp, Instagram y presencial. Los estados Consulta, Interesado, Clase de prueba, Inscripto y No concretó describen etapas editables libremente, no una máquina de estados.
+- El seguimiento conserva una próxima fecha/hora opcional, último contacto explícito y observaciones. Un seguimiento está vencido cuando su fecha es anterior al instante actual y el estado continúa abierto.
+- Teléfono, email e Instagram conservan el valor ingresado y tienen representaciones normalizadas auxiliares no únicas para advertir posibles duplicados.
+- `ENROLLED` no crea `Student`, inscripción, cuota ni pago. Una futura conversión deberá reutilizar Student Onboarding.
 
 ## Asistencias de alumnos v1
 

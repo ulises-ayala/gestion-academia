@@ -219,3 +219,11 @@
 
 108. **Marca presente, superficies legibles:** fondos, sidebar, hovers y bordes reciben un matiz carmesí tanto en modo claro como oscuro, mientras las superficies principales continúan claras o neutrales. Los colores de éxito, advertencia y peligro conservan su significado semántico.
 109. **Contraseña visible sólo en la UI:** login y creación inicial permiten mostrar u ocultar el valor del mismo campo local. El control no duplica, registra ni modifica la contraseña, el payload, el autocomplete ni la autenticación backend.
+
+## Potenciales alumnos v1
+
+110. **Seguimiento manual y flexible:** los cinco estados comerciales pueden cambiarse libremente y no constituyen una máquina de estados. Fechas, contactos y observaciones se registran manualmente; no existen mensajes, recordatorios, cron jobs ni integraciones con WhatsApp o Instagram.
+111. **Historia sin borrado ni conversión implícita:** Leads no expone `DELETE`; “No concretó” conserva el registro. Marcar “Inscripto/a” tampoco crea Student, Enrollment, MonthlyCharge o Payment. Una conversión futura reutilizará Student Onboarding.
+112. **Duplicados como ayuda operativa:** teléfono, email e Instagram se normalizan en campos auxiliares indexados, pero no únicos. Las coincidencias generan una advertencia y siempre permiten continuar porque los datos de contacto pueden compartirse o corregirse.
+113. **Seguimiento vencido derivado:** “Con seguimiento pendiente” incluye cualquier fecha programada en una etapa abierta; `nextFollowUpAt < now` forma el subconjunto vencido. Ambos filtros se limitan a Consulta, Interesado/a y Clase de prueba; Inscripto/a y No concretó son etapas finales y no se persiste un estado adicional.
+114. **Permiso y auditoría existentes:** `leads:manage` pertenece a Admisión y, por herencia, Administración y Dirección. Los cambios se auditan atómicamente como entidad `LEAD` mediante AuditLog; la creación habitual mantiene el criterio vigente y no genera auditoría.
