@@ -106,6 +106,223 @@ svg {
 :root[data-theme='dark'] .topbar {
   background: rgb(34 27 30 / 94%);
 }
+
+.dashboard-page {
+  display: grid;
+  gap: var(--space-6);
+}
+.dashboard-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.dashboard-heading h1 {
+  margin: 0.2rem 0;
+}
+.dashboard-heading p {
+  margin: 0;
+  color: var(--text-muted);
+}
+.dashboard-heading .eyebrow,
+.dashboard-card .eyebrow {
+  color: var(--brand);
+}
+.dashboard-date {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.metric-card {
+  display: grid;
+  gap: 0.25rem;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+.metric-card:hover {
+  border-color: var(--brand);
+  background: var(--surface-hover);
+}
+.metric-card span,
+.metric-card small {
+  color: var(--text-muted);
+}
+.metric-card strong {
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+}
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(17rem, 0.75fr);
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+.dashboard-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+.dashboard-card {
+  padding: var(--space-4);
+}
+.dashboard-card h2 {
+  margin: 0.15rem 0 0.75rem;
+  font-size: 1.15rem;
+}
+.dashboard-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.dashboard-card-title > strong {
+  display: grid;
+  place-items: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.dashboard-card-title a,
+.dashboard-link {
+  color: var(--brand);
+  font-weight: 700;
+}
+.dashboard-list {
+  display: grid;
+  border-top: 1px solid var(--border);
+}
+.schedule-row,
+.lead-row,
+.audit-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+}
+.schedule-row:hover,
+.lead-row:hover,
+.audit-row:hover {
+  color: var(--brand);
+}
+.schedule-row small,
+.lead-row small,
+.audit-row small {
+  display: block;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.lead-row,
+.audit-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.audit-row time {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.dashboard-empty {
+  color: var(--text-muted);
+}
+.mini-metrics,
+.attendance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.mini-metrics span,
+.attendance-summary span {
+  padding: 0.7rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+.mini-metrics strong,
+.attendance-summary strong {
+  display: block;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+.attention-card.has-urgent {
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
+  background: color-mix(in srgb, var(--danger-soft) 55%, var(--surface));
+}
+.attention-list {
+  display: grid;
+  gap: var(--space-2);
+}
+.attention-list a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.65rem;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+}
+.attention-list strong {
+  color: var(--danger);
+  font-size: 1.3rem;
+}
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+.quick-actions .button {
+  padding-inline: 0.6rem;
+}
+.dashboard-loading {
+  padding: var(--space-8);
+  color: var(--text-muted);
+  text-align: center;
+}
+@media (max-width: 68rem) {
+  .metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 40rem) {
+  .dashboard-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+  .mini-metrics,
+  .attendance-summary {
+    grid-template-columns: 1fr;
+  }
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+  .schedule-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .schedule-row > span:last-child {
+    display: none;
+  }
+  .audit-row {
+    grid-template-columns: 1fr;
+  }
+}
 a {
   color: inherit;
 }

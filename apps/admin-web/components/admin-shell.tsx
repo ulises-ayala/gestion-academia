@@ -19,6 +19,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     {
       label: 'Gestión',
       links: [
+        { href: '/', label: 'Inicio', permission: 'students:manage' },
         { href: '/students', label: 'Alumnos', permission: 'students:manage' },
         { href: '/leads', label: 'Potenciales', permission: 'leads:manage' },
         { href: '/classes', label: 'Clases', permission: 'offering:read' },
@@ -72,7 +73,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     <div className="admin-layout">
       <aside className={`sidebar ${navigationOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <Link className="brand" href="/students" onClick={() => setNavigationOpen(false)}>
+          <Link className="brand" href="/" onClick={() => setNavigationOpen(false)}>
             <span className="brand-mark" aria-hidden="true">
               GA
             </span>
@@ -100,7 +101,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
                 {visibleLinks.map((link) => (
                   <Link
                     key={link.href}
-                    className={`nav-link ${pathname.startsWith(link.href) ? 'active' : ''}`}
+                    className={`nav-link ${link.href === '/' ? (pathname === '/' ? 'active' : '') : pathname.startsWith(link.href) ? 'active' : ''}`}
                     href={link.href}
                     onClick={() => setNavigationOpen(false)}
                   >
