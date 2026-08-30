@@ -12,6 +12,7 @@
 10. **Reportes y robustez:** estadísticas, observabilidad, backups y seguridad.
 11. **Canal alumno:** nueva interfaz sobre la misma API e integraciones aisladas.
 12. **Ficha integral del alumno v1 (terminado):** vista administrativa central con inscripciones, estado de cuenta, pagos y asistencias recientes; mantiene las reglas y permisos de cada recurso.
+13. **Potenciales alumnos v1 (terminado):** registro manual de consultas, seguimiento, duplicados preventivos y etapas comerciales sin conversión automática a alumno.
 
 Cada etapa entrega migraciones, casos de uso, endpoints documentados, UI mínima y pruebas críticas.
 
