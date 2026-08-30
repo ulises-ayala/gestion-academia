@@ -234,3 +234,10 @@
 116. **Fecha de negocio consistente:** clases, vencimientos, cobros, asistencias y seguimientos de hoy usan el día calendario de `BUSINESS_TIMEZONE`, inicialmente `America/Buenos_Aires`. Los pagos anulados y las cuotas no pendientes quedan fuera de los totales operativos.
 117. **Visibilidad por capacidades existentes:** el endpoint ejecuta y devuelve solamente las secciones autorizadas por los permisos de alumnos, oferta, cuotas, pagos, asistencias, potenciales y auditoría. No se incorpora `dashboard:read`; ocultar bloques o accesos rápidos sigue sin reemplazar la autorización backend.
 118. **Programación versus actividad real:** las clases de hoy derivan de clase y horario activos para el día semanal; no presuponen que la clase ocurrió. Asistencia resume únicamente registros persistidos de la fecha y clases distintas alcanzadas por esos registros.
+
+### Indicadores financieros preliminares
+
+- La evolución mensual suma exclusivamente `Payment` con estado `CONFIRMED` según `paidAt`; los pagos `VOID` permanecen en su historial pero quedan excluidos de todos los importes.
+- La serie contiene el mes calendario actual y los cinco anteriores, incluso cuando un período suma cero. Sus límites se calculan en `America/Buenos_Aires` y la agregación ocurre en base de datos.
+- Los importes describen cobros registrados, no un indicador contable ni un saldo disponible. Un análisis económico completo requiere modelar previamente entradas, egresos, costos y liquidaciones.
+- La sección exige `reports:operational`: solamente Administración y Dirección reciben sus datos; Admisión no los recibe en la respuesta.

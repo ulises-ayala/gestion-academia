@@ -503,6 +503,19 @@ export type OperationalDashboardDto = Readonly<{
     overdueCharges: number;
   }>;
   payments?: Readonly<{ confirmedToday: number; confirmedAmountToday: string }>;
+  financial?: Readonly<{
+    currentMonthConfirmed: string;
+    previousMonthConfirmed: string;
+    variationPercent: string | null;
+    lastSixMonthsConfirmed: string;
+    monthlyConfirmed: readonly Readonly<{
+      year: number;
+      month: number;
+      label: string;
+      fullLabel: string;
+      amount: string;
+    }>[];
+  }>;
   attendance?: Readonly<{
     present: number;
     absent: number;

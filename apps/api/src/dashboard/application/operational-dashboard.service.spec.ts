@@ -12,6 +12,7 @@ const user = (role: PublicAuthUser['role']): PublicAuthUser => ({
 });
 
 const prismaMock = () => ({
+  $queryRaw: vi.fn().mockResolvedValue([]),
   student: { count: vi.fn().mockResolvedValue(12) },
   academyClass: {
     count: vi.fn().mockResolvedValue(4),
@@ -53,6 +54,7 @@ describe('OperationalDashboardService', () => {
     });
     expect(result.audit).toBeUndefined();
     expect(prisma.auditLog.findMany).not.toHaveBeenCalled();
+    expect(prisma.$queryRaw).not.toHaveBeenCalled();
     expect(prisma.payment.aggregate).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({ status: 'CONFIRMED' }),
@@ -66,8 +68,22 @@ describe('OperationalDashboardService', () => {
     const result = await service.get(user('MANAGER'), new Date('2026-08-30T15:00:00.000Z'));
 
     expect(result.audit).toEqual({ items: [] });
+    expect(result.financial?.monthlyConfirmed).toHaveLength(6);
+    expect(prisma.$queryRaw).toHaveBeenCalledOnce();
+    const financialQuery = prisma.$queryRaw.mock.calls[0]![0] as { strings: readonly string[] };
+    expect(financialQuery.strings.join(' ')).toContain("status = 'CONFIRMED'");
+    expect(financialQuery.strings.join(' ')).not.toContain("status = 'VOID'");
     expect(prisma.auditLog.findMany).toHaveBeenCalledWith(
       expect.objectContaining({ take: 5, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }] }),
     );
+  });
+
+  it('returns financial data to Direction', async () => {
+    const prisma = prismaMock();
+    const result = await new OperationalDashboardService(prisma as unknown as PrismaService).get(
+      user('ADMINISTRATOR'),
+      new Date('2026-08-30T15:00:00.000Z'),
+    );
+    expect(result.financial).toBeDefined();
   });
 });
