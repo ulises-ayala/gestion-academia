@@ -118,3 +118,4 @@ erDiagram
 - Deuda, cobros y vencimientos respetan estados financieros históricos: solamente cuotas `PENDING` y pagos `CONFIRMED` participan de sus indicadores.
 - Asistencia cuenta registros reales del día y no estima asistencias esperadas.
 - Cada sección conserva el permiso del módulo que resume; Auditoría nunca se consulta ni se entrega sin `audit:read`.
+- La evolución de cobros agrega únicamente pagos `CONFIRMED` de seis meses calendario. Es información preliminar de gestión y no reemplaza un futuro modelo contable completo.

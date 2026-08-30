@@ -4,6 +4,7 @@ import type { OperationalDashboardDto } from '@academy/contracts';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { AdminShell } from '../components/admin-shell';
+import { ConfirmedPaymentsChart } from '../components/confirmed-payments-chart';
 import { useAuth } from '../components/auth-provider';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import type { UiPermission } from '../lib/permissions';
@@ -114,6 +115,9 @@ function Dashboard() {
           />
         )}
       </section>
+      {data.financial && can('reports:operational') && (
+        <ConfirmedPaymentsChart data={data.financial} />
+      )}
       <div className="dashboard-columns">
         <div className="dashboard-stack">
           <section className="card dashboard-card">
