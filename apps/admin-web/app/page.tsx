@@ -7,7 +7,7 @@ import { AdminShell } from '../components/admin-shell';
 import { ConfirmedPaymentsChart } from '../components/confirmed-payments-chart';
 import { useAuth } from '../components/auth-provider';
 import { ApiClientError, apiRequest } from '../lib/api-client';
-import type { UiPermission } from '../lib/permissions';
+import { dashboardContextLinks, dashboardQuickActions } from '../lib/contextual-filters';
 
 const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
 const dateTime = new Intl.DateTimeFormat('es-AR', {
@@ -61,14 +61,6 @@ function Dashboard() {
   }, []);
   useEffect(() => void load(), [load]);
 
-  const quickActions: readonly [string, string, UiPermission][] = [
-    ['Nuevo alumno', '/students/new', 'students:manage'],
-    ['Ver alumnos', '/students', 'enrollments:manage'],
-    ['Registrar pago', '/payments', 'payments:collect'],
-    ['Tomar asistencia', '/attendances', 'attendance:manage'],
-    ['Nuevo potencial', '/leads/new', 'leads:manage'],
-    ['Ver auditoría', '/audit', 'audit:read'],
-  ];
   if (!data && !message) return <p className="dashboard-loading">Cargando resumen operativo…</p>;
   if (!data)
     return (
@@ -91,16 +83,36 @@ function Dashboard() {
         </div>
         <span className="dashboard-date">{data.businessDate.split('-').reverse().join('/')}</span>
       </header>
+      <section className="card dashboard-card quick-actions-card">
+        <div>
+          <p className="eyebrow">ACCIONES RÁPIDAS</p>
+          <h2>¿Qué querés hacer hoy?</h2>
+        </div>
+        <div className="quick-actions">
+          {dashboardQuickActions
+            .filter(([, , permission]) => can(permission))
+            .map(([label, href]) => (
+              <Link className="button quick-action" href={href} key={label}>
+                {label}
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+        </div>
+      </section>
       <section aria-label="Indicadores principales" className="metric-grid">
         {data.students && (
-          <Metric href="/students" label="Alumnos activos" value={data.students.active} />
+          <Metric
+            href={dashboardContextLinks.activeStudents}
+            label="Alumnos activos"
+            value={data.students.active}
+          />
         )}
         {data.classes && (
           <Metric href="/classes" label="Clases activas" value={data.classes.active} />
         )}
         {data.billing && (
           <Metric
-            href="/students"
+            href={dashboardContextLinks.pendingDebt}
             label="Deuda pendiente"
             value={money.format(Number(data.billing.pendingDebt))}
             detail={`${data.billing.pendingCharges} cuotas`}
@@ -113,6 +125,34 @@ function Dashboard() {
             value={money.format(Number(data.payments.confirmedAmountToday))}
             detail={`${data.payments.confirmedToday} pagos confirmados`}
           />
+        )}
+      </section>
+      <section
+        className={`card dashboard-card attention-card attention-primary ${urgent > 0 ? 'has-urgent' : ''}`}
+      >
+        <p className="eyebrow">REQUIERE ATENCIÓN</p>
+        <h2>{urgent > 0 ? `${urgent} pendientes` : 'Todo al día'}</h2>
+        {urgent === 0 ? (
+          <p className="dashboard-empty">No hay alertas operativas urgentes.</p>
+        ) : (
+          <div className="attention-list">
+            {data.billing && data.billing.overdueCharges > 0 && (
+              <Link href={dashboardContextLinks.overdueCharges}>
+                <strong>{data.billing.overdueCharges}</strong>
+                <span>
+                  cuotas vencidas <small>Ver detalle →</small>
+                </span>
+              </Link>
+            )}
+            {data.leads && data.leads.overdueFollowUps > 0 && (
+              <Link href={dashboardContextLinks.overdueFollowUps}>
+                <strong>{data.leads.overdueFollowUps}</strong>
+                <span>
+                  seguimientos vencidos <small>Ver detalle →</small>
+                </span>
+              </Link>
+            )}
+          </div>
         )}
       </section>
       {data.financial && can('reports:operational') && (
@@ -161,15 +201,15 @@ function Dashboard() {
                 <Link href="/leads">Ver todos</Link>
               </div>
               <div className="mini-metrics">
-                <span>
+                <Link href="/leads?status=INQUIRY">
                   <strong>{data.leads.inquiry}</strong> consultas
-                </span>
-                <span>
+                </Link>
+                <Link href="/leads?status=INTERESTED">
                   <strong>{data.leads.interested}</strong> interesados
-                </span>
-                <span>
+                </Link>
+                <Link href="/leads?status=TRIAL">
                   <strong>{data.leads.trial}</strong> pruebas
-                </span>
+                </Link>
               </div>
               {data.leads.priority.length === 0 ? (
                 <p className="dashboard-empty">No hay seguimientos pendientes.</p>
@@ -231,15 +271,19 @@ function Dashboard() {
             ) : (
               <div className="attention-list">
                 {data.billing && data.billing.overdueCharges > 0 && (
-                  <Link href="/students">
+                  <Link href={dashboardContextLinks.overdueCharges}>
                     <strong>{data.billing.overdueCharges}</strong>
-                    <span>cuotas vencidas</span>
+                    <span>
+                      cuotas vencidas <small>Ver detalle →</small>
+                    </span>
                   </Link>
                 )}
                 {data.leads && data.leads.overdueFollowUps > 0 && (
-                  <Link href="/leads">
+                  <Link href={dashboardContextLinks.overdueFollowUps}>
                     <strong>{data.leads.overdueFollowUps}</strong>
-                    <span>seguimientos vencidos</span>
+                    <span>
+                      seguimientos vencidos <small>Ver detalle →</small>
+                    </span>
                   </Link>
                 )}
               </div>
@@ -260,16 +304,16 @@ function Dashboard() {
                   <strong>{data.attendance.justified}</strong> Justificadas
                 </span>
               </div>
-              <Link className="dashboard-link" href="/attendances">
+              <Link className="dashboard-link" href={`/attendances?date=${data.businessDate}`}>
                 Ir a asistencias
               </Link>
             </section>
           )}
-          <section className="card dashboard-card">
+          <section className="card dashboard-card legacy-quick-actions">
             <p className="eyebrow">ACCESOS RÁPIDOS</p>
             <h2>¿Qué querés hacer?</h2>
             <div className="quick-actions">
-              {quickActions
+              {dashboardQuickActions
                 .filter(([, , permission]) => can(permission))
                 .map(([label, href]) => (
                   <Link className="button secondary" href={href} key={href}>
@@ -295,6 +339,7 @@ function Metric({
       <span>{label}</span>
       <strong>{value}</strong>
       {detail && <small>{detail}</small>}
+      <small className="metric-action">Ver detalle →</small>
     </Link>
   );
 }

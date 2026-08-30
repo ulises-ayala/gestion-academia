@@ -241,3 +241,10 @@
 - La serie contiene el mes calendario actual y los cinco anteriores, incluso cuando un período suma cero. Sus límites se calculan en `America/Buenos_Aires` y la agregación ocurre en base de datos.
 - Los importes describen cobros registrados, no un indicador contable ni un saldo disponible. Un análisis económico completo requiere modelar previamente entradas, egresos, costos y liquidaciones.
 - La sección exige `reports:operational`: solamente Administración y Dirección reciben sus datos; Admisión no los recibe en la respuesta.
+
+### Navegación contextual v1
+
+- Inicio funciona como centro operativo: las acciones rápidas aparecen inmediatamente después del saludo y antes de los indicadores.
+- Las métricas accionables usan enlaces profundos y los filtros principales de Alumnos, Pagos, Potenciales y Asistencias pueden inicializarse desde la URL. El historial del navegador conserva así el contexto de origen.
+- Deuda pendiente y cuotas vencidas abren una vista paginada de cuentas pendientes en Pagos, no una lista genérica de alumnos. La agrupación se realiza en base de datos y el cobro reutiliza Payments v1.
+- Esta navegación deriva información existente y no incorpora notificaciones persistidas, tareas de fondo ni un nuevo estado financiero.

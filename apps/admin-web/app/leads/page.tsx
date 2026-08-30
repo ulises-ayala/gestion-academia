@@ -11,6 +11,7 @@ import {
   leadStatusClass,
   leadStatusLabels,
 } from '../../lib/leads';
+import { leadFiltersFromSearch } from '../../lib/contextual-filters';
 
 const pageSize = 25;
 const dateTime = (value: string) =>
@@ -24,9 +25,13 @@ export default function LeadsPage() {
   const [result, setResult] = useState<LeadListDto>({ items: [], total: 0, page: 1, pageSize });
   const [draftQuery, setDraftQuery] = useState('');
   const [query, setQuery] = useState('');
-  const [status, setStatus] = useState<'' | LeadStatusDto>('');
+  const initialContext =
+    typeof window === 'undefined'
+      ? { status: '' as const, followUp: '' as const }
+      : leadFiltersFromSearch(window.location.search);
+  const [status, setStatus] = useState<'' | LeadStatusDto>(initialContext.status);
   const [source, setSource] = useState<'' | LeadSourceDto>('');
-  const [followUp, setFollowUp] = useState<'' | 'PENDING' | 'OVERDUE'>('');
+  const [followUp, setFollowUp] = useState<'' | 'PENDING' | 'OVERDUE'>(initialContext.followUp);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
@@ -69,6 +74,29 @@ export default function LeadsPage() {
         </Link>
       </div>
       <section className="card">
+        {(status || followUp) && (
+          <div className="context-filter">
+            <span>
+              Filtro activo:{' '}
+              <strong>
+                {followUp === 'OVERDUE'
+                  ? 'Seguimientos vencidos'
+                  : status
+                    ? leadStatusLabels[status]
+                    : 'Seguimientos pendientes'}
+              </strong>
+            </span>
+            <button
+              className="secondary"
+              onClick={() => {
+                setStatus('');
+                setFollowUp('');
+              }}
+            >
+              Limpiar filtro
+            </button>
+          </div>
+        )}
         <form className="lead-filters" onSubmit={search}>
           <label className="search-field">
             Buscar
