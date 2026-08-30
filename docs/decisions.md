@@ -227,3 +227,10 @@
 112. **Duplicados como ayuda operativa:** teléfono, email e Instagram se normalizan en campos auxiliares indexados, pero no únicos. Las coincidencias generan una advertencia y siempre permiten continuar porque los datos de contacto pueden compartirse o corregirse.
 113. **Seguimiento vencido derivado:** “Con seguimiento pendiente” incluye cualquier fecha programada en una etapa abierta; `nextFollowUpAt < now` forma el subconjunto vencido. Ambos filtros se limitan a Consulta, Interesado/a y Clase de prueba; Inscripto/a y No concretó son etapas finales y no se persiste un estado adicional.
 114. **Permiso y auditoría existentes:** `leads:manage` pertenece a Admisión y, por herencia, Administración y Dirección. Los cambios se auditan atómicamente como entidad `LEAD` mediante AuditLog; la creación habitual mantiene el criterio vigente y no genera auditoría.
+
+## Dashboard operativo v1
+
+115. **Lectura agregada y sin persistencia:** Inicio consume `GET /api/v1/dashboard/operational`, un read model que calcula indicadores sobre las entidades vigentes. No crea snapshots, sesiones de clase, alertas persistidas ni migraciones.
+116. **Fecha de negocio consistente:** clases, vencimientos, cobros, asistencias y seguimientos de hoy usan el día calendario de `BUSINESS_TIMEZONE`, inicialmente `America/Buenos_Aires`. Los pagos anulados y las cuotas no pendientes quedan fuera de los totales operativos.
+117. **Visibilidad por capacidades existentes:** el endpoint ejecuta y devuelve solamente las secciones autorizadas por los permisos de alumnos, oferta, cuotas, pagos, asistencias, potenciales y auditoría. No se incorpora `dashboard:read`; ocultar bloques o accesos rápidos sigue sin reemplazar la autorización backend.
+118. **Programación versus actividad real:** las clases de hoy derivan de clase y horario activos para el día semanal; no presuponen que la clase ocurrió. Asistencia resume únicamente registros persistidos de la fecha y clases distintas alcanzadas por esos registros.

@@ -479,3 +479,58 @@ export type AttendanceQuickSearchDto = Readonly<{
   date: string;
   items: readonly AttendanceQuickSearchItemDto[];
 }>;
+
+export type OperationalDashboardDto = Readonly<{
+  generatedAt: string;
+  businessDate: string;
+  students?: Readonly<{ active: number }>;
+  classes?: Readonly<{
+    active: number;
+    scheduledToday: number;
+    today: readonly Readonly<{
+      id: string;
+      name: string;
+      startTime: string;
+      endTime: string;
+      teacher: string;
+      room: string;
+      branch: string;
+    }>[];
+  }>;
+  billing?: Readonly<{
+    pendingCharges: number;
+    pendingDebt: string;
+    overdueCharges: number;
+  }>;
+  payments?: Readonly<{ confirmedToday: number; confirmedAmountToday: string }>;
+  attendance?: Readonly<{
+    present: number;
+    absent: number;
+    justified: number;
+    classesWithRecords: number;
+  }>;
+  leads?: Readonly<{
+    inquiry: number;
+    interested: number;
+    trial: number;
+    followUpsToday: number;
+    overdueFollowUps: number;
+    priority: readonly Readonly<{
+      id: string;
+      name: string;
+      status: LeadStatusDto;
+      nextFollowUpAt: string;
+      overdue: boolean;
+    }>[];
+  }>;
+  audit?: Readonly<{
+    items: readonly Readonly<{
+      id: string;
+      action: string;
+      entityType: string;
+      entityId: string | null;
+      createdAt: string;
+      actorUsername: string;
+    }>[];
+  }>;
+}>;
