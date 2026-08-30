@@ -110,3 +110,13 @@ erDiagram
 - En ingreso rápido, `Student` identifica a la persona y cada resultado de `Enrollment` identifica la clase concreta sobre la que puede registrarse asistencia. Varias inscripciones vigentes se muestran por separado.
 - Los horarios del día seleccionado sirven para ordenar y sugerir una clase, sin excluir otras inscripciones vigentes ni formar parte de la identidad de `StudentAttendance`.
 - Asistencias no consulta cuotas, deuda ni vencimientos. El futuro contexto de Acceso podrá reutilizar la búsqueda, pero sus dispositivos y políticas permanecen fuera de este módulo.
+
+## Dashboard operativo v1
+
+- El dashboard es un modelo de lectura y no una entidad persistente.
+- La agenda de hoy deriva de clases y horarios activos; no representa sesiones ni confirma que una clase haya ocurrido.
+- Deuda, cobros y vencimientos respetan estados financieros históricos: solamente cuotas `PENDING` y pagos `CONFIRMED` participan de sus indicadores.
+- Asistencia cuenta registros reales del día y no estima asistencias esperadas.
+- Cada sección conserva el permiso del módulo que resume; Auditoría nunca se consulta ni se entrega sin `audit:read`.
+- La evolución de cobros agrega únicamente pagos `CONFIRMED` de seis meses calendario. Es información preliminar de gestión y no reemplaza un futuro modelo contable completo.
+- La vista de cuentas pendientes agrupa cuotas `PENDING` por alumno. “Vencida” sigue siendo una condición derivada de `dueDate < businessToday`; no es un estado persistido nuevo.
