@@ -9,6 +9,7 @@ import { PAYMENTS_REPOSITORY } from './application/payments.repository';
 import { PaymentsService } from './application/payments.service';
 import { PrismaPaymentsRepository } from './infrastructure/prisma-payments.repository';
 import { PaymentsController } from './presentation/payments.controller';
+import { ReceivablesService } from './application/receivables.service';
 
 @Module({
   imports: [DatabaseModule],
@@ -16,6 +17,7 @@ import { PaymentsController } from './presentation/payments.controller';
   providers: [
     BillingService,
     PaymentsService,
+    ReceivablesService,
     { provide: BILLING_REPOSITORY, useClass: PrismaBillingRepository },
     { provide: PAYMENTS_REPOSITORY, useClass: PrismaPaymentsRepository },
   ],

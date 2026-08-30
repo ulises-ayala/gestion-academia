@@ -326,6 +326,23 @@ export type PaymentDto = Readonly<{
   updatedAt: string;
 }>;
 export type PaymentListDto = PageDto<PaymentDto>;
+export type ReceivablesScopeDto = 'pending' | 'overdue';
+export type ReceivableDebtorDto = Readonly<{
+  student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
+  pendingCount: number;
+  overdueCount: number;
+  totalPending: string;
+  oldestDueDate: string;
+}>;
+export type ReceivablesDto = Readonly<{
+  scope: ReceivablesScopeDto;
+  totalStudents: number;
+  totalCharges: number;
+  totalAmount: string;
+  items: readonly ReceivableDebtorDto[];
+  page: number;
+  pageSize: number;
+}>;
 export type PaymentSummaryDto = Readonly<{ confirmedTotal: string }>;
 export type VoidPaymentDto = Readonly<{ reason: string }>;
 
@@ -478,4 +495,72 @@ export type AttendanceQuickSearchDto = Readonly<{
   query: string;
   date: string;
   items: readonly AttendanceQuickSearchItemDto[];
+}>;
+
+export type OperationalDashboardDto = Readonly<{
+  generatedAt: string;
+  businessDate: string;
+  students?: Readonly<{ active: number }>;
+  classes?: Readonly<{
+    active: number;
+    scheduledToday: number;
+    today: readonly Readonly<{
+      id: string;
+      name: string;
+      startTime: string;
+      endTime: string;
+      teacher: string;
+      room: string;
+      branch: string;
+    }>[];
+  }>;
+  billing?: Readonly<{
+    pendingCharges: number;
+    pendingDebt: string;
+    overdueCharges: number;
+  }>;
+  payments?: Readonly<{ confirmedToday: number; confirmedAmountToday: string }>;
+  financial?: Readonly<{
+    currentMonthConfirmed: string;
+    previousMonthConfirmed: string;
+    variationPercent: string | null;
+    lastSixMonthsConfirmed: string;
+    monthlyConfirmed: readonly Readonly<{
+      year: number;
+      month: number;
+      label: string;
+      fullLabel: string;
+      amount: string;
+    }>[];
+  }>;
+  attendance?: Readonly<{
+    present: number;
+    absent: number;
+    justified: number;
+    classesWithRecords: number;
+  }>;
+  leads?: Readonly<{
+    inquiry: number;
+    interested: number;
+    trial: number;
+    followUpsToday: number;
+    overdueFollowUps: number;
+    priority: readonly Readonly<{
+      id: string;
+      name: string;
+      status: LeadStatusDto;
+      nextFollowUpAt: string;
+      overdue: boolean;
+    }>[];
+  }>;
+  audit?: Readonly<{
+    items: readonly Readonly<{
+      id: string;
+      action: string;
+      entityType: string;
+      entityId: string | null;
+      createdAt: string;
+      actorUsername: string;
+    }>[];
+  }>;
 }>;

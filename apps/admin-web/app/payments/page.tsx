@@ -5,14 +5,18 @@ import type {
   PaymentDto,
   PaymentListDto,
   PaymentMethodDto,
+  ReceivablesDto,
   StudentDto,
   StudentListDto,
 } from '@academy/contracts';
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useAuth } from '../../components/auth-provider';
 import { PermissionGate } from '../../components/permission-gate';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { businessToday, formatDate } from '../../lib/dates';
 import { createPaymentPayload, paymentMethodLabels, selectedTotal } from '../../lib/payments';
+import { paymentViewFromSearch } from '../../lib/contextual-filters';
 
 const money = (value: string | number) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
@@ -24,6 +28,14 @@ const dateTime = (value: string) =>
   }).format(new Date(value));
 
 export default function PaymentsPage() {
+  const { can } = useAuth();
+  const [view] = useState<'' | 'pending' | 'overdue'>(() => {
+    if (typeof window === 'undefined') return '';
+    return paymentViewFromSearch(window.location.search);
+  });
+  const [receivables, setReceivables] = useState<ReceivablesDto | null>(null);
+  const [receivablesPage, setReceivablesPage] = useState(1);
+  const [receivablesLoading, setReceivablesLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<readonly StudentDto[]>([]);
   const [student, setStudent] = useState<StudentDto | null>(null);
@@ -56,6 +68,23 @@ export default function PaymentsPage() {
         .then(loadStudent)
         .catch(() => setMessage('No se pudo seleccionar el alumno indicado.'));
   }, [loadStudent]);
+
+  useEffect(() => {
+    if (!view) return;
+    setReceivablesLoading(true);
+    void apiRequest<ReceivablesDto>(
+      `/payments/receivables?scope=${view}&page=${receivablesPage}&pageSize=20`,
+    )
+      .then(setReceivables)
+      .catch((error) =>
+        setMessage(
+          error instanceof ApiClientError
+            ? error.message
+            : 'No se pudieron cargar las cuentas pendientes.',
+        ),
+      )
+      .finally(() => setReceivablesLoading(false));
+  }, [receivablesPage, view]);
 
   useEffect(() => {
     if (!voidTarget) return;
@@ -139,10 +168,104 @@ export default function PaymentsPage() {
       <div className="page-heading">
         <div>
           <p className="eyebrow">Facturación</p>
-          <h1>Pagos</h1>
-          <p className="subtitle">Cobro de cuotas completas e historial financiero.</p>
+          <h1>
+            {view === 'overdue'
+              ? 'Cuotas vencidas'
+              : view === 'pending'
+                ? 'Cuentas pendientes'
+                : 'Pagos'}
+          </h1>
+          <p className="subtitle">
+            {view
+              ? 'Mostrando alumnos con cuotas pendientes según el filtro activo.'
+              : 'Cobro de cuotas completas e historial financiero.'}
+          </p>
         </div>
       </div>
+      {view && (
+        <section className="card receivables-card">
+          <div className="context-filter">
+            <span>
+              Filtro activo: <strong>{view === 'overdue' ? 'Vencidas' : 'Pendientes'}</strong>
+            </span>
+            <Link href="/payments">Limpiar filtro</Link>
+          </div>
+          {receivablesLoading ? (
+            <p>Cargando {view === 'overdue' ? 'cuotas vencidas' : 'cuentas pendientes'}…</p>
+          ) : receivables && receivables.items.length > 0 ? (
+            <>
+              <div className="receivables-summary">
+                <span>
+                  <strong>{receivables.totalCharges}</strong> cuotas
+                </span>
+                <span>
+                  <strong>{receivables.totalStudents}</strong> alumnos
+                </span>
+                <span>
+                  <strong>{money(receivables.totalAmount)}</strong> total pendiente
+                </span>
+              </div>
+              <div className="debtor-list">
+                {receivables.items.map((debtor) => (
+                  <article className="debtor-row" key={debtor.student.id}>
+                    <div>
+                      <h3>
+                        {debtor.student.firstName} {debtor.student.lastName}
+                      </h3>
+                      <p>
+                        DNI {debtor.student.dni} · {debtor.pendingCount} cuota
+                        {debtor.pendingCount === 1 ? '' : 's'}
+                      </p>
+                      <small>Más antigua: {formatDate(debtor.oldestDueDate)}</small>
+                    </div>
+                    <strong>{money(debtor.totalPending)}</strong>
+                    <div className="debtor-actions">
+                      <Link className="button secondary" href={`/students/${debtor.student.id}`}>
+                        Ver ficha
+                      </Link>
+                      {can('payments:collect') && (
+                        <Link className="button" href={`/payments?studentId=${debtor.student.id}`}>
+                          Cobrar
+                        </Link>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div className="pagination">
+                <button
+                  className="secondary"
+                  disabled={receivablesPage <= 1 || receivablesLoading}
+                  onClick={() => setReceivablesPage((value) => value - 1)}
+                >
+                  Anterior
+                </button>
+                <span>
+                  Página {receivables.page} de{' '}
+                  {Math.max(1, Math.ceil(receivables.totalStudents / receivables.pageSize))}
+                </span>
+                <button
+                  className="secondary"
+                  disabled={
+                    receivablesPage * receivables.pageSize >= receivables.totalStudents ||
+                    receivablesLoading
+                  }
+                  onClick={() => setReceivablesPage((value) => value + 1)}
+                >
+                  Siguiente
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="empty-state">
+              <h2>
+                {view === 'overdue' ? 'No hay cuotas vencidas.' : 'No hay cuentas pendientes.'}
+              </h2>
+              <p>El filtro no encontró alumnos con deuda.</p>
+            </div>
+          )}
+        </section>
+      )}
       <section className="card">
         <h2>Buscar alumno</h2>
         <form className="filters" onSubmit={search}>
