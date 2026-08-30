@@ -214,3 +214,8 @@
 105. **Visibilidad por capacidades:** cada bloque y acción respeta los permisos existentes. Ocultar una opción en la interfaz no reemplaza la autorización de la API.
 106. **Alcance administrativo confirmado:** la ficha reutiliza los casos de uso vigentes para editar, cambiar estado y finalizar inscripciones, incluidos sus registros de auditoría. No incorpora pausas, becas, motivos de baja, alertas automáticas ni acciones financieras nuevas.
 107. **Asistencia observada, no esperada:** el resumen cuenta únicamente registros recientes `PRESENT`, `ABSENT` y `JUSTIFIED`. No calcula porcentajes ni sesiones esperadas porque el modelo no representa todas las ocurrencias reales de una clase.
+
+## Feedback visual Carmesí
+
+108. **Marca presente, superficies legibles:** fondos, sidebar, hovers y bordes reciben un matiz carmesí tanto en modo claro como oscuro, mientras las superficies principales continúan claras o neutrales. Los colores de éxito, advertencia y peligro conservan su significado semántico.
+109. **Contraseña visible sólo en la UI:** login y creación inicial permiten mostrar u ocultar el valor del mismo campo local. El control no duplica, registra ni modifica la contraseña, el payload, el autocomplete ni la autenticación backend.
