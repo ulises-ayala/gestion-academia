@@ -1,7 +1,16 @@
 'use client';
 
 import type { AuthSessionDto, AuthUserDto, SetupStatusDto } from '@academy/contracts';
-import { FormEvent, createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import {
+  default as React,
+  FormEvent,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type ReactNode,
+} from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { roleCan, type UiPermission } from '../lib/permissions';
 
@@ -11,6 +20,50 @@ type AuthContextValue = {
   logout(): Promise<void>;
 };
 const AuthContext = createContext<AuthContextValue | null>(null);
+type Credentials = Readonly<{ username: string; password: string }>;
+
+export function authenticate(credentials: Credentials, setupRequired: boolean) {
+  return apiRequest<AuthSessionDto>(`/auth/${setupRequired ? 'bootstrap' : 'login'}`, {
+    method: 'POST',
+    body: JSON.stringify(credentials),
+  });
+}
+
+export function PasswordField({
+  password,
+  visible,
+  setupRequired,
+  onChange,
+  onToggle,
+}: Readonly<{
+  password: string;
+  visible: boolean;
+  setupRequired: boolean;
+  onChange(event: ChangeEvent<HTMLInputElement>): void;
+  onToggle(): void;
+}>) {
+  return (
+    <span className="password-field">
+      <input
+        type={visible ? 'text' : 'password'}
+        autoComplete={setupRequired ? 'new-password' : 'current-password'}
+        required
+        minLength={12}
+        value={password}
+        onChange={onChange}
+      />
+      <button
+        aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+        aria-pressed={visible}
+        className="password-toggle"
+        onClick={onToggle}
+        type="button"
+      >
+        {visible ? 'Ocultar' : 'Mostrar'}
+      </button>
+    </span>
+  );
+}
 
 export function useAuth(): AuthContextValue {
   const value = useContext(AuthContext);
@@ -66,23 +119,21 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   );
 }
 
-function LoginScreen({
+export function LoginScreen({
   setupRequired,
   onAuthenticated,
 }: Readonly<{ setupRequired: boolean; onAuthenticated(user: AuthUserDto): void }>) {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
     setSubmitting(true);
     try {
-      const session = await apiRequest<AuthSessionDto>(
-        `/auth/${setupRequired ? 'bootstrap' : 'login'}`,
-        { method: 'POST', body: JSON.stringify(credentials) },
-      );
+      const session = await authenticate(credentials, setupRequired);
       onAuthenticated(session.user);
     } catch (error) {
       setMessage(
@@ -116,13 +167,12 @@ function LoginScreen({
           </label>
           <label>
             Contraseña
-            <input
-              type="password"
-              autoComplete={setupRequired ? 'new-password' : 'current-password'}
-              required
-              minLength={12}
-              value={credentials.password}
+            <PasswordField
+              password={credentials.password}
+              visible={showPassword}
+              setupRequired={setupRequired}
               onChange={(event) => setCredentials({ ...credentials, password: event.target.value })}
+              onToggle={() => setShowPassword((visible) => !visible)}
             />
           </label>
           <button disabled={submitting} type="submit">
