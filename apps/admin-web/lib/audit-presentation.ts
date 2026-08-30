@@ -3,6 +3,7 @@ import type { AuditLogDto } from '@academy/contracts';
 export const auditEntityOptions = [
   ['', 'Todas'],
   ['STUDENT', 'Alumno'],
+  ['LEAD', 'Potencial alumno'],
   ['TEACHER', 'Profesor'],
   ['DANCE_TYPE', 'Tipo de danza'],
   ['BRANCH', 'Sucursal'],
@@ -48,6 +49,10 @@ const fieldLabels: Record<string, string> = {
   endDate: 'Fecha de finalización',
   dueDate: 'Vencimiento',
   notes: 'Observaciones',
+  instagram: 'Instagram',
+  source: 'Origen',
+  nextFollowUpAt: 'Próximo seguimiento',
+  lastContactAt: 'Último contacto',
   username: 'Usuario',
   paymentMethod: 'Medio de pago',
   passwordChanged: 'Contraseña modificada',
@@ -67,9 +72,24 @@ const valueLabels: Record<string, string> = {
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
   CARD: 'Tarjeta',
+  INQUIRY: 'Consulta',
+  INTERESTED: 'Interesado/a',
+  TRIAL: 'Clase de prueba',
+  ENROLLED: 'Inscripto/a',
+  NOT_CONVERTED: 'No concretó',
+  WHATSAPP: 'WhatsApp',
+  INSTAGRAM: 'Instagram',
+  IN_PERSON: 'Presencial',
 };
 const moneyFields = new Set(['amount', 'baseAmount', 'discountAmount', 'finalAmount']);
-const dateFields = new Set(['validFrom', 'validTo', 'endDate', 'dueDate']);
+const dateFields = new Set([
+  'validFrom',
+  'validTo',
+  'endDate',
+  'dueDate',
+  'nextFollowUpAt',
+  'lastContactAt',
+]);
 
 export const formatAuditEntity = (value: string) => entityLabels[value] ?? humanize(value);
 export const formatAuditAction = (value: string) => actionLabels[value] ?? humanize(value);
@@ -89,10 +109,13 @@ export function formatAuditValue(field: string, value: unknown): string {
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(
       Number(value),
     );
-  if (dateFields.has(field) && typeof value === 'string')
-    return new Intl.DateTimeFormat('es-AR', { timeZone: 'UTC' }).format(
-      new Date(`${value.slice(0, 10)}T00:00:00.000Z`),
-    );
+  if (dateFields.has(field) && typeof value === 'string') {
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+    return new Intl.DateTimeFormat('es-AR', {
+      timeZone: dateOnly ? 'UTC' : 'America/Buenos_Aires',
+      ...(dateOnly ? {} : { dateStyle: 'short', timeStyle: 'short' }),
+    }).format(new Date(dateOnly ? `${value}T00:00:00.000Z` : value));
+  }
   if (typeof value === 'boolean') return value ? 'Sí' : 'No';
   if (Array.isArray(value)) return `${value.length} elemento${value.length === 1 ? '' : 's'}`;
   if (typeof value === 'object') return 'Información actualizada';

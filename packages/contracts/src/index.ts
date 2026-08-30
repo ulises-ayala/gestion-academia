@@ -44,6 +44,41 @@ export type CreateStudentDto = Readonly<{
 
 export type UpdateStudentDto = Readonly<Partial<CreateStudentDto> & { status?: StudentStatusDto }>;
 
+export type LeadSourceDto = 'WHATSAPP' | 'INSTAGRAM' | 'IN_PERSON';
+export type LeadStatusDto = 'INQUIRY' | 'INTERESTED' | 'TRIAL' | 'ENROLLED' | 'NOT_CONVERTED';
+export type LeadDto = Readonly<{
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  instagram: string | null;
+  source: LeadSourceDto;
+  status: LeadStatusDto;
+  notes: string | null;
+  nextFollowUpAt: string | null;
+  lastContactAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}>;
+export type LeadListDto = PageDto<LeadDto>;
+export type CreateLeadDto = Readonly<{
+  name: string;
+  source: LeadSourceDto;
+  phone?: string | null;
+  email?: string | null;
+  instagram?: string | null;
+  status?: LeadStatusDto;
+  notes?: string | null;
+  nextFollowUpAt?: string | null;
+  lastContactAt?: string | null;
+}>;
+export type UpdateLeadDto = Readonly<Partial<CreateLeadDto>>;
+export type LeadDuplicateDto = Readonly<{
+  lead: LeadDto;
+  matches: readonly ('phone' | 'email' | 'instagram')[];
+}>;
+export type LeadDuplicateListDto = Readonly<{ items: readonly LeadDuplicateDto[] }>;
+
 export type AdminRoleDto = 'ADMINISTRATOR' | 'RECEPTION' | 'MANAGER';
 export type AuthUserDto = Readonly<{
   id: string;
@@ -303,6 +338,7 @@ export type AuditActionDto =
   | 'ROLE_CHANGE';
 export type AuditEntityTypeDto =
   | 'STUDENT'
+  | 'LEAD'
   | 'TEACHER'
   | 'DANCE_TYPE'
   | 'BRANCH'

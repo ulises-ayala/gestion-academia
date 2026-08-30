@@ -2,6 +2,7 @@ import type { AdminRoleDto } from '@academy/contracts';
 
 export type UiPermission =
   | 'students:manage'
+  | 'leads:manage'
   | 'enrollments:manage'
   | 'offering:read'
   | 'offering:manage'
@@ -29,6 +30,7 @@ export type UiPermission =
 
 const admissionPermissions: readonly UiPermission[] = [
   'students:manage',
+  'leads:manage',
   'enrollments:manage',
   'offering:read',
   'tariffs:read',
