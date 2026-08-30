@@ -20,6 +20,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
       label: 'Gestión',
       links: [
         { href: '/students', label: 'Alumnos', permission: 'students:manage' },
+        { href: '/leads', label: 'Potenciales', permission: 'leads:manage' },
         { href: '/classes', label: 'Clases', permission: 'offering:read' },
         { href: '/attendances', label: 'Asistencias', permission: 'attendance:manage' },
         { href: '/teachers', label: 'Profesores', permission: 'offering:manage' },

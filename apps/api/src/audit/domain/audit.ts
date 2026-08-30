@@ -10,6 +10,7 @@ export const AUDIT_ACTIONS = {
 } as const;
 export const AUDIT_ENTITY_TYPES = {
   STUDENT: 'STUDENT',
+  LEAD: 'LEAD',
   TEACHER: 'TEACHER',
   DANCE_TYPE: 'DANCE_TYPE',
   BRANCH: 'BRANCH',

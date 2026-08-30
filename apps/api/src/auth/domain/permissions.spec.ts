@@ -23,6 +23,7 @@ describe('role permissions', () => {
     expect(hasPermissions(reception, ['cash:manage'])).toBe(false);
     expect(hasPermissions(reception, ['cash:reconcile'])).toBe(false);
     expect(hasPermissions(reception, ['audit:read'])).toBe(false);
+    expect(hasPermissions(reception, ['leads:manage'])).toBe(true);
   });
   it('Administración gestiona tarifas, cuotas, pagos y caja', () => {
     const manager = user('MANAGER');
