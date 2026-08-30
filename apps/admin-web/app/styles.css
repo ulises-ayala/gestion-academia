@@ -244,11 +244,15 @@ svg {
   margin-bottom: var(--space-4);
 }
 .mini-metrics span,
+.mini-metrics a,
 .attendance-summary span {
   padding: 0.7rem;
   border-radius: var(--radius-md);
   background: var(--surface-muted);
   color: var(--text-muted);
+}
+.mini-metrics a {
+  text-decoration: none;
 }
 .mini-metrics strong,
 .attendance-summary strong {
@@ -280,6 +284,89 @@ svg {
 .quick-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+.quick-actions-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+}
+.quick-actions-card h2 {
+  margin-bottom: 0;
+}
+.quick-actions-card .quick-actions {
+  grid-template-columns: repeat(5, minmax(7.5rem, 1fr));
+}
+.quick-action {
+  justify-content: space-between;
+}
+.metric-action {
+  color: var(--brand) !important;
+  font-weight: 700;
+}
+.attention-list small {
+  display: block;
+  color: var(--brand);
+}
+.dashboard-columns .attention-card {
+  display: none;
+}
+.legacy-quick-actions {
+  display: none;
+}
+.context-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: 0.65rem 0.8rem;
+  border-radius: var(--radius-md);
+  background: var(--brand-soft);
+}
+.context-filter a {
+  color: var(--brand);
+  font-weight: 700;
+}
+.receivables-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.receivables-summary span {
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+.receivables-summary strong {
+  display: block;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+.debtor-list {
+  display: grid;
+  border-top: 1px solid var(--border);
+}
+.debtor-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border);
+}
+.debtor-row h3,
+.debtor-row p {
+  margin: 0;
+}
+.debtor-row small {
+  color: var(--text-muted);
+}
+.debtor-actions {
+  display: flex;
   gap: var(--space-2);
 }
 .quick-actions .button {
@@ -388,6 +475,12 @@ svg {
   .dashboard-columns {
     grid-template-columns: 1fr;
   }
+  .quick-actions-card {
+    grid-template-columns: 1fr;
+  }
+  .quick-actions-card .quick-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 @media (max-width: 40rem) {
   .dashboard-heading {
@@ -403,6 +496,19 @@ svg {
   }
   .quick-actions {
     grid-template-columns: 1fr;
+  }
+  .quick-actions-card .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .receivables-summary {
+    grid-template-columns: 1fr;
+  }
+  .debtor-row {
+    grid-template-columns: 1fr;
+  }
+  .debtor-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
   .schedule-row {
     grid-template-columns: auto minmax(0, 1fr);
@@ -431,6 +537,10 @@ svg {
   }
   .payment-bar-value {
     visibility: hidden;
+  }
+  .quick-actions-card .quick-actions,
+  .debtor-actions {
+    grid-template-columns: 1fr;
   }
 }
 a {

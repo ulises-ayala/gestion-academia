@@ -3,6 +3,7 @@ import type {
   PaymentMethodDto,
   PaymentStatusDto,
   PaymentSummaryDto,
+  ReceivablesScopeDto,
   VoidPaymentDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
@@ -12,10 +13,14 @@ import { Permissions } from '../../auth/presentation/permissions.decorator';
 import { DomainError } from '../../shared/domain/domain-error';
 import { parsePage, parseUuid } from '../../shared/presentation/request-validation';
 import { PaymentsService } from '../application/payments.service';
+import { ReceivablesService } from '../application/receivables.service';
 
 @Controller('payments')
 export class PaymentsController {
-  constructor(private readonly service: PaymentsService) {}
+  constructor(
+    private readonly service: PaymentsService,
+    private readonly receivables: ReceivablesService,
+  ) {}
 
   @Get()
   @Permissions('payments:read')
@@ -50,6 +55,24 @@ export class PaymentsController {
   @Permissions('payments:read')
   summary(@Query('studentId') studentId: string): Promise<PaymentSummaryDto> {
     return this.service.summary(parseUuid(studentId, 'studentId'));
+  }
+
+  @Get('receivables')
+  @Permissions('charges:read', 'payments:read')
+  receivableList(
+    @Query('scope') scope?: string,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ) {
+    if (scope !== 'pending' && scope !== 'overdue')
+      throw new DomainError('VALIDATION_ERROR', 'La vista de deuda no es válida', {
+        field: 'scope',
+      });
+    return this.receivables.list(
+      scope as ReceivablesScopeDto,
+      parsePage(page, 'page', 1, 1_000_000),
+      parsePage(pageSize, 'pageSize', 20, 100),
+    );
   }
 
   @Get(':id')

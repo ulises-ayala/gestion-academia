@@ -119,3 +119,4 @@ erDiagram
 - Asistencia cuenta registros reales del día y no estima asistencias esperadas.
 - Cada sección conserva el permiso del módulo que resume; Auditoría nunca se consulta ni se entrega sin `audit:read`.
 - La evolución de cobros agrega únicamente pagos `CONFIRMED` de seis meses calendario. Es información preliminar de gestión y no reemplaza un futuro modelo contable completo.
+- La vista de cuentas pendientes agrupa cuotas `PENDING` por alumno. “Vencida” sigue siendo una condición derivada de `dueDate < businessToday`; no es un estado persistido nuevo.

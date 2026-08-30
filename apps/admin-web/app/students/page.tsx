@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { calculateAge, formatDate } from '../../lib/dates';
+import { studentStatusFromSearch } from '../../lib/contextual-filters';
 
 type StatusFilter = '' | StudentStatusDto;
 const pageSize = 25;
@@ -13,7 +14,9 @@ export default function StudentsPage() {
   const [result, setResult] = useState<StudentListDto>({ items: [], total: 0, page: 1, pageSize });
   const [draftQuery, setDraftQuery] = useState('');
   const [query, setQuery] = useState('');
-  const [status, setStatus] = useState<StatusFilter>('');
+  const [status, setStatus] = useState<StatusFilter>(() =>
+    typeof window === 'undefined' ? '' : studentStatusFromSearch(window.location.search),
+  );
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
@@ -60,6 +63,16 @@ export default function StudentsPage() {
         </Link>
       </div>
       <section className="card">
+        {status && (
+          <div className="context-filter">
+            <span>
+              Filtro activo: <strong>{status === 'ACTIVE' ? 'Activos' : 'Inactivos'}</strong>
+            </span>
+            <button className="secondary" onClick={() => setStatus('')}>
+              Limpiar filtro
+            </button>
+          </div>
+        )}
         <form className="filters" onSubmit={search}>
           <label className="search-field">
             Buscar

@@ -14,6 +14,7 @@ import { AdminShell } from '../../components/admin-shell';
 import { RequirePermission } from '../../components/permission-gate';
 import { apiRequest, ApiClientError } from '../../lib/api-client';
 import { businessToday } from '../../lib/dates';
+import { attendanceDateFromSearch } from '../../lib/contextual-filters';
 
 type AttendanceRow = {
   enrollmentId: string;
@@ -43,7 +44,12 @@ const selectedDayOfWeek = (value: string) =>
   ];
 
 export default function AttendancesPage() {
-  const [date, setDate] = useState(businessToday);
+  const [date, setDate] = useState(() =>
+    attendanceDateFromSearch(
+      typeof window === 'undefined' ? '' : window.location.search,
+      businessToday(),
+    ),
+  );
   const [message, setMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [dayClasses, setDayClasses] = useState<AttendanceDayClassDto[]>([]);
