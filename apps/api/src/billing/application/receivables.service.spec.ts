@@ -45,7 +45,7 @@ describe('ReceivablesService', () => {
     const queries = queryRaw.mock.calls
       .map(([sql]) => (sql as { strings: readonly string[] }).strings.join(' '))
       .join(' ');
-    expect(queries).toContain("status = 'PENDING'");
+    expect(queries).toContain("status IN ('PENDING', 'PARTIAL')");
     if (scope === 'overdue') expect(queries).toContain('due_date <');
   });
 

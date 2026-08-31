@@ -20,25 +20,28 @@ export function studentAccountSummary(
   confirmedPaymentTotal: string,
   today: string,
 ): StudentAccountSummary {
-  const pending = charges.filter((charge) => charge.status === 'PENDING');
+  const pending = charges.filter(
+    (charge) => charge.status === 'PENDING' || charge.status === 'PARTIAL',
+  );
   return {
     activeClasses: enrollments.filter((item) => item.status === 'ACTIVE').length,
     pendingDebt: centsToDecimal(
-      pending.reduce((total, charge) => total + decimalToCents(charge.finalAmount), 0n),
+      pending.reduce((total, charge) => total + decimalToCents(charge.outstandingAmount), 0n),
     ),
-    overdueCharges: pending.filter((charge) => charge.dueDate < today).length,
+    overdueCharges: pending.filter((charge) => charge.overdue || charge.dueDate < today).length,
     totalPaid: centsToDecimal(decimalToCents(confirmedPaymentTotal)),
   };
 }
 
 export const isOverdueCharge = (charge: MonthlyChargeDto, today: string) =>
-  charge.status === 'PENDING' && charge.dueDate < today;
+  (charge.status === 'PENDING' || charge.status === 'PARTIAL') &&
+  (charge.overdue || charge.dueDate < today);
 export const sortAccountCharges = (charges: readonly MonthlyChargeDto[], today: string) =>
   [...charges].sort((left, right) => {
     const rank = (charge: MonthlyChargeDto) =>
       isOverdueCharge(charge, today)
         ? 0
-        : charge.status === 'PENDING'
+        : charge.status === 'PENDING' || charge.status === 'PARTIAL'
           ? 1
           : charge.status === 'PAID'
             ? 2

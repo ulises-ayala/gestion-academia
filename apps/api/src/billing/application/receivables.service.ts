@@ -29,26 +29,45 @@ export class ReceivablesService {
       new Date(),
       process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
     ).dateValue;
-    const scopeFilter = scope === 'overdue' ? Prisma.sql`AND mc.due_date < ${today}` : Prisma.empty;
+    const scopeFilter = scope === 'overdue' ? Prisma.sql`AND due_date < ${today}` : Prisma.empty;
     const [summaryRows, items] = await Promise.all([
       this.prisma.$queryRaw<SummaryRow[]>(Prisma.sql`
-        SELECT COUNT(DISTINCT mc.student_id) AS "totalStudents",
+        WITH confirmed AS (
+          SELECT pa.monthly_charge_id, SUM(pa.amount) AS paid
+          FROM payment_allocations pa JOIN payments p ON p.id = pa.payment_id AND p.status = 'CONFIRMED'
+          GROUP BY pa.monthly_charge_id
+        ), open_charges AS (
+          SELECT mc.student_id, mc.due_date,
+                 GREATEST(mc.final_amount - COALESCE(c.paid, 0), 0) AS outstanding
+          FROM monthly_charges mc LEFT JOIN confirmed c ON c.monthly_charge_id = mc.id
+          WHERE mc.status IN ('PENDING', 'PARTIAL')
+        )
+        SELECT COUNT(DISTINCT student_id) AS "totalStudents",
                COUNT(*) AS "totalCharges",
-               COALESCE(SUM(mc.final_amount), 0) AS "totalAmount"
-        FROM monthly_charges mc
-        WHERE mc.status = 'PENDING' ${scopeFilter}
+               COALESCE(SUM(outstanding), 0) AS "totalAmount"
+        FROM open_charges WHERE outstanding > 0 ${scopeFilter}
       `),
       this.prisma.$queryRaw<DebtorRow[]>(Prisma.sql`
+        WITH confirmed AS (
+          SELECT pa.monthly_charge_id, SUM(pa.amount) AS paid
+          FROM payment_allocations pa JOIN payments p ON p.id = pa.payment_id AND p.status = 'CONFIRMED'
+          GROUP BY pa.monthly_charge_id
+        ), open_charges AS (
+          SELECT mc.student_id, mc.due_date,
+                 GREATEST(mc.final_amount - COALESCE(c.paid, 0), 0) AS outstanding
+          FROM monthly_charges mc LEFT JOIN confirmed c ON c.monthly_charge_id = mc.id
+          WHERE mc.status IN ('PENDING', 'PARTIAL')
+        )
         SELECT s.id AS "studentId", s.dni, s.first_name AS "firstName", s.last_name AS "lastName",
                COUNT(*) AS "pendingCount",
-               COUNT(*) FILTER (WHERE mc.due_date < ${today}) AS "overdueCount",
-               SUM(mc.final_amount) AS "totalPending",
-               MIN(mc.due_date) AS "oldestDueDate"
-        FROM monthly_charges mc
-        JOIN students s ON s.id = mc.student_id
-        WHERE mc.status = 'PENDING' ${scopeFilter}
+               COUNT(*) FILTER (WHERE oc.due_date < ${today}) AS "overdueCount",
+               SUM(oc.outstanding) AS "totalPending",
+               MIN(oc.due_date) AS "oldestDueDate"
+        FROM open_charges oc
+        JOIN students s ON s.id = oc.student_id
+        WHERE oc.outstanding > 0 ${scopeFilter}
         GROUP BY s.id, s.dni, s.first_name, s.last_name
-        ORDER BY MIN(mc.due_date), s.last_name, s.first_name
+        ORDER BY MIN(oc.due_date), s.last_name, s.first_name
         LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize}
       `),
     ]);

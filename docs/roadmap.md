@@ -5,7 +5,7 @@
 3. **Inscripciones v1 (terminado):** `Enrollment`, altas/finalización, historia, cupos y fichas de alumno/clase.
 4. **Tarifas y cuotas v1 (terminado):** tarifa simple por clase, cuota mensual manual por inscripción, vencimiento 1–10 y snapshot monetario; prorrateos, descuentos y promociones siguen pendientes.
 5. **Usuarios y permisos v1 (terminado):** autorización por capacidad, navegación restringida y administración de cuentas según Admisión, Administración y Dirección.
-6. **Pagos v1 (terminado):** cobro de cuotas completas, imputaciones, efectivo/Mercado Pago/tarjeta, historial y anulación. No existen pagos parciales.
+6. **Pagos v2 core (terminado):** pagos parciales, imputación automática oldest-first, medios combinados, historial y anulación con recálculo. Caja, saldo a favor, devoluciones, mora, recargos y descuentos siguen pendientes.
 7. **Caja (pendiente):** movimientos, arqueos y eventual apertura/cierre después de confirmar sus reglas.
 8. **Asistencias de alumnos v1 (terminado):** roster por vigencia, registro/corrección e historial. Asistencia docente, reglas especiales y acceso quedan pendientes.
 9. **Liquidación:** motor configurable después de validar fórmula y modalidades.

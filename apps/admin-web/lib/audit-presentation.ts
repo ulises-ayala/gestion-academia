@@ -55,6 +55,7 @@ const fieldLabels: Record<string, string> = {
   lastContactAt: 'Último contacto',
   username: 'Usuario',
   paymentMethod: 'Medio de pago',
+  tenders: 'Medios de pago',
   passwordChanged: 'Contraseña modificada',
 };
 const valueLabels: Record<string, string> = {
@@ -104,6 +105,23 @@ export const shortAuditId = (value: string | null) => (value ? `${value.slice(0,
 
 export function formatAuditValue(field: string, value: unknown): string {
   if (value === null || value === undefined || value === '') return '—';
+  if (field === 'tenders' && Array.isArray(value))
+    return value
+      .map((tender) => {
+        if (!tender || typeof tender !== 'object') return '';
+        const item = tender as Record<string, unknown>;
+        const method =
+          typeof item.method === 'string' ? (valueLabels[item.method] ?? item.method) : '';
+        const amount =
+          typeof item.amount === 'string' || typeof item.amount === 'number'
+            ? new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(
+                Number(item.amount),
+              )
+            : '';
+        return [method, amount].filter(Boolean).join(': ');
+      })
+      .filter(Boolean)
+      .join(' + ');
   if (typeof value === 'string' && valueLabels[value]) return valueLabels[value];
   if (moneyFields.has(field) && (typeof value === 'string' || typeof value === 'number'))
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(

@@ -23,6 +23,8 @@ export class DomainExceptionFilter implements ExceptionFilter {
           error.code === 'CLASS_CAPACITY_BELOW_ENROLLMENT_COUNT' ||
           error.code === 'MONTHLY_CHARGE_ALREADY_EXISTS' ||
           error.code === 'PAYMENT_ALREADY_VOID' ||
+          error.code === 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE' ||
+          error.code === 'PAYMENT_NO_OUTSTANDING_BALANCE' ||
           error.code === 'PAYMENT_CHARGE_NOT_PENDING' ||
           error.code === 'ATTENDANCE_ALREADY_EXISTS' ||
           error.code === 'USERNAME_ALREADY_EXISTS' ||

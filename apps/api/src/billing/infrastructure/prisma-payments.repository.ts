@@ -4,11 +4,17 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { PaymentQuery, PaymentsRepository } from '../application/payments.repository';
+import {
+  buildPaymentAllocationPlan,
+  confirmedAllocatedAmount,
+  paymentChargeStatus,
+} from '../domain/payment-allocation';
 
 const include = {
   student: { select: { id: true, dni: true, firstName: true, lastName: true } },
   createdBy: { select: { id: true, username: true } },
   voidedBy: { select: { id: true, username: true } },
+  tenders: { orderBy: [{ method: 'asc' as const }, { id: 'asc' as const }] },
   allocations: {
     include: {
       monthlyCharge: {
@@ -24,7 +30,11 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   id: item.id,
   student: item.student,
   amount: item.amount.toFixed(2),
-  paymentMethod: item.paymentMethod,
+  tenders: item.tenders.map((tender) => ({
+    id: tender.id,
+    method: tender.method,
+    amount: tender.amount.toFixed(2),
+  })),
   status: item.status,
   paidAt: item.paidAt.toISOString(),
   createdBy: item.createdBy,
@@ -45,56 +55,77 @@ const isRetryableTransactionError = (error: unknown) =>
   error instanceof Prisma.PrismaClientKnownRequestError &&
   (error.code === 'P2034' ||
     (error.code === 'P2010' && /40001|40P01|serializ|deadlock/i.test(JSON.stringify(error.meta))));
-
 @Injectable()
 export class PrismaPaymentsRepository implements PaymentsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(ids: readonly string[], paymentMethod: PaymentMethodDto, actorId: string) {
+  async create(
+    studentId: string,
+    tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
+    actorId: string,
+  ) {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         return await this.prisma.$transaction(
           async (tx) => {
-            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE id IN (${Prisma.join(ids.map((id) => Prisma.sql`${id}::uuid`))}) ORDER BY id FOR UPDATE`;
+            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
+            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status IN ('PENDING', 'PARTIAL') ORDER BY due_date, created_at, id FOR UPDATE`;
             const charges = await tx.monthlyCharge.findMany({
-              where: { id: { in: [...ids] } },
-              orderBy: { id: 'asc' },
+              where: { studentId, status: { in: ['PENDING', 'PARTIAL'] } },
+              include: {
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+              orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
             });
-            if (charges.length !== ids.length)
-              throw new DomainError('PAYMENT_CHARGE_NOT_FOUND', 'Una o más cuotas no existen');
-            if (new Set(charges.map((charge) => charge.studentId)).size !== 1)
-              throw new DomainError(
-                'PAYMENT_MIXED_STUDENTS',
-                'Todas las cuotas deben pertenecer al mismo alumno',
-              );
-            if (charges.some((charge) => charge.status !== 'PENDING'))
-              throw new DomainError(
-                'PAYMENT_CHARGE_NOT_PENDING',
-                'Una o más cuotas ya no están pendientes',
-              );
-            const amount = charges.reduce(
-              (total, charge) => total.add(charge.finalAmount),
+            const amount = tenders.reduce(
+              (sum, tender) => sum.plus(tender.amount),
               new Prisma.Decimal(0),
             );
+            const plan = buildPaymentAllocationPlan(charges, amount);
+            const { allocations, balances, totalOutstanding } = plan;
+            if (amount.greaterThan(totalOutstanding))
+              throw new DomainError(
+                'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE',
+                'El cobro supera la deuda pendiente actual del alumno',
+                { outstandingAmount: totalOutstanding.toFixed(2) },
+              );
+            if (!plan.remaining.isZero() || allocations.length === 0)
+              throw new DomainError(
+                'PAYMENT_NO_OUTSTANDING_BALANCE',
+                'El alumno no tiene deuda pendiente',
+              );
             const payment = await tx.payment.create({
               data: {
-                studentId: charges[0]!.studentId,
+                studentId,
                 amount,
-                paymentMethod,
                 createdByUserId: actorId,
-                allocations: {
-                  create: charges.map((charge) => ({
-                    monthlyChargeId: charge.id,
-                    amount: charge.finalAmount,
+                tenders: {
+                  create: tenders.map((tender) => ({
+                    method: tender.method,
+                    amount: tender.amount,
                   })),
                 },
+                allocations: { create: allocations },
               },
               include,
             });
-            await tx.monthlyCharge.updateMany({
-              where: { id: { in: [...ids] }, status: 'PENDING' },
-              data: { status: 'PAID' },
-            });
+            for (const allocation of allocations) {
+              const balance = balances.find(
+                ({ charge }) => charge.id === allocation.monthlyChargeId,
+              )!;
+              await tx.monthlyCharge.update({
+                where: { id: balance.charge.id },
+                data: {
+                  status: paymentChargeStatus(
+                    balance.paid.plus(allocation.amount),
+                    balance.charge.finalAmount,
+                  ),
+                },
+              });
+            }
             return mapPayment(payment);
           },
           { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
@@ -104,20 +135,20 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
           if (attempt < 2) continue;
           throw new DomainError(
             'PAYMENT_CONCURRENCY_CONFLICT',
-            'La cuota fue modificada por otro cobro. Actualizá e intentá nuevamente.',
+            'La deuda cambió mientras registrabas el pago. Actualizá el estado de cuenta.',
           );
         }
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003')
           throw new DomainError(
             'PAYMENT_RELATION_NOT_FOUND',
-            'El usuario o la cuota indicada no existe',
+            'El usuario o alumno indicado no existe',
           );
         throw error;
       }
     }
     throw new DomainError(
       'PAYMENT_CONCURRENCY_CONFLICT',
-      'La cuota fue modificada por otro cobro. Actualizá e intentá nuevamente.',
+      'La deuda cambió mientras registrabas el pago.',
     );
   }
 
@@ -127,10 +158,10 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
   }
 
   async findPage(query: PaymentQuery) {
-    const where = {
+    const where: Prisma.PaymentWhereInput = {
       ...(query.studentId ? { studentId: query.studentId } : {}),
       ...(query.status ? { status: query.status } : {}),
-      ...(query.paymentMethod ? { paymentMethod: query.paymentMethod } : {}),
+      ...(query.paymentMethod ? { tenders: { some: { method: query.paymentMethod } } } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
       this.prisma.payment.findMany({
@@ -161,24 +192,41 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             await tx.$queryRaw`SELECT id FROM payments WHERE id = ${id}::uuid FOR UPDATE`;
             const current = await tx.payment.findUnique({
               where: { id },
-              include: { allocations: { select: { monthlyChargeId: true } } },
+              include: { allocations: { select: { monthlyChargeId: true } }, tenders: true },
             });
             if (!current) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
             if (current.status === 'VOID')
               throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
-            const chargeIds = current.allocations
-              .map((allocation) => allocation.monthlyChargeId)
-              .sort();
+            const chargeIds = [
+              ...new Set(current.allocations.map(({ monthlyChargeId }) => monthlyChargeId)),
+            ].sort();
             await tx.$queryRaw`SELECT id FROM monthly_charges WHERE id IN (${Prisma.join(chargeIds.map((chargeId) => Prisma.sql`${chargeId}::uuid`))}) ORDER BY id FOR UPDATE`;
-            await tx.monthlyCharge.updateMany({
-              where: { id: { in: chargeIds } },
-              data: { status: 'PENDING' },
-            });
-            const updated = await tx.payment.update({
+            await tx.payment.update({
               where: { id },
               data: { status: 'VOID', voidedAt: new Date(), voidedByUserId: actorId },
-              include,
             });
+            const charges = await tx.monthlyCharge.findMany({
+              where: { id: { in: chargeIds } },
+              include: {
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+            });
+            for (const charge of charges) {
+              if (charge.status === 'VOID') continue;
+              await tx.monthlyCharge.update({
+                where: { id: charge.id },
+                data: {
+                  status: paymentChargeStatus(
+                    confirmedAllocatedAmount(charge.allocations),
+                    charge.finalAmount,
+                  ),
+                },
+              });
+            }
+            const updated = await tx.payment.findUniqueOrThrow({ where: { id }, include });
             await tx.auditLog.create({
               data: {
                 actorUserId: actorId,
@@ -191,7 +239,10 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 metadata: {
                   studentId: current.studentId,
                   amount: current.amount.toFixed(2),
-                  paymentMethod: current.paymentMethod,
+                  tenders: current.tenders.map((tender) => ({
+                    method: tender.method,
+                    amount: tender.amount.toFixed(2),
+                  })),
                 },
               },
             });
@@ -204,7 +255,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
           if (attempt < 2) continue;
           throw new DomainError(
             'PAYMENT_CONCURRENCY_CONFLICT',
-            'El pago fue modificado al mismo tiempo. Actualizá e intentá nuevamente.',
+            'El pago fue modificado al mismo tiempo.',
           );
         }
         throw error;
@@ -212,7 +263,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     }
     throw new DomainError(
       'PAYMENT_CONCURRENCY_CONFLICT',
-      'El pago fue modificado al mismo tiempo. Actualizá e intentá nuevamente.',
+      'El pago fue modificado al mismo tiempo.',
     );
   }
 }

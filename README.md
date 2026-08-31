@@ -1,6 +1,6 @@
 # Gestión Academia
 
-Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1, Inscripciones v1, Tarifas/Cuotas v1 y Pagos v1.
+Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1, Inscripciones v1, Tarifas/Cuotas v1 y Pagos v2 core.
 
 ## Arquitectura
 
@@ -30,7 +30,7 @@ futura app alumno ----------------^          |
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
 Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. El cupo de una clase no puede reducirse por debajo de sus inscripciones activas.
-Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Pagos v1 permite cancelar una o varias cuotas completas del mismo alumno mediante efectivo, Mercado Pago o tarjeta, preservando imputaciones, actor y anulaciones. Asistencias de alumnos v1 permite tomar y corregir asistencia. No están implementados caja, pagos parciales, descuentos, promociones, Formación, asistencia docente, control de acceso ni liquidaciones.
+Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Pagos v2 core admite cobros parciales, imputa automáticamente a la deuda más antigua y combina efectivo, Mercado Pago y tarjeta, preservando imputaciones, medios, actor y anulaciones. Asistencias de alumnos v1 permite tomar y corregir asistencia. No están implementados caja, saldo a favor, devoluciones, mora, descuentos, promociones, Formación, asistencia docente, control de acceso ni liquidaciones.
 
 ## Stack
 
@@ -228,19 +228,19 @@ El Blueprint usa los planes gratuitos para minimizar costo. Los web services gra
 - `DELETE /api/v1/tariffs/:id`: desactivar sin borrar.
 - `POST /api/v1/tariffs/:id/reactivate`: reactivar.
 - `POST /api/v1/monthly-charges`: generar manualmente con `enrollmentId`, `tariffId`, `period` (`AAAA-MM`) y `dueDate`.
-- `GET /api/v1/monthly-charges?studentId=&period=`: listar por alumno y/o período.
+- `GET /api/v1/monthly-charges?studentId=&period=`: listar por alumno y/o período, incluyendo `paidAmount`, `outstandingAmount` y el vencimiento derivado.
 - `GET /api/v1/monthly-charges/:id`: obtener detalle.
 
-Cada cuota nace `PENDING`, con descuento cero y montos históricos. No existe generación automática.
+Cada cuota nace `PENDING`, con descuento cero y montos históricos. Puede pasar a `PARTIAL` o `PAID` según la suma de imputaciones de pagos confirmados. No existe generación automática.
 
 ## API de pagos
 
 - `GET /api/v1/payments?studentId=&status=&paymentMethod=&page=1&pageSize=25`: listar pagos paginados.
 - `GET /api/v1/payments/:id`: consultar un pago con sus imputaciones.
-- `POST /api/v1/payments`: cobrar cuotas completas con `{ monthlyChargeIds, paymentMethod }`.
-- `POST /api/v1/payments/:id/void`: anular sin borrar el historial y devolver las cuotas a `PENDING`.
+- `POST /api/v1/payments`: cobrar con `{ studentId, tenders: [{ method, amount }] }`.
+- `POST /api/v1/payments/:id/void`: anular sin borrar medios ni imputaciones y recalcular cada cuota con los demás pagos confirmados.
 
-El servidor deriva alumno, importe, imputaciones, fecha y usuario responsable. Pagos v1 no incluye Caja, devoluciones, transferencia bancaria ni pagos parciales.
+El importe total es la suma exacta de los medios y el servidor lo imputa por `dueDate`, `createdAt` e `id` ascendentes. Un pago puede cubrir parcialmente una cuota y derramar el resto sobre las siguientes. Mientras se define el tratamiento comercial de excedentes, Payments v2 core rechaza temporalmente todo total superior a la deuda vigente y no genera saldo a favor; esto no establece una regla comercial definitiva. La creación se serializa por alumno y vuelve a calcular la deuda dentro de la transacción. Pagos v2 core no incluye Caja, devoluciones, transferencia bancaria, mora, recargos ni descuentos.
 
 ## API de asistencias
 
