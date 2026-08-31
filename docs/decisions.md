@@ -87,15 +87,15 @@
 49. **Matriz inicial:** Admisión gestiona alumnos e inscripciones, consulta oferta, tarifas, cuotas y pagos, y puede cobrar pagos completos. Administración agrega configuración, gestión de tarifas y cuotas, anulación de pagos, caja, arqueos, usuarios no pertenecientes a Dirección, reportes operativos y liquidaciones. Dirección agrega gestión de su propio nivel, reportes completos y aprobación de liquidaciones.
 50. **Protección administrativa:** un usuario no puede desactivarse ni cambiar su propio rol. Debe permanecer al menos una cuenta activa de Dirección. Administración no puede listar, consultar, crear ni modificar cuentas de Dirección.
 
-## Decisiones confirmadas para el futuro módulo de pagos y caja
+## Decisiones confirmadas para pagos y futura caja
 
 51. **Cuota por clase/inscripción:** cada cuota corresponde a una inscripción y, por lo tanto, a una clase. Varias clases generan varias cuotas; el precio de referencia actual es ARS 40.000 por clase. Se mantiene `Enrollment 1 -> N MonthlyCharge` con unicidad por inscripción y período.
-52. **Pago sin fraccionamiento:** no se admiten pagos parciales. Una cuota se paga completa, no puede dividirse entre pagos y un futuro `Payment` podrá cancelar una o más cuotas completas.
+52. **Pago parcial confirmado:** una cuota puede recibir varios pagos confirmados y un `Payment` puede cubrir una o más cuotas del mismo alumno. El sobrepago y el saldo a favor no están admitidos.
 53. **Actor financiero autenticado:** todo pago tendrá un usuario administrativo responsable. Las futuras operaciones financieras deben obtener `AdminUser.id` desde la sesión autenticada mediante `CurrentUser`; nunca deben aceptar `createdByUserId` o `responsibleUserId` del body como autoridad.
 54. **Anulaciones y devoluciones:** se permitirá anular pagos. Las devoluciones no están confirmadas y no se implementarán ni se creará un permiso para ellas hasta definir sus reglas.
-55. **Vencimiento sin estado adicional:** el vencimiento mensual debe caer entre los días 1 y 10. Actualmente no hay intereses ni recargos por mora. Una cuota con `status == PENDING` y fecha actual posterior a `dueDate` puede considerarse vencida de forma derivada, sin persistir un estado `OVERDUE`.
+55. **Vencimiento sin estado adicional:** el vencimiento mensual debe caer entre los días 1 y 10. Actualmente no hay intereses ni recargos por mora. Una cuota `PENDING` o `PARTIAL` con saldo abierto y fecha actual posterior a `dueDate` se considera vencida de forma derivada, sin persistir un estado `OVERDUE`.
 56. **Caja y arqueo:** el negocio requiere arqueos de caja. La apertura y el cierre formal de caja todavía no están confirmados y no se presupone ese flujo.
-57. **Medios de pago pendientes de modelado:** los medios confirmados son efectivo, Mercado Pago y tarjeta. Transferencia bancaria debe reconfirmarse antes de modelar o implementar el módulo de pagos.
+57. **Medios de pago modelados:** cada pago puede combinar efectivo, Mercado Pago y tarjeta con un importe por medio. Transferencia bancaria debe reconfirmarse antes de incorporarse.
 
 ## Decisiones de Asistencias de alumnos v1
 
@@ -146,7 +146,9 @@
 
 80. **Cuentas demo de staging:** los tres roles usan identidades reservadas `demo-*` y una contraseña recibida únicamente mediante `STAGING_SEED_PASSWORD`, validada y hasheada con las mismas funciones de la aplicación. No existe valor predeterminado ni se registra el secreto.
 
-## Decisiones de Pagos v1
+## Decisiones históricas de Pagos v1
+
+Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por Pagos v2 core para pagos parciales, medios combinados, imputación y anulación. Se conservan para registrar la evolución del módulo.
 
 81. **Cuotas completas y mismo alumno:** un `Payment` cancela una o varias cuotas completas pertenecientes a un único alumno. No existen pagos parciales, crédito ni sobrepago.
 82. **Importe bajo autoridad del servidor:** el cliente envía solamente IDs de cuotas y medio. El servidor copia cada `finalAmount`, suma con `Decimal` y deriva `studentId`.
@@ -209,7 +211,7 @@
 ## Decisiones de ficha integral del alumno v1
 
 102. **Composición sobre recursos existentes:** la ficha 360 combina alumno, inscripciones, cuotas, pagos y asistencias sin crear un agregado general ni persistencia nuevos. Asistencias amplía su listado con filtros `studentId` y `limit`; Payments expone una agregación read-only del total confirmado. Así se evitan consultas por cada clase y la carga de todo el historial de pagos.
-103. **Métricas derivadas y fecha de negocio:** clases activas, deuda, vencimientos y total pagado se calculan en la interfaz a partir de datos autorizados por la API. Una cuota vence cuando sigue pendiente y su fecha es anterior al día de negocio de Buenos Aires; los pagos anulados no integran el total pagado.
+103. **Métricas derivadas y fecha de negocio:** clases activas, deuda, vencimientos y total pagado se calculan a partir de datos autorizados por la API. Una cuota vence cuando conserva saldo abierto y su fecha es anterior al día de negocio de Buenos Aires; los pagos anulados no integran saldos ni totales pagados.
 104. **Historia sin snapshots implícitos:** las inscripciones finalizadas conservan clase y fechas, pero la ficha no presenta al profesor actual como si fuera necesariamente el profesor histórico. No se agregan snapshots ni migraciones.
 105. **Visibilidad por capacidades:** cada bloque y acción respeta los permisos existentes. Ocultar una opción en la interfaz no reemplaza la autorización de la API.
 106. **Alcance administrativo confirmado:** la ficha reutiliza los casos de uso vigentes para editar, cambiar estado y finalizar inscripciones, incluidos sus registros de auditoría. No incorpora pausas, becas, motivos de baja, alertas automáticas ni acciones financieras nuevas.
@@ -246,5 +248,23 @@
 
 - Inicio funciona como centro operativo: las acciones rápidas aparecen inmediatamente después del saludo y antes de los indicadores.
 - Las métricas accionables usan enlaces profundos y los filtros principales de Alumnos, Pagos, Potenciales y Asistencias pueden inicializarse desde la URL. El historial del navegador conserva así el contexto de origen.
-- Deuda pendiente y cuotas vencidas abren una vista paginada de cuentas pendientes en Pagos, no una lista genérica de alumnos. La agrupación se realiza en base de datos y el cobro reutiliza Payments v1.
+- Deuda pendiente y cuotas vencidas abren una vista paginada de cuentas pendientes en Pagos, no una lista genérica de alumnos. La agrupación se realiza en base de datos sobre el saldo real y el cobro reutiliza Payments v2 core.
 - Esta navegación deriva información existente y no incorpora notificaciones persistidas, tareas de fondo ni un nuevo estado financiero.
+
+## Decisiones de Pagos v2 core
+
+119. **Pago parcial sin crédito temporal:** el cliente envía `studentId` y uno o más medios con importe positivo. La API rechaza cualquier total superior al saldo abierto con `PAYMENT_EXCEEDS_OUTSTANDING_BALANCE`; no crea crédito ni saldo a favor. Este rechazo es una limitación temporal de Payments v2 core mientras se define el tratamiento de excedentes y no una regla comercial definitiva de Carmesí.
+120. **Imputación oldest-first bajo autoridad del servidor:** el servidor distribuye el total por `dueDate`, `createdAt` e `id` ascendentes. El cliente puede previsualizar esa distribución, pero no elige ni envía IDs o importes de cuotas.
+121. **Tres importes equivalentes:** `Payment.amount` es exactamente la suma de `PaymentTender.amount` y de `PaymentAllocation.amount`. Todos los cálculos monetarios usan `Decimal(12,2)`; cada medio puede aparecer como máximo una vez por pago.
+122. **Saldo derivado:** `paidAmount` suma imputaciones de pagos `CONFIRMED`; `outstandingAmount` es `max(finalAmount - paidAmount, 0)`. No se persisten acumuladores duplicados. Una cuota abierta queda `PENDING` sin pagos, `PARTIAL` con cobertura incompleta y `PAID` al cubrirse completamente.
+123. **Vencimiento derivado:** una cuota está vencida cuando conserva saldo abierto y `dueDate` es anterior al día de negocio en `America/Buenos_Aires`. `OVERDUE` no se persiste como estado.
+124. **Concurrencia por alumno:** el cobro adquiere un advisory lock por alumno, bloquea sus cuotas abiertas en orden estable, vuelve a leer imputaciones confirmadas y ejecuta con aislamiento serializable y reintentos acotados. Dos cajas no pueden consumir la misma deuda.
+125. **Anulación con historia intacta:** anular marca el pago `VOID` y conserva tenders e imputaciones. Cada cuota afectada se recalcula usando los demás pagos confirmados, por lo que puede resultar `PENDING`, `PARTIAL` o `PAID`.
+126. **Migración compatible:** cada pago v1 se transforma en un pago con un único tender del mismo medio e importe antes de eliminar `payments.payment_method`. Caja, saldo a favor, devoluciones, transferencia bancaria, mora, recargos y descuentos permanecen fuera de alcance.
+
+## Payments v2 — centro operativo
+
+127. **Pagos como centro de cuentas:** `/payments` abre por defecto las cuentas con saldo y no exige seleccionar previamente un alumno. El read model de receivables agrupa saldos por alumno, calcula el resumen sobre todo el filtro y resuelve búsqueda, orden y paginación en base de datos reutilizando únicamente imputaciones de pagos confirmados.
+128. **Contexto conservado en URL:** cuentas con saldo, vencidas, parciales y sin pagos usan `view`, `q`, `sort` y `page`; los deep links del dashboard siguen apuntando a `view=pending|overdue`. Entrar al estado de cuenta y volver conserva el contexto mediante la historia del navegador y parámetros existentes, sin redirects ni rutas externas.
+129. **Dos lecturas, un mismo módulo:** Cuentas por cobrar es la vista operativa principal e Historial de cobros permite revisar pagos globales paginados. Sus filtros por alumno, estado, fecha y `PaymentTender` se ejecutan server-side; un pago mixto aparece en cada filtro de medio que integra.
+130. **Student mode preservado:** `studentId` mantiene saldos, pagos parciales, preview oldest-first, cobro mixto, historial y anulación de Payments v2 core. Esta iteración agrega solamente navegación, filtros y modelos de lectura: no incorpora reglas financieras, permisos, schema ni migraciones.

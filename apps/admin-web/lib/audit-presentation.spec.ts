@@ -14,6 +14,12 @@ describe('audit presentation', () => {
     expect(formatAuditField('validFrom')).toBe('Vigente desde');
     expect(formatAuditValue('status', 'CONFIRMED')).toBe('Confirmado');
     expect(formatAuditValue('role', 'MANAGER')).toBe('Administración');
+    expect(
+      formatAuditValue('tenders', [
+        { method: 'CASH', amount: '30000.00' },
+        { method: 'MERCADO_PAGO', amount: '20000.00' },
+      ]),
+    ).toMatch(/Efectivo.*30[.\s]000,00.*Mercado Pago.*20[.\s]000,00/);
   });
   it('formatea dinero, fechas y nulos para negocio', () => {
     expect(formatAuditValue('amount', '40000.00')).toMatch(/40[.\s]000,00/);

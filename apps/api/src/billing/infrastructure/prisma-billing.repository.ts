@@ -2,12 +2,17 @@ import type { MonthlyChargeDto, TariffDto } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { businessDayAt } from '../../dashboard/application/business-day';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { BillingRepository, ChargeQuery } from '../application/billing.repository';
 
 const chargeInclude = {
   enrollment: { include: { class: { select: { id: true, name: true } } } },
   tariff: { select: { id: true, name: true } },
+  allocations: {
+    where: { payment: { status: 'CONFIRMED' as const } },
+    select: { amount: true },
+  },
 };
 type IncludedCharge = Prisma.MonthlyChargeGetPayload<{ include: typeof chargeInclude }>;
 const isoDate = (date: Date) => date.toISOString().slice(0, 10);
@@ -30,22 +35,34 @@ const mapTariff = (item: {
   createdAt: item.createdAt.toISOString(),
   updatedAt: item.updatedAt.toISOString(),
 });
-const mapCharge = (item: IncludedCharge): MonthlyChargeDto => ({
-  id: item.id,
-  studentId: item.studentId,
-  enrollmentId: item.enrollmentId,
-  tariffId: item.tariffId,
-  period: isoDate(item.period).slice(0, 7),
-  baseAmount: item.baseAmount.toFixed(2),
-  discountAmount: item.discountAmount.toFixed(2),
-  finalAmount: item.finalAmount.toFixed(2),
-  dueDate: isoDate(item.dueDate),
-  status: item.status,
-  academicClass: item.enrollment.class,
-  tariff: item.tariff,
-  createdAt: item.createdAt.toISOString(),
-  updatedAt: item.updatedAt.toISOString(),
-});
+const currentBusinessDate = () =>
+  businessDayAt(new Date(), process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires').dateValue;
+const mapCharge = (item: IncludedCharge, today: Date): MonthlyChargeDto => {
+  const paidAmount = item.allocations.reduce(
+    (sum, allocation) => sum.plus(allocation.amount),
+    new Prisma.Decimal(0),
+  );
+  const outstandingAmount = Prisma.Decimal.max(item.finalAmount.minus(paidAmount), 0);
+  return {
+    id: item.id,
+    studentId: item.studentId,
+    enrollmentId: item.enrollmentId,
+    tariffId: item.tariffId,
+    period: isoDate(item.period).slice(0, 7),
+    baseAmount: item.baseAmount.toFixed(2),
+    discountAmount: item.discountAmount.toFixed(2),
+    finalAmount: item.finalAmount.toFixed(2),
+    paidAmount: paidAmount.toFixed(2),
+    outstandingAmount: outstandingAmount.toFixed(2),
+    dueDate: isoDate(item.dueDate),
+    overdue: (item.status === 'PENDING' || item.status === 'PARTIAL') && item.dueDate < today,
+    status: item.status,
+    academicClass: item.enrollment.class,
+    tariff: item.tariff,
+    createdAt: item.createdAt.toISOString(),
+    updatedAt: item.updatedAt.toISOString(),
+  };
+};
 
 @Injectable()
 export class PrismaBillingRepository implements BillingRepository {
@@ -140,6 +157,7 @@ export class PrismaBillingRepository implements BillingRepository {
           },
           include: chargeInclude,
         }),
+        currentBusinessDate(),
       );
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
@@ -157,7 +175,7 @@ export class PrismaBillingRepository implements BillingRepository {
       where: { id },
       include: chargeInclude,
     });
-    return item ? mapCharge(item) : null;
+    return item ? mapCharge(item, currentBusinessDate()) : null;
   }
   async listCharges(query: ChargeQuery) {
     const where = {
@@ -173,6 +191,7 @@ export class PrismaBillingRepository implements BillingRepository {
       }),
       this.prisma.monthlyCharge.count({ where }),
     ]);
-    return { items: items.map(mapCharge), total };
+    const today = currentBusinessDate();
+    return { items: items.map((item) => mapCharge(item, today)), total };
   }
 }

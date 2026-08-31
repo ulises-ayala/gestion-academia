@@ -493,8 +493,16 @@ export const applySeedData = async (
         },
       ] as const;
       for (const [index, definition] of paymentDefinitions.entries()) {
-        const { chargeId, ...payment } = definition;
+        const { chargeId, paymentMethod, ...payment } = definition;
         await tx.payment.upsert({ where: { id: payment.id }, create: payment, update: payment });
+        const tender = { paymentId: payment.id, method: paymentMethod, amount: payment.amount };
+        await tx.paymentTender.upsert({
+          where: {
+            paymentId_method: { paymentId: payment.id, method: paymentMethod },
+          },
+          create: { id: uuid('f', index + 1), ...tender },
+          update: { amount: payment.amount },
+        });
         const allocation = {
           paymentId: payment.id,
           monthlyChargeId: chargeId,

@@ -5,7 +5,7 @@ export const BILLING_REPOSITORY = Symbol('BILLING_REPOSITORY');
 export type ChargeQuery = Readonly<{
   studentId?: string;
   period?: string;
-  status?: 'PENDING' | 'PAID' | 'VOID';
+  status?: 'PENDING' | 'PARTIAL' | 'PAID' | 'VOID';
 }>;
 export type EnrollmentForCharge = Readonly<{
   id: string;

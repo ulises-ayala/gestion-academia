@@ -6,14 +6,17 @@ export type PaymentQuery = Readonly<{
   studentId?: string;
   status?: PaymentStatusDto;
   paymentMethod?: PaymentMethodDto;
+  q?: string;
+  from?: Date;
+  toExclusive?: Date;
   page: number;
   pageSize: number;
 }>;
 
 export interface PaymentsRepository {
   create(
-    monthlyChargeIds: readonly string[],
-    paymentMethod: PaymentMethodDto,
+    studentId: string,
+    tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
   ): Promise<PaymentDto>;
   findById(id: string): Promise<PaymentDto | null>;

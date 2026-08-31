@@ -13,6 +13,11 @@ import {
 
 const openLeadStatuses = ['INQUIRY', 'INTERESTED', 'TRIAL'] as const;
 const time = (value: Date) => value.toISOString().slice(11, 16);
+type BillingSummaryRow = Readonly<{
+  pendingCharges: bigint;
+  pendingDebt: Prisma.Decimal;
+  overdueCharges: bigint;
+}>;
 
 @Injectable()
 export class OperationalDashboardService {
@@ -74,22 +79,33 @@ export class OperationalDashboardService {
           result.classes = { active, scheduledToday: classes.length, today };
         }),
       hasPermissions(user, ['charges:read']) &&
-        Promise.all([
-          this.prisma.monthlyCharge.aggregate({
-            where: { status: 'PENDING' },
-            _count: { id: true },
-            _sum: { finalAmount: true },
+        this.prisma
+          .$queryRaw<BillingSummaryRow[]>(
+            Prisma.sql`
+          WITH confirmed AS (
+            SELECT pa.monthly_charge_id, SUM(pa.amount) AS paid
+            FROM payment_allocations pa
+            JOIN payments p ON p.id = pa.payment_id AND p.status = 'CONFIRMED'
+            GROUP BY pa.monthly_charge_id
+          ), open_charges AS (
+            SELECT mc.due_date, GREATEST(mc.final_amount - COALESCE(c.paid, 0), 0) AS outstanding
+            FROM monthly_charges mc
+            LEFT JOIN confirmed c ON c.monthly_charge_id = mc.id
+            WHERE mc.status IN ('PENDING', 'PARTIAL')
+          )
+          SELECT COUNT(*)::bigint AS "pendingCharges",
+                 COALESCE(SUM(outstanding), 0) AS "pendingDebt",
+                 COUNT(*) FILTER (WHERE due_date < ${day.dateValue})::bigint AS "overdueCharges"
+          FROM open_charges WHERE outstanding > 0
+        `,
+          )
+          .then(([billing]) => {
+            result.billing = {
+              pendingCharges: Number(billing?.pendingCharges ?? 0),
+              pendingDebt: billing?.pendingDebt.toFixed(2) ?? '0.00',
+              overdueCharges: Number(billing?.overdueCharges ?? 0),
+            };
           }),
-          this.prisma.monthlyCharge.count({
-            where: { status: 'PENDING', dueDate: { lt: day.dateValue } },
-          }),
-        ]).then(([pending, overdueCharges]) => {
-          result.billing = {
-            pendingCharges: pending._count.id,
-            pendingDebt: pending._sum.finalAmount?.toFixed(2) ?? '0.00',
-            overdueCharges,
-          };
-        }),
       hasPermissions(user, ['payments:read']) &&
         this.prisma.payment
           .aggregate({
