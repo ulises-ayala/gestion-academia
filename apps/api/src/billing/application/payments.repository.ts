@@ -6,6 +6,9 @@ export type PaymentQuery = Readonly<{
   studentId?: string;
   status?: PaymentStatusDto;
   paymentMethod?: PaymentMethodDto;
+  q?: string;
+  from?: Date;
+  toExclusive?: Date;
   page: number;
   pageSize: number;
 }>;
