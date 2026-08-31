@@ -334,20 +334,33 @@ export type PaymentDto = Readonly<{
   updatedAt: string;
 }>;
 export type PaymentListDto = PageDto<PaymentDto>;
-export type ReceivablesScopeDto = 'pending' | 'overdue';
+export type ReceivablesScopeDto = 'pending' | 'overdue' | 'partial' | 'unpaid';
+export type ReceivablesSortDto = 'oldest' | 'highest-debt' | 'name';
+export type ReceivablesSummaryDto = Readonly<{
+  totalStudents: number;
+  totalCharges: number;
+  overdueCharges: number;
+  partialCharges: number;
+  totalOriginal: string;
+  totalPaid: string;
+  totalOutstanding: string;
+}>;
 export type ReceivableDebtorDto = Readonly<{
   student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
-  pendingCount: number;
-  overdueCount: number;
-  totalPending: string;
+  openChargeCount: number;
+  overdueChargeCount: number;
+  partialChargeCount: number;
   oldestDueDate: string;
+  originalAmount: string;
+  paidAmount: string;
+  outstandingAmount: string;
 }>;
 export type ReceivablesDto = Readonly<{
   scope: ReceivablesScopeDto;
-  totalStudents: number;
-  totalCharges: number;
-  totalAmount: string;
+  sort: ReceivablesSortDto;
+  summary: ReceivablesSummaryDto;
   items: readonly ReceivableDebtorDto[];
+  total: number;
   page: number;
   pageSize: number;
 }>;

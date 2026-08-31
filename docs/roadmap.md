@@ -14,6 +14,7 @@
 12. **Ficha integral del alumno v1 (terminado):** vista administrativa central con inscripciones, estado de cuenta, pagos y asistencias recientes; mantiene las reglas y permisos de cada recurso.
 13. **Potenciales alumnos v1 (terminado):** registro manual de consultas, seguimiento, duplicados preventivos y etapas comerciales sin conversión automática a alumno.
 14. **Dashboard operativo v1 (terminado):** inicio agregado y responsive con agenda diaria, indicadores, alertas, seguimientos y actividad reciente según permisos.
+15. **Payments v2 — centro operativo (terminado):** `/payments` muestra cuentas por cobrar agrupadas por alumno, resumen global filtrado, navegación contextual desde Dashboard e historial global de cobros; conserva íntegramente las reglas de Payments v2 core.
 
 Cada etapa entrega migraciones, casos de uso, endpoints documentados, UI mínima y pruebas críticas.
 

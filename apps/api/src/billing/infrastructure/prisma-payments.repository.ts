@@ -158,10 +158,30 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
   }
 
   async findPage(query: PaymentQuery) {
+    const terms = query.q?.split(/\s+/).filter(Boolean) ?? [];
     const where: Prisma.PaymentWhereInput = {
       ...(query.studentId ? { studentId: query.studentId } : {}),
       ...(query.status ? { status: query.status } : {}),
       ...(query.paymentMethod ? { tenders: { some: { method: query.paymentMethod } } } : {}),
+      ...(terms.length > 0
+        ? {
+            AND: terms.map((term) => ({
+              OR: [
+                { student: { firstName: { contains: term, mode: 'insensitive' as const } } },
+                { student: { lastName: { contains: term, mode: 'insensitive' as const } } },
+                { student: { dni: { contains: term.replace(/\D/g, '') || term } } },
+              ],
+            })),
+          }
+        : {}),
+      ...(query.from || query.toExclusive
+        ? {
+            paidAt: {
+              ...(query.from ? { gte: query.from } : {}),
+              ...(query.toExclusive ? { lt: query.toExclusive } : {}),
+            },
+          }
+        : {}),
     };
     const [items, total] = await this.prisma.$transaction([
       this.prisma.payment.findMany({

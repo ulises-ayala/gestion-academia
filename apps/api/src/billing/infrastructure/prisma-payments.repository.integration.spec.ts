@@ -1,5 +1,5 @@
 import { PrismaClient } from '@academy/database';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { PrismaService } from '../../database/prisma.service';
 import { ReceivablesService } from '../application/receivables.service';
 import { PrismaBillingRepository } from './prisma-billing.repository';
@@ -14,6 +14,10 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
 
   const createFixture = async () => {
     const token = crypto.randomUUID();
+    const numericToken = [...token]
+      .map((character) => character.charCodeAt(0) % 10)
+      .join('')
+      .slice(0, 32);
     return prisma.$transaction(async (tx) => {
       const actor = await tx.adminUser.create({
         data: {
@@ -25,7 +29,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       });
       const student = await tx.student.create({
         data: {
-          dni: token.replaceAll('-', '').slice(0, 32),
+          dni: numericToken,
           firstName: 'Pago',
           lastName: 'Prueba',
           joinedAt: new Date('2026-08-01T00:00:00.000Z'),
@@ -33,7 +37,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       });
       const teacher = await tx.teacher.create({
         data: {
-          dni: `9${token.replaceAll('-', '').slice(0, 31)}`,
+          dni: `9${numericToken.slice(0, 31)}`,
           firstName: 'Docente',
           lastName: 'Prueba',
         },
@@ -188,12 +192,14 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         outstandingAmount: '30000.00',
         overdue: true,
       });
-      await expect(receivables.list('pending', 1, 100)).resolves.toMatchObject({
+      await expect(
+        receivables.list({ scope: 'pending', sort: 'oldest', page: 1, pageSize: 100 }),
+      ).resolves.toMatchObject({
         items: expect.arrayContaining([
           expect.objectContaining({
             student: expect.objectContaining({ id: fixture.student.id }),
-            pendingCount: 2,
-            totalPending: '70000.00',
+            openChargeCount: 2,
+            outstandingAmount: '70000.00',
           }),
         ]),
       });
@@ -272,6 +278,126 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         }),
       ).toEqual([{ status: 'PAID' }, { status: 'PARTIAL' }]);
     } finally {
+      await cleanupFixture(fixture);
+    }
+  });
+
+  it('filtra cuentas e historial global sobre saldos y tenders reales', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-08-31T15:00:00.000Z'));
+    const fixture = await createFixture();
+    try {
+      const mixed = await repository.create(
+        fixture.student.id,
+        [
+          { method: 'CASH', amount: '6000.00' },
+          { method: 'MERCADO_PAGO', amount: '4000.00' },
+        ],
+        fixture.actor.id,
+      );
+      await expect(
+        receivables.list({
+          scope: 'partial',
+          q: fixture.student.dni,
+          sort: 'oldest',
+          page: 1,
+          pageSize: 25,
+        }),
+      ).resolves.toMatchObject({
+        summary: {
+          totalStudents: 1,
+          totalCharges: 1,
+          partialCharges: 1,
+          totalPaid: '10000.00',
+          totalOutstanding: '30000.00',
+        },
+        items: [
+          expect.objectContaining({
+            student: expect.objectContaining({ id: fixture.student.id }),
+            paidAmount: '10000.00',
+            outstandingAmount: '30000.00',
+          }),
+        ],
+      });
+      await expect(
+        receivables.list({
+          scope: 'overdue',
+          q: fixture.student.dni,
+          sort: 'oldest',
+          page: 1,
+          pageSize: 25,
+        }),
+      ).resolves.toMatchObject({
+        summary: { totalCharges: 1, overdueCharges: 1, totalOutstanding: '30000.00' },
+      });
+      await expect(
+        receivables.list({
+          scope: 'unpaid',
+          q: fixture.student.dni,
+          sort: 'oldest',
+          page: 1,
+          pageSize: 25,
+        }),
+      ).resolves.toMatchObject({
+        summary: { totalCharges: 1, totalPaid: '0.00', totalOutstanding: '40000.00' },
+      });
+      for (const q of ['Pago Prueba', fixture.student.dni]) {
+        await expect(
+          receivables.list({ scope: 'pending', q, sort: 'highest-debt', page: 1, pageSize: 1 }),
+        ).resolves.toMatchObject({ total: 1, items: [{ student: { id: fixture.student.id } }] });
+      }
+      for (const paymentMethod of ['CASH', 'MERCADO_PAGO'] as const) {
+        await expect(
+          repository.findPage({
+            q: fixture.student.dni,
+            paymentMethod,
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({
+          items: [expect.objectContaining({ id: mixed.id, tenders: expect.arrayContaining([]) })],
+        });
+      }
+      await expect(
+        repository.findPage({
+          q: `Pago ${fixture.student.dni}`,
+          status: 'CONFIRMED',
+          from: new Date('2026-08-31T00:00:00.000Z'),
+          toExclusive: new Date('2026-09-01T00:00:00.000Z'),
+          page: 1,
+          pageSize: 25,
+        }),
+      ).resolves.toMatchObject({ items: [expect.objectContaining({ id: mixed.id })] });
+      await repository.void(mixed.id, fixture.actor.id, 'Validación de filtros');
+      await expect(
+        repository.findPage({ q: fixture.student.dni, status: 'VOID', page: 1, pageSize: 25 }),
+      ).resolves.toMatchObject({ items: [expect.objectContaining({ id: mixed.id })] });
+      await expect(
+        receivables.list({
+          scope: 'pending',
+          q: fixture.student.dni,
+          sort: 'name',
+          page: 1,
+          pageSize: 25,
+        }),
+      ).resolves.toMatchObject({
+        summary: { totalCharges: 2, totalPaid: '0.00', totalOutstanding: '80000.00' },
+      });
+      await prisma.monthlyCharge.update({
+        where: { id: fixture.charge.id },
+        data: { status: 'VOID' },
+      });
+      await expect(
+        receivables.list({
+          scope: 'pending',
+          q: fixture.student.dni,
+          sort: 'oldest',
+          page: 1,
+          pageSize: 25,
+        }),
+      ).resolves.toMatchObject({ summary: { totalCharges: 1, totalOutstanding: '40000.00' } });
+    } finally {
+      vi.useRealTimers();
       await cleanupFixture(fixture);
     }
   });
