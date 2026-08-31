@@ -54,13 +54,16 @@ describe('StudentOnboardingService', () => {
           ),
       },
       payments: {
-        create: vi.fn().mockImplementation(({ monthlyChargeIds, paymentMethod }, actorId) =>
+        create: vi.fn().mockImplementation(({ tenders }, actorId) =>
           Promise.resolve({
             id: 'payment-1',
             amount: '80000.00',
             status: 'CONFIRMED',
-            allocations: monthlyChargeIds.map((monthlyChargeId: string) => ({ monthlyChargeId })),
-            paymentMethod,
+            allocations: [
+              { monthlyChargeId: 'charge-enrollment-class-a' },
+              { monthlyChargeId: 'charge-enrollment-class-b' },
+            ],
+            tenders,
             actorId,
           }),
         ),
@@ -121,8 +124,8 @@ describe('StudentOnboardingService', () => {
     expect(operations.payments.create).toHaveBeenCalledOnce();
     expect(operations.payments.create).toHaveBeenCalledWith(
       {
-        monthlyChargeIds: ['charge-enrollment-class-a', 'charge-enrollment-class-b'],
-        paymentMethod: 'CASH',
+        studentId: 'student-1',
+        tenders: [{ method: 'CASH', amount: '80000.00' }],
       },
       'actor-1',
     );

@@ -14,12 +14,18 @@ export class MonthlyChargesController {
     @Query('period') period?: string,
     @Query('status') status?: string,
   ) {
-    if (status && status !== 'PENDING' && status !== 'PAID' && status !== 'VOID')
+    if (
+      status &&
+      status !== 'PENDING' &&
+      status !== 'PARTIAL' &&
+      status !== 'PAID' &&
+      status !== 'VOID'
+    )
       throw new DomainError('VALIDATION_ERROR', 'Estado de cuota inválido', { field: 'status' });
     return this.service.listCharges({
       ...(studentId ? { studentId: parseUuid(studentId, 'studentId') } : {}),
       ...(period ? { period: parsePeriod(period) } : {}),
-      ...(status ? { status: status as 'PENDING' | 'PAID' | 'VOID' } : {}),
+      ...(status ? { status: status as 'PENDING' | 'PARTIAL' | 'PAID' | 'VOID' } : {}),
     });
   }
   @Get(':id') @Permissions('charges:read') get(@Param('id') id: string) {

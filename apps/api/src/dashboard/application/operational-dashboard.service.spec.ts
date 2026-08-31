@@ -12,7 +12,19 @@ const user = (role: PublicAuthUser['role']): PublicAuthUser => ({
 });
 
 const prismaMock = () => ({
-  $queryRaw: vi.fn().mockResolvedValue([]),
+  $queryRaw: vi.fn().mockImplementation((sql: { strings: readonly string[] }) =>
+    Promise.resolve(
+      sql.strings.join(' ').includes('open_charges')
+        ? [
+            {
+              pendingCharges: 3n,
+              pendingDebt: new Prisma.Decimal('1500.00'),
+              overdueCharges: 2n,
+            },
+          ]
+        : [],
+    ),
+  ),
   student: { count: vi.fn().mockResolvedValue(12) },
   academyClass: {
     count: vi.fn().mockResolvedValue(4),
@@ -54,7 +66,7 @@ describe('OperationalDashboardService', () => {
     });
     expect(result.audit).toBeUndefined();
     expect(prisma.auditLog.findMany).not.toHaveBeenCalled();
-    expect(prisma.$queryRaw).not.toHaveBeenCalled();
+    expect(prisma.$queryRaw).toHaveBeenCalledOnce();
     expect(prisma.payment.aggregate).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({ status: 'CONFIRMED' }),
@@ -69,8 +81,10 @@ describe('OperationalDashboardService', () => {
 
     expect(result.audit).toEqual({ items: [] });
     expect(result.financial?.monthlyConfirmed).toHaveLength(6);
-    expect(prisma.$queryRaw).toHaveBeenCalledOnce();
-    const financialQuery = prisma.$queryRaw.mock.calls[0]![0] as { strings: readonly string[] };
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(2);
+    const financialQuery = prisma.$queryRaw.mock.calls
+      .map(([query]) => query as { strings: readonly string[] })
+      .find((query) => query.strings.join(' ').includes('FROM payments'))!;
     expect(financialQuery.strings.join(' ')).toContain("status = 'CONFIRMED'");
     expect(financialQuery.strings.join(' ')).not.toContain("status = 'VOID'");
     expect(prisma.auditLog.findMany).toHaveBeenCalledWith(

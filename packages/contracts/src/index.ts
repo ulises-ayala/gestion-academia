@@ -269,7 +269,7 @@ export type CreateTariffDto = Readonly<{
 }>;
 export type UpdateTariffDto = Readonly<Partial<CreateTariffDto> & { status?: RecordStatusDto }>;
 
-export type MonthlyChargeStatusDto = 'PENDING' | 'PAID' | 'VOID';
+export type MonthlyChargeStatusDto = 'PENDING' | 'PARTIAL' | 'PAID' | 'VOID';
 export type MonthlyChargeDto = Readonly<{
   id: string;
   studentId: string;
@@ -279,7 +279,10 @@ export type MonthlyChargeDto = Readonly<{
   baseAmount: string;
   discountAmount: string;
   finalAmount: string;
+  paidAmount: string;
+  outstandingAmount: string;
   dueDate: string;
+  overdue: boolean;
   status: MonthlyChargeStatusDto;
   academicClass: Readonly<{ id: string; name: string }>;
   tariff: Readonly<{ id: string; name: string }>;
@@ -300,8 +303,13 @@ export type MonthlyChargeListDto = Readonly<{
 export type PaymentMethodDto = 'CASH' | 'MERCADO_PAGO' | 'CARD';
 export type PaymentStatusDto = 'CONFIRMED' | 'VOID';
 export type CreatePaymentDto = Readonly<{
-  monthlyChargeIds: readonly string[];
-  paymentMethod: PaymentMethodDto;
+  studentId: string;
+  tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
+}>;
+export type PaymentTenderDto = Readonly<{
+  id: string;
+  method: PaymentMethodDto;
+  amount: string;
 }>;
 export type PaymentAllocationDto = Readonly<{
   monthlyChargeId: string;
@@ -315,7 +323,7 @@ export type PaymentDto = Readonly<{
   id: string;
   student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
   amount: string;
-  paymentMethod: PaymentMethodDto;
+  tenders: readonly PaymentTenderDto[];
   status: PaymentStatusDto;
   paidAt: string;
   createdBy: Readonly<{ id: string; username: string }>;
@@ -326,20 +334,33 @@ export type PaymentDto = Readonly<{
   updatedAt: string;
 }>;
 export type PaymentListDto = PageDto<PaymentDto>;
-export type ReceivablesScopeDto = 'pending' | 'overdue';
+export type ReceivablesScopeDto = 'pending' | 'overdue' | 'partial' | 'unpaid';
+export type ReceivablesSortDto = 'oldest' | 'highest-debt' | 'name';
+export type ReceivablesSummaryDto = Readonly<{
+  totalStudents: number;
+  totalCharges: number;
+  overdueCharges: number;
+  partialCharges: number;
+  totalOriginal: string;
+  totalPaid: string;
+  totalOutstanding: string;
+}>;
 export type ReceivableDebtorDto = Readonly<{
   student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
-  pendingCount: number;
-  overdueCount: number;
-  totalPending: string;
+  openChargeCount: number;
+  overdueChargeCount: number;
+  partialChargeCount: number;
   oldestDueDate: string;
+  originalAmount: string;
+  paidAmount: string;
+  outstandingAmount: string;
 }>;
 export type ReceivablesDto = Readonly<{
   scope: ReceivablesScopeDto;
-  totalStudents: number;
-  totalCharges: number;
-  totalAmount: string;
+  sort: ReceivablesSortDto;
+  summary: ReceivablesSummaryDto;
   items: readonly ReceivableDebtorDto[];
+  total: number;
   page: number;
   pageSize: number;
 }>;
