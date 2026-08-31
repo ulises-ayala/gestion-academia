@@ -60,7 +60,7 @@ function Changes({ log }: Readonly<{ log: AuditLogDto }>) {
 
 function EventMetadata({ log }: Readonly<{ log: AuditLogDto }>) {
   const metadata = log.metadata ?? {};
-  const useful = ['amount', 'paymentMethod']
+  const useful = ['amount', 'paymentMethod', 'tenders']
     .filter((field) => metadata[field] !== undefined)
     .map((field) => ({ field, value: formatAuditValue(field, metadata[field]) }));
   if (!useful.length) return null;

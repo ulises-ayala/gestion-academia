@@ -5,7 +5,7 @@
 - **Personas:** `Lead`, `Student`, `Teacher`, `AdminUser`, `Role`, `Permission`.
 - **Oferta:** `DanceType`, `Class`, `ClassSchedule`, `Branch`, `Room`.
 - **Inscripciones:** `Enrollment` une `Student` y `Class` con vigencia y estado.
-- **Facturación:** `Tariff`, `MonthlyCharge`, `Payment` y `PaymentAllocation`; descuentos quedan diferidos.
+- **Facturación:** `Tariff`, `MonthlyCharge`, `Payment`, `PaymentTender` y `PaymentAllocation`; descuentos quedan diferidos.
 - **Caja:** `CashRegister`, `CashSession`, `CashMovement`, `PaymentMethod`, `MovementCategory`.
 - **Asistencia:** `StudentAttendance` pertenece a una `Enrollment`; asistencia docente queda diferida.
 - **Acceso:** `AccessAttempt` registra decisión/mecanismo sin acoplar hardware.
@@ -24,6 +24,7 @@ erDiagram
   ENROLLMENT ||--o{ MONTHLY_CHARGE : origina
   TARIFF ||--o{ MONTHLY_CHARGE : valoriza
   STUDENT ||--o{ PAYMENT : realiza
+  PAYMENT ||--|{ PAYMENT_TENDER : compone
   PAYMENT ||--|{ PAYMENT_ALLOCATION : imputa
   MONTHLY_CHARGE ||--o{ PAYMENT_ALLOCATION : recibe
   ADMIN_USER ||--o{ PAYMENT : registra
@@ -37,7 +38,7 @@ erDiagram
 - No hay dos inscripciones activas para igual alumno/clase.
 - Versiones de una tarifa no superponen vigencias.
 - Una cuota conserva importes base, descuento y final históricos.
-- Las imputaciones no superan el importe del pago.
+- La suma de medios y la suma de imputaciones coinciden exactamente con el importe del pago.
 - Cupos e importes no son negativos; el fin de horario es posterior al inicio.
 - Conflictos de salón/profesor se validarán transaccionalmente al confirmar excepciones.
 
@@ -70,16 +71,18 @@ erDiagram
 - La generación es manual y requiere indicar inscripción, tarifa, período y fecha de vencimiento. No existe cron ni generación implícita.
 - El vencimiento debe encontrarse entre el día 1 y el 10 del mismo período.
 - La cuota congela `baseAmount`, `discountAmount` y `finalAmount`. Cambiar una tarifa después no modifica cuotas existentes.
-- `discountAmount` es cero en v1. Los estados disponibles son `PENDING`, `PAID` y `VOID`, pero v1 solamente crea `PENDING`; pagos y anulaciones se implementarán cuando existan sus reglas.
+- `discountAmount` es cero en v1. `PENDING`, `PARTIAL` y `PAID` reflejan respectivamente deuda intacta, pago parcial y deuda cubierta; `VOID` queda reservado para una cuota anulada.
 - Las relaciones financieras usan borrado restringido y las entidades se desactivan sin eliminar el historial.
 
-## Pagos v1
+## Pagos v2 core
 
-- `Payment` pertenece a un alumno y conserva importe, medio, instante y usuario responsable.
-- `PaymentAllocation` congela el importe completo de cada cuota; varias cuotas sólo pueden agruparse si pertenecen al mismo alumno.
-- El backend calcula con decimales exactos. No existen pagos parciales, sobrepagos ni saldo a favor.
-- El cobro bloquea cuotas y cambia `PENDING` a `PAID` atómicamente. La anulación conserva el historial, marca el pago `VOID` y devuelve las cuotas a `PENDING`.
-- Una cuota liberada puede pagarse nuevamente. Los medios v1 son `CASH`, `MERCADO_PAGO` y `CARD`; Caja queda diferida.
+- `Payment` pertenece a un alumno y conserva importe, instante y usuario responsable. Uno o más `PaymentTender` desglosan efectivo, Mercado Pago y tarjeta; un medio no se repite dentro del pago.
+- `PaymentAllocation` registra cuánto del pago se aplicó a cada cuota. La suma de tenders, el importe del pago y la suma de imputaciones son iguales y se calculan con decimales exactos.
+- El backend recibe alumno y medios, calcula la deuda vigente y distribuye oldest-first por vencimiento con desempate estable por creación e ID. Se admiten pagos parciales y derrame entre cuotas, pero no sobrepago ni saldo a favor.
+- `paidAmount`, `outstandingAmount` y vencimiento son datos derivados exclusivamente de imputaciones pertenecientes a pagos `CONFIRMED`; no se persisten como saldos duplicados.
+- El cobro usa advisory lock por alumno, locks de filas, aislamiento serializable y reintentos. Dos cajas no pueden consumir la misma deuda.
+- Anular conserva `PaymentTender` y `PaymentAllocation`, marca el pago `VOID` y recalcula cada cuota con los demás pagos confirmados; puede quedar `PENDING`, `PARTIAL` o `PAID`.
+- Caja, devoluciones, transferencia bancaria, mora, recargos y descuentos quedan diferidos.
 
 ## Usuarios y permisos v1
 
@@ -115,8 +118,8 @@ erDiagram
 
 - El dashboard es un modelo de lectura y no una entidad persistente.
 - La agenda de hoy deriva de clases y horarios activos; no representa sesiones ni confirma que una clase haya ocurrido.
-- Deuda, cobros y vencimientos respetan estados financieros históricos: solamente cuotas `PENDING` y pagos `CONFIRMED` participan de sus indicadores.
+- Deuda, cobros y vencimientos respetan estados financieros históricos: las cuotas `PENDING`/`PARTIAL` aportan sólo su saldo abierto y únicamente pagos `CONFIRMED` participan de sus indicadores.
 - Asistencia cuenta registros reales del día y no estima asistencias esperadas.
 - Cada sección conserva el permiso del módulo que resume; Auditoría nunca se consulta ni se entrega sin `audit:read`.
 - La evolución de cobros agrega únicamente pagos `CONFIRMED` de seis meses calendario. Es información preliminar de gestión y no reemplaza un futuro modelo contable completo.
-- La vista de cuentas pendientes agrupa cuotas `PENDING` por alumno. “Vencida” sigue siendo una condición derivada de `dueDate < businessToday`; no es un estado persistido nuevo.
+- La vista de cuentas pendientes agrupa saldos abiertos de cuotas `PENDING`/`PARTIAL` por alumno. “Vencida” sigue siendo una condición derivada de `dueDate < businessToday`; no es un estado persistido nuevo.

@@ -4,19 +4,29 @@ import type {
   MonthlyChargeListDto,
   PaymentDto,
   PaymentListDto,
-  PaymentMethodDto,
   ReceivablesDto,
   StudentDto,
   StudentListDto,
 } from '@academy/contracts';
-import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../components/auth-provider';
 import { PermissionGate } from '../../components/permission-gate';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
-import { businessToday, formatDate } from '../../lib/dates';
-import { createPaymentPayload, paymentMethodLabels, selectedTotal } from '../../lib/payments';
 import { paymentViewFromSearch } from '../../lib/contextual-filters';
+import { formatDate } from '../../lib/dates';
+import {
+  centsToDecimal,
+  createPaymentPayload,
+  decimalToCents,
+  openCharges,
+  outstandingTotal,
+  paymentSubmissionDisabled,
+  paymentMethodLabels,
+  previewAllocations,
+  tenderTotal,
+  type TenderAmounts,
+} from '../../lib/payments';
 
 const money = (value: string | number) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
@@ -26,13 +36,13 @@ const dateTime = (value: string) =>
     timeStyle: 'short',
     timeZone: 'America/Buenos_Aires',
   }).format(new Date(value));
+const emptyTenders = (): TenderAmounts => ({ CASH: '', MERCADO_PAGO: '', CARD: '' });
 
 export default function PaymentsPage() {
   const { can } = useAuth();
-  const [view] = useState<'' | 'pending' | 'overdue'>(() => {
-    if (typeof window === 'undefined') return '';
-    return paymentViewFromSearch(window.location.search);
-  });
+  const [view] = useState<'' | 'pending' | 'overdue'>(() =>
+    typeof window === 'undefined' ? '' : paymentViewFromSearch(window.location.search),
+  );
   const [receivables, setReceivables] = useState<ReceivablesDto | null>(null);
   const [receivablesPage, setReceivablesPage] = useState(1);
   const [receivablesLoading, setReceivablesLoading] = useState(false);
@@ -41,8 +51,7 @@ export default function PaymentsPage() {
   const [student, setStudent] = useState<StudentDto | null>(null);
   const [charges, setCharges] = useState<MonthlyChargeListDto['items']>([]);
   const [payments, setPayments] = useState<PaymentListDto['items']>([]);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [method, setMethod] = useState<PaymentMethodDto>('CASH');
+  const [tenders, setTenders] = useState<TenderAmounts>(emptyTenders);
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [voidTarget, setVoidTarget] = useState<PaymentDto | null>(null);
@@ -51,7 +60,7 @@ export default function PaymentsPage() {
 
   const loadStudent = useCallback(async (selectedStudent: StudentDto) => {
     setStudent(selectedStudent);
-    setSelected(new Set());
+    setTenders(emptyTenders());
     setMessage('');
     const [chargeResult, paymentResult] = await Promise.all([
       apiRequest<MonthlyChargeListDto>(`/monthly-charges?studentId=${selectedStudent.id}`),
@@ -100,42 +109,46 @@ export default function PaymentsPage() {
     setMessage('');
     if (!query.trim()) return setResults([]);
     try {
-      setResults(
-        (
-          await apiRequest<StudentListDto>(
-            `/students?q=${encodeURIComponent(query.trim())}&pageSize=10`,
-          )
-        ).items,
+      const result = await apiRequest<StudentListDto>(
+        `/students?q=${encodeURIComponent(query.trim())}&pageSize=10`,
       );
+      setResults(result.items);
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo buscar alumnos');
     }
   }
 
-  const pending = charges.filter((charge) => charge.status === 'PENDING');
-  const total = useMemo(() => selectedTotal(pending, selected), [pending, selected]);
-  const toggle = (id: string) =>
-    setSelected((current) => {
-      const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  const pending = useMemo(() => openCharges(charges), [charges]);
+  const totalCents = useMemo(() => tenderTotal(tenders), [tenders]);
+  const debtCents = useMemo(() => decimalToCents(outstandingTotal(charges)) ?? 0n, [charges]);
+  const allocationPreview = useMemo(
+    () => previewAllocations(charges, totalCents),
+    [charges, totalCents],
+  );
+  const hasInvalidTender = Object.values(tenders).some(
+    (amount) => amount.trim() !== '' && decimalToCents(amount) === null,
+  );
+  const exceedsOutstanding = totalCents > debtCents;
 
   async function collect() {
+    if (!student || submitting) return;
     setSubmitting(true);
     setMessage('');
     try {
       await apiRequest<PaymentDto>('/payments', {
         method: 'POST',
-        body: JSON.stringify(createPaymentPayload(selected, method)),
+        body: JSON.stringify(createPaymentPayload(student.id, tenders)),
       });
-      if (student) await loadStudent(student);
+      await loadStudent(student);
       setMessage('Pago registrado correctamente.');
     } catch (error) {
+      const changed =
+        error instanceof ApiClientError &&
+        (error.status === 409 || error.error.code === 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE');
+      await loadStudent(student).catch(() => undefined);
       setMessage(
-        error instanceof ApiClientError && error.status === 409
-          ? 'Otra operación modificó una cuota seleccionada. Actualizá e intentá nuevamente.'
+        changed
+          ? 'La deuda cambió mientras registrabas el pago. Actualizamos el estado de cuenta para que puedas revisarlo nuevamente.'
           : error instanceof ApiClientError
             ? error.message
             : 'No se pudo registrar el pago',
@@ -178,10 +191,11 @@ export default function PaymentsPage() {
           <p className="subtitle">
             {view
               ? 'Mostrando alumnos con cuotas pendientes según el filtro activo.'
-              : 'Cobro de cuotas completas e historial financiero.'}
+              : 'Pagos parciales, medios combinados e historial financiero.'}
           </p>
         </div>
       </div>
+
       {view && (
         <section className="card receivables-card">
           <div className="context-filter">
@@ -191,7 +205,7 @@ export default function PaymentsPage() {
             <Link href="/payments">Limpiar filtro</Link>
           </div>
           {receivablesLoading ? (
-            <p>Cargando {view === 'overdue' ? 'cuotas vencidas' : 'cuentas pendientes'}…</p>
+            <p>Cargando cuentas pendientes…</p>
           ) : receivables && receivables.items.length > 0 ? (
             <>
               <div className="receivables-summary">
@@ -213,8 +227,7 @@ export default function PaymentsPage() {
                         {debtor.student.firstName} {debtor.student.lastName}
                       </h3>
                       <p>
-                        DNI {debtor.student.dni} · {debtor.pendingCount} cuota
-                        {debtor.pendingCount === 1 ? '' : 's'}
+                        DNI {debtor.student.dni} · {debtor.pendingCount} cuotas abiertas
                       </p>
                       <small>Más antigua: {formatDate(debtor.oldestDueDate)}</small>
                     </div>
@@ -266,6 +279,7 @@ export default function PaymentsPage() {
           )}
         </section>
       )}
+
       <section className="card">
         <h2>Buscar alumno</h2>
         <form className="filters" onSubmit={search}>
@@ -302,6 +316,7 @@ export default function PaymentsPage() {
           </p>
         )}
       </section>
+
       {student && (
         <>
           <section className="card">
@@ -311,59 +326,117 @@ export default function PaymentsPage() {
             </h2>
             <p>DNI {student.dni}</p>
           </section>
+
           <section className="card">
-            <h2>Cuotas pendientes</h2>
+            <div className="section-heading">
+              <div>
+                <h2>Estado de cuenta</h2>
+                <p className="subtitle">
+                  La imputación se realiza primero sobre la cuota más antigua.
+                </p>
+              </div>
+              <strong>Saldo pendiente: {money(outstandingTotal(charges))}</strong>
+            </div>
             {charges.length === 0 ? (
               <p className="empty-state">No hay cuotas registradas para este alumno.</p>
             ) : pending.length === 0 ? (
               <p className="empty-state">Este alumno no tiene cuotas pendientes.</p>
             ) : (
               <div className="payment-charge-list">
-                {pending.map((charge) => {
-                  const overdue = businessToday() > charge.dueDate;
-                  return (
-                    <label className="enrollment-card" key={charge.id}>
-                      <input
-                        type="checkbox"
-                        checked={selected.has(charge.id)}
-                        onChange={() => toggle(charge.id)}
-                      />
-                      <span>
-                        <strong>{charge.academicClass.name}</strong>
-                        <br />
-                        {charge.period} · vence {formatDate(charge.dueDate)}{' '}
-                        {overdue && <span className="status void">Vencida</span>}
+                {pending.map((charge) => (
+                  <article className="enrollment-card" key={charge.id}>
+                    <span>
+                      <strong>{charge.academicClass.name}</strong>
+                      <br />
+                      {charge.period} · vence {formatDate(charge.dueDate)}{' '}
+                      {charge.overdue && <span className="status void">Vencida</span>}{' '}
+                      <span className={`status ${charge.status.toLowerCase()}`}>
+                        {charge.status === 'PARTIAL' ? 'Parcial' : 'Pendiente'}
                       </span>
-                      <strong>{money(charge.finalAmount)}</strong>
-                    </label>
-                  );
-                })}
+                    </span>
+                    <span>
+                      <small>Importe {money(charge.finalAmount)}</small>
+                      <br />
+                      <small>Pagado {money(charge.paidAmount)}</small>
+                      <br />
+                      <strong>Resta {money(charge.outstandingAmount)}</strong>
+                    </span>
+                  </article>
+                ))}
               </div>
             )}
-            <div className="payment-summary">
-              <strong>
-                {selected.size} cuota{selected.size === 1 ? '' : 's'} seleccionada
-                {selected.size === 1 ? '' : 's'}
-              </strong>
-              <strong>Total: {money(total)}</strong>
-              <label>
-                Medio de pago
-                <select
-                  value={method}
-                  onChange={(event) => setMethod(event.target.value as PaymentMethodDto)}
+
+            {pending.length > 0 && (
+              <div className="payment-v2-grid">
+                <div className="payment-tenders">
+                  <h3>Registrar cobro</h3>
+                  <p className="subtitle">Ingresá el importe recibido por cada medio.</p>
+                  {(Object.entries(paymentMethodLabels) as [keyof TenderAmounts, string][]).map(
+                    ([method, label]) => (
+                      <label key={method}>
+                        {label}
+                        <input
+                          inputMode="decimal"
+                          placeholder="0,00"
+                          value={tenders[method]}
+                          onChange={(event) =>
+                            setTenders((current) => ({ ...current, [method]: event.target.value }))
+                          }
+                        />
+                      </label>
+                    ),
+                  )}
+                  <strong>Total del pago: {money(centsToDecimal(totalCents))}</strong>
+                  {hasInvalidTender && (
+                    <p className="field-error">Usá importes positivos con hasta dos decimales.</p>
+                  )}
+                  {exceedsOutstanding && (
+                    <p className="field-error">El pago no puede superar el saldo pendiente.</p>
+                  )}
+                </div>
+                <div className="payment-allocation-preview">
+                  <h3>Vista previa de imputación</h3>
+                  {allocationPreview.length === 0 ? (
+                    <p className="subtitle">Ingresá un importe para ver cómo se distribuirá.</p>
+                  ) : (
+                    <>
+                      <ul>
+                        {allocationPreview.map(({ charge, amount }) => (
+                          <li key={charge.id}>
+                            <span>
+                              {charge.academicClass.name} · {charge.period}
+                            </span>
+                            <strong>{money(amount)}</strong>
+                          </li>
+                        ))}
+                      </ul>
+                      {!exceedsOutstanding && (
+                        <strong>
+                          Saldo posterior estimado: {money(centsToDecimal(debtCents - totalCents))}
+                        </strong>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+            {pending.length > 0 && (
+              <div className="payment-summary">
+                <button
+                  disabled={paymentSubmissionDisabled(
+                    totalCents,
+                    debtCents,
+                    hasInvalidTender,
+                    submitting,
+                  )}
+                  onClick={() => void collect()}
                 >
-                  {Object.entries(paymentMethodLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button disabled={selected.size === 0 || submitting} onClick={() => void collect()}>
-                {submitting ? 'Registrando…' : 'Registrar pago'}
-              </button>
-            </div>
+                  {submitting ? 'Registrando…' : 'Registrar cobro'}
+                </button>
+              </div>
+            )}
           </section>
+
           <section className="card">
             <h2>Historial</h2>
             {payments.length === 0 ? (
@@ -374,8 +447,8 @@ export default function PaymentsPage() {
                   <thead>
                     <tr>
                       <th>Fecha</th>
-                      <th>Cuotas</th>
-                      <th>Medio</th>
+                      <th>Imputación</th>
+                      <th>Medios</th>
                       <th>Importe</th>
                       <th>Registrado por</th>
                       <th>Estado</th>
@@ -386,15 +459,22 @@ export default function PaymentsPage() {
                     {payments.map((payment) => (
                       <tr key={payment.id}>
                         <td data-label="Fecha">{dateTime(payment.paidAt)}</td>
-                        <td data-label="Cuotas">
+                        <td data-label="Imputación">
                           {payment.allocations
                             .map(
                               (allocation) =>
-                                `${allocation.academicClass.name} ${allocation.period}`,
+                                `${allocation.academicClass.name} ${allocation.period}: ${money(allocation.amount)}`,
                             )
                             .join(', ')}
                         </td>
-                        <td data-label="Medio">{paymentMethodLabels[payment.paymentMethod]}</td>
+                        <td data-label="Medios">
+                          {payment.tenders
+                            .map(
+                              (tender) =>
+                                `${paymentMethodLabels[tender.method]}: ${money(tender.amount)}`,
+                            )
+                            .join(', ')}
+                        </td>
                         <td data-label="Importe">{money(payment.amount)}</td>
                         <td data-label="Registrado por">{payment.createdBy.username}</td>
                         <td data-label="Estado">
@@ -428,6 +508,7 @@ export default function PaymentsPage() {
           </section>
         </>
       )}
+
       {voidTarget && (
         <div
           className="modal-backdrop"
@@ -454,8 +535,8 @@ export default function PaymentsPage() {
               />
             </label>
             <p className="modal-note">
-              El pago se conservará en el historial como anulado y las cuotas volverán a quedar
-              pendientes.
+              El pago, sus medios y sus imputaciones se conservarán. El saldo de cada cuota se
+              recalculará con los demás pagos confirmados.
             </p>
             <div className="modal-actions">
               <button className="secondary" disabled={voiding} onClick={() => setVoidTarget(null)}>

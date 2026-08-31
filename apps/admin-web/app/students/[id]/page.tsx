@@ -22,16 +22,21 @@ import {
   sortAccountCharges,
   studentAccountSummary,
 } from '../../../lib/student-account';
+import { paymentMethodLabels } from '../../../lib/payments';
 
 const money = (value: string) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
-const paymentMethod = { CASH: 'Efectivo', MERCADO_PAGO: 'Mercado Pago', CARD: 'Tarjeta' } as const;
 const attendanceStatus = {
   PRESENT: 'Presente',
   ABSENT: 'Ausente',
   JUSTIFIED: 'Justificada',
 } as const;
-const chargeStatus = { PENDING: 'Pendiente', PAID: 'Pagada', VOID: 'Anulada' } as const;
+const chargeStatus = {
+  PENDING: 'Pendiente',
+  PARTIAL: 'Pago parcial',
+  PAID: 'Pagada',
+  VOID: 'Anulada',
+} as const;
 const dateTime = (value: string) =>
   new Intl.DateTimeFormat('es-AR', {
     dateStyle: 'short',
@@ -192,11 +197,12 @@ export default function StudentDetailPage() {
               Inscribir a otra clase
             </Link>
           )}
-          {can('payments:collect') && charges.some((item) => item.status === 'PENDING') && (
-            <Link className="button" href={`/payments?studentId=${id}`}>
-              Registrar pago
-            </Link>
-          )}
+          {can('payments:collect') &&
+            charges.some((item) => item.status === 'PENDING' || item.status === 'PARTIAL') && (
+              <Link className="button" href={`/payments?studentId=${id}`}>
+                Registrar pago
+              </Link>
+            )}
           {can('students:manage') && (
             <button className="secondary" onClick={() => setEditing((value) => !value)}>
               Editar
@@ -309,11 +315,12 @@ export default function StudentDetailPage() {
                   : `Deuda pendiente: ${money(summary.pendingDebt)}`}
               </p>
             </div>
-            {can('payments:collect') && charges.some((item) => item.status === 'PENDING') && (
-              <Link className="button" href={`/payments?studentId=${id}`}>
-                Registrar pago
-              </Link>
-            )}
+            {can('payments:collect') &&
+              charges.some((item) => item.status === 'PENDING' || item.status === 'PARTIAL') && (
+                <Link className="button" href={`/payments?studentId=${id}`}>
+                  Registrar pago
+                </Link>
+              )}
           </div>
           {sectionErrors.charges ? (
             <p className="message">{sectionErrors.charges}</p>
@@ -327,6 +334,8 @@ export default function StudentDetailPage() {
                     <th>Período</th>
                     <th>Clase</th>
                     <th>Importe</th>
+                    <th>Pagado</th>
+                    <th>Saldo</th>
                     <th>Vencimiento</th>
                     <th>Estado</th>
                   </tr>
@@ -339,13 +348,14 @@ export default function StudentDetailPage() {
                         <td data-label="Período">{charge.period}</td>
                         <td data-label="Clase">{charge.academicClass.name}</td>
                         <td data-label="Importe">{money(charge.finalAmount)}</td>
+                        <td data-label="Pagado">{money(charge.paidAmount)}</td>
+                        <td data-label="Saldo">{money(charge.outstandingAmount)}</td>
                         <td data-label="Vencimiento">{formatDate(charge.dueDate)}</td>
                         <td data-label="Estado">
-                          <span
-                            className={`status ${overdue ? 'void' : charge.status.toLowerCase()}`}
-                          >
-                            {overdue ? 'Vencida' : chargeStatus[charge.status]}
+                          <span className={`status ${charge.status.toLowerCase()}`}>
+                            {chargeStatus[charge.status]}
                           </span>
+                          {overdue && <span className="status void">Vencida</span>}
                         </td>
                       </tr>
                     );
@@ -379,14 +389,21 @@ export default function StudentDetailPage() {
                   <div>
                     <strong>{money(payment.amount)}</strong>
                     <span>
-                      {dateTime(payment.paidAt)} · {paymentMethod[payment.paymentMethod]}
+                      {dateTime(payment.paidAt)} ·{' '}
+                      {payment.tenders
+                        .map(
+                          (tender) =>
+                            `${paymentMethodLabels[tender.method]} ${money(tender.amount)}`,
+                        )
+                        .join(' + ')}
                     </span>
                   </div>
                   <div>
                     <span>
                       {payment.allocations
                         .map(
-                          (allocation) => `${allocation.academicClass.name} ${allocation.period}`,
+                          (allocation) =>
+                            `${allocation.academicClass.name} ${allocation.period}: ${money(allocation.amount)}`,
                         )
                         .join(', ')}
                     </span>

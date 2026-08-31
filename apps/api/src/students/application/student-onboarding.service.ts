@@ -5,6 +5,7 @@ import type {
 } from '@academy/contracts';
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../shared/domain/domain-error';
+import { Prisma } from '@academy/database';
 import {
   STUDENT_ONBOARDING_TRANSACTION,
   type StudentOnboardingTransaction,
@@ -67,8 +68,18 @@ export class StudentOnboardingService {
       const payment = input.payment
         ? await payments.create(
             {
-              monthlyChargeIds: charges.map(({ id }) => id),
-              paymentMethod: input.payment.paymentMethod,
+              studentId: createdStudent.id,
+              tenders: [
+                {
+                  method: input.payment.paymentMethod,
+                  amount: charges
+                    .reduce(
+                      (total, charge) => total.plus(charge.finalAmount),
+                      new Prisma.Decimal(0),
+                    )
+                    .toFixed(2),
+                },
+              ],
             },
             actorId,
           )

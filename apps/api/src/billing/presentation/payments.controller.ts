@@ -83,12 +83,11 @@ export class PaymentsController {
 
   @Post()
   @Permissions('payments:collect')
-  create(@Body() input: CreatePaymentDto, @CurrentUser() user: PublicAuthUser) {
+  create(@Body() input: CreatePaymentDto | null, @CurrentUser() user: PublicAuthUser) {
+    if (!input || typeof input !== 'object')
+      throw new DomainError('VALIDATION_ERROR', 'El cuerpo del pago es obligatorio');
     return this.service.create(
-      {
-        ...input,
-        monthlyChargeIds: input.monthlyChargeIds?.map((id) => parseUuid(id, 'monthlyChargeIds')),
-      },
+      { ...input, studentId: parseUuid(input.studentId, 'studentId') },
       user.id,
     );
   }

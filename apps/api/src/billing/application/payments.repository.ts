@@ -12,8 +12,8 @@ export type PaymentQuery = Readonly<{
 
 export interface PaymentsRepository {
   create(
-    monthlyChargeIds: readonly string[],
-    paymentMethod: PaymentMethodDto,
+    studentId: string,
+    tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
   ): Promise<PaymentDto>;
   findById(id: string): Promise<PaymentDto | null>;
