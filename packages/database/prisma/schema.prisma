@@ -70,6 +70,16 @@ enum AttendanceStatus {
   JUSTIFIED
 }
 
+enum CashShiftStatus {
+  OPEN
+  CLOSED
+}
+
+enum CashMovementType {
+  COLLECTION
+  REVERSAL
+}
+
 enum LeadSource {
   WHATSAPP
   INSTAGRAM
@@ -356,6 +366,7 @@ model Payment {
   voidedBy        AdminUser?          @relation("PaymentVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
   allocations     PaymentAllocation[]
   tenders         PaymentTender[]
+  cashMovements   CashMovement[]
 
   @@index([studentId, paidAt])
   @@index([status, paidAt])
@@ -363,16 +374,93 @@ model Payment {
 }
 
 model PaymentTender {
-  id        String        @id @default(uuid()) @db.Uuid
-  paymentId String        @map("payment_id") @db.Uuid
-  method    PaymentMethod
-  amount    Decimal       @db.Decimal(12, 2)
-  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
-  payment   Payment       @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  id            String         @id @default(uuid()) @db.Uuid
+  paymentId     String         @map("payment_id") @db.Uuid
+  method        PaymentMethod
+  amount        Decimal        @db.Decimal(12, 2)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  payment       Payment        @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  cashMovements CashMovement[]
 
   @@unique([paymentId, method])
   @@index([method, createdAt])
   @@map("payment_tenders")
+}
+
+model CashShift {
+  id             String                         @id @default(uuid()) @db.Uuid
+  userId         String                         @map("user_id") @db.Uuid
+  status         CashShiftStatus                @default(OPEN)
+  openedAt       DateTime                       @default(now()) @map("opened_at") @db.Timestamptz(3)
+  closedAt       DateTime?                      @map("closed_at") @db.Timestamptz(3)
+  closedByUserId String?                        @map("closed_by_user_id") @db.Uuid
+  createdAt      DateTime                       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime                       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user           AdminUser                      @relation("CashShiftUser", fields: [userId], references: [id], onDelete: Restrict)
+  closedBy       AdminUser?                     @relation("CashShiftClosedBy", fields: [closedByUserId], references: [id], onDelete: Restrict)
+  movements      CashMovement[]
+  closingLines   CashShiftClosingLine[]
+  corrections    CashReconciliationCorrection[]
+
+  @@index([userId, openedAt(sort: Desc)])
+  @@index([status, openedAt(sort: Desc)])
+  @@map("cash_shifts")
+}
+
+model CashMovement {
+  id                    String           @id @default(uuid()) @db.Uuid
+  cashShiftId           String           @map("cash_shift_id") @db.Uuid
+  type                  CashMovementType
+  method                PaymentMethod
+  amount                Decimal          @db.Decimal(12, 2)
+  sourcePaymentId       String           @map("source_payment_id") @db.Uuid
+  sourcePaymentTenderId String           @map("source_payment_tender_id") @db.Uuid
+  reversalOfId          String?          @unique @map("reversal_of_id") @db.Uuid
+  actorUserId           String           @map("actor_user_id") @db.Uuid
+  reason                String?          @db.VarChar(500)
+  createdAt             DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  cashShift             CashShift        @relation(fields: [cashShiftId], references: [id], onDelete: Restrict)
+  sourcePayment         Payment          @relation(fields: [sourcePaymentId], references: [id], onDelete: Restrict)
+  sourcePaymentTender   PaymentTender    @relation(fields: [sourcePaymentTenderId], references: [id], onDelete: Restrict)
+  reversalOf            CashMovement?    @relation("CashMovementReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
+  reversal              CashMovement?    @relation("CashMovementReversal")
+  actor                 AdminUser        @relation("CashMovementActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([cashShiftId, createdAt])
+  @@index([sourcePaymentId])
+  @@index([sourcePaymentTenderId])
+  @@map("cash_movements")
+}
+
+model CashShiftClosingLine {
+  id               String        @id @default(uuid()) @db.Uuid
+  cashShiftId      String        @map("cash_shift_id") @db.Uuid
+  method           PaymentMethod
+  expectedAmount   Decimal       @map("expected_amount") @db.Decimal(12, 2)
+  declaredAmount   Decimal       @map("declared_amount") @db.Decimal(12, 2)
+  differenceAmount Decimal       @map("difference_amount") @db.Decimal(12, 2)
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  cashShift        CashShift     @relation(fields: [cashShiftId], references: [id], onDelete: Restrict)
+
+  @@unique([cashShiftId, method])
+  @@map("cash_shift_closing_lines")
+}
+
+model CashReconciliationCorrection {
+  id                      String        @id @default(uuid()) @db.Uuid
+  cashShiftId             String        @map("cash_shift_id") @db.Uuid
+  method                  PaymentMethod
+  amountDelta             Decimal       @map("amount_delta") @db.Decimal(12, 2)
+  originalDeclaredAmount  Decimal       @map("original_declared_amount") @db.Decimal(12, 2)
+  correctedDeclaredAmount Decimal       @map("corrected_declared_amount") @db.Decimal(12, 2)
+  reason                  String        @db.VarChar(500)
+  createdByUserId         String        @map("created_by_user_id") @db.Uuid
+  createdAt               DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  cashShift               CashShift     @relation(fields: [cashShiftId], references: [id], onDelete: Restrict)
+  createdBy               AdminUser     @relation("CashCorrectionCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@index([cashShiftId, method, createdAt])
+  @@map("cash_reconciliation_corrections")
 }
 
 model PaymentAllocation {
@@ -423,22 +511,26 @@ model StudentAttendance {
 }
 
 model AdminUser {
-  id                          String                       @id @default(uuid()) @db.Uuid
-  username                    String                       @unique @db.VarChar(100)
-  passwordHash                String                       @map("password_hash")
-  role                        AdminRole                    @default(RECEPTION)
-  status                      RecordStatus                 @default(ACTIVE)
-  createdAt                   DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt                   DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id                          String                         @id @default(uuid()) @db.Uuid
+  username                    String                         @unique @db.VarChar(100)
+  passwordHash                String                         @map("password_hash")
+  role                        AdminRole                      @default(RECEPTION)
+  status                      RecordStatus                   @default(ACTIVE)
+  createdAt                   DateTime                       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                   DateTime                       @updatedAt @map("updated_at") @db.Timestamptz(3)
   sessions                    AdminSession[]
-  paymentsCreated             Payment[]                    @relation("PaymentCreatedBy")
-  paymentsVoided              Payment[]                    @relation("PaymentVoidedBy")
+  paymentsCreated             Payment[]                      @relation("PaymentCreatedBy")
+  paymentsVoided              Payment[]                      @relation("PaymentVoidedBy")
   auditLogs                   AuditLog[]
-  billingConditionsAuthorized EnrollmentBillingCondition[] @relation("BillingConditionAuthorizedBy")
-  billingConditionsCreated    EnrollmentBillingCondition[] @relation("BillingConditionCreatedBy")
-  billingConditionsEnded      EnrollmentBillingCondition[] @relation("BillingConditionEndedBy")
-  chargeAdjustmentsAuthorized MonthlyChargeAdjustment[]    @relation("ChargeAdjustmentAuthorizedBy")
-  chargeAdjustmentsCreated    MonthlyChargeAdjustment[]    @relation("ChargeAdjustmentCreatedBy")
+  billingConditionsAuthorized EnrollmentBillingCondition[]   @relation("BillingConditionAuthorizedBy")
+  billingConditionsCreated    EnrollmentBillingCondition[]   @relation("BillingConditionCreatedBy")
+  billingConditionsEnded      EnrollmentBillingCondition[]   @relation("BillingConditionEndedBy")
+  chargeAdjustmentsAuthorized MonthlyChargeAdjustment[]      @relation("ChargeAdjustmentAuthorizedBy")
+  chargeAdjustmentsCreated    MonthlyChargeAdjustment[]      @relation("ChargeAdjustmentCreatedBy")
+  cashShifts                  CashShift[]                    @relation("CashShiftUser")
+  cashShiftsClosed            CashShift[]                    @relation("CashShiftClosedBy")
+  cashMovements               CashMovement[]                 @relation("CashMovementActor")
+  cashCorrections             CashReconciliationCorrection[] @relation("CashCorrectionCreatedBy")
 
   @@map("admin_users")
 }

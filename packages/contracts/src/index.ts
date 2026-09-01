@@ -423,12 +423,91 @@ export type ReceivablesDto = Readonly<{
 export type PaymentSummaryDto = Readonly<{ confirmedTotal: string }>;
 export type VoidPaymentDto = Readonly<{ reason: string }>;
 
+export type CashShiftStatusDto = 'OPEN' | 'CLOSED';
+export type CashMovementTypeDto = 'COLLECTION' | 'REVERSAL';
+export type CashAmountByMethodDto = Readonly<Record<PaymentMethodDto, string>>;
+export type CashMovementDto = Readonly<{
+  id: string;
+  type: CashMovementTypeDto;
+  method: PaymentMethodDto;
+  amount: string;
+  paymentId: string;
+  student: Readonly<{ id: string; firstName: string; lastName: string }>;
+  actor: Readonly<{ id: string; username: string }>;
+  reason: string | null;
+  createdAt: string;
+}>;
+export type CashShiftClosingLineDto = Readonly<{
+  method: PaymentMethodDto;
+  expectedAmount: string;
+  declaredAmount: string;
+  differenceAmount: string;
+}>;
+export type CashReconciliationCorrectionDto = Readonly<{
+  id: string;
+  method: PaymentMethodDto;
+  amountDelta: string;
+  originalDeclaredAmount: string;
+  correctedDeclaredAmount: string;
+  reason: string;
+  createdBy: Readonly<{ id: string; username: string }>;
+  createdAt: string;
+}>;
+export type CashShiftDto = Readonly<{
+  id: string;
+  user: Readonly<{ id: string; username: string }>;
+  status: CashShiftStatusDto;
+  openedAt: string;
+  closedAt: string | null;
+  expectedByMethod: CashAmountByMethodDto;
+  operationCount: number;
+  movements: readonly CashMovementDto[];
+  closingLines: readonly CashShiftClosingLineDto[];
+  corrections: readonly CashReconciliationCorrectionDto[];
+  correctedByMethod: readonly CashShiftClosingLineDto[];
+  hasPostCloseMovements: boolean;
+}>;
+export type CashShiftSummaryDto = Readonly<{
+  id: string;
+  user: Readonly<{ id: string; username: string }>;
+  status: CashShiftStatusDto;
+  openedAt: string;
+  closedAt: string | null;
+  expectedAmount: string;
+  declaredAmount: string | null;
+  differenceAmount: string | null;
+  hasCorrections: boolean;
+}>;
+export type CashShiftListDto = PageDto<CashShiftSummaryDto>;
+export type OpenCashShiftDto = Readonly<Record<string, never>>;
+export type CloseCashShiftDto = Readonly<{ declaredByMethod: CashAmountByMethodDto }>;
+export type CreateCashCorrectionDto = Readonly<{
+  method: PaymentMethodDto;
+  correctedDeclaredAmount: string;
+  reason: string;
+}>;
+export type CashConsolidationDto = Readonly<{
+  shiftCount: number;
+  byMethod: readonly Readonly<{
+    method: PaymentMethodDto;
+    systemAtClose: string;
+    declaredAtClose: string;
+    differenceAtClose: string;
+    postCloseMovements: string;
+    currentSystem: string;
+    correctedDeclared: string;
+    currentDifference: string;
+  }>[];
+}>;
+
 export type AuditActionDto =
   | 'UPDATE'
   | 'STATUS_CHANGE'
   | 'VOID'
   | 'END'
   | 'CORRECTION'
+  | 'OPEN'
+  | 'CLOSE'
   | 'ROLE_CHANGE';
 export type AuditEntityTypeDto =
   | 'STUDENT'
@@ -441,6 +520,7 @@ export type AuditEntityTypeDto =
   | 'TARIFF'
   | 'ADMIN_USER'
   | 'PAYMENT'
+  | 'CASH_SHIFT'
   | 'ATTENDANCE'
   | 'ENROLLMENT'
   | 'BILLING_CONDITION'

@@ -1,12 +1,20 @@
 # Modelo del dominio
 
+## Caja por turno v1
+
+- `CashShift` pertenece a un usuario y no se elimina ni reabre. Un índice parcial garantiza un único turno `OPEN` por usuario.
+- `CashMovement` es append-only. Cada tender genera una `COLLECTION`; anular el pago genera su `REVERSAL`, incluso después del cierre. El esperado actual es collections menos reversals por `CASH`, `MERCADO_PAGO` y `CARD`.
+- `CashShiftClosingLine` conserva el snapshot inmutable visto al cerrar: esperado, declarado y diferencia por medio. El backend bloquea el turno y recalcula lo esperado.
+- `CashReconciliationCorrection` corrige únicamente lo declarado, con delta, antes/después, actor, instante y motivo. No permite inventar ni modificar movimientos financieros.
+- V1 no tiene fondo inicial, Income, Expenses, retiros, depósitos, créditos, refunds ni liquidaciones. Payments anteriores no reciben un turno inventado: no hay backfill histórico.
+
 ## Contextos y entidades
 
 - **Personas:** `Lead`, `Student`, `Teacher`, `AdminUser`, `Role`, `Permission`.
 - **Oferta:** `DanceType`, `Class`, `ClassSchedule`, `Branch`, `Room`.
 - **Inscripciones:** `Enrollment` une `Student` y `Class` con vigencia y estado.
 - **Facturación:** `Tariff`, `MonthlyCharge`, `Payment`, `PaymentTender` y `PaymentAllocation`; descuentos quedan diferidos.
-- **Caja:** `CashRegister`, `CashSession`, `CashMovement`, `PaymentMethod`, `MovementCategory`.
+- **Caja:** `CashShift`, `CashMovement`, `CashShiftClosingLine` y `CashReconciliationCorrection`.
 - **Asistencia:** `StudentAttendance` pertenece a una `Enrollment`; asistencia docente queda diferida.
 - **Acceso:** `AccessAttempt` registra decisión/mecanismo sin acoplar hardware.
 - **Liquidaciones:** `SettlementPolicy`, `TeacherSettlement`, `SettlementLine`; sin fórmula hasta relevarla.
@@ -88,7 +96,7 @@ erDiagram
 
 - `AdminUser` mantiene los roles técnicos existentes, presentados como Admisión (`RECEPTION`), Administración (`MANAGER`) y Dirección (`ADMINISTRATOR`).
 - Los permisos se definen por capacidad y se validan en la API. El frontend usa la misma matriz conceptual para mostrar únicamente módulos y acciones habilitados.
-- Admisión conserva la operación cotidiana de alumnos/inscripciones y lectura necesaria de oferta, tarifas y cuotas; no administra configuración, caja, usuarios, reportes ni liquidaciones.
+- Admisión conserva la operación cotidiana de alumnos/inscripciones, lectura necesaria y gestión de su propia caja; no concilia cajas ajenas ni administra configuración, usuarios, reportes o liquidaciones.
 - Administración gestiona configuración y usuarios de Admisión/Administración, pero no puede acceder a cuentas de Dirección ni aprobar liquidaciones.
 - Dirección tiene el nivel completo. El sistema impide auto-desactivación y garantiza al menos una cuenta de Dirección activa.
 

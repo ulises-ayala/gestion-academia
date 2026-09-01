@@ -1,4 +1,4 @@
-import { PrismaClient } from '@academy/database';
+import { Prisma, PrismaClient } from '@academy/database';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { PrismaService } from '../../database/prisma.service';
 import { ReceivablesService } from '../application/receivables.service';
@@ -27,6 +27,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
           status: 'ACTIVE',
         },
       });
+      const cashShift = await tx.cashShift.create({ data: { userId: actor.id } });
       const student = await tx.student.create({
         data: {
           dni: numericToken,
@@ -93,6 +94,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       });
       return {
         actor,
+        cashShift,
         student,
         teacher,
         danceType,
@@ -119,6 +121,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         })
       ).map(({ id }) => id);
       if (paymentIds.length) {
+        await tx.cashMovement.deleteMany({ where: { sourcePaymentId: { in: paymentIds } } });
         await tx.paymentTender.deleteMany({ where: { paymentId: { in: paymentIds } } });
         await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
         await tx.payment.deleteMany({ where: { id: { in: paymentIds } } });
@@ -135,12 +138,34 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       await tx.danceType.delete({ where: { id: fixture.danceType.id } });
       await tx.teacher.delete({ where: { id: fixture.teacher.id } });
       await tx.student.delete({ where: { id: fixture.student.id } });
+      await tx.cashShiftClosingLine.deleteMany({ where: { cashShiftId: fixture.cashShift.id } });
+      await tx.cashReconciliationCorrection.deleteMany({
+        where: { cashShiftId: fixture.cashShift.id },
+      });
+      await tx.cashShift.deleteMany({ where: { id: fixture.cashShift.id } });
       await tx.adminUser.delete({ where: { id: fixture.actor.id } });
     });
   };
 
   beforeAll(() => prisma.$connect());
   afterAll(() => prisma.$disconnect());
+
+  it('rechaza un Payment sin turno abierto sin persistirlo', async () => {
+    const fixture = await createFixture();
+    try {
+      await prisma.cashShift.delete({ where: { id: fixture.cashShift.id } });
+      await expect(
+        repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '10000.00' }],
+          fixture.actor.id,
+        ),
+      ).rejects.toMatchObject({ code: 'CASH_SHIFT_REQUIRED' });
+      expect(await prisma.payment.count({ where: { studentId: fixture.student.id } })).toBe(0);
+    } finally {
+      await cleanupFixture(fixture);
+    }
+  });
 
   it('confirma una sola vez cuando dos cajas cobran la misma cuota', async () => {
     const fixture = await createFixture();
@@ -211,6 +236,37 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         [{ method: 'MERCADO_PAGO', amount: '31000.00' }],
         fixture.actor.id,
       );
+      await prisma.$transaction([
+        prisma.cashShiftClosingLine.createMany({
+          data: [
+            {
+              cashShiftId: fixture.cashShift.id,
+              method: 'CASH',
+              expectedAmount: '10000',
+              declaredAmount: '10000',
+              differenceAmount: '0',
+            },
+            {
+              cashShiftId: fixture.cashShift.id,
+              method: 'MERCADO_PAGO',
+              expectedAmount: '31000',
+              declaredAmount: '31000',
+              differenceAmount: '0',
+            },
+            {
+              cashShiftId: fixture.cashShift.id,
+              method: 'CARD',
+              expectedAmount: '0',
+              declaredAmount: '0',
+              differenceAmount: '0',
+            },
+          ],
+        }),
+        prisma.cashShift.update({
+          where: { id: fixture.cashShift.id },
+          data: { status: 'CLOSED', closedAt: new Date(), closedByUserId: fixture.actor.id },
+        }),
+      ]);
       expect(
         (await prisma.monthlyCharge.findUnique({ where: { id: fixture.charge.id } }))?.status,
       ).toBe('PAID');
@@ -220,6 +276,24 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         'Pago registrado por error',
       );
       expect(voided).toMatchObject({ status: 'VOID', tenders: [{ method: 'MERCADO_PAGO' }] });
+      expect(
+        await prisma.cashMovement.count({
+          where: { sourcePaymentId: second.id, type: 'COLLECTION' },
+        }),
+      ).toBe(1);
+      expect(
+        await prisma.cashMovement.count({
+          where: { sourcePaymentId: second.id, type: 'REVERSAL' },
+        }),
+      ).toBe(1);
+      expect(
+        await prisma.cashShiftClosingLine.findUnique({
+          where: {
+            cashShiftId_method: { cashShiftId: fixture.cashShift.id, method: 'MERCADO_PAGO' },
+          },
+          select: { expectedAmount: true },
+        }),
+      ).toEqual({ expectedAmount: new Prisma.Decimal('31000') });
       expect(
         (await prisma.monthlyCharge.findUnique({ where: { id: fixture.charge.id } }))?.status,
       ).toBe('PARTIAL');
@@ -267,6 +341,16 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       );
       expect(payment.amount).toBe('50000.00');
       expect(payment.tenders).toHaveLength(2);
+      expect(
+        await prisma.cashMovement.findMany({
+          where: { sourcePaymentId: payment.id, type: 'COLLECTION' },
+          orderBy: { method: 'asc' },
+          select: { method: true, amount: true },
+        }),
+      ).toEqual([
+        { method: 'CASH', amount: new Prisma.Decimal('30000') },
+        { method: 'MERCADO_PAGO', amount: new Prisma.Decimal('20000') },
+      ]);
       expect(
         payment.allocations.map(({ monthlyChargeId, amount }) => ({ monthlyChargeId, amount })),
       ).toEqual([

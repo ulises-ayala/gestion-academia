@@ -77,6 +77,16 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
       try {
         return await this.prisma.$transaction(
           async (tx) => {
+            const [cashShift] = await tx.$queryRaw<readonly { id: string }[]>`
+              SELECT id FROM cash_shifts
+              WHERE user_id = ${actorId}::uuid AND status = 'OPEN'
+              FOR UPDATE
+            `;
+            if (!cashShift)
+              throw new DomainError(
+                'CASH_SHIFT_REQUIRED',
+                'Necesitás abrir tu turno de caja antes de registrar un cobro.',
+              );
             await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
             await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status <> 'VOID' ORDER BY due_date, created_at, id FOR UPDATE`;
             const lockedCharges = await tx.monthlyCharge.findMany({
@@ -162,6 +172,17 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 allocations: { create: allocations },
               },
               include,
+            });
+            await tx.cashMovement.createMany({
+              data: payment.tenders.map((tender) => ({
+                cashShiftId: cashShift.id,
+                type: 'COLLECTION',
+                method: tender.method,
+                amount: tender.amount,
+                sourcePaymentId: payment.id,
+                sourcePaymentTenderId: tender.id,
+                actorUserId: actorId,
+              })),
             });
             for (const allocation of allocations) {
               const balance = balances.find(
@@ -268,6 +289,13 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             if (!current) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
             if (current.status === 'VOID')
               throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+            const collections = await tx.cashMovement.findMany({
+              where: { sourcePaymentId: id, type: 'COLLECTION' },
+              orderBy: [{ cashShiftId: 'asc' }, { id: 'asc' }],
+            });
+            const shiftIds = [...new Set(collections.map(({ cashShiftId }) => cashShiftId))];
+            if (shiftIds.length > 0)
+              await tx.$queryRaw`SELECT id FROM cash_shifts WHERE id IN (${Prisma.join(shiftIds.map((shiftId) => Prisma.sql`${shiftId}::uuid`))}) ORDER BY id FOR UPDATE`;
             const chargeIds = [
               ...new Set(current.allocations.map(({ monthlyChargeId }) => monthlyChargeId)),
             ].sort();
@@ -276,6 +304,20 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               where: { id },
               data: { status: 'VOID', voidedAt: new Date(), voidedByUserId: actorId },
             });
+            if (collections.length > 0)
+              await tx.cashMovement.createMany({
+                data: collections.map((collection) => ({
+                  cashShiftId: collection.cashShiftId,
+                  type: 'REVERSAL',
+                  method: collection.method,
+                  amount: collection.amount,
+                  sourcePaymentId: collection.sourcePaymentId,
+                  sourcePaymentTenderId: collection.sourcePaymentTenderId,
+                  reversalOfId: collection.id,
+                  actorUserId: actorId,
+                  reason,
+                })),
+              });
             const charges = await tx.monthlyCharge.findMany({
               where: { id: { in: chargeIds } },
               include: {

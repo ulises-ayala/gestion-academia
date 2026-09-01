@@ -19,6 +19,7 @@ export class ApiClientError extends Error {
 export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiUrl}${path}`, {
     ...init,
+    cache: init?.cache ?? 'no-store',
     credentials: 'include',
     headers: { ...(init?.body ? { 'Content-Type': 'application/json' } : {}), ...init?.headers },
   });
