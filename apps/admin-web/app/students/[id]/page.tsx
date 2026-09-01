@@ -46,12 +46,39 @@ const dateTime = (value: string) =>
     timeZone: 'America/Buenos_Aires',
   }).format(new Date(value));
 const adjustmentLabel = {
-  DIRECTION_SCHOLARSHIP: 'Beca Dirección',
-  TEACHER_SCHOLARSHIP: 'Beca docente',
-  TEACHER_DISCOUNT: 'Descuento docente',
+  DIRECTION_SCHOLARSHIP: 'Beca de Dirección',
+  TEACHER_SCHOLARSHIP: 'Beca del profesor',
+  TEACHER_DISCOUNT: 'Descuento del profesor',
   LATE_FEE: 'Recargo por mora',
   REVERSAL: 'Corrección',
 } as const;
+
+const formatBillingPeriod = (period: string) => {
+  const [year, month] = period.split('-').map(Number);
+  if (!year || !month) return period;
+  const formatted = new Intl.DateTimeFormat('es-AR', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(Date.UTC(year, month - 1, 1)));
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
+
+const conditionExplanation = {
+  DIRECTION_SCHOLARSHIP:
+    'El alumno no abona esta actividad. El importe sigue siendo reconocido para la futura liquidación docente.',
+  TEACHER_SCHOLARSHIP:
+    'El alumno no abona esta actividad y este importe no genera reconocimiento para la liquidación docente.',
+  TEACHER_DISCOUNT: 'El profesor reduce parcialmente el importe que abona el alumno.',
+} as const;
+
+const conditionIsCurrent = (item: EnrollmentBillingConditionDto) =>
+  !item.endedAt && (!item.effectiveUntil || item.effectiveUntil >= businessToday().slice(0, 7));
+const nextBillingPeriod = (period: string) => {
+  const [year, month] = period.split('-').map(Number);
+  const next = new Date(Date.UTC(year!, month!, 1));
+  return next.toISOString().slice(0, 7);
+};
 
 function BillingConditions({
   enrollment,
@@ -68,6 +95,7 @@ function BillingConditions({
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [renewing, setRenewing] = useState<EnrollmentBillingConditionDto | null>(null);
   const [type, setType] = useState<CreateEnrollmentBillingConditionDto['type']>('TEACHER_DISCOUNT');
   const [calculation, setCalculation] = useState<'PERCENTAGE' | 'FIXED'>('PERCENTAGE');
   const [value, setValue] = useState('');
@@ -93,20 +121,26 @@ function BillingConditions({
     setSaving(true);
     setError('');
     try {
-      await apiRequest(`/enrollments/${enrollment.id}/billing-conditions`, {
-        method: 'POST',
-        body: JSON.stringify({
-          type,
-          ...(type === 'TEACHER_DISCOUNT' ? { calculation, configuredValue: value } : {}),
-          effectiveFrom: from,
-          ...(until ? { effectiveUntil: until } : {}),
-          ...(type !== 'DIRECTION_SCHOLARSHIP'
-            ? { teacherId: enrollment.academicClass.teacher.id }
-            : {}),
-          reason: why,
-        }),
-      });
+      await apiRequest(
+        renewing
+          ? `/billing-conditions/${renewing.id}/renew`
+          : `/enrollments/${enrollment.id}/billing-conditions`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            type,
+            ...(type === 'TEACHER_DISCOUNT' ? { calculation, configuredValue: value } : {}),
+            effectiveFrom: from,
+            ...(until ? { effectiveUntil: until } : {}),
+            ...(type !== 'DIRECTION_SCHOLARSHIP'
+              ? { teacherId: enrollment.academicClass.teacher.id }
+              : {}),
+            reason: why,
+          }),
+        },
+      );
       setOpen(false);
+      setRenewing(null);
       setWhy('');
       setValue('');
       await Promise.all([loadConditions(), onChanged()]);
@@ -115,6 +149,30 @@ function BillingConditions({
     } finally {
       setSaving(false);
     }
+  }
+  function openCreate() {
+    setRenewing(null);
+    setType('TEACHER_DISCOUNT');
+    setCalculation('PERCENTAGE');
+    setValue('');
+    setWhy('');
+    setOpen(true);
+  }
+  function openRenew(item: EnrollmentBillingConditionDto) {
+    setRenewing(item);
+    setType(item.type);
+    setCalculation(item.calculation);
+    setValue(item.type === 'TEACHER_DISCOUNT' ? String(Number(item.configuredValue)) : '');
+    setFrom(
+      item.effectiveUntil ? nextBillingPeriod(item.effectiveUntil) : businessToday().slice(0, 7),
+    );
+    setUntil('');
+    setWhy('');
+    setOpen(true);
+  }
+  function closeEditor() {
+    setOpen(false);
+    setRenewing(null);
   }
   async function end(item: EnrollmentBillingConditionDto) {
     const endReason = window.prompt('Motivo de finalización');
@@ -136,85 +194,203 @@ function BillingConditions({
   }
   return (
     <div className="billing-conditions">
-      <div className="section-heading">
-        <strong>Ajustes de facturación</strong>
+      <div className="billing-conditions-heading">
+        <div>
+          <h4>Condiciones económicas</h4>
+          <p>Becas y descuentos aplicados a esta actividad.</p>
+        </div>
         {canManage && (
           <button
-            className="text-link"
+            className="billing-add-button"
             type="button"
-            onClick={() => setOpen((current) => !current)}
+            onClick={open ? closeEditor : openCreate}
           >
-            {open ? 'Cancelar' : 'Agregar'}
+            {open ? 'Cancelar' : '+ Agregar beca o descuento'}
           </button>
         )}
       </div>
       {items.length === 0 ? (
-        <small>Sin becas ni descuentos recurrentes.</small>
+        <p className="billing-conditions-empty">
+          No hay becas ni descuentos vigentes para esta actividad.
+        </p>
       ) : (
-        <ul className="schedule-list">
+        <div className="billing-condition-list">
           {items.map((item) => (
-            <li key={item.id}>
-              {adjustmentLabel[item.type]} · {item.configuredValue}
-              {item.calculation === 'PERCENTAGE' ? '%' : ' ARS'} · desde {item.effectiveFrom}
-              {item.effectiveUntil ? ` hasta ${item.effectiveUntil}` : ''}
-              {item.endedAt ? ' · finalizada' : ''}
-              {canManage && !item.endedAt && (
-                <button className="text-link" type="button" onClick={() => void end(item)}>
-                  Finalizar
-                </button>
+            <article className="billing-condition-card" key={item.id}>
+              <div className="billing-condition-title">
+                <div>
+                  <strong>{adjustmentLabel[item.type]}</strong>
+                  <span>
+                    {item.calculation === 'PERCENTAGE'
+                      ? `${Number(item.configuredValue)}%${item.type !== 'TEACHER_DISCOUNT' ? ' de cobertura' : ''}`
+                      : money(item.configuredValue)}
+                  </span>
+                </div>
+                <span
+                  className={`condition-status ${conditionIsCurrent(item) ? 'current' : 'ended'}`}
+                >
+                  {conditionIsCurrent(item) ? 'Vigente' : 'Finalizada'}
+                </span>
+              </div>
+              <p className="billing-condition-period">
+                {item.effectiveUntil
+                  ? `${formatBillingPeriod(item.effectiveFrom)} — ${formatBillingPeriod(item.effectiveUntil)}`
+                  : `Vigente desde ${formatBillingPeriod(item.effectiveFrom)}`}
+              </p>
+              {item.teacher && (
+                <p>
+                  <span>Profesor</span>
+                  <strong>
+                    {item.teacher.firstName} {item.teacher.lastName}
+                  </strong>
+                </p>
               )}
-            </li>
+              {canManage &&
+                conditionIsCurrent(item) &&
+                (item.type !== 'DIRECTION_SCHOLARSHIP' || isAdministrator) && (
+                  <div className="billing-condition-actions">
+                    {item.effectiveUntil && (
+                      <button className="secondary" type="button" onClick={() => openRenew(item)}>
+                        Renovar
+                      </button>
+                    )}
+                    <button className="danger-link" type="button" onClick={() => void end(item)}>
+                      Finalizar
+                    </button>
+                  </div>
+                )}
+            </article>
           ))}
-        </ul>
+        </div>
       )}
       {open && (
-        <form className="compact-form" onSubmit={submit}>
-          <label>
-            Tipo
-            <select value={type} onChange={(event) => setType(event.target.value as typeof type)}>
-              <option value="TEACHER_DISCOUNT">Descuento docente</option>
-              <option value="TEACHER_SCHOLARSHIP">Beca docente (100%)</option>
-              {isAdministrator && (
-                <option value="DIRECTION_SCHOLARSHIP">Beca Dirección (100%)</option>
-              )}
-            </select>
-          </label>
-          {type === 'TEACHER_DISCOUNT' && (
-            <>
-              <label>
-                Cálculo
-                <select
-                  value={calculation}
-                  onChange={(event) => setCalculation(event.target.value as typeof calculation)}
-                >
-                  <option value="PERCENTAGE">Porcentaje</option>
-                  <option value="FIXED">Importe fijo</option>
-                </select>
-              </label>
-              <label>
-                Valor
+        <form className="billing-condition-form" onSubmit={submit}>
+          <div className="billing-form-heading">
+            <strong>
+              {renewing ? `Renovar ${adjustmentLabel[renewing.type]}` : 'Nueva condición económica'}
+            </strong>
+            <small>Elegí una beca completa o un descuento parcial.</small>
+          </div>
+          <fieldset className="condition-options">
+            <legend>Tipo de condición</legend>
+            {isAdministrator && (
+              <label className="condition-option">
                 <input
-                  required
-                  inputMode="decimal"
-                  value={value}
-                  onChange={(event) => setValue(event.target.value)}
+                  type="radio"
+                  name="condition-type"
+                  value="DIRECTION_SCHOLARSHIP"
+                  checked={type === 'DIRECTION_SCHOLARSHIP'}
+                  onChange={() => setType('DIRECTION_SCHOLARSHIP')}
                 />
+                <span>
+                  <strong>Beca de Dirección — 100%</strong>
+                  <small>{conditionExplanation.DIRECTION_SCHOLARSHIP}</small>
+                </span>
               </label>
-            </>
+            )}
+            <label className="condition-option">
+              <input
+                type="radio"
+                name="condition-type"
+                value="TEACHER_SCHOLARSHIP"
+                checked={type === 'TEACHER_SCHOLARSHIP'}
+                onChange={() => setType('TEACHER_SCHOLARSHIP')}
+              />
+              <span>
+                <strong>Beca del profesor — 100%</strong>
+                <small>{conditionExplanation.TEACHER_SCHOLARSHIP}</small>
+              </span>
+            </label>
+            <label className="condition-option">
+              <input
+                type="radio"
+                name="condition-type"
+                value="TEACHER_DISCOUNT"
+                checked={type === 'TEACHER_DISCOUNT'}
+                onChange={() => setType('TEACHER_DISCOUNT')}
+              />
+              <span>
+                <strong>Descuento del profesor</strong>
+                <small>{conditionExplanation.TEACHER_DISCOUNT}</small>
+              </span>
+            </label>
+          </fieldset>
+          {type === 'TEACHER_DISCOUNT' && (
+            <fieldset className="discount-fields">
+              <legend>Tipo de descuento</legend>
+              <div className="inline-radio-options">
+                <label>
+                  <input
+                    type="radio"
+                    name="discount-type"
+                    checked={calculation === 'PERCENTAGE'}
+                    onChange={() => setCalculation('PERCENTAGE')}
+                  />{' '}
+                  Porcentaje
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="discount-type"
+                    checked={calculation === 'FIXED'}
+                    onChange={() => setCalculation('FIXED')}
+                  />{' '}
+                  Monto fijo
+                </label>
+              </div>
+              <label>
+                {calculation === 'PERCENTAGE' ? 'Valor' : 'Monto'}
+                <span className="amount-input">
+                  {calculation === 'FIXED' && <span aria-hidden="true">$</span>}
+                  <input
+                    required
+                    min="0.01"
+                    max={calculation === 'PERCENTAGE' ? '100' : undefined}
+                    step="0.01"
+                    type="number"
+                    inputMode="decimal"
+                    value={value}
+                    onChange={(event) => setValue(event.target.value)}
+                  />
+                  {calculation === 'PERCENTAGE' && <span aria-hidden="true">%</span>}
+                </span>
+              </label>
+              <small className="field-helper">
+                {calculation === 'PERCENTAGE'
+                  ? 'Ej.: 50% sobre una cuota de $40.000 reduce $20.000.'
+                  : 'Ej.: un monto fijo de $10.000 reduce ese importe de la cuota.'}
+              </small>
+            </fieldset>
           )}
-          <label>
-            Desde
-            <input
-              required
-              type="month"
-              value={from}
-              onChange={(event) => setFrom(event.target.value)}
-            />
-          </label>
-          <label>
-            Hasta (opcional)
-            <input type="month" value={until} onChange={(event) => setUntil(event.target.value)} />
-          </label>
+          {type !== 'TEACHER_DISCOUNT' && (
+            <div className="scholarship-coverage">
+              <span>Cobertura</span>
+              <strong>100%</strong>
+              <small>
+                Las becas son siempre del 100%. Para una reducción parcial, utilizá Descuento del
+                profesor.
+              </small>
+            </div>
+          )}
+          <div className="billing-period-fields">
+            <label>
+              Desde
+              <input
+                required
+                type="month"
+                value={from}
+                onChange={(event) => setFrom(event.target.value)}
+              />
+            </label>
+            <label>
+              Hasta (opcional)
+              <input
+                type="month"
+                value={until}
+                onChange={(event) => setUntil(event.target.value)}
+              />
+            </label>
+          </div>
           <label>
             Motivo
             <textarea
@@ -224,7 +400,14 @@ function BillingConditions({
               onChange={(event) => setWhy(event.target.value)}
             />
           </label>
-          <button disabled={saving}>{saving ? 'Aplicando…' : 'Aplicar ajuste'}</button>
+          <div className="billing-form-actions">
+            <button className="secondary" type="button" onClick={closeEditor} disabled={saving}>
+              Cancelar
+            </button>
+            <button type="submit" disabled={saving}>
+              {saving ? 'Aplicando…' : renewing ? 'Renovar condición' : 'Aplicar beca o descuento'}
+            </button>
+          </div>
         </form>
       )}
       {error && (
