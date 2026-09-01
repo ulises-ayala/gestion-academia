@@ -154,7 +154,9 @@ export default function NewStudentPage() {
         {result.charges.length > 0 && (
           <p>
             ✓ {result.charges.length} cuotas por{' '}
-            {money(result.charges.reduce((sum, charge) => sum + Number(charge.finalAmount), 0))}
+            {money(
+              result.charges.reduce((sum, charge) => sum + Number(charge.studentDueAmount), 0),
+            )}
           </p>
         )}
         <p>

@@ -5,6 +5,12 @@ import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { BillingRepository, ChargeQuery } from '../application/billing.repository';
+import {
+  adjustedAmounts,
+  chargeStatus,
+  conditionDeltas,
+  LATE_FEE_AMOUNT,
+} from '../domain/billing-adjustments';
 
 const chargeInclude = {
   enrollment: { include: { class: { select: { id: true, name: true } } } },
@@ -12,6 +18,10 @@ const chargeInclude = {
   allocations: {
     where: { payment: { status: 'CONFIRMED' as const } },
     select: { amount: true },
+  },
+  adjustments: {
+    include: { teacher: { select: { id: true, firstName: true, lastName: true } } },
+    orderBy: { createdAt: 'asc' as const },
   },
 };
 type IncludedCharge = Prisma.MonthlyChargeGetPayload<{ include: typeof chargeInclude }>;
@@ -42,7 +52,19 @@ const mapCharge = (item: IncludedCharge, today: Date): MonthlyChargeDto => {
     (sum, allocation) => sum.plus(allocation.amount),
     new Prisma.Decimal(0),
   );
-  const outstandingAmount = Prisma.Decimal.max(item.finalAmount.minus(paidAmount), 0);
+  const amounts = adjustedAmounts(item.baseAmount, item.adjustments);
+  const hasLateFee = item.adjustments.some(({ type }) => type === 'LATE_FEE');
+  const virtualLateFee =
+    item.status !== 'VOID' &&
+    !hasLateFee &&
+    item.dueDate < today &&
+    amounts.studentDue.minus(paidAmount).greaterThan(0)
+      ? LATE_FEE_AMOUNT
+      : new Prisma.Decimal(0);
+  const studentDue = amounts.studentDue.plus(virtualLateFee);
+  const settlementBase = amounts.settlementBase.plus(virtualLateFee);
+  const outstandingAmount = Prisma.Decimal.max(studentDue.minus(paidAmount), 0);
+  const derivedStatus = chargeStatus(paidAmount, studentDue, item.status === 'VOID');
   return {
     id: item.id,
     studentId: item.studentId,
@@ -52,13 +74,49 @@ const mapCharge = (item: IncludedCharge, today: Date): MonthlyChargeDto => {
     baseAmount: item.baseAmount.toFixed(2),
     discountAmount: item.discountAmount.toFixed(2),
     finalAmount: item.finalAmount.toFixed(2),
+    studentDueAmount: studentDue.toFixed(2),
+    settlementBaseAmount: settlementBase.toFixed(2),
     paidAmount: paidAmount.toFixed(2),
     outstandingAmount: outstandingAmount.toFixed(2),
     dueDate: isoDate(item.dueDate),
-    overdue: (item.status === 'PENDING' || item.status === 'PARTIAL') && item.dueDate < today,
-    status: item.status,
+    overdue: item.status !== 'VOID' && outstandingAmount.greaterThan(0) && item.dueDate < today,
+    status: derivedStatus,
     academicClass: item.enrollment.class,
     tariff: item.tariff,
+    adjustments: [
+      ...item.adjustments.map((adjustment) => ({
+        id: adjustment.id,
+        type: adjustment.type,
+        calculation: adjustment.calculation,
+        configuredValue: adjustment.configuredValue?.toFixed(2) ?? null,
+        effectiveAmount: adjustment.effectiveAmount.toFixed(2),
+        studentAmountDelta: adjustment.studentAmountDelta.toFixed(2),
+        settlementBaseDelta: adjustment.settlementBaseDelta.toFixed(2),
+        teacher: adjustment.teacher,
+        reason: adjustment.reason,
+        reversalOfId: adjustment.reversalOfId,
+        persisted: true,
+        createdAt: adjustment.createdAt.toISOString(),
+      })),
+      ...(virtualLateFee.isZero()
+        ? []
+        : [
+            {
+              id: null,
+              type: 'LATE_FEE' as const,
+              calculation: 'FIXED' as const,
+              configuredValue: LATE_FEE_AMOUNT.toFixed(2),
+              effectiveAmount: LATE_FEE_AMOUNT.toFixed(2),
+              studentAmountDelta: LATE_FEE_AMOUNT.toFixed(2),
+              settlementBaseDelta: LATE_FEE_AMOUNT.toFixed(2),
+              teacher: null,
+              reason: 'Recargo fijo por vencimiento',
+              reversalOfId: null,
+              persisted: false,
+              createdAt: null,
+            },
+          ]),
+    ],
     createdAt: item.createdAt.toISOString(),
     updatedAt: item.updatedAt.toISOString(),
   };
@@ -148,17 +206,45 @@ export class PrismaBillingRepository implements BillingRepository {
     dueDate: string;
   }) {
     try {
-      return mapCharge(
-        await this.prisma.monthlyCharge.create({
+      const period = new Date(`${data.period}T00:00:00.000Z`);
+      return await this.prisma.$transaction(async (tx) => {
+        const conditions = await tx.enrollmentBillingCondition.findMany({
+          where: {
+            enrollmentId: data.enrollmentId,
+            effectiveFrom: { lte: period },
+            OR: [{ effectiveUntil: null }, { effectiveUntil: { gte: period } }],
+          },
+        });
+        const base = new Prisma.Decimal(data.baseAmount);
+        const snapshots = conditions.map((condition) => ({
+          condition,
+          ...conditionDeltas(base, condition),
+        }));
+        const due = adjustedAmounts(base, snapshots);
+        const created = await tx.monthlyCharge.create({
           data: {
             ...data,
-            period: new Date(`${data.period}T00:00:00.000Z`),
+            period,
             dueDate: new Date(`${data.dueDate}T00:00:00.000Z`),
+            status: due.studentDue.isZero() ? 'PAID' : 'PENDING',
+            adjustments: {
+              create: snapshots.map(({ condition, ...deltas }) => ({
+                sourceConditionId: condition.id,
+                type: condition.type,
+                calculation: condition.calculation,
+                configuredValue: condition.configuredValue,
+                ...deltas,
+                teacherId: condition.teacherId,
+                authorizedByUserId: condition.authorizedByUserId,
+                createdByUserId: condition.createdByUserId,
+                reason: condition.reason,
+              })),
+            },
           },
           include: chargeInclude,
-        }),
-        currentBusinessDate(),
-      );
+        });
+        return mapCharge(created, currentBusinessDate());
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
         throw new DomainError(

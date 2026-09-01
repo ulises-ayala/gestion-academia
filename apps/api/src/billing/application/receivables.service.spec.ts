@@ -74,8 +74,8 @@ describe('ReceivablesService', () => {
       oldestDueDate: '2026-07-10',
     });
     expect(sql).toContain("p.status = 'CONFIRMED'");
-    expect(sql).toContain("mc.status IN ('PENDING', 'PARTIAL')");
-    expect(sql).toContain('mc.final_amount - COALESCE(c.paid, 0)');
+    expect(sql).toContain("mc.status <> 'VOID'");
+    expect(sql).toContain('student_amount_delta');
     expect(sql).toContain('LIMIT');
     expect(sql).toContain('OFFSET');
   });

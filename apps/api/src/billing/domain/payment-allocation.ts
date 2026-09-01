@@ -2,7 +2,7 @@ import { Prisma } from '@academy/database';
 
 export type ChargeForPaymentAllocation = Readonly<{
   id: string;
-  finalAmount: Prisma.Decimal;
+  studentDueAmount: Prisma.Decimal;
   dueDate: Date;
   createdAt: Date;
   allocations: readonly Readonly<{ amount: Prisma.Decimal }>[];
@@ -12,10 +12,10 @@ export const confirmedAllocatedAmount = (
   allocations: readonly Readonly<{ amount: Prisma.Decimal }>[],
 ) => allocations.reduce((sum, allocation) => sum.plus(allocation.amount), new Prisma.Decimal(0));
 
-export const paymentChargeStatus = (paid: Prisma.Decimal, finalAmount: Prisma.Decimal) =>
+export const paymentChargeStatus = (paid: Prisma.Decimal, studentDueAmount: Prisma.Decimal) =>
   paid.isZero()
     ? ('PENDING' as const)
-    : paid.greaterThanOrEqualTo(finalAmount)
+    : paid.greaterThanOrEqualTo(studentDueAmount)
       ? ('PAID' as const)
       : ('PARTIAL' as const);
 
@@ -32,7 +32,7 @@ export function buildPaymentAllocationPlan(
     )
     .map((charge) => {
       const paid = confirmedAllocatedAmount(charge.allocations);
-      const outstanding = Prisma.Decimal.max(charge.finalAmount.minus(paid), 0);
+      const outstanding = Prisma.Decimal.max(charge.studentDueAmount.minus(paid), 0);
       return { charge, paid, outstanding };
     });
   const totalOutstanding = balances.reduce(

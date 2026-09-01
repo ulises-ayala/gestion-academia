@@ -73,14 +73,29 @@ export class ReceivablesService {
         FROM payment_allocations pa
         JOIN payments p ON p.id = pa.payment_id AND p.status = 'CONFIRMED'
         GROUP BY pa.monthly_charge_id
-      ), open_charges AS (
-        SELECT mc.id, mc.student_id, mc.due_date, mc.status,
-               mc.final_amount,
-               LEAST(COALESCE(c.paid, 0), mc.final_amount) AS paid,
-               GREATEST(mc.final_amount - COALESCE(c.paid, 0), 0) AS outstanding
+      ), adjustment_totals AS (
+        SELECT monthly_charge_id,
+               SUM(student_amount_delta) AS student_delta,
+               BOOL_OR(type = 'LATE_FEE') AS has_late_fee
+        FROM monthly_charge_adjustments GROUP BY monthly_charge_id
+      ), calculated AS (
+        SELECT mc.*, COALESCE(c.paid, 0) AS confirmed_paid,
+               GREATEST(mc.base_amount + COALESCE(a.student_delta, 0), 0) AS adjusted_due,
+               COALESCE(a.has_late_fee, false) AS has_late_fee
         FROM monthly_charges mc
         LEFT JOIN confirmed c ON c.monthly_charge_id = mc.id
-        WHERE mc.status IN ('PENDING', 'PARTIAL')
+        LEFT JOIN adjustment_totals a ON a.monthly_charge_id = mc.id
+        WHERE mc.status <> 'VOID'
+      ), open_charges AS (
+        SELECT id, student_id, due_date,
+               CASE WHEN confirmed_paid = 0 THEN 'PENDING' ELSE 'PARTIAL' END AS status,
+               adjusted_due + CASE WHEN due_date < ${today} AND NOT has_late_fee
+                 AND adjusted_due - confirmed_paid > 0 THEN 1000 ELSE 0 END AS final_amount,
+               LEAST(confirmed_paid, adjusted_due + CASE WHEN due_date < ${today} AND NOT has_late_fee
+                 AND adjusted_due - confirmed_paid > 0 THEN 1000 ELSE 0 END) AS paid,
+               GREATEST(adjusted_due + CASE WHEN due_date < ${today} AND NOT has_late_fee
+                 AND adjusted_due - confirmed_paid > 0 THEN 1000 ELSE 0 END - confirmed_paid, 0) AS outstanding
+        FROM calculated
       ), filtered_charges AS (${filteredCharges})
     `;
     const [summaryRows, items] = await Promise.all([

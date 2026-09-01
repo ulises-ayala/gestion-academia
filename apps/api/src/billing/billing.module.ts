@@ -10,14 +10,22 @@ import { PaymentsService } from './application/payments.service';
 import { PrismaPaymentsRepository } from './infrastructure/prisma-payments.repository';
 import { PaymentsController } from './presentation/payments.controller';
 import { ReceivablesService } from './application/receivables.service';
+import { BillingAdjustmentsService } from './application/billing-adjustments.service';
+import { BillingAdjustmentsController } from './presentation/billing-adjustments.controller';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [TariffsController, MonthlyChargesController, PaymentsController],
+  controllers: [
+    TariffsController,
+    MonthlyChargesController,
+    PaymentsController,
+    BillingAdjustmentsController,
+  ],
   providers: [
     BillingService,
     PaymentsService,
     ReceivablesService,
+    BillingAdjustmentsService,
     { provide: BILLING_REPOSITORY, useClass: PrismaBillingRepository },
     { provide: PAYMENTS_REPOSITORY, useClass: PrismaPaymentsRepository },
   ],

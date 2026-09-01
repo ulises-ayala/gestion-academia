@@ -1009,7 +1009,24 @@ function StudentAccount({
                   </span>
                 </span>
                 <span>
-                  <small>Importe {money(charge.finalAmount)}</small>
+                  <small>Importe ajustado {money(charge.studentDueAmount)}</small>
+                  {charge.adjustments.length > 0 && (
+                    <small>
+                      {charge.adjustments
+                        .map((item) =>
+                          item.type === 'LATE_FEE'
+                            ? 'Recargo por mora'
+                            : item.type === 'DIRECTION_SCHOLARSHIP'
+                              ? 'Beca Dirección'
+                              : item.type === 'TEACHER_SCHOLARSHIP'
+                                ? 'Beca docente'
+                                : item.type === 'REVERSAL'
+                                  ? 'Corrección'
+                                  : 'Descuento docente',
+                        )
+                        .join(' · ')}
+                    </small>
+                  )}
                   <br />
                   <small>Pagado {money(charge.paidAmount)}</small>
                   <br />

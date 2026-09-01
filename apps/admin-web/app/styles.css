@@ -2553,3 +2553,29 @@ dd {
     grid-column: auto;
   }
 }
+/* Billing adjustments */
+.billing-conditions {
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+}
+.billing-conditions .section-heading {
+  margin-bottom: 0.5rem;
+}
+.billing-conditions .text-link {
+  margin-left: 0.5rem;
+}
+.compact-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+.compact-form label {
+  display: grid;
+  gap: 0.35rem;
+}
+.billing-adjustment-summary {
+  display: block;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
