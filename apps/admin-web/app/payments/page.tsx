@@ -13,6 +13,7 @@ import type {
   StudentListDto,
 } from '@academy/contracts';
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '../../components/auth-provider';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
@@ -84,6 +85,7 @@ export default function PaymentsPage() {
   const [payments, setPayments] = useState<PaymentListDto['items']>([]);
   const [tenders, setTenders] = useState<TenderAmounts>(emptyTenders);
   const [message, setMessage] = useState('');
+  const [cashShiftRequired, setCashShiftRequired] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [voidTarget, setVoidTarget] = useState<PaymentDto | null>(null);
   const [voidReason, setVoidReason] = useState('');
@@ -254,9 +256,13 @@ export default function PaymentsPage() {
         method: 'POST',
         body: JSON.stringify(createPaymentPayload(student.id, tenders)),
       });
+      setCashShiftRequired(false);
       await Promise.all([loadStudent(student.id), loadReceivables()]);
       setMessage('Pago registrado correctamente.');
     } catch (error) {
+      setCashShiftRequired(
+        error instanceof ApiClientError && error.error.code === 'CASH_SHIFT_REQUIRED',
+      );
       const changed =
         error instanceof ApiClientError &&
         (error.status === 409 || error.error.code === 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE');
@@ -332,6 +338,12 @@ export default function PaymentsPage() {
           </a>
         )}
       </div>
+      {cashShiftRequired && (
+        <p className="message" role="alert">
+          Necesitás abrir tu turno de caja antes de registrar un cobro.{' '}
+          <Link href="/cash">Abrir turno de caja</Link>
+        </p>
+      )}
 
       {!location.studentId && (
         <div aria-label="Vistas de pagos" className="payment-center-tabs" role="tablist">

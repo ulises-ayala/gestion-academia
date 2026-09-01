@@ -1,12 +1,14 @@
 # Plan incremental
 
+**Estado de Caja:** Caja por turno v1 está terminada: turno propio, movimientos derivados de tenders, cierre por medio, reversals, historial, consolidado y correcciones append-only. Fondo inicial, Income y Expenses siguen pendientes.
+
 1. **Base y Alumnos v1 (terminado):** migraciones iniciales, errores, validación, autenticación, contratos públicos y CRUD de alumnos con búsqueda, filtros, paginación, ficha y baja lógica.
 2. **Oferta Académica v1 (terminado):** profesores, danzas, sucursales, salones, clases, horarios y conflictos de salón/profesor.
 3. **Inscripciones v1 (terminado):** `Enrollment`, altas/finalización, historia, cupos y fichas de alumno/clase.
 4. **Tarifas y cuotas v1 (terminado):** tarifa simple por clase, cuota mensual manual por inscripción, vencimiento 1–10 y snapshot monetario; prorrateos, descuentos y promociones siguen pendientes.
 5. **Usuarios y permisos v1 (terminado):** autorización por capacidad, navegación restringida y administración de cuentas según Admisión, Administración y Dirección.
-6. **Pagos v2 core (terminado):** pagos parciales, imputación automática oldest-first, medios combinados, historial y anulación con recálculo. Caja, saldo a favor, devoluciones, mora, recargos y descuentos siguen pendientes.
-7. **Caja (pendiente):** movimientos, arqueos y eventual apertura/cierre después de confirmar sus reglas.
+6. **Pagos v2 core (terminado):** pagos parciales, imputación automática oldest-first, medios combinados, historial y anulación con recálculo. Saldo a favor y devoluciones siguen pendientes.
+7. **Caja por turno v1 (terminado):** movimientos automáticos, apertura/cierre, arqueo por medio, historial, consolidado y correcciones append-only.
 8. **Asistencias de alumnos v1 (terminado):** roster por vigencia, registro/corrección e historial. Asistencia docente, reglas especiales y acceso quedan pendientes.
 9. **Liquidación:** motor configurable después de validar fórmula y modalidades.
 10. **Reportes y robustez:** estadísticas, observabilidad, backups y seguridad.
@@ -22,4 +24,4 @@ La matriz inicial está confirmada. Toda nueva acción de pagos, caja, inventari
 
 # Base transversal de auditoría
 
-Auditoría y trazabilidad v1 establece el historial append-only y atómico requerido antes de incorporar Caja, correcciones financieras, inventario y liquidaciones. Esos módulos continúan fuera del alcance actual.
+Auditoría y trazabilidad v1 sostiene el historial append-only de Caja. Income, Expenses, inventario y liquidaciones continúan fuera del alcance actual.

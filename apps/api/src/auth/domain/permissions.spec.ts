@@ -20,7 +20,7 @@ describe('role permissions', () => {
     expect(hasPermissions(reception, ['payments:read'])).toBe(true);
     expect(hasPermissions(reception, ['payments:collect'])).toBe(true);
     expect(hasPermissions(reception, ['payments:void'])).toBe(false);
-    expect(hasPermissions(reception, ['cash:manage'])).toBe(false);
+    expect(hasPermissions(reception, ['cash:manage'])).toBe(true);
     expect(hasPermissions(reception, ['cash:reconcile'])).toBe(false);
     expect(hasPermissions(reception, ['audit:read'])).toBe(false);
     expect(hasPermissions(reception, ['leads:manage'])).toBe(true);

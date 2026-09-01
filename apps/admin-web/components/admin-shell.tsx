@@ -29,7 +29,10 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     },
     {
       label: 'Finanzas',
-      links: [{ href: '/payments', label: 'Pagos', permission: 'payments:read' }],
+      links: [
+        { href: '/payments', label: 'Pagos', permission: 'payments:read' },
+        { href: '/cash', label: 'Caja', permission: 'cash:manage' },
+      ],
     },
     {
       label: 'Configuración',
