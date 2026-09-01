@@ -30,7 +30,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       const student = await tx.student.create({
         data: {
           dni: numericToken,
-          firstName: 'Pago',
+          firstName: `Pago-${token}`,
           lastName: 'Prueba',
           joinedAt: new Date('2026-08-01T00:00:00.000Z'),
         },
@@ -123,6 +123,9 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
         await tx.payment.deleteMany({ where: { id: { in: paymentIds } } });
       }
+      await tx.monthlyChargeAdjustment.deleteMany({
+        where: { monthlyChargeId: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+      });
       await tx.monthlyCharge.deleteMany({
         where: { id: { in: [fixture.charge.id, fixture.secondCharge.id] } },
       });
@@ -189,7 +192,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
         status: 'PARTIAL',
         paidAmount: '10000.00',
-        outstandingAmount: '30000.00',
+        outstandingAmount: '31000.00',
         overdue: true,
       });
       await expect(
@@ -199,13 +202,13 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
           expect.objectContaining({
             student: expect.objectContaining({ id: fixture.student.id }),
             openChargeCount: 2,
-            outstandingAmount: '70000.00',
+            outstandingAmount: '71000.00',
           }),
         ]),
       });
       const second = await repository.create(
         fixture.student.id,
-        [{ method: 'MERCADO_PAGO', amount: '30000.00' }],
+        [{ method: 'MERCADO_PAGO', amount: '31000.00' }],
         fixture.actor.id,
       );
       expect(
@@ -222,7 +225,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       ).toBe('PARTIAL');
       await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
         paidAmount: '10000.00',
-        outstandingAmount: '30000.00',
+        outstandingAmount: '31000.00',
       });
       await repository.void(first.id, fixture.actor.id, 'Segundo ajuste');
       expect(
@@ -236,7 +239,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       ).toEqual({ status: 'PENDING' });
       await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
         paidAmount: '0.00',
-        outstandingAmount: '40000.00',
+        outstandingAmount: '41000.00',
       });
       expect(
         await prisma.paymentAllocation.count({
@@ -267,8 +270,8 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       expect(
         payment.allocations.map(({ monthlyChargeId, amount }) => ({ monthlyChargeId, amount })),
       ).toEqual([
-        { monthlyChargeId: fixture.charge.id, amount: '40000.00' },
-        { monthlyChargeId: fixture.secondCharge.id, amount: '10000.00' },
+        { monthlyChargeId: fixture.charge.id, amount: '41000.00' },
+        { monthlyChargeId: fixture.secondCharge.id, amount: '9000.00' },
       ]);
       expect(
         await prisma.monthlyCharge.findMany({
@@ -309,13 +312,13 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
           totalCharges: 1,
           partialCharges: 1,
           totalPaid: '10000.00',
-          totalOutstanding: '30000.00',
+          totalOutstanding: '31000.00',
         },
         items: [
           expect.objectContaining({
             student: expect.objectContaining({ id: fixture.student.id }),
             paidAmount: '10000.00',
-            outstandingAmount: '30000.00',
+            outstandingAmount: '31000.00',
           }),
         ],
       });
@@ -328,7 +331,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
           pageSize: 25,
         }),
       ).resolves.toMatchObject({
-        summary: { totalCharges: 1, overdueCharges: 1, totalOutstanding: '30000.00' },
+        summary: { totalCharges: 1, overdueCharges: 1, totalOutstanding: '31000.00' },
       });
       await expect(
         receivables.list({
@@ -341,7 +344,10 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       ).resolves.toMatchObject({
         summary: { totalCharges: 1, totalPaid: '0.00', totalOutstanding: '40000.00' },
       });
-      for (const q of ['Pago Prueba', fixture.student.dni]) {
+      for (const q of [
+        `${fixture.student.firstName} ${fixture.student.lastName}`,
+        fixture.student.dni,
+      ]) {
         await expect(
           receivables.list({ scope: 'pending', q, sort: 'highest-debt', page: 1, pageSize: 1 }),
         ).resolves.toMatchObject({ total: 1, items: [{ student: { id: fixture.student.id } }] });
@@ -362,8 +368,8 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         repository.findPage({
           q: `Pago ${fixture.student.dni}`,
           status: 'CONFIRMED',
-          from: new Date('2026-08-31T00:00:00.000Z'),
-          toExclusive: new Date('2026-09-01T00:00:00.000Z'),
+          from: new Date(new Date(mixed.paidAt).getTime() - 1_000),
+          toExclusive: new Date(new Date(mixed.paidAt).getTime() + 1_000),
           page: 1,
           pageSize: 25,
         }),
@@ -381,7 +387,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
           pageSize: 25,
         }),
       ).resolves.toMatchObject({
-        summary: { totalCharges: 2, totalPaid: '0.00', totalOutstanding: '80000.00' },
+        summary: { totalCharges: 2, totalPaid: '0.00', totalOutstanding: '81000.00' },
       });
       await prisma.monthlyCharge.update({
         where: { id: fixture.charge.id },

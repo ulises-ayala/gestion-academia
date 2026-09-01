@@ -25,6 +25,7 @@ const payment = (): PaymentDto => ({
       dueDate: '2026-08-10',
       academicClass: { id: crypto.randomUUID(), name: 'Bachata' },
       finalAmount: '40000.00',
+      studentDueAmount: '40000.00',
     },
   ],
   createdAt: new Date().toISOString(),

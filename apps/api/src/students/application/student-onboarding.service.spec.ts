@@ -25,6 +25,7 @@ const charge = (id: string, enrollmentId: string) => ({
   id,
   enrollmentId,
   finalAmount: '40000.00',
+  studentDueAmount: '40000.00',
 });
 const base: CreateStudentOnboardingDto = {
   student: { dni: student.dni, firstName: student.firstName, lastName: student.lastName },

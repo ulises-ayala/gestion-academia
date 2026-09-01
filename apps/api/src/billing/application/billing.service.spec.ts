@@ -65,9 +65,12 @@ class MemoryBillingRepository implements BillingRepository {
       status: 'PENDING',
       paidAmount: '0.00',
       outstandingAmount: data.finalAmount,
+      studentDueAmount: data.finalAmount,
+      settlementBaseAmount: data.finalAmount,
       overdue: false,
       academicClass: { id: crypto.randomUUID(), name: 'Bachata' },
       tariff: { id: data.tariffId, name: tariff?.name ?? '' },
+      adjustments: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

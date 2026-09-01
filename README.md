@@ -230,8 +230,12 @@ El Blueprint usa los planes gratuitos para minimizar costo. Los web services gra
 - `POST /api/v1/monthly-charges`: generar manualmente con `enrollmentId`, `tariffId`, `period` (`AAAA-MM`) y `dueDate`.
 - `GET /api/v1/monthly-charges?studentId=&period=`: listar por alumno y/o período, incluyendo `paidAmount`, `outstandingAmount` y el vencimiento derivado.
 - `GET /api/v1/monthly-charges/:id`: obtener detalle.
+- `GET/POST /api/v1/enrollments/:id/billing-conditions`: consultar o crear becas y descuentos recurrentes.
+- `POST /api/v1/billing-conditions/:id/end`: finalizar una condición conservando su historia.
+- `POST /api/v1/billing-conditions/:id/renew`: renovar mediante una nueva condición enlazada.
+- `POST /api/v1/monthly-charges/:chargeId/adjustments/:adjustmentId/reverse`: corregir con una reversa append-only.
 
-Cada cuota nace `PENDING`, con descuento cero y montos históricos. Puede pasar a `PARTIAL` o `PAID` según la suma de imputaciones de pagos confirmados. No existe generación automática.
+Cada cuota conserva el importe tarifario y snapshots de los ajustes vigentes. `studentDueAmount` es la deuda ajustada y `settlementBaseAmount` la base futura para liquidaciones; puede pasar a `PARTIAL` o `PAID` según las imputaciones confirmadas. Las cuotas vencidas con saldo incorporan un recargo fijo de ARS 1.000, que se materializa de forma idempotente al cobrar. No existe generación automática.
 
 ## API de pagos
 
@@ -240,7 +244,7 @@ Cada cuota nace `PENDING`, con descuento cero y montos históricos. Puede pasar 
 - `POST /api/v1/payments`: cobrar con `{ studentId, tenders: [{ method, amount }] }`.
 - `POST /api/v1/payments/:id/void`: anular sin borrar medios ni imputaciones y recalcular cada cuota con los demás pagos confirmados.
 
-El importe total es la suma exacta de los medios y el servidor lo imputa por `dueDate`, `createdAt` e `id` ascendentes. Un pago puede cubrir parcialmente una cuota y derramar el resto sobre las siguientes. Mientras se define el tratamiento comercial de excedentes, Payments v2 core rechaza temporalmente todo total superior a la deuda vigente y no genera saldo a favor; esto no establece una regla comercial definitiva. La creación se serializa por alumno y vuelve a calcular la deuda dentro de la transacción. Pagos v2 core no incluye Caja, devoluciones, transferencia bancaria, mora, recargos ni descuentos.
+El importe total es la suma exacta de los medios y de las imputaciones; el servidor distribuye sobre la deuda ajustada por `dueDate`, `createdAt` e `id` ascendentes. Un pago puede cubrir parcialmente una cuota y derramar el resto sobre las siguientes. Se rechaza todo total superior a la deuda vigente y no se genera saldo a favor. La creación se serializa por alumno, materializa primero cualquier recargo vencido y recalcula la deuda dentro de la transacción. No incluye Caja, devoluciones ni transferencia bancaria.
 
 ## API de asistencias
 
