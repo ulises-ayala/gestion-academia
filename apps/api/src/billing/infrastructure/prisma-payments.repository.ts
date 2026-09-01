@@ -9,6 +9,8 @@ import {
   confirmedAllocatedAmount,
   paymentChargeStatus,
 } from '../domain/payment-allocation';
+import { adjustedAmounts, LATE_FEE_AMOUNT } from '../domain/billing-adjustments';
+import { businessDayAt } from '../../dashboard/application/business-day';
 
 const include = {
   student: { select: { id: true, dni: true, firstName: true, lastName: true } },
@@ -18,7 +20,10 @@ const include = {
   allocations: {
     include: {
       monthlyCharge: {
-        include: { enrollment: { include: { class: { select: { id: true, name: true } } } } },
+        include: {
+          enrollment: { include: { class: { select: { id: true, name: true } } } },
+          adjustments: true,
+        },
       },
     },
     orderBy: { createdAt: 'asc' as const },
@@ -47,6 +52,10 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
     dueDate: isoDate(monthlyCharge.dueDate),
     academicClass: monthlyCharge.enrollment.class,
     finalAmount: monthlyCharge.finalAmount.toFixed(2),
+    studentDueAmount: adjustedAmounts(
+      monthlyCharge.baseAmount,
+      monthlyCharge.adjustments,
+    ).studentDue.toFixed(2),
   })),
   createdAt: item.createdAt.toISOString(),
   updatedAt: item.updatedAt.toISOString(),
@@ -69,10 +78,11 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
         return await this.prisma.$transaction(
           async (tx) => {
             await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
-            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status IN ('PENDING', 'PARTIAL') ORDER BY due_date, created_at, id FOR UPDATE`;
-            const charges = await tx.monthlyCharge.findMany({
-              where: { studentId, status: { in: ['PENDING', 'PARTIAL'] } },
+            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status <> 'VOID' ORDER BY due_date, created_at, id FOR UPDATE`;
+            const lockedCharges = await tx.monthlyCharge.findMany({
+              where: { studentId, status: { not: 'VOID' } },
               include: {
+                adjustments: true,
                 allocations: {
                   where: { payment: { status: 'CONFIRMED' } },
                   select: { amount: true },
@@ -80,6 +90,47 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               },
               orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
             });
+            const today = businessDayAt(
+              new Date(),
+              process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+            ).dateValue;
+            for (const charge of lockedCharges) {
+              if (
+                charge.dueDate >= today ||
+                charge.adjustments.some(({ type }) => type === 'LATE_FEE')
+              )
+                continue;
+              const paid = confirmedAllocatedAmount(charge.allocations);
+              const due = adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue;
+              if (due.minus(paid).lessThanOrEqualTo(0)) continue;
+              await tx.monthlyChargeAdjustment.create({
+                data: {
+                  monthlyChargeId: charge.id,
+                  type: 'LATE_FEE',
+                  calculation: 'FIXED',
+                  configuredValue: LATE_FEE_AMOUNT,
+                  effectiveAmount: LATE_FEE_AMOUNT,
+                  studentAmountDelta: LATE_FEE_AMOUNT,
+                  settlementBaseDelta: LATE_FEE_AMOUNT,
+                  reason: 'Recargo fijo por vencimiento',
+                },
+              });
+            }
+            const materializedCharges = await tx.monthlyCharge.findMany({
+              where: { studentId, status: { not: 'VOID' } },
+              include: {
+                adjustments: true,
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+              orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+            });
+            const charges = materializedCharges.map((charge) => ({
+              ...charge,
+              studentDueAmount: adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue,
+            }));
             const amount = tenders.reduce(
               (sum, tender) => sum.plus(tender.amount),
               new Prisma.Decimal(0),
@@ -121,7 +172,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 data: {
                   status: paymentChargeStatus(
                     balance.paid.plus(allocation.amount),
-                    balance.charge.finalAmount,
+                    balance.charge.studentDueAmount,
                   ),
                 },
               });
@@ -228,6 +279,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             const charges = await tx.monthlyCharge.findMany({
               where: { id: { in: chargeIds } },
               include: {
+                adjustments: true,
                 allocations: {
                   where: { payment: { status: 'CONFIRMED' } },
                   select: { amount: true },
@@ -241,7 +293,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 data: {
                   status: paymentChargeStatus(
                     confirmedAllocatedAmount(charge.allocations),
-                    charge.finalAmount,
+                    adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue,
                   ),
                 },
               });

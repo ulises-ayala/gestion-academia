@@ -11,7 +11,7 @@ const charge = (
   createdAt = '2026-01-01T00:00:00.000Z',
 ) => ({
   id,
-  finalAmount: decimal(finalAmount),
+  studentDueAmount: decimal(finalAmount),
   dueDate: new Date(`${dueDate}T00:00:00.000Z`),
   createdAt: new Date(createdAt),
   allocations: paid === '0.00' ? [] : [{ amount: decimal(paid) }],

@@ -74,7 +74,7 @@ export class StudentOnboardingService {
                   method: input.payment.paymentMethod,
                   amount: charges
                     .reduce(
-                      (total, charge) => total.plus(charge.finalAmount),
+                      (total, charge) => total.plus(charge.studentDueAmount),
                       new Prisma.Decimal(0),
                     )
                     .toFixed(2),

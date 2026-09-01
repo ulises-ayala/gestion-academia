@@ -26,6 +26,7 @@ const payment: PaymentDto = {
       dueDate: '2026-08-10',
       academicClass: { id: 'class-id', name: 'Bachata' },
       finalAmount: '80000.00',
+      studentDueAmount: '80000.00',
     },
   ],
   createdAt: '2026-08-31T15:00:00.000Z',
