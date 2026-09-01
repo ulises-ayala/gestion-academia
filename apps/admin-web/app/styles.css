@@ -2553,29 +2553,212 @@ dd {
     grid-column: auto;
   }
 }
-/* Billing adjustments */
 .billing-conditions {
   border-top: 1px solid var(--border);
-  margin-top: 1rem;
-  padding-top: 0.85rem;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
 }
-.billing-conditions .section-heading {
-  margin-bottom: 0.5rem;
+.billing-conditions-heading,
+.billing-condition-title,
+.billing-form-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
-.billing-conditions .text-link {
-  margin-left: 0.5rem;
+.billing-conditions-heading h4,
+.billing-conditions-heading p,
+.billing-condition-card p {
+  margin: 0;
 }
-.compact-form {
+.billing-conditions-heading h4 {
+  color: var(--text);
+  font-size: 1rem;
+}
+.billing-conditions-heading p,
+.billing-conditions-empty,
+.billing-condition-period,
+.field-helper,
+.billing-form-heading small {
+  color: var(--text-muted);
+}
+.billing-conditions-empty {
+  margin: var(--space-3) 0 0;
+}
+.billing-add-button {
+  flex: 0 0 auto;
+  color: var(--brand-on-fill);
+}
+.billing-condition-list {
   display: grid;
-  gap: 0.75rem;
-  margin-top: 0.85rem;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
 }
-.compact-form label {
+.billing-condition-card {
   display: grid;
-  gap: 0.35rem;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.billing-condition-title > div,
+.billing-condition-card p {
+  display: grid;
+  gap: var(--space-1);
+}
+.billing-condition-title span,
+.billing-condition-card p > span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+.condition-status {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+.condition-status.current {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.condition-status.ended {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+.billing-condition-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+.billing-condition-actions button {
+  min-height: 2.25rem;
+  padding: 0.45rem 0.75rem;
+}
+.billing-condition-form {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.billing-form-heading {
+  display: grid;
+  gap: var(--space-1);
+}
+.condition-options,
+.discount-fields {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--surface);
+}
+.condition-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.condition-option:has(input:checked) {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+.condition-option input,
+.inline-radio-options input {
+  width: 1rem;
+  min-height: 1rem;
+  margin: 0.2rem 0 0;
+  accent-color: var(--brand-fill);
+}
+.condition-option span {
+  display: grid;
+  gap: var(--space-1);
+}
+.condition-option small {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.inline-radio-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+.inline-radio-options label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+}
+.amount-input {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+  font-size: 1rem;
+}
+.scholarship-coverage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--brand-soft);
+}
+.scholarship-coverage strong {
+  color: var(--brand);
+  font-size: 1.1rem;
+}
+.scholarship-coverage small {
+  grid-column: 1 / -1;
+  color: var(--text-muted);
+}
+.billing-period-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.billing-form-actions {
+  justify-content: flex-end;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
 }
 .billing-adjustment-summary {
   display: block;
-  color: var(--muted);
+  color: var(--text-muted);
   margin-top: 0.2rem;
+}
+
+@media (max-width: 48rem) {
+  .billing-conditions-heading,
+  .billing-condition-title {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .billing-add-button,
+  .billing-form-actions button {
+    width: 100%;
+  }
+  .billing-period-fields {
+    grid-template-columns: 1fr;
+  }
+  .billing-form-actions,
+  .billing-condition-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 }
