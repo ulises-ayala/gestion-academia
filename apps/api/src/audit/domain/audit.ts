@@ -7,6 +7,8 @@ export const AUDIT_ACTIONS = {
   END: 'END',
   CORRECTION: 'CORRECTION',
   ROLE_CHANGE: 'ROLE_CHANGE',
+  OPEN: 'OPEN',
+  CLOSE: 'CLOSE',
 } as const;
 export const AUDIT_ENTITY_TYPES = {
   STUDENT: 'STUDENT',
@@ -21,6 +23,7 @@ export const AUDIT_ENTITY_TYPES = {
   PAYMENT: 'PAYMENT',
   ATTENDANCE: 'ATTENDANCE',
   ENROLLMENT: 'ENROLLMENT',
+  CASH_SHIFT: 'CASH_SHIFT',
 } as const;
 
 const forbidden =

@@ -276,3 +276,11 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 133. **Mora fija e idempotente:** una cuota vencida con saldo muestra un recargo de ARS 1.000 en lecturas. El primer intento de cobro lo materializa dentro de la misma transacción, una única vez, antes de imputar oldest-first. Anular el pago no elimina el recargo.
 134. **Pagos sobre deuda ajustada:** `paidAmount` sigue siendo la suma de allocations confirmadas; `outstandingAmount = max(studentDueAmount - paidAmount, 0)`. Se rechaza tanto un pago excedente como cualquier ajuste retroactivo que produciría saldo a favor.
 135. **Autoridad y trazabilidad:** Administración y Dirección gestionan condiciones con `charges:manage`; solo Dirección autoriza su beca y Admisión conserva lectura. Altas, renovaciones, cierres y reversas se auditan con actor y motivo. Un ajuste se corrige agregando una reversa, nunca editándolo o borrándolo.
+
+## Caja por turno v1
+
+136. **Turno propio obligatorio:** todo actor que registra un `Payment` necesita un `CashShift` `OPEN`, incluso Administración o Dirección. Existe como máximo uno por usuario mediante índice único parcial y Caja usa `cash:manage`; conciliación global y correcciones requieren `cash:reconcile`.
+137. **Caja derivada y atómica:** cada `PaymentTender` confirmado crea exactamente un `CashMovement` `COLLECTION` en la misma transacción del pago. El bloqueo de la fila del turno serializa cobros y cierre; no existe una segunda carga manual ni se altera la igualdad entre pago, tenders y allocations.
+138. **Anulación append-only:** un `VOID` agrega un `REVERSAL` por cada collection y conserva el movimiento original. Si ocurre después del cierre, se agrega al turno cerrado sin reescribir el snapshot.
+139. **Cierre inmutable:** el backend recalcula `expected = COLLECTION - REVERSAL`, guarda por medio lo esperado, declarado y `declared - expected`, y luego cierra. Las diferencias están permitidas. Las correcciones posteriores sólo ajustan la declaración mediante registros append-only con actor y motivo.
+140. **Límites v1:** no hay fondo inicial, Income, Expenses, retiros, depósitos, transferencia, crédito, refund ni reapertura. El tracking comienza al activar esta migración y no se hace backfill de pagos históricos.

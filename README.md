@@ -1,6 +1,10 @@
 # Gestión Academia
 
-Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1, Inscripciones v1, Tarifas/Cuotas v1 y Pagos v2 core.
+## Caja por turno
+
+Cada cobro requiere un turno propio abierto y alimenta Caja automáticamente con un movimiento por cada medio de pago. El cierre conserva por medio lo esperado según cobros, lo declarado y la diferencia; anulaciones y correcciones posteriores agregan historia sin reescribir el cierre original. Esta versión no incluye fondo inicial, ingresos, gastos ni backfill de pagos históricos.
+
+Sistema administrativo para una academia de baile, construido como monorepo TypeScript y monolito modular. El incremento actual incluye autenticación, Alumnos v1, Oferta Académica v1, Inscripciones v1, Tarifas/Cuotas v1, Pagos v2 core y Caja por turno v1.
 
 ## Arquitectura
 
@@ -30,7 +34,7 @@ futura app alumno ----------------^          |
 - Pruebas unitarias y HTTP, incluido el límite de autenticación del módulo de alumnos.
 
 Inscripciones v1 permite inscribir, finalizar preservando historial, consultar alumnos por clase y controlar cupos de forma transaccional. El cupo de una clase no puede reducirse por debajo de sus inscripciones activas.
-Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Pagos v2 core admite cobros parciales, imputa automáticamente a la deuda más antigua y combina efectivo, Mercado Pago y tarjeta, preservando imputaciones, medios, actor y anulaciones. Asistencias de alumnos v1 permite tomar y corregir asistencia. No están implementados caja, saldo a favor, devoluciones, mora, descuentos, promociones, Formación, asistencia docente, control de acceso ni liquidaciones.
+Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota mensual por inscripción activa. Pagos v2 core admite cobros parciales, imputa automáticamente a la deuda más antigua y combina efectivo, Mercado Pago y tarjeta, preservando imputaciones, medios, actor y anulaciones. Caja por turno v1 deriva sus movimientos de esos cobros. Asistencias de alumnos v1 permite tomar y corregir asistencia. No están implementados saldo a favor, devoluciones, Formación, asistencia docente, control de acceso ni liquidaciones.
 
 ## Stack
 
@@ -244,7 +248,7 @@ Cada cuota conserva el importe tarifario y snapshots de los ajustes vigentes. `s
 - `POST /api/v1/payments`: cobrar con `{ studentId, tenders: [{ method, amount }] }`.
 - `POST /api/v1/payments/:id/void`: anular sin borrar medios ni imputaciones y recalcular cada cuota con los demás pagos confirmados.
 
-El importe total es la suma exacta de los medios y de las imputaciones; el servidor distribuye sobre la deuda ajustada por `dueDate`, `createdAt` e `id` ascendentes. Un pago puede cubrir parcialmente una cuota y derramar el resto sobre las siguientes. Se rechaza todo total superior a la deuda vigente y no se genera saldo a favor. La creación se serializa por alumno, materializa primero cualquier recargo vencido y recalcula la deuda dentro de la transacción. No incluye Caja, devoluciones ni transferencia bancaria.
+El importe total es la suma exacta de los medios y de las imputaciones; el servidor distribuye sobre la deuda ajustada por `dueDate`, `createdAt` e `id` ascendentes. Un pago puede cubrir parcialmente una cuota y derramar el resto sobre las siguientes. Se rechaza todo total superior a la deuda vigente y no se genera saldo a favor. La creación se serializa por alumno, materializa primero cualquier recargo vencido y recalcula la deuda dentro de la transacción. Requiere un turno abierto y crea movimientos de Caja por tender; no incluye devoluciones ni transferencia bancaria.
 
 ## API de asistencias
 
@@ -274,7 +278,7 @@ Los roles administrativos son acumulativos: **Admisión** (`RECEPTION`) se ocupa
 | Consultar pagos                  |           ✅           |             ✅             |             ✅              |
 | Registrar/cobrar pagos           |           ✅           |             ✅             |             ✅              |
 | Anular pagos                     |           —            |             ✅             |             ✅              |
-| Gestionar caja                   |           —            |             ✅             |             ✅              |
+| Gestionar caja propia            |           ✅           |             ✅             |             ✅              |
 | Arqueos/reconciliación           |           —            |             ✅             |             ✅              |
 | Gestionar asistencias            |           ✅           |             ✅             |             ✅              |
 | Gestionar usuarios               |           —            |             ✅             |             ✅              |
