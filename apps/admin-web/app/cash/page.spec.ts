@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const page = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8');
 const styles = readFileSync(new URL('../styles.css', import.meta.url), 'utf8');
+const apiClient = readFileSync(new URL('../../lib/api-client.ts', import.meta.url), 'utf8');
 
 describe('Cash page', () => {
   it('expone apertura, cierre por medio, movimientos e historial en español', () => {
@@ -11,8 +12,17 @@ describe('Cash page', () => {
     expect(page).toContain('Declarado');
     expect(page).toContain('Diferencia');
     expect(page).toContain('Movimientos');
-    expect(page).toContain('Cierres');
+    expect(page).toContain('Mis turnos');
     expect(page).toContain('Consolidado');
+  });
+
+  it('recarga el turno por identidad, muestra loading y evita estado de otro usuario', () => {
+    expect(page).toContain('Cargando tu turno de caja…');
+    expect(page).toContain('[load, user.id]');
+    expect(page).toContain('setCurrent(null)');
+    expect(page).toContain('new AbortController()');
+    expect(page).toContain('Promise.allSettled');
+    expect(apiClient).toContain("cache: init?.cache ?? 'no-store'");
   });
 
   it('muestra cierre original, estado corregido y corrección append-only', () => {

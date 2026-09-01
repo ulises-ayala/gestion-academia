@@ -19,9 +19,29 @@ describe.runIf(enabled)('CashShiftsService integration', () => {
         role: 'MANAGER',
       },
     });
+    const otherActor = await prisma.adminUser.create({
+      data: {
+        username: `cash-other-${token}`,
+        passwordHash: 'integration-test-not-a-real-password',
+        role: 'RECEPTION',
+      },
+    });
     try {
       const opened = await service.open(actor.id);
       expect(opened).toMatchObject({ status: 'OPEN', expectedByMethod: { CASH: '0.00' } });
+      await expect(service.current(actor.id)).resolves.toMatchObject({ id: opened.id });
+      await expect(
+        new CashShiftsService(prisma as PrismaService).current(actor.id),
+      ).resolves.toMatchObject({ id: opened.id });
+      await expect(service.current(otherActor.id)).resolves.toBeNull();
+      await expect(service.current(actor.id)).resolves.toMatchObject({ id: opened.id });
+      await expect(service.list(actor.id, false, 1, 20)).resolves.toMatchObject({
+        items: [expect.objectContaining({ id: opened.id, status: 'OPEN' })],
+      });
+      await expect(service.list(otherActor.id, false, 1, 20)).resolves.toMatchObject({ items: [] });
+      await expect(service.list(otherActor.id, true, 1, 20)).resolves.toMatchObject({
+        items: expect.arrayContaining([expect.objectContaining({ id: opened.id })]),
+      });
       await expect(service.open(actor.id)).rejects.toMatchObject({
         code: 'CASH_SHIFT_ALREADY_OPEN',
       });
@@ -86,6 +106,7 @@ describe.runIf(enabled)('CashShiftsService integration', () => {
       await prisma.cashShiftClosingLine.deleteMany({ where: { cashShiftId: { in: ids } } });
       await prisma.cashShift.deleteMany({ where: { id: { in: ids } } });
       await prisma.adminUser.delete({ where: { id: actor.id } });
+      await prisma.adminUser.delete({ where: { id: otherActor.id } });
     }
   });
 });
