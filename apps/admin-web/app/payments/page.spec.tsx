@@ -74,6 +74,24 @@ describe('Payments center markup', () => {
   const page = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8');
   const styles = readFileSync(new URL('../styles.css', import.meta.url), 'utf8');
 
+  it('separa los filtros de la tabla y no corta estados o acciones', () => {
+    expect(styles).toMatch(/\.payment-history-filters[\s\S]*margin-bottom: var\(--space-4\)/);
+    expect(styles).toMatch(/\.status,[\s\S]*white-space: nowrap/);
+    expect(styles).toMatch(/td button\.secondary[\s\S]*white-space: nowrap/);
+  });
+
+  it('limpia los campos locales y oculta la acción cuando no hay filtros activos', () => {
+    expect(page).toContain('const clearAccountFilters = () =>');
+    expect(page).toContain("setAccountQ('')");
+    expect(page).toContain("setAccountSort('oldest')");
+    expect(page).toContain('{hasAccountFilters && (');
+    expect(page).toContain('onClick={clearHistoryFilters}');
+    expect(page.indexOf('className="payment-account-filters"')).toBeLessThan(
+      page.indexOf('className="context-filter payment-context-chip"'),
+    );
+    expect(styles).toMatch(/\.payment-context-chip[\s\S]*margin: 0 0 var\(--space-4\)/);
+  });
+
   it('loads debtors without selecting a student and exposes the operational controls', () => {
     expect(page).toContain("!location.studentId && location.tab === 'accounts'");
     expect(page).toContain('Total por cobrar');

@@ -38,6 +38,96 @@
   color: var(--text);
 }
 
+.cash-page {
+  display: grid;
+  gap: var(--space-4);
+}
+.cash-page .panel {
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.cash-empty {
+  min-height: 14rem;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+.cash-heading,
+.cash-range,
+.cash-history-row,
+.cash-movements article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.cash-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+.cash-totals article,
+.cash-totals label {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.cash-totals strong {
+  font-size: 1.2rem;
+}
+.cash-history,
+.cash-movements {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+.cash-history-row {
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+}
+.cash-history-row span:first-child {
+  display: grid;
+}
+.cash-movements article {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+.cash-range {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+.cash-range label {
+  display: grid;
+  gap: var(--space-1);
+}
+@media (max-width: 48rem) {
+  .cash-totals {
+    grid-template-columns: 1fr;
+  }
+  .cash-heading,
+  .cash-history-row,
+  .cash-movements article {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .cash-heading button,
+  .cash-range button {
+    width: 100%;
+  }
+}
+
 :root[data-theme='dark'] {
   color-scheme: dark;
   --bg: #181416;
@@ -1085,6 +1175,8 @@ th {
   font-weight: 800;
   letter-spacing: 0.055em;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 tbody tr:hover {
   background: var(--surface-hover);
@@ -1100,6 +1192,8 @@ td button.secondary {
   min-height: 2.125rem;
   padding: 0.45rem 0.7rem;
   font-size: 0.78rem;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 .status,
 .attendance-status {
@@ -1109,6 +1203,8 @@ td button.secondary {
   border-radius: 999px;
   font-size: 0.7rem;
   font-weight: 800;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 .status.active,
 .attendance-status.present {
@@ -2032,17 +2128,32 @@ dd {
   background: rgb(0 0 0 / 0.62);
 }
 .modal {
-  width: min(32rem, 100%);
-  padding: var(--space-5);
+  display: grid;
+  width: min(34rem, 100%);
+  max-height: calc(100dvh - 2rem);
+  margin: 0;
+  padding: var(--space-6);
+  gap: var(--space-4);
+  overflow-y: auto;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 28%);
+}
+.modal h2,
+.modal p {
+  margin: 0;
 }
 .modal label,
 .modal textarea {
   display: block;
   width: 100%;
 }
+.modal label {
+  color: var(--text-muted);
+  font-weight: 700;
+}
 .modal textarea {
-  min-height: 6rem;
-  margin-top: 0.5rem;
+  min-height: 7rem;
+  margin-top: var(--space-2);
+  resize: vertical;
 }
 .modal-actions {
   display: flex;
@@ -2050,7 +2161,7 @@ dd {
   gap: 0.75rem;
 }
 .modal-copy {
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .modal-note {
   padding: var(--space-3);
@@ -2283,11 +2394,11 @@ dd {
   box-shadow: var(--shadow-sm);
 }
 .receivables-heading {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
 }
 .payment-context-chip {
   flex: 0 0 auto;
-  margin: 0;
+  margin: 0 0 var(--space-4);
 }
 .link-button {
   min-height: auto;
@@ -2430,7 +2541,7 @@ dd {
   grid-template-columns: minmax(14rem, 1.4fr) repeat(4, minmax(9rem, 0.65fr));
   align-items: end;
   gap: var(--space-3);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
 }
 .history-filter-actions {
   display: flex;

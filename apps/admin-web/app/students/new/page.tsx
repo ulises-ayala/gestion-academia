@@ -3,6 +3,7 @@
 import type {
   ClassDto,
   ClassListDto,
+  CashShiftDto,
   CreateStudentDto,
   PaymentMethodDto,
   StudentOnboardingResultDto,
@@ -60,15 +61,18 @@ export default function NewStudentPage() {
   const [message, setMessage] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [result, setResult] = useState<StudentOnboardingResultDto | null>(null);
+  const [cashShiftOpen, setCashShiftOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
       apiRequest<ClassListDto>('/classes?status=ACTIVE&pageSize=100'),
       apiRequest<readonly TariffDto[]>('/tariffs/active'),
+      apiRequest<CashShiftDto | null>('/cash-shifts/current'),
     ])
-      .then(([classList, activeTariffs]) => {
+      .then(([classList, activeTariffs, cashShift]) => {
         setClasses(classList.items);
         setTariffs(activeTariffs);
+        setCashShiftOpen(Boolean(cashShift));
       })
       .catch((error) =>
         setMessage(
@@ -396,10 +400,17 @@ export default function NewStudentPage() {
                   type="radio"
                   name="collect"
                   checked={collect}
+                  disabled={!cashShiftOpen}
                   onChange={() => setCollect(true)}
                 />{' '}
                 Cobrar ahora
               </label>
+              {!cashShiftOpen && (
+                <p>
+                  Para cobrar ahora necesitás <Link href="/cash">abrir tu turno de caja</Link>.
+                  Podés continuar el alta dejando las cuotas pendientes.
+                </p>
+              )}
               {collect && (
                 <label>
                   Medio de pago
