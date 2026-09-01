@@ -91,7 +91,7 @@ export class CashShiftsService {
           user: { select: { id: true, username: true } },
           closingLines: true,
           corrections: { select: { id: true } },
-          movements: { select: { type: true, amount: true } },
+          movements: { select: { type: true, method: true, amount: true } },
         },
         orderBy: [{ openedAt: 'desc' }, { id: 'desc' }],
         skip: (page - 1) * pageSize,
@@ -106,9 +106,15 @@ export class CashShiftsService {
         status: item.status,
         openedAt: item.openedAt.toISOString(),
         closedAt: item.closedAt?.toISOString() ?? null,
-        expectedAmount: item.closingLines
-          .reduce((sum, line) => sum.plus(line.expectedAmount), new Prisma.Decimal(0))
-          .toFixed(2),
+        expectedAmount:
+          item.status === 'OPEN'
+            ? CASH_METHODS.reduce(
+                (sum, method) => sum.plus(cashTotals(item.movements)[method]),
+                new Prisma.Decimal(0),
+              ).toFixed(2)
+            : item.closingLines
+                .reduce((sum, line) => sum.plus(line.expectedAmount), new Prisma.Decimal(0))
+                .toFixed(2),
         declaredAmount:
           item.status === 'CLOSED'
             ? item.closingLines

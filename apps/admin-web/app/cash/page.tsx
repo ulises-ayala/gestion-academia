@@ -20,10 +20,13 @@ const money = (value: string) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const today = () =>
   new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Buenos_Aires' }).format(new Date());
+const businessDate = (value: string) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Buenos_Aires' }).format(new Date(value));
 
 export default function CashPage() {
-  const { can } = useAuth();
+  const { can, user } = useAuth();
   const [current, setCurrent] = useState<CashShiftDto | null>(null);
+  const [currentLoading, setCurrentLoading] = useState(true);
   const [history, setHistory] = useState<CashShiftListDto | null>(null);
   const [selected, setSelected] = useState<CashShiftDto | null>(null);
   const [declared, setDeclared] = useState<Record<PaymentMethodDto, string>>({
@@ -41,22 +44,40 @@ export default function CashPage() {
   const [correctedDeclared, setCorrectedDeclared] = useState('');
   const [correctionReason, setCorrectionReason] = useState('');
 
-  const load = useCallback(async () => {
-    try {
-      const [active, shifts] = await Promise.all([
-        apiRequest<CashShiftDto | null>('/cash-shifts/current'),
-        apiRequest<CashShiftListDto>('/cash-shifts?pageSize=20'),
-      ]);
-      setCurrent(active);
-      setHistory(shifts);
-      setMessage('');
-    } catch (error) {
-      setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cargar Caja.');
-    }
+  const load = useCallback(async (signal?: AbortSignal) => {
+    setCurrentLoading(true);
+    const requestInit: RequestInit = signal ? { signal } : {};
+    const [activeResult, historyResult] = await Promise.allSettled([
+      apiRequest<CashShiftDto | null>('/cash-shifts/current', requestInit),
+      apiRequest<CashShiftListDto>('/cash-shifts?pageSize=20', requestInit),
+    ]);
+    if (signal?.aborted) return;
+    if (activeResult.status === 'fulfilled') setCurrent(activeResult.value);
+    if (historyResult.status === 'fulfilled') setHistory(historyResult.value);
+    const error =
+      activeResult.status === 'rejected'
+        ? activeResult.reason
+        : historyResult.status === 'rejected'
+          ? historyResult.reason
+          : null;
+    setMessage(
+      error
+        ? error instanceof ApiClientError
+          ? error.message
+          : 'No se pudo cargar completamente Caja.'
+        : '',
+    );
+    setCurrentLoading(false);
   }, []);
   useEffect(() => {
-    void load();
-  }, [load]);
+    const controller = new AbortController();
+    setCurrent(null);
+    setHistory(null);
+    setSelected(null);
+    setClosing(false);
+    void load(controller.signal);
+    return () => controller.abort();
+  }, [load, user.id]);
 
   async function open() {
     setBusy(true);
@@ -143,7 +164,11 @@ export default function CashPage() {
           {message}
         </p>
       )}
-      {!current ? (
+      {currentLoading ? (
+        <section className="cash-empty panel" aria-busy="true" role="status">
+          <p>Cargando tu turno de caja…</p>
+        </section>
+      ) : !current ? (
         <section className="cash-empty panel">
           <h2>No tenés un turno de caja abierto.</h2>
           <p>Abrí tu turno antes de registrar un cobro. No se solicita fondo inicial.</p>
@@ -158,6 +183,9 @@ export default function CashPage() {
               <span className="status active">Turno abierto</span>
               <h2>Mi turno</h2>
               <p>Desde {new Date(current.openedAt).toLocaleString('es-AR')}</p>
+              {businessDate(current.openedAt) !== today() && (
+                <p className="form-message">Tenés un turno abierto desde un día anterior.</p>
+              )}
             </div>
             <button onClick={() => setClosing(true)}>Cerrar turno</button>
           </div>
@@ -216,7 +244,7 @@ export default function CashPage() {
         </section>
       )}
       <section className="panel">
-        <h2>Cierres</h2>
+        <h2>{can('cash:reconcile') ? 'Turnos' : 'Mis turnos'}</h2>
         {history?.items.length ? (
           <div className="cash-history">
             {history.items.map((shift) => (
@@ -228,6 +256,9 @@ export default function CashPage() {
                 <span>
                   <strong>{shift.user.username}</strong>
                   <small>{new Date(shift.openedAt).toLocaleString('es-AR')}</small>
+                </span>
+                <span className={`status ${shift.status === 'OPEN' ? 'active' : 'inactive'}`}>
+                  {shift.status === 'OPEN' ? 'Abierto' : 'Cerrado'}
                 </span>
                 <span>Sistema {money(shift.expectedAmount)}</span>
                 <span>

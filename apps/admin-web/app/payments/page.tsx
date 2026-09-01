@@ -319,6 +319,41 @@ export default function PaymentsPage() {
     });
   const totalAccountPages = Math.max(1, Math.ceil((receivables?.total ?? 0) / 25));
   const totalHistoryPages = Math.max(1, Math.ceil((history?.total ?? 0) / 25));
+  const hasAccountFilters =
+    location.scope !== 'pending' ||
+    Boolean(location.q) ||
+    location.sort !== 'oldest' ||
+    location.page !== 1;
+  const clearAccountFilters = () => {
+    setAccountQ('');
+    setAccountSort('oldest');
+    navigate(
+      paymentSearch(locationSearch, {
+        view: null,
+        q: null,
+        sort: null,
+        page: null,
+      }),
+    );
+  };
+  const clearHistoryFilters = () => {
+    setHistoryQ('');
+    setHistoryStatus('');
+    setHistoryMethod('');
+    setHistoryFrom('');
+    setHistoryTo('');
+    navigate(
+      paymentSearch(locationSearch, {
+        tab: 'history',
+        historyQ: null,
+        paymentStatus: null,
+        method: null,
+        from: null,
+        to: null,
+        historyPage: null,
+      }),
+    );
+  };
 
   return (
     <>
@@ -392,27 +427,6 @@ export default function PaymentsPage() {
                     {money(receivables.summary.totalOutstanding)}
                   </p>
                 )}
-              </div>
-              <div className="context-filter payment-context-chip">
-                <span>
-                  Filtro activo: <strong>{scopeLabels[location.scope]}</strong>
-                </span>
-                <button
-                  aria-label={`Quitar filtro ${scopeLabels[location.scope]}`}
-                  className="link-button"
-                  onClick={() =>
-                    navigate(
-                      paymentSearch(locationSearch, {
-                        view: 'pending',
-                        q: null,
-                        sort: 'oldest',
-                        page: 1,
-                      }),
-                    )
-                  }
-                >
-                  Limpiar filtros
-                </button>
               </div>
             </div>
 
@@ -503,6 +517,21 @@ export default function PaymentsPage() {
               </label>
               <button type="submit">Aplicar</button>
             </form>
+            {hasAccountFilters && (
+              <div className="context-filter payment-context-chip">
+                <span>
+                  Filtro activo: <strong>{scopeLabels[location.scope]}</strong>
+                </span>
+                <button
+                  aria-label="Limpiar filtros de cuentas por cobrar"
+                  className="link-button"
+                  onClick={clearAccountFilters}
+                  type="button"
+                >
+                  Limpiar filtros
+                </button>
+              </div>
+            )}
 
             {receivablesLoading ? (
               <div className="module-state" role="status">
@@ -684,23 +713,7 @@ export default function PaymentsPage() {
             </label>
             <div className="history-filter-actions">
               <button type="submit">Aplicar filtros</button>
-              <button
-                className="secondary"
-                onClick={() =>
-                  navigate(
-                    paymentSearch(locationSearch, {
-                      tab: 'history',
-                      historyQ: null,
-                      paymentStatus: null,
-                      method: null,
-                      from: null,
-                      to: null,
-                      historyPage: 1,
-                    }),
-                  )
-                }
-                type="button"
-              >
+              <button className="secondary" onClick={clearHistoryFilters} type="button">
                 Limpiar
               </button>
             </div>

@@ -1175,6 +1175,8 @@ th {
   font-weight: 800;
   letter-spacing: 0.055em;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 tbody tr:hover {
   background: var(--surface-hover);
@@ -1190,6 +1192,8 @@ td button.secondary {
   min-height: 2.125rem;
   padding: 0.45rem 0.7rem;
   font-size: 0.78rem;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 .status,
 .attendance-status {
@@ -1199,6 +1203,8 @@ td button.secondary {
   border-radius: 999px;
   font-size: 0.7rem;
   font-weight: 800;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 .status.active,
 .attendance-status.present {
@@ -2122,17 +2128,32 @@ dd {
   background: rgb(0 0 0 / 0.62);
 }
 .modal {
-  width: min(32rem, 100%);
-  padding: var(--space-5);
+  display: grid;
+  width: min(34rem, 100%);
+  max-height: calc(100dvh - 2rem);
+  margin: 0;
+  padding: var(--space-6);
+  gap: var(--space-4);
+  overflow-y: auto;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 28%);
+}
+.modal h2,
+.modal p {
+  margin: 0;
 }
 .modal label,
 .modal textarea {
   display: block;
   width: 100%;
 }
+.modal label {
+  color: var(--text-muted);
+  font-weight: 700;
+}
 .modal textarea {
-  min-height: 6rem;
-  margin-top: 0.5rem;
+  min-height: 7rem;
+  margin-top: var(--space-2);
+  resize: vertical;
 }
 .modal-actions {
   display: flex;
@@ -2140,7 +2161,7 @@ dd {
   gap: 0.75rem;
 }
 .modal-copy {
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .modal-note {
   padding: var(--space-3);
@@ -2373,11 +2394,11 @@ dd {
   box-shadow: var(--shadow-sm);
 }
 .receivables-heading {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
 }
 .payment-context-chip {
   flex: 0 0 auto;
-  margin: 0;
+  margin: 0 0 var(--space-4);
 }
 .link-button {
   min-height: auto;
@@ -2520,7 +2541,7 @@ dd {
   grid-template-columns: minmax(14rem, 1.4fr) repeat(4, minmax(9rem, 0.65fr));
   align-items: end;
   gap: var(--space-3);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
 }
 .history-filter-actions {
   display: flex;
