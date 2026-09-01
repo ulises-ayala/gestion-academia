@@ -1,6 +1,8 @@
 'use client';
 import type {
   AttendanceListDto,
+  CreateEnrollmentBillingConditionDto,
+  EnrollmentBillingConditionDto,
   EnrollmentDto,
   EnrollmentListDto,
   MonthlyChargeListDto,
@@ -10,7 +12,7 @@ import type {
 } from '@academy/contracts';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { StudentForm } from '../../../components/student-form';
 import { useAuth } from '../../../components/auth-provider';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
@@ -43,10 +45,200 @@ const dateTime = (value: string) =>
     timeStyle: 'short',
     timeZone: 'America/Buenos_Aires',
   }).format(new Date(value));
+const adjustmentLabel = {
+  DIRECTION_SCHOLARSHIP: 'Beca Dirección',
+  TEACHER_SCHOLARSHIP: 'Beca docente',
+  TEACHER_DISCOUNT: 'Descuento docente',
+  LATE_FEE: 'Recargo por mora',
+  REVERSAL: 'Corrección',
+} as const;
+
+function BillingConditions({
+  enrollment,
+  canManage,
+  isAdministrator,
+  onChanged,
+}: Readonly<{
+  enrollment: EnrollmentDto;
+  canManage: boolean;
+  isAdministrator: boolean;
+  onChanged(): Promise<void>;
+}>) {
+  const [items, setItems] = useState<readonly EnrollmentBillingConditionDto[]>([]);
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [type, setType] = useState<CreateEnrollmentBillingConditionDto['type']>('TEACHER_DISCOUNT');
+  const [calculation, setCalculation] = useState<'PERCENTAGE' | 'FIXED'>('PERCENTAGE');
+  const [value, setValue] = useState('');
+  const [from, setFrom] = useState(businessToday().slice(0, 7));
+  const [until, setUntil] = useState('');
+  const [why, setWhy] = useState('');
+  const loadConditions = useCallback(async () => {
+    try {
+      setItems(
+        await apiRequest<readonly EnrollmentBillingConditionDto[]>(
+          `/enrollments/${enrollment.id}/billing-conditions`,
+        ),
+      );
+    } catch (caught) {
+      setError(
+        caught instanceof ApiClientError ? caught.message : 'No se pudieron cargar los ajustes',
+      );
+    }
+  }, [enrollment.id]);
+  useEffect(() => void loadConditions(), [loadConditions]);
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      await apiRequest(`/enrollments/${enrollment.id}/billing-conditions`, {
+        method: 'POST',
+        body: JSON.stringify({
+          type,
+          ...(type === 'TEACHER_DISCOUNT' ? { calculation, configuredValue: value } : {}),
+          effectiveFrom: from,
+          ...(until ? { effectiveUntil: until } : {}),
+          ...(type !== 'DIRECTION_SCHOLARSHIP'
+            ? { teacherId: enrollment.academicClass.teacher.id }
+            : {}),
+          reason: why,
+        }),
+      });
+      setOpen(false);
+      setWhy('');
+      setValue('');
+      await Promise.all([loadConditions(), onChanged()]);
+    } catch (caught) {
+      setError(caught instanceof ApiClientError ? caught.message : 'No se pudo aplicar el ajuste');
+    } finally {
+      setSaving(false);
+    }
+  }
+  async function end(item: EnrollmentBillingConditionDto) {
+    const endReason = window.prompt('Motivo de finalización');
+    if (!endReason) return;
+    const effectiveUntil = window.prompt(
+      'Último período con vigencia (AAAA-MM)',
+      item.effectiveFrom,
+    );
+    if (!effectiveUntil) return;
+    try {
+      await apiRequest(`/billing-conditions/${item.id}/end`, {
+        method: 'POST',
+        body: JSON.stringify({ effectiveUntil, reason: endReason }),
+      });
+      await loadConditions();
+    } catch (caught) {
+      setError(caught instanceof ApiClientError ? caught.message : 'No se pudo finalizar');
+    }
+  }
+  return (
+    <div className="billing-conditions">
+      <div className="section-heading">
+        <strong>Ajustes de facturación</strong>
+        {canManage && (
+          <button
+            className="text-link"
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+          >
+            {open ? 'Cancelar' : 'Agregar'}
+          </button>
+        )}
+      </div>
+      {items.length === 0 ? (
+        <small>Sin becas ni descuentos recurrentes.</small>
+      ) : (
+        <ul className="schedule-list">
+          {items.map((item) => (
+            <li key={item.id}>
+              {adjustmentLabel[item.type]} · {item.configuredValue}
+              {item.calculation === 'PERCENTAGE' ? '%' : ' ARS'} · desde {item.effectiveFrom}
+              {item.effectiveUntil ? ` hasta ${item.effectiveUntil}` : ''}
+              {item.endedAt ? ' · finalizada' : ''}
+              {canManage && !item.endedAt && (
+                <button className="text-link" type="button" onClick={() => void end(item)}>
+                  Finalizar
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {open && (
+        <form className="compact-form" onSubmit={submit}>
+          <label>
+            Tipo
+            <select value={type} onChange={(event) => setType(event.target.value as typeof type)}>
+              <option value="TEACHER_DISCOUNT">Descuento docente</option>
+              <option value="TEACHER_SCHOLARSHIP">Beca docente (100%)</option>
+              {isAdministrator && (
+                <option value="DIRECTION_SCHOLARSHIP">Beca Dirección (100%)</option>
+              )}
+            </select>
+          </label>
+          {type === 'TEACHER_DISCOUNT' && (
+            <>
+              <label>
+                Cálculo
+                <select
+                  value={calculation}
+                  onChange={(event) => setCalculation(event.target.value as typeof calculation)}
+                >
+                  <option value="PERCENTAGE">Porcentaje</option>
+                  <option value="FIXED">Importe fijo</option>
+                </select>
+              </label>
+              <label>
+                Valor
+                <input
+                  required
+                  inputMode="decimal"
+                  value={value}
+                  onChange={(event) => setValue(event.target.value)}
+                />
+              </label>
+            </>
+          )}
+          <label>
+            Desde
+            <input
+              required
+              type="month"
+              value={from}
+              onChange={(event) => setFrom(event.target.value)}
+            />
+          </label>
+          <label>
+            Hasta (opcional)
+            <input type="month" value={until} onChange={(event) => setUntil(event.target.value)} />
+          </label>
+          <label>
+            Motivo
+            <textarea
+              required
+              maxLength={500}
+              value={why}
+              onChange={(event) => setWhy(event.target.value)}
+            />
+          </label>
+          <button disabled={saving}>{saving ? 'Aplicando…' : 'Aplicar ajuste'}</button>
+        </form>
+      )}
+      {error && (
+        <p className="message" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { can } = useAuth();
+  const { can, user } = useAuth();
   const [student, setStudent] = useState<StudentDto | null>(null);
   const [enrollments, setEnrollments] = useState<EnrollmentListDto['items']>([]);
   const [charges, setCharges] = useState<MonthlyChargeListDto['items']>([]);
@@ -298,6 +490,12 @@ export default function StudentDetailPage() {
                     Finalizar inscripción
                   </button>
                 )}
+                <BillingConditions
+                  enrollment={item}
+                  canManage={can('charges:manage')}
+                  isAdministrator={user.role === 'ADMINISTRATOR'}
+                  onChanged={load}
+                />
               </article>
             ))}
           </div>
@@ -347,7 +545,16 @@ export default function StudentDetailPage() {
                       <tr key={charge.id}>
                         <td data-label="Período">{charge.period}</td>
                         <td data-label="Clase">{charge.academicClass.name}</td>
-                        <td data-label="Importe">{money(charge.finalAmount)}</td>
+                        <td data-label="Importe">
+                          {money(charge.studentDueAmount)}
+                          {charge.adjustments.length > 0 && (
+                            <small className="billing-adjustment-summary">
+                              {charge.adjustments
+                                .map((item) => adjustmentLabel[item.type])
+                                .join(' · ')}
+                            </small>
+                          )}
+                        </td>
                         <td data-label="Pagado">{money(charge.paidAmount)}</td>
                         <td data-label="Saldo">{money(charge.outstandingAmount)}</td>
                         <td data-label="Vencimiento">{formatDate(charge.dueDate)}</td>

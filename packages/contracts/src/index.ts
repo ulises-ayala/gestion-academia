@@ -270,6 +270,27 @@ export type CreateTariffDto = Readonly<{
 export type UpdateTariffDto = Readonly<Partial<CreateTariffDto> & { status?: RecordStatusDto }>;
 
 export type MonthlyChargeStatusDto = 'PENDING' | 'PARTIAL' | 'PAID' | 'VOID';
+export type BillingAdjustmentTypeDto =
+  | 'DIRECTION_SCHOLARSHIP'
+  | 'TEACHER_SCHOLARSHIP'
+  | 'TEACHER_DISCOUNT'
+  | 'LATE_FEE'
+  | 'REVERSAL';
+export type BillingCalculationDto = 'PERCENTAGE' | 'FIXED';
+export type MonthlyChargeAdjustmentDto = Readonly<{
+  id: string | null;
+  type: BillingAdjustmentTypeDto;
+  calculation: BillingCalculationDto | null;
+  configuredValue: string | null;
+  effectiveAmount: string;
+  studentAmountDelta: string;
+  settlementBaseDelta: string;
+  teacher: Readonly<{ id: string; firstName: string; lastName: string }> | null;
+  reason: string | null;
+  reversalOfId: string | null;
+  persisted: boolean;
+  createdAt: string | null;
+}>;
 export type MonthlyChargeDto = Readonly<{
   id: string;
   studentId: string;
@@ -279,6 +300,8 @@ export type MonthlyChargeDto = Readonly<{
   baseAmount: string;
   discountAmount: string;
   finalAmount: string;
+  studentDueAmount: string;
+  settlementBaseAmount: string;
   paidAmount: string;
   outstandingAmount: string;
   dueDate: string;
@@ -286,9 +309,41 @@ export type MonthlyChargeDto = Readonly<{
   status: MonthlyChargeStatusDto;
   academicClass: Readonly<{ id: string; name: string }>;
   tariff: Readonly<{ id: string; name: string }>;
+  adjustments: readonly MonthlyChargeAdjustmentDto[];
   createdAt: string;
   updatedAt: string;
 }>;
+
+export type EnrollmentBillingConditionDto = Readonly<{
+  id: string;
+  enrollmentId: string;
+  type: Exclude<BillingAdjustmentTypeDto, 'LATE_FEE' | 'REVERSAL'>;
+  calculation: BillingCalculationDto;
+  configuredValue: string;
+  effectiveFrom: string;
+  effectiveUntil: string | null;
+  teacher: Readonly<{ id: string; firstName: string; lastName: string }> | null;
+  authorizedBy: Readonly<{ id: string; username: string }> | null;
+  reason: string;
+  endedAt: string | null;
+  endReason: string | null;
+  renewedFromId: string | null;
+  createdAt: string;
+}>;
+export type CreateEnrollmentBillingConditionDto = Readonly<{
+  type: Exclude<BillingAdjustmentTypeDto, 'LATE_FEE' | 'REVERSAL'>;
+  calculation?: BillingCalculationDto;
+  configuredValue?: string;
+  effectiveFrom: string;
+  effectiveUntil?: string | null;
+  teacherId?: string | null;
+  reason: string;
+}>;
+export type EndEnrollmentBillingConditionDto = Readonly<{
+  effectiveUntil: string;
+  reason: string;
+}>;
+export type ReverseMonthlyChargeAdjustmentDto = Readonly<{ reason: string }>;
 export type CreateMonthlyChargeDto = Readonly<{
   enrollmentId: string;
   tariffId: string;
@@ -318,6 +373,7 @@ export type PaymentAllocationDto = Readonly<{
   dueDate: string;
   academicClass: Readonly<{ id: string; name: string }>;
   finalAmount: string;
+  studentDueAmount: string;
 }>;
 export type PaymentDto = Readonly<{
   id: string;
@@ -386,7 +442,9 @@ export type AuditEntityTypeDto =
   | 'ADMIN_USER'
   | 'PAYMENT'
   | 'ATTENDANCE'
-  | 'ENROLLMENT';
+  | 'ENROLLMENT'
+  | 'BILLING_CONDITION'
+  | 'MONTHLY_CHARGE_ADJUSTMENT';
 export type AuditSnapshotDto = Readonly<Record<string, unknown>>;
 export type AuditLogDto = Readonly<{
   id: string;
