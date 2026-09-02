@@ -3,7 +3,7 @@ import type {
   EndEnrollmentDto,
   EnrollmentStatusDto,
 } from '@academy/contracts';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Patch } from '@nestjs/common';
 import { parsePage, parseUuid } from '../../shared/presentation/request-validation';
 import { EnrollmentsService } from '../application/enrollments.service';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
@@ -39,6 +39,35 @@ export class EnrollmentsController {
       classId: parseUuid(body.classId),
     });
   }
+  @Patch(':id')
+  updateStartDate(
+    @Param('id') id: string,
+    @Body() body: { startDate: string },
+  ) {
+    return this.service.updateStartDate(
+      parseUuid(id),
+      body.startDate,
+    );
+  }
+
+  @Post('historical')
+  createHistorical(
+    @Body()
+    body: {
+      studentId: string;
+      classId: string;
+      startDate: string;
+      endDate?: string | null;
+    },
+  ) {
+    return this.service.createHistorical({
+      studentId: parseUuid(body.studentId),
+      classId: parseUuid(body.classId),
+      startDate: body.startDate,
+      endDate: body.endDate ?? null,
+    });
+  }
+
   @Post(':id/end') end(
     @Param('id') id: string,
     @Body() body: EndEnrollmentDto,
