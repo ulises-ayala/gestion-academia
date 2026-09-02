@@ -1,0 +1,2802 @@
+[
+  {
+    "id": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+    "name": "arabashe",
+    "level": "1",
+    "capacity": 10,
+    "status": "INACTIVE",
+    "danceType": {
+      "id": "c0c5b062-b79f-4151-986a-f21af8f4779f",
+      "name": "danza prueba"
+    },
+    "teacher": {
+      "id": "84f401a3-d810-40cb-b456-ac77c7c2dbcc",
+      "firstName": "carlos",
+      "lastName": "sanchez",
+      "fullName": "sanchez carlos"
+    },
+    "schedules": [
+      {
+        "id": "48e5c9f8-cf05-48f6-81f2-598480e2a2cb",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "18:00",
+        "endTime": "19:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-21T23:41:28.881Z",
+    "updatedAt": "2026-08-23T19:58:01.424Z",
+    "raw": {
+      "id": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+      "name": "arabashe",
+      "level": "1",
+      "capacity": 10,
+      "status": "INACTIVE",
+      "danceType": {
+        "id": "c0c5b062-b79f-4151-986a-f21af8f4779f",
+        "name": "danza prueba"
+      },
+      "teacher": {
+        "id": "84f401a3-d810-40cb-b456-ac77c7c2dbcc",
+        "firstName": "carlos",
+        "lastName": "sanchez"
+      },
+      "schedules": [
+        {
+          "id": "48e5c9f8-cf05-48f6-81f2-598480e2a2cb",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "18:00",
+          "endTime": "19:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-21T23:41:28.881Z",
+      "updatedAt": "2026-08-23T19:58:01.424Z"
+    }
+  },
+  {
+    "id": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+    "name": "Árabe infantil",
+    "level": "1",
+    "capacity": 15,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "b555edf5-8eb5-4744-a9b9-c2e0f9ccce78",
+      "name": "Danza Árabe"
+    },
+    "teacher": {
+      "id": "297cc413-faec-4274-8de1-272f32231fa5",
+      "firstName": "Maria Virginia",
+      "lastName": "Henquin",
+      "fullName": "Henquin Maria Virginia"
+    },
+    "schedules": [
+      {
+        "id": "b0c91a19-f5e0-4cbd-a03b-0a228cad27cb",
+        "dayOfWeek": "MONDAY",
+        "startTime": "19:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "c2bcf98e-4fb0-4cfc-b6e5-1ce771b704a0",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "19:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:02:09.945Z",
+    "updatedAt": "2026-08-28T22:02:09.945Z",
+    "raw": {
+      "id": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "name": "Árabe infantil",
+      "level": "1",
+      "capacity": 15,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "b555edf5-8eb5-4744-a9b9-c2e0f9ccce78",
+        "name": "Danza Árabe"
+      },
+      "teacher": {
+        "id": "297cc413-faec-4274-8de1-272f32231fa5",
+        "firstName": "Maria Virginia",
+        "lastName": "Henquin"
+      },
+      "schedules": [
+        {
+          "id": "b0c91a19-f5e0-4cbd-a03b-0a228cad27cb",
+          "dayOfWeek": "MONDAY",
+          "startTime": "19:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "c2bcf98e-4fb0-4cfc-b6e5-1ce771b704a0",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "19:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 3,
+      "createdAt": "2026-08-28T22:02:09.945Z",
+      "updatedAt": "2026-08-28T22:02:09.945Z"
+    }
+  },
+  {
+    "id": "0d42dcc6-8707-4a02-9bf1-f303077a6f44",
+    "name": "Árabe Juv/Adultos",
+    "level": "2",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "ffb7ba8f-2091-4eea-a83c-4e0e61f85d71",
+      "name": "Bachata"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "b19ef8b7-dfe8-4037-b61a-cda972b4227c",
+        "dayOfWeek": "FRIDAY",
+        "startTime": "19:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "1300a527-8648-406e-9459-fe13b5e937ba",
+        "dayOfWeek": "SATURDAY",
+        "startTime": "19:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:03:07.802Z",
+    "updatedAt": "2026-08-28T22:03:07.802Z",
+    "raw": {
+      "id": "0d42dcc6-8707-4a02-9bf1-f303077a6f44",
+      "name": "Árabe Juv/Adultos",
+      "level": "2",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "ffb7ba8f-2091-4eea-a83c-4e0e61f85d71",
+        "name": "Bachata"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "b19ef8b7-dfe8-4037-b61a-cda972b4227c",
+          "dayOfWeek": "FRIDAY",
+          "startTime": "19:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "1300a527-8648-406e-9459-fe13b5e937ba",
+          "dayOfWeek": "SATURDAY",
+          "startTime": "19:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-28T22:03:07.802Z",
+      "updatedAt": "2026-08-28T22:03:07.802Z"
+    }
+  },
+  {
+    "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+    "name": "Bachata y Salsa Inicial",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "1971474d-58a8-4106-b241-6cd54033920d",
+      "name": "Salsa/Bachata"
+    },
+    "teacher": {
+      "id": "fcfd33ff-d0be-43bc-8440-1fb444c4eb33",
+      "firstName": "Jose Luis",
+      "lastName": "Barrios",
+      "fullName": "Barrios Jose Luis"
+    },
+    "schedules": [
+      {
+        "id": "5c4050a4-0306-45fe-8fc9-b125a3a28433",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "14:00",
+        "endTime": "15:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "dba93bca-9f9c-4fb3-84f9-10ce6de6ddbd",
+        "dayOfWeek": "THURSDAY",
+        "startTime": "14:00",
+        "endTime": "15:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T21:46:39.087Z",
+    "updatedAt": "2026-08-28T21:46:39.087Z",
+    "raw": {
+      "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "name": "Bachata y Salsa Inicial",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "1971474d-58a8-4106-b241-6cd54033920d",
+        "name": "Salsa/Bachata"
+      },
+      "teacher": {
+        "id": "fcfd33ff-d0be-43bc-8440-1fb444c4eb33",
+        "firstName": "Jose Luis",
+        "lastName": "Barrios"
+      },
+      "schedules": [
+        {
+          "id": "5c4050a4-0306-45fe-8fc9-b125a3a28433",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "14:00",
+          "endTime": "15:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "dba93bca-9f9c-4fb3-84f9-10ce6de6ddbd",
+          "dayOfWeek": "THURSDAY",
+          "startTime": "14:00",
+          "endTime": "15:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 8,
+      "createdAt": "2026-08-28T21:46:39.087Z",
+      "updatedAt": "2026-08-28T21:46:39.087Z"
+    }
+  },
+  {
+    "id": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+    "name": "Clase femenino Sofi",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "176dc0ef-6c95-44e4-b47a-74e61a80ca53",
+      "name": "Estilo Femenino"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "3a96291b-3927-488d-8471-ed41c73be068",
+        "dayOfWeek": "MONDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "deed043d-3ed9-4eb3-b874-902c8eedb1ca",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:05:37.113Z",
+    "updatedAt": "2026-08-23T22:15:08.803Z",
+    "raw": {
+      "id": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "name": "Clase femenino Sofi",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "176dc0ef-6c95-44e4-b47a-74e61a80ca53",
+        "name": "Estilo Femenino"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "3a96291b-3927-488d-8471-ed41c73be068",
+          "dayOfWeek": "MONDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "deed043d-3ed9-4eb3-b874-902c8eedb1ca",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 9,
+      "createdAt": "2026-08-23T22:05:37.113Z",
+      "updatedAt": "2026-08-23T22:15:08.803Z"
+    }
+  },
+  {
+    "id": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+    "name": "Clase kizomba",
+    "level": "1",
+    "capacity": 20,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "598b68b3-620b-4962-9d9c-2f6cf5820eb5",
+      "name": "Kizomba"
+    },
+    "teacher": {
+      "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+      "firstName": "Fabiana Andrea",
+      "lastName": "Arias",
+      "fullName": "Arias Fabiana Andrea"
+    },
+    "schedules": [
+      {
+        "id": "979730e8-53c6-4288-bd60-e1c25e107548",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:10:04.307Z",
+    "updatedAt": "2026-08-23T22:10:04.307Z",
+    "raw": {
+      "id": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "name": "Clase kizomba",
+      "level": "1",
+      "capacity": 20,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "598b68b3-620b-4962-9d9c-2f6cf5820eb5",
+        "name": "Kizomba"
+      },
+      "teacher": {
+        "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+        "firstName": "Fabiana Andrea",
+        "lastName": "Arias"
+      },
+      "schedules": [
+        {
+          "id": "979730e8-53c6-4288-bd60-e1c25e107548",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 15,
+      "createdAt": "2026-08-23T22:10:04.307Z",
+      "updatedAt": "2026-08-23T22:10:04.307Z"
+    }
+  },
+  {
+    "id": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+    "name": "Clase LT - A.Frank",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "ac496261-37da-4a02-ae89-b3895f321743",
+      "name": "Lady's Training"
+    },
+    "teacher": {
+      "id": "e6fe9713-5f07-4a67-8613-4ddb0e936efa",
+      "firstName": "Anabella",
+      "lastName": "Frank",
+      "fullName": "Frank Anabella"
+    },
+    "schedules": [
+      {
+        "id": "579444a5-6c35-4ddb-a0a6-821a6d78ba16",
+        "dayOfWeek": "MONDAY",
+        "startTime": "20:00",
+        "endTime": "21:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "f73f9725-296e-4279-8f98-97b56e564351",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "20:00",
+        "endTime": "21:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:04:17.324Z",
+    "updatedAt": "2026-08-28T22:04:17.324Z",
+    "raw": {
+      "id": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+      "name": "Clase LT - A.Frank",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "ac496261-37da-4a02-ae89-b3895f321743",
+        "name": "Lady's Training"
+      },
+      "teacher": {
+        "id": "e6fe9713-5f07-4a67-8613-4ddb0e936efa",
+        "firstName": "Anabella",
+        "lastName": "Frank"
+      },
+      "schedules": [
+        {
+          "id": "579444a5-6c35-4ddb-a0a6-821a6d78ba16",
+          "dayOfWeek": "MONDAY",
+          "startTime": "20:00",
+          "endTime": "21:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "f73f9725-296e-4279-8f98-97b56e564351",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "20:00",
+          "endTime": "21:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 7,
+      "createdAt": "2026-08-28T22:04:17.324Z",
+      "updatedAt": "2026-08-28T22:04:17.324Z"
+    }
+  },
+  {
+    "id": "5b5b5a93-2fe1-4cfe-958e-8f95c91624a2",
+    "name": "COREOGRAFICO E. MASC- BACHATA/URBAN",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+      "name": "Coreográfico"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "148f2c6c-af45-4a2c-a637-de9d7091ec74",
+        "dayOfWeek": "MONDAY",
+        "startTime": "22:00",
+        "endTime": "23:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-09-01T21:43:54.162Z",
+    "updatedAt": "2026-09-01T22:40:49.675Z",
+    "raw": {
+      "id": "5b5b5a93-2fe1-4cfe-958e-8f95c91624a2",
+      "name": "COREOGRAFICO E. MASC- BACHATA/URBAN",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+        "name": "Coreográfico"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "148f2c6c-af45-4a2c-a637-de9d7091ec74",
+          "dayOfWeek": "MONDAY",
+          "startTime": "22:00",
+          "endTime": "23:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-09-01T21:43:54.162Z",
+      "updatedAt": "2026-09-01T22:40:49.675Z"
+    }
+  },
+  {
+    "id": "2d17175b-22b0-4565-9342-1e93ad221855",
+    "name": "Coreografico E.Masc-Bachata/Urban",
+    "level": "1",
+    "capacity": 30,
+    "status": "INACTIVE",
+    "danceType": {
+      "id": "ffb7ba8f-2091-4eea-a83c-4e0e61f85d71",
+      "name": "Bachata"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "41199dd1-e8cc-493a-a3b8-bf1f7ac46ff6",
+        "dayOfWeek": "MONDAY",
+        "startTime": "22:00",
+        "endTime": "23:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-29T01:48:40.359Z",
+    "updatedAt": "2026-08-29T01:48:42.952Z",
+    "raw": {
+      "id": "2d17175b-22b0-4565-9342-1e93ad221855",
+      "name": "Coreografico E.Masc-Bachata/Urban",
+      "level": "1",
+      "capacity": 30,
+      "status": "INACTIVE",
+      "danceType": {
+        "id": "ffb7ba8f-2091-4eea-a83c-4e0e61f85d71",
+        "name": "Bachata"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "41199dd1-e8cc-493a-a3b8-bf1f7ac46ff6",
+          "dayOfWeek": "MONDAY",
+          "startTime": "22:00",
+          "endTime": "23:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-29T01:48:40.359Z",
+      "updatedAt": "2026-08-29T01:48:42.952Z"
+    }
+  },
+  {
+    "id": "b8e4d3e2-9fab-42d8-a036-8cfafdb8ec2b",
+    "name": "Ensayo Ana",
+    "level": "2",
+    "capacity": 15,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "e368265e-6cc7-4a5f-b8f3-31fe4fdbb4db",
+      "name": "Salsa"
+    },
+    "teacher": {
+      "id": "e6fe9713-5f07-4a67-8613-4ddb0e936efa",
+      "firstName": "Anabella",
+      "lastName": "Frank",
+      "fullName": "Frank Anabella"
+    },
+    "schedules": [
+      {
+        "id": "6f06481e-4d8b-4c85-bbec-41555a4b6a81",
+        "dayOfWeek": "MONDAY",
+        "startTime": "14:00",
+        "endTime": "17:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "3992bcd9-b997-4e2f-983f-71472bb2cb92",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "14:00",
+        "endTime": "17:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T21:44:16.961Z",
+    "updatedAt": "2026-08-28T21:44:16.961Z",
+    "raw": {
+      "id": "b8e4d3e2-9fab-42d8-a036-8cfafdb8ec2b",
+      "name": "Ensayo Ana",
+      "level": "2",
+      "capacity": 15,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "e368265e-6cc7-4a5f-b8f3-31fe4fdbb4db",
+        "name": "Salsa"
+      },
+      "teacher": {
+        "id": "e6fe9713-5f07-4a67-8613-4ddb0e936efa",
+        "firstName": "Anabella",
+        "lastName": "Frank"
+      },
+      "schedules": [
+        {
+          "id": "6f06481e-4d8b-4c85-bbec-41555a4b6a81",
+          "dayOfWeek": "MONDAY",
+          "startTime": "14:00",
+          "endTime": "17:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "3992bcd9-b997-4e2f-983f-71472bb2cb92",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "14:00",
+          "endTime": "17:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-28T21:44:16.961Z",
+      "updatedAt": "2026-08-28T21:44:16.961Z"
+    }
+  },
+  {
+    "id": "c90e7d2b-a10f-4a0c-9ee5-5dc1cdcb49c6",
+    "name": "Ensayo Fabi",
+    "level": "1",
+    "capacity": 20,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+      "name": "Coreográfico"
+    },
+    "teacher": {
+      "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+      "firstName": "Fabiana Andrea",
+      "lastName": "Arias",
+      "fullName": "Arias Fabiana Andrea"
+    },
+    "schedules": [
+      {
+        "id": "c3a63b33-47f9-4cf7-be31-c428508a064f",
+        "dayOfWeek": "MONDAY",
+        "startTime": "16:00",
+        "endTime": "17:30",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "85755430-528c-47ce-8a7a-787abf9a4077",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "16:00",
+        "endTime": "17:30",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "efe2416a-cd0d-40ad-bec7-cfbc2b73f9cb",
+        "dayOfWeek": "FRIDAY",
+        "startTime": "16:00",
+        "endTime": "17:30",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T21:58:46.054Z",
+    "updatedAt": "2026-08-23T21:58:46.054Z",
+    "raw": {
+      "id": "c90e7d2b-a10f-4a0c-9ee5-5dc1cdcb49c6",
+      "name": "Ensayo Fabi",
+      "level": "1",
+      "capacity": 20,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+        "name": "Coreográfico"
+      },
+      "teacher": {
+        "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+        "firstName": "Fabiana Andrea",
+        "lastName": "Arias"
+      },
+      "schedules": [
+        {
+          "id": "c3a63b33-47f9-4cf7-be31-c428508a064f",
+          "dayOfWeek": "MONDAY",
+          "startTime": "16:00",
+          "endTime": "17:30",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "85755430-528c-47ce-8a7a-787abf9a4077",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "16:00",
+          "endTime": "17:30",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "efe2416a-cd0d-40ad-bec7-cfbc2b73f9cb",
+          "dayOfWeek": "FRIDAY",
+          "startTime": "16:00",
+          "endTime": "17:30",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-23T21:58:46.054Z",
+      "updatedAt": "2026-08-23T21:58:46.054Z"
+    }
+  },
+  {
+    "id": "df4e7b73-8b73-4753-a05a-19359dfbefa9",
+    "name": "Ensayo Santi",
+    "level": null,
+    "capacity": 10,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+      "name": "Coreográfico"
+    },
+    "teacher": {
+      "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+      "firstName": "Santiago",
+      "lastName": "Reyes",
+      "fullName": "Reyes Santiago"
+    },
+    "schedules": [
+      {
+        "id": "1b77bf9e-a054-4b4f-8992-56cb509b1365",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "16:00",
+        "endTime": "18:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "b2ba9920-b125-45b2-8fa8-06fa76cec868",
+        "dayOfWeek": "THURSDAY",
+        "startTime": "16:00",
+        "endTime": "18:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:06:32.417Z",
+    "updatedAt": "2026-08-23T22:06:32.417Z",
+    "raw": {
+      "id": "df4e7b73-8b73-4753-a05a-19359dfbefa9",
+      "name": "Ensayo Santi",
+      "level": null,
+      "capacity": 10,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+        "name": "Coreográfico"
+      },
+      "teacher": {
+        "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+        "firstName": "Santiago",
+        "lastName": "Reyes"
+      },
+      "schedules": [
+        {
+          "id": "1b77bf9e-a054-4b4f-8992-56cb509b1365",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "16:00",
+          "endTime": "18:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "b2ba9920-b125-45b2-8fa8-06fa76cec868",
+          "dayOfWeek": "THURSDAY",
+          "startTime": "16:00",
+          "endTime": "18:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-23T22:06:32.417Z",
+      "updatedAt": "2026-08-23T22:06:32.417Z"
+    }
+  },
+  {
+    "id": "ab0fec00-54a8-414d-9714-ff2c3ce6e2ef",
+    "name": "Ensayo Sofi",
+    "level": "2",
+    "capacity": 10,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "ffb7ba8f-2091-4eea-a83c-4e0e61f85d71",
+      "name": "Bachata"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "cc0073a4-2711-4ce1-a433-80b532baced8",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "00814583-ca6c-40c1-8446-37aa75b3bd22",
+        "dayOfWeek": "THURSDAY",
+        "startTime": "15:00",
+        "endTime": "17:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T21:45:35.605Z",
+    "updatedAt": "2026-08-28T21:45:35.605Z",
+    "raw": {
+      "id": "ab0fec00-54a8-414d-9714-ff2c3ce6e2ef",
+      "name": "Ensayo Sofi",
+      "level": "2",
+      "capacity": 10,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "ffb7ba8f-2091-4eea-a83c-4e0e61f85d71",
+        "name": "Bachata"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "cc0073a4-2711-4ce1-a433-80b532baced8",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "15:00",
+          "endTime": "17:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "00814583-ca6c-40c1-8446-37aa75b3bd22",
+          "dayOfWeek": "THURSDAY",
+          "startTime": "15:00",
+          "endTime": "17:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-28T21:45:35.605Z",
+      "updatedAt": "2026-08-28T21:45:35.605Z"
+    }
+  },
+  {
+    "id": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+    "name": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "2b42ccc6-54a4-4ea6-b348-206e291c1b37",
+      "name": "Ritmos Caribeños/Kizomba"
+    },
+    "teacher": {
+      "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+      "firstName": "Fabiana Andrea",
+      "lastName": "Arias",
+      "fullName": "Arias Fabiana Andrea"
+    },
+    "schedules": [
+      {
+        "id": "a1c7aecc-a9e6-403f-9137-58ae49ff2cc4",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "22:00",
+        "endTime": "23:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-29T01:50:14.160Z",
+    "updatedAt": "2026-08-29T01:50:14.160Z",
+    "raw": {
+      "id": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+      "name": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "2b42ccc6-54a4-4ea6-b348-206e291c1b37",
+        "name": "Ritmos Caribeños/Kizomba"
+      },
+      "teacher": {
+        "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+        "firstName": "Fabiana Andrea",
+        "lastName": "Arias"
+      },
+      "schedules": [
+        {
+          "id": "a1c7aecc-a9e6-403f-9137-58ae49ff2cc4",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "22:00",
+          "endTime": "23:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 16,
+      "createdAt": "2026-08-29T01:50:14.160Z",
+      "updatedAt": "2026-08-29T01:50:14.160Z"
+    }
+  },
+  {
+    "id": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+    "name": "Grupo C. - A.Frank",
+    "level": "1",
+    "capacity": 20,
+    "status": "INACTIVE",
+    "danceType": {
+      "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+      "name": "Coreográfico"
+    },
+    "teacher": {
+      "id": "e6fe9713-5f07-4a67-8613-4ddb0e936efa",
+      "firstName": "Anabella",
+      "lastName": "Frank",
+      "fullName": "Frank Anabella"
+    },
+    "schedules": [
+      {
+        "id": "eb03000d-86b8-4581-8c07-02694c8f4df5",
+        "dayOfWeek": "SATURDAY",
+        "startTime": "14:00",
+        "endTime": "17:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:06:33.193Z",
+    "updatedAt": "2026-08-28T22:06:35.511Z",
+    "raw": {
+      "id": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+      "name": "Grupo C. - A.Frank",
+      "level": "1",
+      "capacity": 20,
+      "status": "INACTIVE",
+      "danceType": {
+        "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+        "name": "Coreográfico"
+      },
+      "teacher": {
+        "id": "e6fe9713-5f07-4a67-8613-4ddb0e936efa",
+        "firstName": "Anabella",
+        "lastName": "Frank"
+      },
+      "schedules": [
+        {
+          "id": "eb03000d-86b8-4581-8c07-02694c8f4df5",
+          "dayOfWeek": "SATURDAY",
+          "startTime": "14:00",
+          "endTime": "17:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-28T22:06:33.193Z",
+      "updatedAt": "2026-08-28T22:06:35.511Z"
+    }
+  },
+  {
+    "id": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+    "name": "Grupo C. Sofi",
+    "level": "1",
+    "capacity": 20,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+      "name": "Coreográfico"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "555cefc7-a77b-40fc-a6d6-b7d8738039a5",
+        "dayOfWeek": "SATURDAY",
+        "startTime": "15:00",
+        "endTime": "18:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T21:42:49.882Z",
+    "updatedAt": "2026-08-28T21:42:49.882Z",
+    "raw": {
+      "id": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "name": "Grupo C. Sofi",
+      "level": "1",
+      "capacity": 20,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "7aea6ddb-5c16-4f2a-8d37-92fca2217cb9",
+        "name": "Coreográfico"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "555cefc7-a77b-40fc-a6d6-b7d8738039a5",
+          "dayOfWeek": "SATURDAY",
+          "startTime": "15:00",
+          "endTime": "18:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 11,
+      "createdAt": "2026-08-28T21:42:49.882Z",
+      "updatedAt": "2026-08-28T21:42:49.882Z"
+    }
+  },
+  {
+    "id": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "name": "Hells",
+    "level": "1",
+    "capacity": 20,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "f37fe3e0-547d-4484-bb53-b77f570b4742",
+      "name": "Heels"
+    },
+    "teacher": {
+      "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+      "firstName": "Santiago",
+      "lastName": "Reyes",
+      "fullName": "Reyes Santiago"
+    },
+    "schedules": [
+      {
+        "id": "0a01566c-90e5-4f1f-b739-3b4643dff25e",
+        "dayOfWeek": "SATURDAY",
+        "startTime": "18:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T21:42:20.172Z",
+    "updatedAt": "2026-08-28T21:42:20.172Z",
+    "raw": {
+      "id": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+      "name": "Hells",
+      "level": "1",
+      "capacity": 20,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "f37fe3e0-547d-4484-bb53-b77f570b4742",
+        "name": "Heels"
+      },
+      "teacher": {
+        "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+        "firstName": "Santiago",
+        "lastName": "Reyes"
+      },
+      "schedules": [
+        {
+          "id": "0a01566c-90e5-4f1f-b739-3b4643dff25e",
+          "dayOfWeek": "SATURDAY",
+          "startTime": "18:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 7,
+      "createdAt": "2026-08-28T21:42:20.172Z",
+      "updatedAt": "2026-08-28T21:42:20.172Z"
+    }
+  },
+  {
+    "id": "bcea570e-e3dd-499f-8a4b-88f079773871",
+    "name": "Infantil (6 a 7 años)",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "d770f144-4e1c-4285-be4a-2e38e86a2f68",
+      "name": "Infantil"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "0bf925c5-4984-460e-93c5-76ec48c592a6",
+        "dayOfWeek": "MONDAY",
+        "startTime": "19:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "fdadba78-c0c5-46c1-8a54-43bd6966c0f0",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "19:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:03:30.704Z",
+    "updatedAt": "2026-08-23T22:13:59.192Z",
+    "raw": {
+      "id": "bcea570e-e3dd-499f-8a4b-88f079773871",
+      "name": "Infantil (6 a 7 años)",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "d770f144-4e1c-4285-be4a-2e38e86a2f68",
+        "name": "Infantil"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "0bf925c5-4984-460e-93c5-76ec48c592a6",
+          "dayOfWeek": "MONDAY",
+          "startTime": "19:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "fdadba78-c0c5-46c1-8a54-43bd6966c0f0",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "19:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 12,
+      "createdAt": "2026-08-23T22:03:30.704Z",
+      "updatedAt": "2026-08-23T22:13:59.192Z"
+    }
+  },
+  {
+    "id": "698c2fb9-7f35-4883-8124-3b0a3a673ce9",
+    "name": "Iniciación a la danza (babys)",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "7eb94d4f-3f01-45c5-9f19-dfa961b1287a",
+      "name": "Kids"
+    },
+    "teacher": {
+      "id": "9ace89e8-ca8d-4069-b972-6af360ee834f",
+      "firstName": "Magalí Abigail",
+      "lastName": "Oviedo",
+      "fullName": "Oviedo Magalí Abigail"
+    },
+    "schedules": [
+      {
+        "id": "53929951-83d5-47f8-951d-df0373a84cc2",
+        "dayOfWeek": "MONDAY",
+        "startTime": "17:00",
+        "endTime": "18:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "0caeadf3-4140-406f-9c45-1775f8dbad08",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "17:00",
+        "endTime": "18:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T21:59:45.795Z",
+    "updatedAt": "2026-08-28T21:59:45.795Z",
+    "raw": {
+      "id": "698c2fb9-7f35-4883-8124-3b0a3a673ce9",
+      "name": "Iniciación a la danza (babys)",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "7eb94d4f-3f01-45c5-9f19-dfa961b1287a",
+        "name": "Kids"
+      },
+      "teacher": {
+        "id": "9ace89e8-ca8d-4069-b972-6af360ee834f",
+        "firstName": "Magalí Abigail",
+        "lastName": "Oviedo"
+      },
+      "schedules": [
+        {
+          "id": "53929951-83d5-47f8-951d-df0373a84cc2",
+          "dayOfWeek": "MONDAY",
+          "startTime": "17:00",
+          "endTime": "18:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "0caeadf3-4140-406f-9c45-1775f8dbad08",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "17:00",
+          "endTime": "18:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-28T21:59:45.795Z",
+      "updatedAt": "2026-08-28T21:59:45.795Z"
+    }
+  },
+  {
+    "id": "775fd4d3-9864-4804-aac6-713176dd6c58",
+    "name": "Inst. Sup. Coreografico - Tango 18 meses",
+    "level": "3",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "19e25d27-319e-4311-ab1f-389444d1e332",
+      "name": "Tango"
+    },
+    "teacher": {
+      "id": "79685a44-f200-473c-9185-4c45b97e7441",
+      "firstName": "Roberto Carlos",
+      "lastName": "Dominguez",
+      "fullName": "Dominguez Roberto Carlos"
+    },
+    "schedules": [
+      {
+        "id": "8a924f38-4f47-4294-988e-ada2e10652e0",
+        "dayOfWeek": "SATURDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-09-02T00:05:02.850Z",
+    "updatedAt": "2026-09-02T00:05:02.850Z",
+    "raw": {
+      "id": "775fd4d3-9864-4804-aac6-713176dd6c58",
+      "name": "Inst. Sup. Coreografico - Tango 18 meses",
+      "level": "3",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "19e25d27-319e-4311-ab1f-389444d1e332",
+        "name": "Tango"
+      },
+      "teacher": {
+        "id": "79685a44-f200-473c-9185-4c45b97e7441",
+        "firstName": "Roberto Carlos",
+        "lastName": "Dominguez"
+      },
+      "schedules": [
+        {
+          "id": "8a924f38-4f47-4294-988e-ada2e10652e0",
+          "dayOfWeek": "SATURDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-09-02T00:05:02.850Z",
+      "updatedAt": "2026-09-02T00:05:02.850Z"
+    }
+  },
+  {
+    "id": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+    "name": "Kids 4-5 años",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "7eb94d4f-3f01-45c5-9f19-dfa961b1287a",
+      "name": "Kids"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "d5dbc05c-cbd0-4746-bee9-307019dd4654",
+        "dayOfWeek": "MONDAY",
+        "startTime": "18:00",
+        "endTime": "19:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "e1da206b-e8e7-40ae-866c-ff51f1ce6920",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "18:00",
+        "endTime": "19:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:02:57.474Z",
+    "updatedAt": "2026-08-23T22:13:07.879Z",
+    "raw": {
+      "id": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+      "name": "Kids 4-5 años",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "7eb94d4f-3f01-45c5-9f19-dfa961b1287a",
+        "name": "Kids"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "d5dbc05c-cbd0-4746-bee9-307019dd4654",
+          "dayOfWeek": "MONDAY",
+          "startTime": "18:00",
+          "endTime": "19:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "e1da206b-e8e7-40ae-866c-ff51f1ce6920",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "18:00",
+          "endTime": "19:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 10,
+      "createdAt": "2026-08-23T22:02:57.474Z",
+      "updatedAt": "2026-08-23T22:13:07.879Z"
+    }
+  },
+  {
+    "id": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+    "name": "Ladys Kizz",
+    "level": "1",
+    "capacity": 20,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "ac496261-37da-4a02-ae89-b3895f321743",
+      "name": "Lady's Training"
+    },
+    "teacher": {
+      "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+      "firstName": "Fabiana Andrea",
+      "lastName": "Arias",
+      "fullName": "Arias Fabiana Andrea"
+    },
+    "schedules": [
+      {
+        "id": "cc87c452-b18d-4b05-8287-38cf0f78549b",
+        "dayOfWeek": "FRIDAY",
+        "startTime": "20:30",
+        "endTime": "22:30",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T21:41:37.258Z",
+    "updatedAt": "2026-08-28T21:41:37.258Z",
+    "raw": {
+      "id": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "name": "Ladys Kizz",
+      "level": "1",
+      "capacity": 20,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "ac496261-37da-4a02-ae89-b3895f321743",
+        "name": "Lady's Training"
+      },
+      "teacher": {
+        "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+        "firstName": "Fabiana Andrea",
+        "lastName": "Arias"
+      },
+      "schedules": [
+        {
+          "id": "cc87c452-b18d-4b05-8287-38cf0f78549b",
+          "dayOfWeek": "FRIDAY",
+          "startTime": "20:30",
+          "endTime": "22:30",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 14,
+      "createdAt": "2026-08-28T21:41:37.258Z",
+      "updatedAt": "2026-08-28T21:41:37.258Z"
+    }
+  },
+  {
+    "id": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+    "name": "Mambo en parejas",
+    "level": "2",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "4c2ae2c0-616f-48b4-b72c-4299dc80ae5f",
+      "name": "Mambo"
+    },
+    "teacher": {
+      "id": "d38d5749-cf17-49ab-a9f9-af4078408cdc",
+      "firstName": "Fernando",
+      "lastName": "Ibañez",
+      "fullName": "Ibañez Fernando"
+    },
+    "schedules": [
+      {
+        "id": "77c60ac6-62d1-4704-81af-34b9ea057b10",
+        "dayOfWeek": "MONDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "a332ca12-642c-4154-9c06-969109c310b8",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:04:53.183Z",
+    "updatedAt": "2026-08-28T22:04:53.183Z",
+    "raw": {
+      "id": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+      "name": "Mambo en parejas",
+      "level": "2",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "4c2ae2c0-616f-48b4-b72c-4299dc80ae5f",
+        "name": "Mambo"
+      },
+      "teacher": {
+        "id": "d38d5749-cf17-49ab-a9f9-af4078408cdc",
+        "firstName": "Fernando",
+        "lastName": "Ibañez"
+      },
+      "schedules": [
+        {
+          "id": "77c60ac6-62d1-4704-81af-34b9ea057b10",
+          "dayOfWeek": "MONDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "a332ca12-642c-4154-9c06-969109c310b8",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 3,
+      "createdAt": "2026-08-28T22:04:53.183Z",
+      "updatedAt": "2026-08-28T22:04:53.183Z"
+    }
+  },
+  {
+    "id": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+    "name": "Ritmos latinos y caribeños",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "237eb103-5fe0-4ee0-9982-0cd1ea5eb58c",
+      "name": "Ritmos Caribeños"
+    },
+    "teacher": {
+      "id": "9ace89e8-ca8d-4069-b972-6af360ee834f",
+      "firstName": "Magalí Abigail",
+      "lastName": "Oviedo",
+      "fullName": "Oviedo Magalí Abigail"
+    },
+    "schedules": [
+      {
+        "id": "b5cf4d19-ca7c-4e25-a7d6-bdbb119b89aa",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "17:00",
+        "endTime": "18:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "13566b12-57b5-4c7b-a15e-197fa85aaee0",
+        "dayOfWeek": "THURSDAY",
+        "startTime": "17:00",
+        "endTime": "18:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:00:47.511Z",
+    "updatedAt": "2026-08-28T22:00:47.511Z",
+    "raw": {
+      "id": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+      "name": "Ritmos latinos y caribeños",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "237eb103-5fe0-4ee0-9982-0cd1ea5eb58c",
+        "name": "Ritmos Caribeños"
+      },
+      "teacher": {
+        "id": "9ace89e8-ca8d-4069-b972-6af360ee834f",
+        "firstName": "Magalí Abigail",
+        "lastName": "Oviedo"
+      },
+      "schedules": [
+        {
+          "id": "b5cf4d19-ca7c-4e25-a7d6-bdbb119b89aa",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "17:00",
+          "endTime": "18:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "13566b12-57b5-4c7b-a15e-197fa85aaee0",
+          "dayOfWeek": "THURSDAY",
+          "startTime": "17:00",
+          "endTime": "18:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-08-28T22:00:47.511Z",
+      "updatedAt": "2026-08-28T22:00:47.511Z"
+    }
+  },
+  {
+    "id": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "name": "S.C Adultos (+18 años)",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+      "name": "Street Coreográfico"
+    },
+    "teacher": {
+      "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+      "firstName": "Santiago",
+      "lastName": "Reyes",
+      "fullName": "Reyes Santiago"
+    },
+    "schedules": [
+      {
+        "id": "c1689cc2-1ffe-4f55-9e00-2d1ae60e777e",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "20:00",
+        "endTime": "21:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:08:38.651Z",
+    "updatedAt": "2026-08-23T22:08:38.651Z",
+    "raw": {
+      "id": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "name": "S.C Adultos (+18 años)",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+        "name": "Street Coreográfico"
+      },
+      "teacher": {
+        "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+        "firstName": "Santiago",
+        "lastName": "Reyes"
+      },
+      "schedules": [
+        {
+          "id": "c1689cc2-1ffe-4f55-9e00-2d1ae60e777e",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "20:00",
+          "endTime": "21:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 9,
+      "createdAt": "2026-08-23T22:08:38.651Z",
+      "updatedAt": "2026-08-23T22:08:38.651Z"
+    }
+  },
+  {
+    "id": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+    "name": "S.C Infantil (6-11 años)",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+      "name": "Street Coreográfico"
+    },
+    "teacher": {
+      "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+      "firstName": "Santiago",
+      "lastName": "Reyes",
+      "fullName": "Reyes Santiago"
+    },
+    "schedules": [
+      {
+        "id": "dc9aeb5c-34ee-4e10-af85-f3c00cfc4d00",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "18:00",
+        "endTime": "19:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:07:35.370Z",
+    "updatedAt": "2026-08-23T22:07:35.370Z",
+    "raw": {
+      "id": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "name": "S.C Infantil (6-11 años)",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+        "name": "Street Coreográfico"
+      },
+      "teacher": {
+        "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+        "firstName": "Santiago",
+        "lastName": "Reyes"
+      },
+      "schedules": [
+        {
+          "id": "dc9aeb5c-34ee-4e10-af85-f3c00cfc4d00",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "18:00",
+          "endTime": "19:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 25,
+      "createdAt": "2026-08-23T22:07:35.370Z",
+      "updatedAt": "2026-08-23T22:07:35.370Z"
+    }
+  },
+  {
+    "id": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+    "name": "S.C Juvenil (12-17 años)",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+      "name": "Street Coreográfico"
+    },
+    "teacher": {
+      "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+      "firstName": "Santiago",
+      "lastName": "Reyes",
+      "fullName": "Reyes Santiago"
+    },
+    "schedules": [
+      {
+        "id": "a8dfd72c-8fd4-426f-8a05-cd9ce7e6c5ee",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "19:00",
+        "endTime": "20:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:08:00.661Z",
+    "updatedAt": "2026-08-23T22:08:00.661Z",
+    "raw": {
+      "id": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "name": "S.C Juvenil (12-17 años)",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+        "name": "Street Coreográfico"
+      },
+      "teacher": {
+        "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+        "firstName": "Santiago",
+        "lastName": "Reyes"
+      },
+      "schedules": [
+        {
+          "id": "a8dfd72c-8fd4-426f-8a05-cd9ce7e6c5ee",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "19:00",
+          "endTime": "20:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 23,
+      "createdAt": "2026-08-23T22:08:00.661Z",
+      "updatedAt": "2026-08-23T22:08:00.661Z"
+    }
+  },
+  {
+    "id": "576c192b-8d45-47e9-bd94-df027445d793",
+    "name": "S&B Parejas",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "1971474d-58a8-4106-b241-6cd54033920d",
+      "name": "Salsa/Bachata"
+    },
+    "teacher": {
+      "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+      "firstName": "Fabiana Andrea",
+      "lastName": "Arias",
+      "fullName": "Arias Fabiana Andrea"
+    },
+    "schedules": [
+      {
+        "id": "0ad85714-abb0-459b-a8d3-5fe960716d79",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "22:00",
+        "endTime": "23:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "41383f4a-b917-4f71-a876-3b1d7fbf42c5",
+        "dayOfWeek": "THURSDAY",
+        "startTime": "22:00",
+        "endTime": "23:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:10:36.986Z",
+    "updatedAt": "2026-08-23T22:15:44.604Z",
+    "raw": {
+      "id": "576c192b-8d45-47e9-bd94-df027445d793",
+      "name": "S&B Parejas",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "1971474d-58a8-4106-b241-6cd54033920d",
+        "name": "Salsa/Bachata"
+      },
+      "teacher": {
+        "id": "38514755-4686-4ca3-88c9-11d68985cdd6",
+        "firstName": "Fabiana Andrea",
+        "lastName": "Arias"
+      },
+      "schedules": [
+        {
+          "id": "0ad85714-abb0-459b-a8d3-5fe960716d79",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "22:00",
+          "endTime": "23:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "41383f4a-b917-4f71-a876-3b1d7fbf42c5",
+          "dayOfWeek": "THURSDAY",
+          "startTime": "22:00",
+          "endTime": "23:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 17,
+      "createdAt": "2026-08-23T22:10:36.986Z",
+      "updatedAt": "2026-08-23T22:15:44.604Z"
+    }
+  },
+  {
+    "id": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+    "name": "Street Int/Avanzado",
+    "level": "2",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+      "name": "Street Coreográfico"
+    },
+    "teacher": {
+      "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+      "firstName": "Santiago",
+      "lastName": "Reyes",
+      "fullName": "Reyes Santiago"
+    },
+    "schedules": [
+      {
+        "id": "59d73d42-5a21-45c3-aaff-6ddb8ddab3be",
+        "dayOfWeek": "FRIDAY",
+        "startTime": "20:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:06:09.658Z",
+    "updatedAt": "2026-08-28T22:06:09.658Z",
+    "raw": {
+      "id": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "name": "Street Int/Avanzado",
+      "level": "2",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "5c97ad5c-1038-4b53-8a4b-cb7b5acce3f3",
+        "name": "Street Coreográfico"
+      },
+      "teacher": {
+        "id": "a289ca41-3d4d-402a-9e50-68801ed393c2",
+        "firstName": "Santiago",
+        "lastName": "Reyes"
+      },
+      "schedules": [
+        {
+          "id": "59d73d42-5a21-45c3-aaff-6ddb8ddab3be",
+          "dayOfWeek": "FRIDAY",
+          "startTime": "20:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 5,
+      "createdAt": "2026-08-28T22:06:09.658Z",
+      "updatedAt": "2026-08-28T22:06:09.658Z"
+    }
+  },
+  {
+    "id": "cc392129-75e3-4205-b7fc-fafceb55b996",
+    "name": "Tango (Inter/Avanz)",
+    "level": "3",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "19e25d27-319e-4311-ab1f-389444d1e332",
+      "name": "Tango"
+    },
+    "teacher": {
+      "id": "79685a44-f200-473c-9185-4c45b97e7441",
+      "firstName": "Roberto Carlos",
+      "lastName": "Dominguez",
+      "fullName": "Dominguez Roberto Carlos"
+    },
+    "schedules": [
+      {
+        "id": "a9422489-d649-4ced-980d-ff5bf6423ec1",
+        "dayOfWeek": "TUESDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "cff3174f-6ca4-47aa-ad4e-df940afdc620",
+        "dayOfWeek": "THURSDAY",
+        "startTime": "21:00",
+        "endTime": "22:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-28T22:05:27.576Z",
+    "updatedAt": "2026-08-28T22:05:27.576Z",
+    "raw": {
+      "id": "cc392129-75e3-4205-b7fc-fafceb55b996",
+      "name": "Tango (Inter/Avanz)",
+      "level": "3",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "19e25d27-319e-4311-ab1f-389444d1e332",
+        "name": "Tango"
+      },
+      "teacher": {
+        "id": "79685a44-f200-473c-9185-4c45b97e7441",
+        "firstName": "Roberto Carlos",
+        "lastName": "Dominguez"
+      },
+      "schedules": [
+        {
+          "id": "a9422489-d649-4ced-980d-ff5bf6423ec1",
+          "dayOfWeek": "TUESDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "cff3174f-6ca4-47aa-ad4e-df940afdc620",
+          "dayOfWeek": "THURSDAY",
+          "startTime": "21:00",
+          "endTime": "22:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 13,
+      "createdAt": "2026-08-28T22:05:27.576Z",
+      "updatedAt": "2026-08-28T22:05:27.576Z"
+    }
+  },
+  {
+    "id": "da4d15d9-c846-4098-8640-e95fd97c604f",
+    "name": "Teens (8 a 12 años)",
+    "level": "1",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "fd0bb761-00d0-4552-baa7-3af5f0d615c6",
+      "name": "Teens"
+    },
+    "teacher": {
+      "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+      "firstName": "Sofia",
+      "lastName": "Aracelli Puchini",
+      "fullName": "Aracelli Puchini Sofia"
+    },
+    "schedules": [
+      {
+        "id": "840f9c13-30a6-44f1-8997-198975cb16d2",
+        "dayOfWeek": "MONDAY",
+        "startTime": "20:00",
+        "endTime": "21:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "e6607af3-956a-4bcb-8d66-9c5243204220",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "20:00",
+        "endTime": "21:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T22:03:53.794Z",
+    "updatedAt": "2026-08-23T22:14:45.552Z",
+    "raw": {
+      "id": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "name": "Teens (8 a 12 años)",
+      "level": "1",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "fd0bb761-00d0-4552-baa7-3af5f0d615c6",
+        "name": "Teens"
+      },
+      "teacher": {
+        "id": "5e3dfae4-8670-4dfa-a351-d889551ab3e7",
+        "firstName": "Sofia",
+        "lastName": "Aracelli Puchini"
+      },
+      "schedules": [
+        {
+          "id": "840f9c13-30a6-44f1-8997-198975cb16d2",
+          "dayOfWeek": "MONDAY",
+          "startTime": "20:00",
+          "endTime": "21:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "e6607af3-956a-4bcb-8d66-9c5243204220",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "20:00",
+          "endTime": "21:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 13,
+      "createdAt": "2026-08-23T22:03:53.794Z",
+      "updatedAt": "2026-08-23T22:14:45.552Z"
+    }
+  },
+  {
+    "id": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+    "name": "Zumba - Profe Joselo",
+    "level": "1",
+    "capacity": 20,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "c383ae58-ee02-40b7-9bfe-14d7d1489ad5",
+      "name": "Zumba"
+    },
+    "teacher": {
+      "id": "fcfd33ff-d0be-43bc-8440-1fb444c4eb33",
+      "firstName": "Jose Luis",
+      "lastName": "Barrios",
+      "fullName": "Barrios Jose Luis"
+    },
+    "schedules": [
+      {
+        "id": "fad2b21c-f688-4193-b273-bee9d2de26f6",
+        "dayOfWeek": "MONDAY",
+        "startTime": "15:00",
+        "endTime": "16:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "148b33fe-abca-4c20-9755-4de7ac855556",
+        "dayOfWeek": "WEDNESDAY",
+        "startTime": "15:00",
+        "endTime": "16:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      },
+      {
+        "id": "317e07ed-cc4e-497c-96c7-41a16d22e113",
+        "dayOfWeek": "FRIDAY",
+        "startTime": "15:00",
+        "endTime": "16:00",
+        "room": {
+          "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+          "name": "Salón principal",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-08-23T21:55:41.268Z",
+    "updatedAt": "2026-08-23T21:55:41.268Z",
+    "raw": {
+      "id": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+      "name": "Zumba - Profe Joselo",
+      "level": "1",
+      "capacity": 20,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "c383ae58-ee02-40b7-9bfe-14d7d1489ad5",
+        "name": "Zumba"
+      },
+      "teacher": {
+        "id": "fcfd33ff-d0be-43bc-8440-1fb444c4eb33",
+        "firstName": "Jose Luis",
+        "lastName": "Barrios"
+      },
+      "schedules": [
+        {
+          "id": "fad2b21c-f688-4193-b273-bee9d2de26f6",
+          "dayOfWeek": "MONDAY",
+          "startTime": "15:00",
+          "endTime": "16:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "148b33fe-abca-4c20-9755-4de7ac855556",
+          "dayOfWeek": "WEDNESDAY",
+          "startTime": "15:00",
+          "endTime": "16:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        },
+        {
+          "id": "317e07ed-cc4e-497c-96c7-41a16d22e113",
+          "dayOfWeek": "FRIDAY",
+          "startTime": "15:00",
+          "endTime": "16:00",
+          "room": {
+            "id": "7224e2cf-3eb5-4dcf-b086-aed42eabbff4",
+            "name": "Salón principal",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 9,
+      "createdAt": "2026-08-23T21:55:41.268Z",
+      "updatedAt": "2026-08-23T21:55:41.268Z"
+    }
+  }
+]

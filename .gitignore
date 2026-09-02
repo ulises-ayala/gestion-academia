@@ -11,8 +11,7 @@ backup_antes_enrollments.sql
 backup_academia_completa_2026-08-28.sql
 backup_antes_alumnos.sql
 backup_con_alumnos.sql
-scripts/import-students.mjs
-scripts/import-enrollment.mjs
+academy_backup_2026-09-01.sql
 scripts/data
 
 

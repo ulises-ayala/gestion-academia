@@ -1,0 +1,3593 @@
+[
+  {
+    "fullName": "ACOSTA GLADIS",
+    "normalizedName": "ACOSTA GLADIS",
+    "sortedName": "ACOSTA GLADIS",
+    "excelRows": [
+      2
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "a8eb74e2-1946-460f-be24-c9f4466e9d7c",
+    "studentDni": "14827445",
+    "currentFullName": "ACOSTA GLADIS"
+  },
+  {
+    "fullName": "ACOSTA MILVA EDITH",
+    "normalizedName": "ACOSTA MILVA EDITH",
+    "sortedName": "ACOSTA EDITH MILVA",
+    "excelRows": [
+      3
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "fcfce898-5c18-4924-93cf-1b7036f11ba5",
+    "studentDni": "35058454",
+    "currentFullName": "ACOSTA MILVA EDITH"
+  },
+  {
+    "fullName": "ACUÑA LILIANA BEATRIZ",
+    "normalizedName": "ACUNA LILIANA BEATRIZ",
+    "sortedName": "ACUNA BEATRIZ LILIANA",
+    "excelRows": [
+      4
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "7384e63e-d9e2-4c9c-818b-d98579f2dba8",
+    "studentDni": "16928892",
+    "currentFullName": "ACUÑA LILIANA BEATRIZ"
+  },
+  {
+    "fullName": "AGUERO MARTA",
+    "normalizedName": "AGUERO MARTA",
+    "sortedName": "AGUERO MARTA",
+    "excelRows": [
+      5
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e85c8d41-7f2f-44ac-a122-5fac5e2f7463",
+    "studentDni": "17358647",
+    "currentFullName": "AGUERO MARTA"
+  },
+  {
+    "fullName": "AGUILAR MARIA SOLEDAD",
+    "normalizedName": "AGUILAR MARIA SOLEDAD",
+    "sortedName": "AGUILAR MARIA SOLEDAD",
+    "excelRows": [
+      6
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "f1998bf5-63a4-4990-b367-82d4124a9cdf",
+    "studentDni": "38192502",
+    "currentFullName": "AGUILAR MARIA SOLEDAD"
+  },
+  {
+    "fullName": "ALARCON DYLAN ALEXIS",
+    "normalizedName": "ALARCON DYLAN ALEXIS",
+    "sortedName": "ALARCON ALEXIS DYLAN",
+    "excelRows": [
+      7
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "bfd88cee-ae21-47f2-b6dd-72d57b145b31",
+    "studentDni": "55916624",
+    "currentFullName": "ALARCON DYLAN ALEXIS"
+  },
+  {
+    "fullName": "ALARCON GABRIELA",
+    "normalizedName": "ALARCON GABRIELA",
+    "sortedName": "ALARCON GABRIELA",
+    "excelRows": [
+      8
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "a6360973-3706-48fd-8f1c-8cba57b53f8d",
+    "studentDni": "27577104",
+    "currentFullName": "ALARCON GABRIELA"
+  },
+  {
+    "fullName": "ALBARRACIN MICAELA",
+    "normalizedName": "ALBARRACIN MICAELA",
+    "sortedName": "ALBARRACIN MICAELA",
+    "excelRows": [
+      9
+    ],
+    "payload": {
+      "dni": "900000001",
+      "firstName": "MICAELA",
+      "lastName": "ALBARRACIN",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "19f767fa-46c2-4be1-ae6e-fed5917a42c2",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "ALVAREZ MARTINA",
+    "normalizedName": "ALVAREZ MARTINA",
+    "sortedName": "ALVAREZ MARTINA",
+    "excelRows": [
+      10
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "08c5343e-fc53-41ed-bd41-05429bd7995b",
+    "studentDni": "57878092",
+    "currentFullName": "ALVAREZ MARTINA"
+  },
+  {
+    "fullName": "AMARILLA LEONARDO",
+    "normalizedName": "AMARILLA LEONARDO",
+    "sortedName": "AMARILLA LEONARDO",
+    "excelRows": [
+      11
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "6617b5c0-3cc9-4197-b7ed-d9bd279a674f",
+    "studentDni": "28015342",
+    "currentFullName": "AMARILLA LEONARDO"
+  },
+  {
+    "fullName": "APONTE DELFINA",
+    "normalizedName": "APONTE DELFINA",
+    "sortedName": "APONTE DELFINA",
+    "excelRows": [
+      12
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e131203a-d7c6-40a0-bcd4-062e41335e8f",
+    "studentDni": "53960378",
+    "currentFullName": "APONTE DELFINA"
+  },
+  {
+    "fullName": "AQUINO FLAVIA",
+    "normalizedName": "AQUINO FLAVIA",
+    "sortedName": "AQUINO FLAVIA",
+    "excelRows": [
+      13
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "824df025-def1-46c0-af0e-0477fd7a1719",
+    "studentDni": "24780042",
+    "currentFullName": "AQUINO FLAVIA"
+  },
+  {
+    "fullName": "AQUINO FLORENCIA",
+    "normalizedName": "AQUINO FLORENCIA",
+    "sortedName": "AQUINO FLORENCIA",
+    "excelRows": [
+      14
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "bc06e985-bd2a-4319-bf66-8880c6e4e46d",
+    "studentDni": "40839209",
+    "currentFullName": "AQUINO FLORENCIA"
+  },
+  {
+    "fullName": "ARGAMONTE JULIETA",
+    "normalizedName": "ARGAMONTE JULIETA",
+    "sortedName": "ARGAMONTE JULIETA",
+    "excelRows": [
+      15
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "793d1985-0bcc-4d43-93be-fd4df9cf2e39",
+    "studentDni": "55123018",
+    "currentFullName": "ARGAMONTE JULIETA"
+  },
+  {
+    "fullName": "ARMOA CRISTIAN",
+    "normalizedName": "ARMOA CRISTIAN",
+    "sortedName": "ARMOA CRISTIAN",
+    "excelRows": [
+      16
+    ],
+    "payload": {
+      "dni": "900000002",
+      "firstName": "CRISTIAN",
+      "lastName": "ARMOA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "3f3a642c-5fa0-4711-ae65-672148b74822",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "AYALA ANALIA",
+    "normalizedName": "AYALA ANALIA",
+    "sortedName": "ANALIA AYALA",
+    "excelRows": [
+      17
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "b8bae188-1b10-4118-8cd3-e97cfd4aeec5",
+    "studentDni": "18815763",
+    "currentFullName": "AYALA ANALIA"
+  },
+  {
+    "fullName": "AYALA BENITEZ LUZ MIA",
+    "normalizedName": "AYALA BENITEZ LUZ MIA",
+    "sortedName": "AYALA BENITEZ LUZ MIA",
+    "excelRows": [
+      18
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "757fbdf4-80af-4d43-ae09-fb75ece1a012",
+    "studentDni": "54267180",
+    "currentFullName": "AYALA BENITEZ LUZ MIA"
+  },
+  {
+    "fullName": "AYALA BENITEZ MAIA",
+    "normalizedName": "AYALA BENITEZ MAIA",
+    "sortedName": "AYALA BENITEZ MAIA",
+    "excelRows": [
+      19
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "4e6cb7ef-a16e-46a8-9e0c-9f72abd6c513",
+    "studentDni": "55122363",
+    "currentFullName": "AYALA BENITEZ MAIA"
+  },
+  {
+    "fullName": "BAEZ MARINA",
+    "normalizedName": "BAEZ MARINA",
+    "sortedName": "BAEZ MARINA",
+    "excelRows": [
+      20
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "15dccc6f-7cc5-475b-9704-768d3f3b7bcb",
+    "studentDni": "34219846",
+    "currentFullName": "BAEZ MARINA"
+  },
+  {
+    "fullName": "BAEZ SANDRA",
+    "normalizedName": "BAEZ SANDRA",
+    "sortedName": "BAEZ SANDRA",
+    "excelRows": [
+      21
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "df69102b-aa50-44da-8cac-a0e502072582",
+    "studentDni": "39607144",
+    "currentFullName": "BAEZ SANDRA"
+  },
+  {
+    "fullName": "BALBUENA SOFIA CONSTANZA",
+    "normalizedName": "BALBUENA SOFIA CONSTANZA",
+    "sortedName": "BALBUENA CONSTANZA SOFIA",
+    "excelRows": [
+      22
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "220a254e-381b-4236-9c90-c8fa2bae00c3",
+    "studentDni": "56314515",
+    "currentFullName": "BALBUENA SOFIA CONSTANZA"
+  },
+  {
+    "fullName": "BARBIERI MABEL",
+    "normalizedName": "BARBIERI MABEL",
+    "sortedName": "BARBIERI MABEL",
+    "excelRows": [
+      23
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "022f2847-381c-4541-891f-0f38253235f5",
+    "studentDni": "31406123",
+    "currentFullName": "BARBIERI MABEL"
+  },
+  {
+    "fullName": "BARBOZA GUSTAVO",
+    "normalizedName": "BARBOZA GUSTAVO",
+    "sortedName": "BARBOZA GUSTAVO",
+    "excelRows": [
+      24
+    ],
+    "payload": {
+      "dni": "900000003",
+      "firstName": "GUSTAVO",
+      "lastName": "BARBOZA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "9c01c06f-2308-46f3-bb4b-4346037da818",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "BARNICHEA GUILLERMINA",
+    "normalizedName": "BARNICHEA GUILLERMINA",
+    "sortedName": "BARNICHEA GUILLERMINA",
+    "excelRows": [
+      25
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "aa6f3582-c3be-4632-a28b-6a52572af725",
+    "studentDni": "53960039",
+    "currentFullName": "BARNICHEA GUILLERMINA"
+  },
+  {
+    "fullName": "BARRETO FANNY",
+    "normalizedName": "BARRETO FANNY",
+    "sortedName": "BARRETO FANNY",
+    "excelRows": [
+      26
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "9890b644-50c6-47a6-9ff4-ced2356cfa6b",
+    "studentDni": "29688673",
+    "currentFullName": "BARRETO FANNY"
+  },
+  {
+    "fullName": "BARRIOS JUDITH",
+    "normalizedName": "BARRIOS JUDITH",
+    "sortedName": "BARRIOS JUDITH",
+    "excelRows": [
+      27
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "bbfad32d-4feb-40a4-8fea-90c12297c9d7",
+    "studentDni": "12383090",
+    "currentFullName": "BARRIOS JUDITH"
+  },
+  {
+    "fullName": "BAUZA NICOLE",
+    "normalizedName": "BAUZA NICOLE",
+    "sortedName": "BAUZA NICOLE",
+    "excelRows": [
+      28
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "598cc625-80fc-4755-acd8-a4d0f57e7641",
+    "studentDni": "54584203",
+    "currentFullName": "BAUZA NICOLE"
+  },
+  {
+    "fullName": "BAY LAURA",
+    "normalizedName": "BAY LAURA",
+    "sortedName": "BAY LAURA",
+    "excelRows": [
+      29
+    ],
+    "payload": {
+      "dni": "900000004",
+      "firstName": "LAURA",
+      "lastName": "BAY",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "d02ba4b9-5554-4ffc-8b8e-16153848d2a7",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "BENEGAS NEYDES",
+    "normalizedName": "BENEGAS NEYDES",
+    "sortedName": "BENEGAS NEYDES",
+    "excelRows": [
+      30
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "df2e9a16-b155-43e6-9ffd-e70c5026481b",
+    "studentDni": "95818738",
+    "currentFullName": "BENEGAS NEYDES"
+  },
+  {
+    "fullName": "BENITEZ DANIEL",
+    "normalizedName": "BENITEZ DANIEL",
+    "sortedName": "BENITEZ DANIEL",
+    "excelRows": [
+      31
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "a4030ecd-e658-4a4d-a015-e7d9302e6d58",
+    "studentDni": "37044962",
+    "currentFullName": "BENITEZ DANIEL"
+  },
+  {
+    "fullName": "BENITEZ JUANA",
+    "normalizedName": "BENITEZ JUANA",
+    "sortedName": "BENITEZ JUANA",
+    "excelRows": [
+      32
+    ],
+    "payload": {
+      "dni": "900000005",
+      "firstName": "JUANA",
+      "lastName": "BENITEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "90655459-86be-4d37-800a-a9a6222c3d19",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "BENITEZ MARISOL",
+    "normalizedName": "BENITEZ MARISOL",
+    "sortedName": "BENITEZ MARISOL",
+    "excelRows": [
+      33
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c3e2f29d-7147-4ffd-967b-ec3c9472b6ac",
+    "studentDni": "48147245",
+    "currentFullName": "BENITEZ MARISOL"
+  },
+  {
+    "fullName": "BERNAL FATIMA",
+    "normalizedName": "BERNAL FATIMA",
+    "sortedName": "BERNAL FATIMA",
+    "excelRows": [
+      34
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "a5f67efa-a60d-465c-996d-acc357010e3b",
+    "studentDni": "34349858",
+    "currentFullName": "BERNAL FATIMA"
+  },
+  {
+    "fullName": "BORDON DELFINA",
+    "normalizedName": "BORDON DELFINA",
+    "sortedName": "BORDON DELFINA",
+    "excelRows": [
+      35
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "7155ff13-ed1e-40fc-af42-d30383691132",
+    "studentDni": "50193211",
+    "currentFullName": "BORDON DELFINA"
+  },
+  {
+    "fullName": "BRIGNOLE FLORENCIA ANDREA",
+    "normalizedName": "BRIGNOLE FLORENCIA ANDREA",
+    "sortedName": "ANDREA BRIGNOLE FLORENCIA",
+    "excelRows": [
+      36
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "1e53518b-8e46-4670-a5c6-72c101b35134",
+    "studentDni": "33625473",
+    "currentFullName": "BRIGNOLE FLORENCIA ANDREA"
+  },
+  {
+    "fullName": "BRITEZ MARIA ANGELICA",
+    "normalizedName": "BRITEZ MARIA ANGELICA",
+    "sortedName": "ANGELICA BRITEZ MARIA",
+    "excelRows": [
+      37
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "32a952d0-5c16-456e-be91-e928d6ca4eef",
+    "studentDni": "29484376",
+    "currentFullName": "BRITEZ MARIA ANGELICA"
+  },
+  {
+    "fullName": "BULLON EUGENIA",
+    "normalizedName": "BULLON EUGENIA",
+    "sortedName": "BULLON EUGENIA",
+    "excelRows": [
+      38
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c4cbc2b3-137b-4a1d-918a-69d45e26f725",
+    "studentDni": "48275789",
+    "currentFullName": "BULLON EUGENIA"
+  },
+  {
+    "fullName": "CABALLERO AGOSTINA MICAELA",
+    "normalizedName": "CABALLERO AGOSTINA MICAELA",
+    "sortedName": "AGOSTINA CABALLERO MICAELA",
+    "excelRows": [
+      39
+    ],
+    "payload": {
+      "dni": "900000006",
+      "firstName": "AGOSTINA MICAELA",
+      "lastName": "CABALLERO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "035b5843-2ae2-4d7d-9cc5-fb59cef2107a",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "CABALLERO CLAUDIA",
+    "normalizedName": "CABALLERO CLAUDIA",
+    "sortedName": "CABALLERO CLAUDIA",
+    "excelRows": [
+      40
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "f237f4bc-8093-431f-8598-ff503ef70187",
+    "studentDni": "23730114",
+    "currentFullName": "CABALLERO CLAUDIA"
+  },
+  {
+    "fullName": "CABRERA ACOSTA DEBORA",
+    "normalizedName": "CABRERA ACOSTA DEBORA",
+    "sortedName": "ACOSTA CABRERA DEBORA",
+    "excelRows": [
+      41
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "9967814e-bd85-4322-8516-09b903de0237",
+    "studentDni": "31670257",
+    "currentFullName": "CABRERA ACOSTA DEBORA"
+  },
+  {
+    "fullName": "CABRERA CLAUDIA",
+    "normalizedName": "CABRERA CLAUDIA",
+    "sortedName": "CABRERA CLAUDIA",
+    "excelRows": [
+      42
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "997c0e8e-9152-449a-8ffb-9b68a7536349",
+    "studentDni": "25228859",
+    "currentFullName": "CABRERA CLAUDIA"
+  },
+  {
+    "fullName": "CABRERA PIA",
+    "normalizedName": "CABRERA PIA",
+    "sortedName": "CABRERA PIA",
+    "excelRows": [
+      43
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e0d23592-89d1-42df-a4b5-a726468411be",
+    "studentDni": "54749685",
+    "currentFullName": "CABRERA PIA"
+  },
+  {
+    "fullName": "CACERES FERNANDEZ AGOSTINA",
+    "normalizedName": "CACERES FERNANDEZ AGOSTINA",
+    "sortedName": "AGOSTINA CACERES FERNANDEZ",
+    "excelRows": [
+      44
+    ],
+    "payload": {
+      "dni": "900000007",
+      "firstName": "AGOSTINA",
+      "lastName": "CACERES FERNANDEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "2a2e6f64-2574-4e4e-84a3-53e8af6ed29d",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "CANDIA ELIZABETH",
+    "normalizedName": "CANDIA ELIZABETH",
+    "sortedName": "CANDIA ELIZABETH",
+    "excelRows": [
+      45
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c6108d50-a4d4-4193-8305-c3e06b7eaf17",
+    "studentDni": "30776636",
+    "currentFullName": "CANDIA ELIZABETH"
+  },
+  {
+    "fullName": "CANEPA SELENE AYELEN",
+    "normalizedName": "CANEPA SELENE AYELEN",
+    "sortedName": "AYELEN CANEPA SELENE",
+    "excelRows": [
+      46
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "88f8e49f-6866-4aa4-8a6c-20a69ce1b7f4",
+    "studentDni": "39320125",
+    "currentFullName": "CANEPA SELENE AYELEN"
+  },
+  {
+    "fullName": "CANO NAYELI",
+    "normalizedName": "CANO NAYELI",
+    "sortedName": "CANO NAYELI",
+    "excelRows": [
+      47
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "1071b1bd-3026-4810-b527-6d33437e99cd",
+    "studentDni": "54583527",
+    "currentFullName": "CANO NAYELI"
+  },
+  {
+    "fullName": "CANTON AMADO",
+    "normalizedName": "CANTON AMADO",
+    "sortedName": "AMADO CANTON",
+    "excelRows": [
+      48
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "2eaa7af6-8603-44a1-a71a-2407b668372a",
+    "studentDni": "12428786",
+    "currentFullName": "CANTON AMADO"
+  },
+  {
+    "fullName": "CARRERA MIA",
+    "normalizedName": "CARRERA MIA",
+    "sortedName": "CARRERA MIA",
+    "excelRows": [
+      49
+    ],
+    "payload": {
+      "dni": "900000008",
+      "firstName": "MIA",
+      "lastName": "CARRERA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "e376b96b-d32d-48c7-8e3a-28a9f7d77884",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "CASTILLO CAMILA",
+    "normalizedName": "CASTILLO CAMILA",
+    "sortedName": "CAMILA CASTILLO",
+    "excelRows": [
+      50
+    ],
+    "payload": {
+      "dni": "900000009",
+      "firstName": "CAMILA",
+      "lastName": "CASTILLO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "f92f8165-7ab7-4879-a946-aae176a9ddf1",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "CAZAL VIRGINIA ISABELLA",
+    "normalizedName": "CAZAL VIRGINIA ISABELLA",
+    "sortedName": "CAZAL ISABELLA VIRGINIA",
+    "excelRows": [
+      51
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "56bd8b07-68d5-4c19-b828-2bfeb4fbfb3e",
+    "studentDni": "56614045",
+    "currentFullName": "CAZAL VIRGINIA ISABELLA"
+  },
+  {
+    "fullName": "CELLIO FLORENCIA",
+    "normalizedName": "CELLIO FLORENCIA",
+    "sortedName": "CELLIO FLORENCIA",
+    "excelRows": [
+      52
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c976f4cf-e794-4697-a578-76e46a4d7c57",
+    "studentDni": "39605453",
+    "currentFullName": "CELLIO FLORENCIA"
+  },
+  {
+    "fullName": "CELLIO RUTH",
+    "normalizedName": "CELLIO RUTH",
+    "sortedName": "CELLIO RUTH",
+    "excelRows": [
+      53
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "668965b1-0738-4249-b880-ac0dff06a17b",
+    "studentDni": "42036829",
+    "currentFullName": "CELLIO RUTH"
+  },
+  {
+    "fullName": "CENTURION YAMILA",
+    "normalizedName": "CENTURION YAMILA",
+    "sortedName": "CENTURION YAMILA",
+    "excelRows": [
+      54
+    ],
+    "payload": {
+      "dni": "900000010",
+      "firstName": "YAMILA",
+      "lastName": "CENTURION",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "bd35a90f-ad49-49f4-980e-92690eec62ff",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "CESPEDES SOLEDAD",
+    "normalizedName": "CESPEDES SOLEDAD",
+    "sortedName": "CESPEDES SOLEDAD",
+    "excelRows": [
+      55
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "b48cbe49-b182-45ec-a845-5a64ef0ab8b7",
+    "studentDni": "26081295",
+    "currentFullName": "CESPEDES SOLEDAD"
+  },
+  {
+    "fullName": "CHAMORRO SOFIA",
+    "normalizedName": "CHAMORRO SOFIA",
+    "sortedName": "CHAMORRO SOFIA",
+    "excelRows": [
+      56
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "f5ca223e-79ec-4546-a181-36a488589191",
+    "studentDni": "54267174",
+    "currentFullName": "CHAMORRO SOFIA"
+  },
+  {
+    "fullName": "CIGEL GRACIELA",
+    "normalizedName": "CIGEL GRACIELA",
+    "sortedName": "CIGEL GRACIELA",
+    "excelRows": [
+      57
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "0138b18b-e037-47a5-ae52-fbe92f0ac7ff",
+    "studentDni": "24140567",
+    "currentFullName": "CIGEL GRACIELA"
+  },
+  {
+    "fullName": "CORONEL MARTINA ANGELES",
+    "normalizedName": "CORONEL MARTINA ANGELES",
+    "sortedName": "ANGELES CORONEL MARTINA",
+    "excelRows": [
+      58
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d609ebd0-85ea-45c8-aae0-c8ad16036947",
+    "studentDni": "59185667",
+    "currentFullName": "CORONEL MARTINA ANGELES"
+  },
+  {
+    "fullName": "CORTEZ AVRIL",
+    "normalizedName": "CORTEZ AVRIL",
+    "sortedName": "AVRIL CORTEZ",
+    "excelRows": [
+      59
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "2d2d8459-38c0-4d13-8c4e-217789edcce0",
+    "studentDni": "52499283",
+    "currentFullName": "CORTEZ AVRIL"
+  },
+  {
+    "fullName": "CORTI VIOLETA",
+    "normalizedName": "CORTI VIOLETA",
+    "sortedName": "CORTI VIOLETA",
+    "excelRows": [
+      60
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "f20f54d6-ebcc-4829-b110-67f0c1c7aae1",
+    "studentDni": "56314137",
+    "currentFullName": "CORTI VIOLETA"
+  },
+  {
+    "fullName": "CUQUEJO ALENKA",
+    "normalizedName": "CUQUEJO ALENKA",
+    "sortedName": "ALENKA CUQUEJO",
+    "excelRows": [
+      61
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "eb25e923-17e3-4ec6-9804-c1bf33139d7e",
+    "studentDni": "43712041",
+    "currentFullName": "CUQUEJO ALENKA"
+  },
+  {
+    "fullName": "D AUGERO CLAUDIA BEATRIZ",
+    "normalizedName": "D AUGERO CLAUDIA BEATRIZ",
+    "sortedName": "AUGERO BEATRIZ CLAUDIA D",
+    "excelRows": [
+      62
+    ],
+    "payload": {
+      "dni": "900000011",
+      "firstName": "CLAUDIA BEATRIZ",
+      "lastName": "D AUGERO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "e62b3706-2430-4170-9bf2-95599315973d",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DE LOS SANTOS MELISA",
+    "normalizedName": "DE LOS SANTOS MELISA",
+    "sortedName": "DE LOS MELISA SANTOS",
+    "excelRows": [
+      63
+    ],
+    "payload": {
+      "dni": "900000012",
+      "firstName": "MELISA",
+      "lastName": "DE LOS SANTOS",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "06a131bb-6c18-49f1-995e-7a063a75984f",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DE MICHIELIS AZUL",
+    "normalizedName": "DE MICHIELIS AZUL",
+    "sortedName": "AZUL DE MICHIELIS",
+    "excelRows": [
+      64
+    ],
+    "payload": {
+      "dni": "900000013",
+      "firstName": "AZUL",
+      "lastName": "DE MICHIELIS",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "9e572ad5-ab00-431a-8a26-2c4f164bc395",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DEL TURCO RITA",
+    "normalizedName": "DEL TURCO RITA",
+    "sortedName": "DEL RITA TURCO",
+    "excelRows": [
+      65
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "955a0573-f1c3-4810-84bd-f657fd6b734c",
+    "studentDni": "40486420",
+    "currentFullName": "DEL TURCO RITA"
+  },
+  {
+    "fullName": "DEL VALLE AITANA NICOL",
+    "normalizedName": "DEL VALLE AITANA NICOL",
+    "sortedName": "AITANA DEL NICOL VALLE",
+    "excelRows": [
+      66
+    ],
+    "payload": {
+      "dni": "900000014",
+      "firstName": "AITANA NICOL",
+      "lastName": "DEL VALLE",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "bbaf8c54-9e44-4aa6-bc23-a114e76f3ef1",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DELALOYE GRACIELA",
+    "normalizedName": "DELALOYE GRACIELA",
+    "sortedName": "DELALOYE GRACIELA",
+    "excelRows": [
+      67
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "a6104629-708b-46d0-9b13-5d074bcbed25",
+    "studentDni": "13647051",
+    "currentFullName": "DELALOYE GRACIELA"
+  },
+  {
+    "fullName": "DELGADO MARIA CARLA",
+    "normalizedName": "DELGADO MARIA CARLA",
+    "sortedName": "CARLA DELGADO MARIA",
+    "excelRows": [
+      68
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "61451526-5906-420c-9d49-ac14b3e7e1e7",
+    "studentDni": "25229222",
+    "currentFullName": "DELGADO MARIA CARLA"
+  },
+  {
+    "fullName": "DELLAGNOLO CAMILA",
+    "normalizedName": "DELLAGNOLO CAMILA",
+    "sortedName": "CAMILA DELLAGNOLO",
+    "excelRows": [
+      69
+    ],
+    "payload": {
+      "dni": "900000015",
+      "firstName": "CAMILA",
+      "lastName": "DELLAGNOLO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "02d9023c-0a67-44a3-bcc7-2b4b3a754f65",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DELLAGNOLO MAGALI",
+    "normalizedName": "DELLAGNOLO MAGALI",
+    "sortedName": "DELLAGNOLO MAGALI",
+    "excelRows": [
+      70
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "ddd1ae0f-e5b1-4aa5-a1e7-5a96798d5786",
+    "studentDni": "36205396",
+    "currentFullName": "DELLAGNOLO MAGALI"
+  },
+  {
+    "fullName": "DIARTE FRANCESCA",
+    "normalizedName": "DIARTE FRANCESCA",
+    "sortedName": "DIARTE FRANCESCA",
+    "excelRows": [
+      71
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "78a30a79-2e8a-497a-a971-98c900e8197e",
+    "studentDni": "58166661",
+    "currentFullName": "DIARTE FRANCESCA"
+  },
+  {
+    "fullName": "DIAZ AYELEN",
+    "normalizedName": "DIAZ AYELEN",
+    "sortedName": "AYELEN DIAZ",
+    "excelRows": [
+      72
+    ],
+    "payload": {
+      "dni": "900000016",
+      "firstName": "AYELEN",
+      "lastName": "DIAZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "52c35e31-14c2-4f84-85d4-f89e9107be74",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DOMINGUEZ NAHUEL",
+    "normalizedName": "DOMINGUEZ NAHUEL",
+    "sortedName": "DOMINGUEZ NAHUEL",
+    "excelRows": [
+      73
+    ],
+    "payload": {
+      "dni": "900000017",
+      "firstName": "NAHUEL",
+      "lastName": "DOMINGUEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "92bb2d92-132e-4a5b-a36d-2bbab6e6ab11",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DUARTE CATALINA",
+    "normalizedName": "DUARTE CATALINA",
+    "sortedName": "CATALINA DUARTE",
+    "excelRows": [
+      74
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "85a80831-c1f1-4c7e-8198-ee05d349a8f4",
+    "studentDni": "56314099",
+    "currentFullName": "DUARTE CATALINA"
+  },
+  {
+    "fullName": "DUARTE CECILIA VANINA",
+    "normalizedName": "DUARTE CECILIA VANINA",
+    "sortedName": "CECILIA DUARTE VANINA",
+    "excelRows": [
+      75
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "5661b9ff-03e3-4951-b426-09dc613a59f5",
+    "studentDni": "37799520",
+    "currentFullName": "DUARTE CECILIA VANINA"
+  },
+  {
+    "fullName": "DUARTE GUILIANA",
+    "normalizedName": "DUARTE GUILIANA",
+    "sortedName": "DUARTE GUILIANA",
+    "excelRows": [
+      76
+    ],
+    "payload": {
+      "dni": "900000018",
+      "firstName": "GUILIANA",
+      "lastName": "DUARTE",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "6ca401a1-db2a-43c5-ac31-52923f8bdd27",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "DUARTE SUNNY",
+    "normalizedName": "DUARTE SUNNY",
+    "sortedName": "DUARTE SUNNY",
+    "excelRows": [
+      77
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d29a7fa8-7611-4762-94cd-4680bc6ce241",
+    "studentDni": "22192232",
+    "currentFullName": "DUARTE SUNNY"
+  },
+  {
+    "fullName": "ELLI JOAQUINA",
+    "normalizedName": "ELLI JOAQUINA",
+    "sortedName": "ELLI JOAQUINA",
+    "excelRows": [
+      78
+    ],
+    "payload": {
+      "dni": "900000019",
+      "firstName": "JOAQUINA",
+      "lastName": "ELLI",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "21b2257c-7492-463f-bed4-0b5ca7ca113b",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "ENCISO PATRICIO",
+    "normalizedName": "ENCISO PATRICIO",
+    "sortedName": "ENCISO PATRICIO",
+    "excelRows": [
+      79
+    ],
+    "payload": {
+      "dni": "900000020",
+      "firstName": "PATRICIO",
+      "lastName": "ENCISO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "9bfed794-3f6d-4818-9eb6-db2137c537aa",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "EYMANN KATIA",
+    "normalizedName": "EYMANN KATIA",
+    "sortedName": "EYMANN KATIA",
+    "excelRows": [
+      80
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "bfa38797-b517-4143-b7d1-0c893df2af11",
+    "studentDni": "38577460",
+    "currentFullName": "EYMANN KATIA"
+  },
+  {
+    "fullName": "FABIO BENICIO",
+    "normalizedName": "FABIO BENICIO",
+    "sortedName": "BENICIO FABIO",
+    "excelRows": [
+      81
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c047fbfa-5531-4b7f-ac51-d00609133285",
+    "studentDni": "54951947",
+    "currentFullName": "FABIO BENICIO"
+  },
+  {
+    "fullName": "FERNANDESZ JULIETA",
+    "normalizedName": "FERNANDESZ JULIETA",
+    "sortedName": "FERNANDESZ JULIETA",
+    "excelRows": [
+      82
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "79224b93-2a40-4d0e-85ee-caec0d3c3a01",
+    "studentDni": "41270463",
+    "currentFullName": "FERNANDESZ JULIETA"
+  },
+  {
+    "fullName": "FERNANDEZ CELENNE GERALDINE",
+    "normalizedName": "FERNANDEZ CELENNE GERALDINE",
+    "sortedName": "CELENNE FERNANDEZ GERALDINE",
+    "excelRows": [
+      83
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "ddf38b55-0d22-466e-b13c-c67a1631f7f3",
+    "studentDni": "57392291",
+    "currentFullName": "FERNANDEZ CELENNE GERALDINE"
+  },
+  {
+    "fullName": "FERNANDEZ LETICIA AILEN",
+    "normalizedName": "FERNANDEZ LETICIA AILEN",
+    "sortedName": "AILEN FERNANDEZ LETICIA",
+    "excelRows": [
+      84
+    ],
+    "payload": {
+      "dni": "900000021",
+      "firstName": "LETICIA AILEN",
+      "lastName": "FERNANDEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "9824cac2-38f9-4a24-a519-1a0a83d41c65",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "FERNANDEZ PATRI GAIA",
+    "normalizedName": "FERNANDEZ PATRI GAIA",
+    "sortedName": "FERNANDEZ GAIA PATRI",
+    "excelRows": [
+      85
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "25c63902-bc14-4221-a549-441c09cf4768",
+    "studentDni": "54266359",
+    "currentFullName": "FERNANDEZ PATRI GAIA"
+  },
+  {
+    "fullName": "FLEITAS MARIA JOSE",
+    "normalizedName": "FLEITAS MARIA JOSE",
+    "sortedName": "FLEITAS JOSE MARIA",
+    "excelRows": [
+      86
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "2d77e8b7-c2d6-472c-91b0-c3af17e916e7",
+    "studentDni": "36669916",
+    "currentFullName": "FLEITAS MARIA JOSE"
+  },
+  {
+    "fullName": "FLEITAS TERESA",
+    "normalizedName": "FLEITAS TERESA",
+    "sortedName": "FLEITAS TERESA",
+    "excelRows": [
+      87
+    ],
+    "payload": {
+      "dni": "900000022",
+      "firstName": "TERESA",
+      "lastName": "FLEITAS",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "318d8778-eeff-40e8-811d-8000e75edc20",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "FLORENTIN SELENE",
+    "normalizedName": "FLORENTIN SELENE",
+    "sortedName": "FLORENTIN SELENE",
+    "excelRows": [
+      88
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "dab98409-0209-4981-a923-b964aed7d26f",
+    "studentDni": "53792917",
+    "currentFullName": "FLORENTIN SELENE"
+  },
+  {
+    "fullName": "FLORES ARGUELLO CAMILA",
+    "normalizedName": "FLORES ARGUELLO CAMILA",
+    "sortedName": "ARGUELLO CAMILA FLORES",
+    "excelRows": [
+      89
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "ae113266-bea6-4ec2-b7ab-9841fbe7bde5",
+    "studentDni": "58262775",
+    "currentFullName": "FLORES ARGUELLO CAMILA"
+  },
+  {
+    "fullName": "FLORES ARGUELLO VALENTINA",
+    "normalizedName": "FLORES ARGUELLO VALENTINA",
+    "sortedName": "ARGUELLO FLORES VALENTINA",
+    "excelRows": [
+      90
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "5a8926bc-871e-4beb-a27e-91c00f38f67c",
+    "studentDni": "53790015",
+    "currentFullName": "FLORES ARGUELLO VALENTINA"
+  },
+  {
+    "fullName": "FLORES GUADALUPE",
+    "normalizedName": "FLORES GUADALUPE",
+    "sortedName": "FLORES GUADALUPE",
+    "excelRows": [
+      91
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e775ae54-82f6-431f-8b77-e66485f4d4d8",
+    "studentDni": "41607743",
+    "currentFullName": "FLORES GUADALUPE"
+  },
+  {
+    "fullName": "FLORES -TANGO CAMILA",
+    "normalizedName": "FLORES TANGO CAMILA",
+    "sortedName": "CAMILA FLORES TANGO",
+    "excelRows": [
+      92
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "f78f638a-546b-4e50-afc4-d54f655bf96a",
+    "studentDni": "51084762",
+    "currentFullName": "FLORES -TANGO CAMILA"
+  },
+  {
+    "fullName": "FLORES URSULA",
+    "normalizedName": "FLORES URSULA",
+    "sortedName": "FLORES URSULA",
+    "excelRows": [
+      93
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "fe2876e4-6433-4d44-a5e3-89a8a0d67433",
+    "studentDni": "52264248",
+    "currentFullName": "FLORES URSULA"
+  },
+  {
+    "fullName": "GALEANO ANAPAULA",
+    "normalizedName": "GALEANO ANAPAULA",
+    "sortedName": "ANAPAULA GALEANO",
+    "excelRows": [
+      94
+    ],
+    "payload": {
+      "dni": "900000023",
+      "firstName": "ANAPAULA",
+      "lastName": "GALEANO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "c01cd7ac-53dc-4bbc-a264-156ba2c47740",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GALEANO SILVIA",
+    "normalizedName": "GALEANO SILVIA",
+    "sortedName": "GALEANO SILVIA",
+    "excelRows": [
+      95
+    ],
+    "payload": {
+      "dni": "900000024",
+      "firstName": "SILVIA",
+      "lastName": "GALEANO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "cc2dd8cf-6d27-4160-9f21-e7ab6e70caaa",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GAMARRA LUCAS",
+    "normalizedName": "GAMARRA LUCAS",
+    "sortedName": "GAMARRA LUCAS",
+    "excelRows": [
+      96
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "daada42a-8ccb-40ad-b8c8-66f65dcf2a39",
+    "studentDni": "95726481",
+    "currentFullName": "GAMARRA LUCAS"
+  },
+  {
+    "fullName": "GAUNA NOAH BENJAMIN",
+    "normalizedName": "GAUNA NOAH BENJAMIN",
+    "sortedName": "BENJAMIN GAUNA NOAH",
+    "excelRows": [
+      97
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "f0bf368a-4c7b-40a1-9ce3-c7f4719efec9",
+    "studentDni": "55588608",
+    "currentFullName": "GAUNA NOAH BENJAMIN"
+  },
+  {
+    "fullName": "GAUTO FRANCESCA",
+    "normalizedName": "GAUTO FRANCESCA",
+    "sortedName": "FRANCESCA GAUTO",
+    "excelRows": [
+      98
+    ],
+    "payload": {
+      "dni": "900000025",
+      "firstName": "FRANCESCA",
+      "lastName": "GAUTO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "448e87a5-d05c-42b0-ad59-8a81257fcb16",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GERARDO OBREGON",
+    "normalizedName": "GERARDO OBREGON",
+    "sortedName": "GERARDO OBREGON",
+    "excelRows": [
+      99
+    ],
+    "payload": {
+      "dni": "900000026",
+      "firstName": "GERARDO",
+      "lastName": "OBREGON",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "a4311dc4-9586-4748-ba75-e8267325ce92",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GIMENEZ DELFINA",
+    "normalizedName": "GIMENEZ DELFINA",
+    "sortedName": "DELFINA GIMENEZ",
+    "excelRows": [
+      100
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "18c12bef-a4e7-4fc1-854a-91c8347c48f9",
+    "studentDni": "16138846",
+    "currentFullName": "GIMENEZ DELFINA"
+  },
+  {
+    "fullName": "GIMENEZ GABRIELA",
+    "normalizedName": "GIMENEZ GABRIELA",
+    "sortedName": "GABRIELA GIMENEZ",
+    "excelRows": [
+      101
+    ],
+    "payload": {
+      "dni": "900000027",
+      "firstName": "GABRIELA",
+      "lastName": "GIMENEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "d883266d-b3d1-4298-a82f-c9c1c3fba8f9",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GIMENEZ KIARA",
+    "normalizedName": "GIMENEZ KIARA",
+    "sortedName": "GIMENEZ KIARA",
+    "excelRows": [
+      102
+    ],
+    "payload": {
+      "dni": "900000028",
+      "firstName": "KIARA",
+      "lastName": "GIMENEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "a6547d41-ef22-43f1-b207-1031963df8c7",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GIMENEZ NATALIA SOLEDAD",
+    "normalizedName": "GIMENEZ NATALIA SOLEDAD",
+    "sortedName": "GIMENEZ NATALIA SOLEDAD",
+    "excelRows": [
+      103
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "ff5d8b46-3458-40cd-a9a8-9b47fc500d33",
+    "studentDni": "26211779",
+    "currentFullName": "GIMENEZ NATALIA SOLEDAD"
+  },
+  {
+    "fullName": "GISSELLA MIQUEL",
+    "normalizedName": "GISSELLA MIQUEL",
+    "sortedName": "GISSELLA MIQUEL",
+    "excelRows": [
+      104
+    ],
+    "payload": {
+      "dni": "900000029",
+      "firstName": "GISSELLA",
+      "lastName": "MIQUEL",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "195b6bb2-2205-4c1d-8d17-facdd38bd1ad",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GLERIA PATRICIA",
+    "normalizedName": "GLERIA PATRICIA",
+    "sortedName": "GLERIA PATRICIA",
+    "excelRows": [
+      105
+    ],
+    "payload": {
+      "dni": "900000030",
+      "firstName": "PATRICIA",
+      "lastName": "GLERIA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "79412d0d-8657-40b6-b6db-04177f5f980e",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GOMEZ ANA MARIA",
+    "normalizedName": "GOMEZ ANA MARIA",
+    "sortedName": "ANA GOMEZ MARIA",
+    "excelRows": [
+      106
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "36fbeaff-eaf4-4acd-bfed-95fe5e3d07c3",
+    "studentDni": "16374176",
+    "currentFullName": "GOMEZ ANA MARIA"
+  },
+  {
+    "fullName": "GOMEZ DANNA GUADALUPE",
+    "normalizedName": "GOMEZ DANNA GUADALUPE",
+    "sortedName": "DANNA GOMEZ GUADALUPE",
+    "excelRows": [
+      107
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "6dca4c54-e7dd-421a-bda6-d4881238236d",
+    "studentDni": "58996865",
+    "currentFullName": "GOMEZ DANNA GUADALUPE"
+  },
+  {
+    "fullName": "GOMEZ FEDERICO ADRIAN",
+    "normalizedName": "GOMEZ FEDERICO ADRIAN",
+    "sortedName": "ADRIAN FEDERICO GOMEZ",
+    "excelRows": [
+      108
+    ],
+    "payload": {
+      "dni": "900000031",
+      "firstName": "FEDERICO ADRIAN",
+      "lastName": "GOMEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "5f841506-570f-4095-a9be-71b922850761",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GONZALEZ ALEJANDRA",
+    "normalizedName": "GONZALEZ ALEJANDRA",
+    "sortedName": "ALEJANDRA GONZALEZ",
+    "excelRows": [
+      109
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "21c54b2e-1542-4f84-a96d-1758f848b973",
+    "studentDni": "44036265",
+    "currentFullName": "GONZALEZ ALEJANDRA"
+  },
+  {
+    "fullName": "GONZALEZ ANGEL",
+    "normalizedName": "GONZALEZ ANGEL",
+    "sortedName": "ANGEL GONZALEZ",
+    "excelRows": [
+      110
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "327106db-080d-4a7a-a7d2-b8fee7b19d83",
+    "studentDni": "55591217",
+    "currentFullName": "GONZALEZ ANGEL"
+  },
+  {
+    "fullName": "GONZALEZ CELENE",
+    "normalizedName": "GONZALEZ CELENE",
+    "sortedName": "CELENE GONZALEZ",
+    "excelRows": [
+      111
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "89b51d7f-4a99-4805-8f75-13b32420f8f0",
+    "studentDni": "41383292",
+    "currentFullName": "GONZALEZ CELENE"
+  },
+  {
+    "fullName": "GONZALEZ ISABELLA",
+    "normalizedName": "GONZALEZ ISABELLA",
+    "sortedName": "GONZALEZ ISABELLA",
+    "excelRows": [
+      112
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d8f72c2c-5e42-4238-801d-6c30ba14b5d2",
+    "studentDni": "54268908",
+    "currentFullName": "GONZALEZ ISABELLA"
+  },
+  {
+    "fullName": "GONZALEZ MONICA",
+    "normalizedName": "GONZALEZ MONICA",
+    "sortedName": "GONZALEZ MONICA",
+    "excelRows": [
+      113
+    ],
+    "payload": {
+      "dni": "900000032",
+      "firstName": "MONICA",
+      "lastName": "GONZALEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "f61d7eb7-a42e-4bc0-836b-a1655d83c94b",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "GONZALEZ VIERA PILAR",
+    "normalizedName": "GONZALEZ VIERA PILAR",
+    "sortedName": "GONZALEZ PILAR VIERA",
+    "excelRows": [
+      114
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "2896238a-f2a3-4c9b-8ea2-22083e8f59a9",
+    "studentDni": "56310473",
+    "currentFullName": "GONZALEZ VIERA PILAR"
+  },
+  {
+    "fullName": "GUARE MATTEO NAVILA",
+    "normalizedName": "GUARE MATTEO NAVILA",
+    "sortedName": "GUARE MATTEO NAVILA",
+    "excelRows": [
+      115
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "ba9de018-4dcf-4c09-931c-4d569ebdbe1f",
+    "studentDni": "46522992",
+    "currentFullName": "GUARE MATTEO NAVILA"
+  },
+  {
+    "fullName": "GUERRA SILVANA",
+    "normalizedName": "GUERRA SILVANA",
+    "sortedName": "GUERRA SILVANA",
+    "excelRows": [
+      116
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "454a2da4-1337-4d63-bc8c-676b36c2098f",
+    "studentDni": "31482126",
+    "currentFullName": "GUERRA SILVANA"
+  },
+  {
+    "fullName": "GUTIERRES NAHIARA",
+    "normalizedName": "GUTIERRES NAHIARA",
+    "sortedName": "GUTIERRES NAHIARA",
+    "excelRows": [
+      117
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "dd5e52c4-3ac5-468c-b81e-32744f518de8",
+    "studentDni": "53960342",
+    "currentFullName": "GUTIERRES NAHIARA"
+  },
+  {
+    "fullName": "HERNANDEZ OLIVIA",
+    "normalizedName": "HERNANDEZ OLIVIA",
+    "sortedName": "HERNANDEZ OLIVIA",
+    "excelRows": [
+      118
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "064dfa74-0e77-44eb-901f-93e457ef4a65",
+    "studentDni": "58841172",
+    "currentFullName": "HERNANDEZ OLIVIA"
+  },
+  {
+    "fullName": "INSAURRALDE VANESA",
+    "normalizedName": "INSAURRALDE VANESA",
+    "sortedName": "INSAURRALDE VANESA",
+    "excelRows": [
+      119
+    ],
+    "payload": {
+      "dni": "900000033",
+      "firstName": "VANESA",
+      "lastName": "INSAURRALDE",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "2040948d-aa7e-41c5-bf6e-e44e5b811edf",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "IRALA ALBA",
+    "normalizedName": "IRALA ALBA",
+    "sortedName": "ALBA IRALA",
+    "excelRows": [
+      120
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c9d07213-f8ad-40f2-b459-2be739cc05b7",
+    "studentDni": "41606958",
+    "currentFullName": "IRALA ALBA"
+  },
+  {
+    "fullName": "ISASI YASLIN",
+    "normalizedName": "ISASI YASLIN",
+    "sortedName": "ISASI YASLIN",
+    "excelRows": [
+      121
+    ],
+    "payload": {
+      "dni": "900000034",
+      "firstName": "YASLIN",
+      "lastName": "ISASI",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "abb999ff-0a0c-4c89-9f11-866dcfc9b8a3",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "LAGRAÑA EUGENIA ROSELY",
+    "normalizedName": "LAGRANA EUGENIA ROSELY",
+    "sortedName": "EUGENIA LAGRANA ROSELY",
+    "excelRows": [
+      122
+    ],
+    "payload": {
+      "dni": "900000035",
+      "firstName": "EUGENIA ROSELY",
+      "lastName": "LAGRAÑA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "e8b8ce41-b5d7-4cb5-8978-a66c2a7802a1",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "LASPIUR JORGE",
+    "normalizedName": "LASPIUR JORGE",
+    "sortedName": "JORGE LASPIUR",
+    "excelRows": [
+      123
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e3d42e74-cf95-499a-9ad2-35d0abf7e500",
+    "studentDni": "29082064",
+    "currentFullName": "LASPIUR JORGE"
+  },
+  {
+    "fullName": "LEGUIZAMON JOHANNA",
+    "normalizedName": "LEGUIZAMON JOHANNA",
+    "sortedName": "JOHANNA LEGUIZAMON",
+    "excelRows": [
+      124
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "528f5372-4d0f-4864-92b0-93d8bd6d1a93",
+    "studentDni": "33456164",
+    "currentFullName": "LEGUIZAMON JOHANNA"
+  },
+  {
+    "fullName": "LEIVA ISABELLA",
+    "normalizedName": "LEIVA ISABELLA",
+    "sortedName": "ISABELLA LEIVA",
+    "excelRows": [
+      125
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e89fd784-8b1d-4be3-b410-2482f9b94d86",
+    "studentDni": "56615529",
+    "currentFullName": "LEIVA ISABELLA"
+  },
+  {
+    "fullName": "LEPEZ ARIANA",
+    "normalizedName": "LEPEZ ARIANA",
+    "sortedName": "ARIANA LEPEZ",
+    "excelRows": [
+      126
+    ],
+    "payload": {
+      "dni": "900000036",
+      "firstName": "ARIANA",
+      "lastName": "LEPEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "1bfc8cac-53c2-4be7-b3e3-970d0986300c",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "LESME CLARISA",
+    "normalizedName": "LESME CLARISA",
+    "sortedName": "CLARISA LESME",
+    "excelRows": [
+      127
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "60ffaac9-4651-41d0-8f32-23d99aa67420",
+    "studentDni": "20057294",
+    "currentFullName": "LESME CLARISA"
+  },
+  {
+    "fullName": "LEYES OMAR",
+    "normalizedName": "LEYES OMAR",
+    "sortedName": "LEYES OMAR",
+    "excelRows": [
+      128
+    ],
+    "payload": {
+      "dni": "900000037",
+      "firstName": "OMAR",
+      "lastName": "LEYES",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "7346ffaa-43e5-40a9-bbcc-c16b13d68b9a",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "LO CURCIO MARTINA",
+    "normalizedName": "LO CURCIO MARTINA",
+    "sortedName": "CURCIO LO MARTINA",
+    "excelRows": [
+      129
+    ],
+    "payload": {
+      "dni": "900000038",
+      "firstName": "MARTINA",
+      "lastName": "LO CURCIO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "b332d210-8a32-4dbe-9cb0-26531812b718",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "LOMBARDO EVA NANCY",
+    "normalizedName": "LOMBARDO EVA NANCY",
+    "sortedName": "EVA LOMBARDO NANCY",
+    "excelRows": [
+      130
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e6d631b5-ec70-460b-9835-66eabfb66176",
+    "studentDni": "24449820",
+    "currentFullName": "LOMBARDO EVA NANCY"
+  },
+  {
+    "fullName": "LOPEZ CLAUDIA",
+    "normalizedName": "LOPEZ CLAUDIA",
+    "sortedName": "CLAUDIA LOPEZ",
+    "excelRows": [
+      131
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "6523d623-9d87-4ab5-a632-765da7d2e604",
+    "studentDni": "27254602",
+    "currentFullName": "LOPEZ CLAUDIA"
+  },
+  {
+    "fullName": "LOPEZ IRUPE",
+    "normalizedName": "LOPEZ IRUPE",
+    "sortedName": "IRUPE LOPEZ",
+    "excelRows": [
+      132
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d60d7504-4213-45c0-9757-7646d010dd1a",
+    "studentDni": "57144605",
+    "currentFullName": "LOPEZ IRUPE"
+  },
+  {
+    "fullName": "LUCERO MIA PRICILA",
+    "normalizedName": "LUCERO MIA PRICILA",
+    "sortedName": "LUCERO MIA PRICILA",
+    "excelRows": [
+      133
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "482fb776-5b73-4d29-b4d9-81ed1db5aa45",
+    "studentDni": "54266184",
+    "currentFullName": "LUCERO MIA PRICILA"
+  },
+  {
+    "fullName": "LUCERO OLIVIA",
+    "normalizedName": "LUCERO OLIVIA",
+    "sortedName": "LUCERO OLIVIA",
+    "excelRows": [
+      134
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e2f3404c-63d7-4c3b-b434-45549922ea59",
+    "studentDni": "59105995",
+    "currentFullName": "LUCERO OLIVIA"
+  },
+  {
+    "fullName": "LUGO MAIRA",
+    "normalizedName": "LUGO MAIRA",
+    "sortedName": "LUGO MAIRA",
+    "excelRows": [
+      135
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "afec60cd-8a2d-42c3-8730-ddc64ac4bfcf",
+    "studentDni": "39720762",
+    "currentFullName": "LUGO MAIRA"
+  },
+  {
+    "fullName": "LUQUE ANDREA ISABEL",
+    "normalizedName": "LUQUE ANDREA ISABEL",
+    "sortedName": "ANDREA ISABEL LUQUE",
+    "excelRows": [
+      136
+    ],
+    "payload": {
+      "dni": "900000039",
+      "firstName": "ANDREA ISABEL",
+      "lastName": "LUQUE",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "48ff1294-dfb7-4f47-b3b4-21d4958507b6",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "MADRID HAYLLI ALAIA",
+    "normalizedName": "MADRID HAYLLI ALAIA",
+    "sortedName": "ALAIA HAYLLI MADRID",
+    "excelRows": [
+      137
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "40950d87-dc66-405f-9295-7b0625b592aa",
+    "studentDni": "57687953",
+    "currentFullName": "MADRID HAYLLI ALAIA"
+  },
+  {
+    "fullName": "MADRID HAZEL",
+    "normalizedName": "MADRID HAZEL",
+    "sortedName": "HAZEL MADRID",
+    "excelRows": [
+      138
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "6290ccdb-2615-4ba3-a563-e55e6f5333b9",
+    "studentDni": "54582578",
+    "currentFullName": "MADRID HAZEL"
+  },
+  {
+    "fullName": "MARTINEZ PAULINA",
+    "normalizedName": "MARTINEZ PAULINA",
+    "sortedName": "MARTINEZ PAULINA",
+    "excelRows": [
+      139
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d1667b8b-ac3a-4f37-8e6b-4b75dc5f1418",
+    "studentDni": "57514625",
+    "currentFullName": "MARTINEZ PAULINA"
+  },
+  {
+    "fullName": "MARTINEZ STEFANIA",
+    "normalizedName": "MARTINEZ STEFANIA",
+    "sortedName": "MARTINEZ STEFANIA",
+    "excelRows": [
+      140
+    ],
+    "payload": {
+      "dni": "900000040",
+      "firstName": "STEFANIA",
+      "lastName": "MARTINEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "138402df-f8c6-41f2-8dfb-93b4f2d58ae2",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "MATTEO GIULIANA",
+    "normalizedName": "MATTEO GIULIANA",
+    "sortedName": "GIULIANA MATTEO",
+    "excelRows": [
+      141
+    ],
+    "payload": {
+      "dni": "900000041",
+      "firstName": "GIULIANA",
+      "lastName": "MATTEO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "07a722ab-125e-42a3-a6a7-3a2e30263da1",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "MEDINA CECILIA",
+    "normalizedName": "MEDINA CECILIA",
+    "sortedName": "CECILIA MEDINA",
+    "excelRows": [
+      142
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "46c94200-44c3-4d33-8a1c-3b5cbc7d6ef8",
+    "studentDni": "37534846",
+    "currentFullName": "MEDINA CECILIA"
+  },
+  {
+    "fullName": "MEDINA ERIK",
+    "normalizedName": "MEDINA ERIK",
+    "sortedName": "ERIK MEDINA",
+    "excelRows": [
+      143
+    ],
+    "payload": {
+      "dni": "900000042",
+      "firstName": "ERIK",
+      "lastName": "MEDINA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "2d86741a-8804-4685-ae76-14c09f10ae69",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "MEDINA PATIÑO YANI",
+    "normalizedName": "MEDINA PATINO YANI",
+    "sortedName": "MEDINA PATINO YANI",
+    "excelRows": [
+      144
+    ],
+    "payload": {
+      "dni": "900000043",
+      "firstName": "YANI",
+      "lastName": "MEDINA PATIÑO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "164ebd7e-5b8c-4bdd-93e8-9966ca2aab60",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "MEDINA PATRICIA",
+    "normalizedName": "MEDINA PATRICIA",
+    "sortedName": "MEDINA PATRICIA",
+    "excelRows": [
+      145
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "97e34e29-16e6-4644-aa44-0f7c88dba8aa",
+    "studentDni": "29080503",
+    "currentFullName": "MEDINA PATRICIA"
+  },
+  {
+    "fullName": "MENAPACCE FRANCESCA",
+    "normalizedName": "MENAPACCE FRANCESCA",
+    "sortedName": "FRANCESCA MENAPACCE",
+    "excelRows": [
+      146
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "8d18ee38-ca45-4ee5-af25-2df796d371eb",
+    "studentDni": "52499761",
+    "currentFullName": "MENAPACCE FRANCESCA"
+  },
+  {
+    "fullName": "MENDEZ FATIMA ARIADNA",
+    "normalizedName": "MENDEZ FATIMA ARIADNA",
+    "sortedName": "ARIADNA FATIMA MENDEZ",
+    "excelRows": [
+      147
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "0ce33854-cda1-4646-921d-d63a51e672d8",
+    "studentDni": "48559960",
+    "currentFullName": "MENDEZ FATIMA ARIADNA"
+  },
+  {
+    "fullName": "MENDEZ ROCIO",
+    "normalizedName": "MENDEZ ROCIO",
+    "sortedName": "MENDEZ ROCIO",
+    "excelRows": [
+      148
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c9987164-f80e-4908-af0b-ccd57b667bd7",
+    "studentDni": "36957871",
+    "currentFullName": "MENDEZ ROCIO"
+  },
+  {
+    "fullName": "MENDOZA AGUSTINA",
+    "normalizedName": "MENDOZA AGUSTINA",
+    "sortedName": "AGUSTINA MENDOZA",
+    "excelRows": [
+      149
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "b081171b-df46-4671-8679-cdb140896300",
+    "studentDni": "56615624",
+    "currentFullName": "MENDOZA AGUSTINA"
+  },
+  {
+    "fullName": "MIÑO LEIRE",
+    "normalizedName": "MINO LEIRE",
+    "sortedName": "LEIRE MINO",
+    "excelRows": [
+      150
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "7042c4d8-7739-41bd-8ae5-676cec196953",
+    "studentDni": "56615745",
+    "currentFullName": "MIÑO LEIRE"
+  },
+  {
+    "fullName": "MIÑOS SABRINA",
+    "normalizedName": "MINOS SABRINA",
+    "sortedName": "MINOS SABRINA",
+    "excelRows": [
+      151
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d9d2c6a8-42e8-45d8-a549-6f553ae8a4c2",
+    "studentDni": "36205813",
+    "currentFullName": "MIÑOS SABRINA"
+  },
+  {
+    "fullName": "MOLINA MERCEDES",
+    "normalizedName": "MOLINA MERCEDES",
+    "sortedName": "MERCEDES MOLINA",
+    "excelRows": [
+      152
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "8f82478a-a7b6-4960-853c-cf371cead592",
+    "studentDni": "56615679",
+    "currentFullName": "MOLINA MERCEDES"
+  },
+  {
+    "fullName": "MONTIEL KAREN",
+    "normalizedName": "MONTIEL KAREN",
+    "sortedName": "KAREN MONTIEL",
+    "excelRows": [
+      153
+    ],
+    "payload": {
+      "dni": "900000044",
+      "firstName": "KAREN",
+      "lastName": "MONTIEL",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "6922fe2b-0e8a-44e6-96a8-ce2567990577",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "MONYO LAURA",
+    "normalizedName": "MONYO LAURA",
+    "sortedName": "LAURA MONYO",
+    "excelRows": [
+      154
+    ],
+    "payload": {
+      "dni": "900000045",
+      "firstName": "LAURA",
+      "lastName": "MONYO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "55cceffa-4357-40ab-b794-90af655ef2e8",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "MORCILLO ALEJANDRA",
+    "normalizedName": "MORCILLO ALEJANDRA",
+    "sortedName": "ALEJANDRA MORCILLO",
+    "excelRows": [
+      155
+    ],
+    "payload": {
+      "dni": "900000046",
+      "firstName": "ALEJANDRA",
+      "lastName": "MORCILLO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "cf8dcccd-6443-4614-9282-ee4e5b03ed26",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "NOVELLO ISABELLA",
+    "normalizedName": "NOVELLO ISABELLA",
+    "sortedName": "ISABELLA NOVELLO",
+    "excelRows": [
+      156
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "431cfc10-dbfd-446e-882a-a07f2f1e70e8",
+    "studentDni": "58081437",
+    "currentFullName": "NOVELLO ISABELLA"
+  },
+  {
+    "fullName": "OJEDA JORGE",
+    "normalizedName": "OJEDA JORGE",
+    "sortedName": "JORGE OJEDA",
+    "excelRows": [
+      157
+    ],
+    "payload": {
+      "dni": "900000047",
+      "firstName": "JORGE",
+      "lastName": "OJEDA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "d32595b3-343e-4cff-a758-5e2c0ddc7875",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "OLIVA SOLEDAD",
+    "normalizedName": "OLIVA SOLEDAD",
+    "sortedName": "OLIVA SOLEDAD",
+    "excelRows": [
+      158
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "9e6f4296-6c59-4e21-919d-5394e6e48ad2",
+    "studentDni": "33588166",
+    "currentFullName": "OLIVA SOLEDAD"
+  },
+  {
+    "fullName": "OLIVERA SCHROL",
+    "normalizedName": "OLIVERA SCHROL",
+    "sortedName": "OLIVERA SCHROL",
+    "excelRows": [
+      159
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "5a2db33a-7b69-4246-9b6f-b882dfd79764",
+    "studentDni": "6133631",
+    "currentFullName": "OLIVERA SCHROL"
+  },
+  {
+    "fullName": "ORRABALIS ELIDA",
+    "normalizedName": "ORRABALIS ELIDA",
+    "sortedName": "ELIDA ORRABALIS",
+    "excelRows": [
+      160
+    ],
+    "payload": {
+      "dni": "900000048",
+      "firstName": "ELIDA",
+      "lastName": "ORRABALIS",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "8995d37f-b5f1-48ce-99ed-57968c270f13",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "OVIEDO MAGALI",
+    "normalizedName": "OVIEDO MAGALI",
+    "sortedName": "MAGALI OVIEDO",
+    "excelRows": [
+      161
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "e0e12c86-9b1d-4fd0-914a-62fc37f00dd1",
+    "studentDni": "43807580",
+    "currentFullName": "OVIEDO MAGALI"
+  },
+  {
+    "fullName": "PAREDES ROMINA",
+    "normalizedName": "PAREDES ROMINA",
+    "sortedName": "PAREDES ROMINA",
+    "excelRows": [
+      162
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "7f5c0637-0f59-4fbd-b65f-cf09cbb25687",
+    "studentDni": "29080950",
+    "currentFullName": "PAREDES ROMINA"
+  },
+  {
+    "fullName": "PEART SOL",
+    "normalizedName": "PEART SOL",
+    "sortedName": "PEART SOL",
+    "excelRows": [
+      163
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "77acbe8a-5a4a-4233-842f-a6ec1887d562",
+    "studentDni": "5614738",
+    "currentFullName": "PEART SOL"
+  },
+  {
+    "fullName": "PEÑA SOFIA",
+    "normalizedName": "PENA SOFIA",
+    "sortedName": "PENA SOFIA",
+    "excelRows": [
+      164
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "54306e75-e1f7-46b7-bc56-81a432fea581",
+    "studentDni": "48343373",
+    "currentFullName": "PEÑA SOFIA"
+  },
+  {
+    "fullName": "PENAYO NAHIARA",
+    "normalizedName": "PENAYO NAHIARA",
+    "sortedName": "NAHIARA PENAYO",
+    "excelRows": [
+      165
+    ],
+    "payload": {
+      "dni": "900000049",
+      "firstName": "NAHIARA",
+      "lastName": "PENAYO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "fa7f3230-6659-47f3-a3a7-c19dd7d30422",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "PERALTA PRISCILA",
+    "normalizedName": "PERALTA PRISCILA",
+    "sortedName": "PERALTA PRISCILA",
+    "excelRows": [
+      166
+    ],
+    "payload": {
+      "dni": "900000050",
+      "firstName": "PRISCILA",
+      "lastName": "PERALTA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "d276a4b8-4e1b-4fbb-bc73-0a819f55d87a",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "PEREIRA GUILLERMINA",
+    "normalizedName": "PEREIRA GUILLERMINA",
+    "sortedName": "GUILLERMINA PEREIRA",
+    "excelRows": [
+      167
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d5bd7500-6267-473f-aa6a-1d5f129fe33c",
+    "studentDni": "58841053",
+    "currentFullName": "PEREIRA GUILLERMINA"
+  },
+  {
+    "fullName": "PEREIRA NORA HAIRE",
+    "normalizedName": "PEREIRA NORA HAIRE",
+    "sortedName": "HAIRE NORA PEREIRA",
+    "excelRows": [
+      168
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "14fa3093-57f8-435a-8f8f-abc4279c6f26",
+    "studentDni": "17968431",
+    "currentFullName": "PEREIRA NORA HAIRE"
+  },
+  {
+    "fullName": "PINO SOFIA",
+    "normalizedName": "PINO SOFIA",
+    "sortedName": "PINO SOFIA",
+    "excelRows": [
+      169
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "794257b9-33ab-441b-bee9-27812e22be9b",
+    "studentDni": "58958016",
+    "currentFullName": "PINO SOFIA"
+  },
+  {
+    "fullName": "QUINTANA LAURA",
+    "normalizedName": "QUINTANA LAURA",
+    "sortedName": "LAURA QUINTANA",
+    "excelRows": [
+      170
+    ],
+    "payload": {
+      "dni": "900000051",
+      "firstName": "LAURA",
+      "lastName": "QUINTANA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "f2601c98-4da9-46c2-9dbd-6ff77a00b2b2",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "QUIROGA LUANA MAILEN",
+    "normalizedName": "QUIROGA LUANA MAILEN",
+    "sortedName": "LUANA MAILEN QUIROGA",
+    "excelRows": [
+      171
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "440f71df-52eb-4c53-9b3a-a7ee701c29ba",
+    "studentDni": "58841036",
+    "currentFullName": "QUIROGA LUANA MAILEN"
+  },
+  {
+    "fullName": "RAMIREZ AGUSTINA",
+    "normalizedName": "RAMIREZ AGUSTINA",
+    "sortedName": "AGUSTINA RAMIREZ",
+    "excelRows": [
+      172
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "fb345864-a1e9-4afe-bd89-f7afd399f849",
+    "studentDni": "43000787",
+    "currentFullName": "RAMIREZ AGUSTINA"
+  },
+  {
+    "fullName": "RAMIREZ CELESTE",
+    "normalizedName": "RAMIREZ CELESTE",
+    "sortedName": "CELESTE RAMIREZ",
+    "excelRows": [
+      173
+    ],
+    "payload": {
+      "dni": "900000052",
+      "firstName": "CELESTE",
+      "lastName": "RAMIREZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "a1a9745f-8498-4d56-a165-acae4b879669",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "RAMOA TATIANA",
+    "normalizedName": "RAMOA TATIANA",
+    "sortedName": "RAMOA TATIANA",
+    "excelRows": [
+      174
+    ],
+    "payload": {
+      "dni": "900000053",
+      "firstName": "TATIANA",
+      "lastName": "RAMOA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "55bd8062-567f-46a1-bcf4-d320724a2751",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "REYES MAIA",
+    "normalizedName": "REYES MAIA",
+    "sortedName": "MAIA REYES",
+    "excelRows": [
+      175
+    ],
+    "payload": {
+      "dni": "900000054",
+      "firstName": "MAIA",
+      "lastName": "REYES",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "bfe429e3-0f97-4c01-9ec2-6801034cc59a",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "REYES MAXI",
+    "normalizedName": "REYES MAXI",
+    "sortedName": "MAXI REYES",
+    "excelRows": [
+      176
+    ],
+    "payload": {
+      "dni": "900000055",
+      "firstName": "MAXI",
+      "lastName": "REYES",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "6b2ec08b-9b2f-437a-a8d3-1542eb1e5431",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "RIGONATO ANDREA",
+    "normalizedName": "RIGONATO ANDREA",
+    "sortedName": "ANDREA RIGONATO",
+    "excelRows": [
+      177
+    ],
+    "payload": {
+      "dni": "900000056",
+      "firstName": "ANDREA",
+      "lastName": "RIGONATO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "0c5a89d6-3fa9-4d01-8d22-7f211c529233",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "RIOS AVRIL",
+    "normalizedName": "RIOS AVRIL",
+    "sortedName": "AVRIL RIOS",
+    "excelRows": [
+      178
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "6a556835-d1d2-4a99-8888-3e47ae0cc87c",
+    "studentDni": "57879441",
+    "currentFullName": "RIOS AVRIL"
+  },
+  {
+    "fullName": "RIOS GOMEZ NICOL",
+    "normalizedName": "RIOS GOMEZ NICOL",
+    "sortedName": "GOMEZ NICOL RIOS",
+    "excelRows": [
+      179
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "9d4e1bb6-b6c2-4b23-8a80-535307c3c8eb",
+    "studentDni": "55121355",
+    "currentFullName": "RIOS GOMEZ NICOL"
+  },
+  {
+    "fullName": "RIOS LUZ",
+    "normalizedName": "RIOS LUZ",
+    "sortedName": "LUZ RIOS",
+    "excelRows": [
+      180
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "218e3a17-234c-4b08-81df-613ece4a4606",
+    "studentDni": "4913629",
+    "currentFullName": "RIOS LUZ"
+  },
+  {
+    "fullName": "RIOS MARIANA",
+    "normalizedName": "RIOS MARIANA",
+    "sortedName": "MARIANA RIOS",
+    "excelRows": [
+      181
+    ],
+    "payload": {
+      "dni": "900000057",
+      "firstName": "MARIANA",
+      "lastName": "RIOS",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "32868316-0a76-48ca-92df-907819f95ee0",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "RIQUELME GUILLERMINA",
+    "normalizedName": "RIQUELME GUILLERMINA",
+    "sortedName": "GUILLERMINA RIQUELME",
+    "excelRows": [
+      182
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "8aacb8af-ee64-4623-8933-16f754b34eb1",
+    "studentDni": "54266283",
+    "currentFullName": "RIQUELME GUILLERMINA"
+  },
+  {
+    "fullName": "RIVAROLA MARTIN",
+    "normalizedName": "RIVAROLA MARTIN",
+    "sortedName": "MARTIN RIVAROLA",
+    "excelRows": [
+      183
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d820f750-e7f6-4311-a204-a6994384d585",
+    "studentDni": "17313402",
+    "currentFullName": "RIVAROLA MARTIN"
+  },
+  {
+    "fullName": "RIVAS KARLA AGOSTINA",
+    "normalizedName": "RIVAS KARLA AGOSTINA",
+    "sortedName": "AGOSTINA KARLA RIVAS",
+    "excelRows": [
+      184
+    ],
+    "payload": {
+      "dni": "900000058",
+      "firstName": "KARLA AGOSTINA",
+      "lastName": "RIVAS",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "eb5a6d21-cab0-4691-ba3f-8df0bcc3a840",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "RIVERO ROMINA",
+    "normalizedName": "RIVERO ROMINA",
+    "sortedName": "RIVERO ROMINA",
+    "excelRows": [
+      185
+    ],
+    "payload": {
+      "dni": "900000059",
+      "firstName": "ROMINA",
+      "lastName": "RIVERO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "56ddde98-b97a-4c5b-9a58-866ea64a1095",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "ROJAS LUCAS SEBASTIAN",
+    "normalizedName": "ROJAS LUCAS SEBASTIAN",
+    "sortedName": "LUCAS ROJAS SEBASTIAN",
+    "excelRows": [
+      186
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "b2566873-7ef4-4c30-b0b8-6f71f092436e",
+    "studentDni": "34030745",
+    "currentFullName": "ROJAS LUCAS SEBASTIAN"
+  },
+  {
+    "fullName": "ROJAS MARIA DEL CARMEN",
+    "normalizedName": "ROJAS MARIA DEL CARMEN",
+    "sortedName": "CARMEN DEL MARIA ROJAS",
+    "excelRows": [
+      187
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "808556f1-82dc-46fb-b058-5f13582c4b8f",
+    "studentDni": "28248389",
+    "currentFullName": "ROJAS MARIA DEL CARMEN"
+  },
+  {
+    "fullName": "ROLDAN RENATTA",
+    "normalizedName": "ROLDAN RENATTA",
+    "sortedName": "RENATTA ROLDAN",
+    "excelRows": [
+      188
+    ],
+    "payload": {
+      "dni": "900000060",
+      "firstName": "RENATTA",
+      "lastName": "ROLDAN",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "f049e028-1cf8-4ccb-832d-7d4fdc3b9f8e",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "ROMERO DOMINGUEZ EMA",
+    "normalizedName": "ROMERO DOMINGUEZ EMA",
+    "sortedName": "DOMINGUEZ EMA ROMERO",
+    "excelRows": [
+      189
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "b17eaffc-65da-459b-85ac-e1ddbde9c54e",
+    "studentDni": "57514810",
+    "currentFullName": "ROMERO DOMINGUEZ EMA"
+  },
+  {
+    "fullName": "ROSSI BEATRIZ",
+    "normalizedName": "ROSSI BEATRIZ",
+    "sortedName": "BEATRIZ ROSSI",
+    "excelRows": [
+      190
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "7a0da8cb-aeef-49cb-a4be-3773436f945a",
+    "studentDni": "10176061",
+    "currentFullName": "ROSSI BEATRIZ"
+  },
+  {
+    "fullName": "RUDDY CELESTINA",
+    "normalizedName": "RUDDY CELESTINA",
+    "sortedName": "CELESTINA RUDDY",
+    "excelRows": [
+      191
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "21220e88-5f94-4c2b-9a9d-b3c0b21c3c44",
+    "studentDni": "16340742",
+    "currentFullName": "RUDDY CELESTINA"
+  },
+  {
+    "fullName": "RUIZ DIANA BELEN",
+    "normalizedName": "RUIZ DIANA BELEN",
+    "sortedName": "BELEN DIANA RUIZ",
+    "excelRows": [
+      192
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "29244aa1-ed07-4256-903a-b69d13078eab",
+    "studentDni": "43068530",
+    "currentFullName": "RUIZ DIANA BELEN"
+  },
+  {
+    "fullName": "RUIZ DIAZ FLORENCIA",
+    "normalizedName": "RUIZ DIAZ FLORENCIA",
+    "sortedName": "DIAZ FLORENCIA RUIZ",
+    "excelRows": [
+      193
+    ],
+    "payload": {
+      "dni": "900000061",
+      "firstName": "FLORENCIA",
+      "lastName": "RUIZ DIAZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "86c22eb2-f07a-4002-8c76-d5d688c4f4b8",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "SALINAS ABIGAIL",
+    "normalizedName": "SALINAS ABIGAIL",
+    "sortedName": "ABIGAIL SALINAS",
+    "excelRows": [
+      194
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "0f66f0ff-d9e6-4195-94bb-060aeafe2502",
+    "studentDni": "53096978",
+    "currentFullName": "SALINAS ABIGAIL"
+  },
+  {
+    "fullName": "SALINAS CONSTANZA",
+    "normalizedName": "SALINAS CONSTANZA",
+    "sortedName": "CONSTANZA SALINAS",
+    "excelRows": [
+      195
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "7ad17a5c-8489-4f01-858b-b171b6282e03",
+    "studentDni": "46066124",
+    "currentFullName": "SALINAS CONSTANZA"
+  },
+  {
+    "fullName": "SALINAS VIVIANA",
+    "normalizedName": "SALINAS VIVIANA",
+    "sortedName": "SALINAS VIVIANA",
+    "excelRows": [
+      196
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "fc282a39-09ec-494f-a177-ccba97d90797",
+    "studentDni": "35897819",
+    "currentFullName": "SALINAS VIVIANA"
+  },
+  {
+    "fullName": "SANABRIA VICTOR HUGO",
+    "normalizedName": "SANABRIA VICTOR HUGO",
+    "sortedName": "HUGO SANABRIA VICTOR",
+    "excelRows": [
+      197
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "45cd7c0b-1f2f-435a-947a-f1301d2f99a3",
+    "studentDni": "16168458",
+    "currentFullName": "SANABRIA VICTOR HUGO"
+  },
+  {
+    "fullName": "SANCHEZ MARTINA",
+    "normalizedName": "SANCHEZ MARTINA",
+    "sortedName": "MARTINA SANCHEZ",
+    "excelRows": [
+      198
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "ce69fede-102f-4ba9-9ee8-5a9889f98676",
+    "studentDni": "51211292",
+    "currentFullName": "SANCHEZ MARTINA"
+  },
+  {
+    "fullName": "SANCHEZ ORTIZ DELFINA",
+    "normalizedName": "SANCHEZ ORTIZ DELFINA",
+    "sortedName": "DELFINA ORTIZ SANCHEZ",
+    "excelRows": [
+      199
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "82ff4d34-ee44-42be-9248-0c68dc00ce14",
+    "studentDni": "53246415",
+    "currentFullName": "SANCHEZ ORTIZ DELFINA"
+  },
+  {
+    "fullName": "SANCHEZ ZAIRA",
+    "normalizedName": "SANCHEZ ZAIRA",
+    "sortedName": "SANCHEZ ZAIRA",
+    "excelRows": [
+      200
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "fc1308bd-fc2d-474e-ab5e-688a861d6ab6",
+    "studentDni": "55588759",
+    "currentFullName": "SANCHEZ ZAIRA"
+  },
+  {
+    "fullName": "SAPORITI AMALIA ALFONSINA",
+    "normalizedName": "SAPORITI AMALIA ALFONSINA",
+    "sortedName": "ALFONSINA AMALIA SAPORITI",
+    "excelRows": [
+      201
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "b68131ac-a62d-411a-b2ed-5ebe901a5ab8",
+    "studentDni": "59767910",
+    "currentFullName": "SAPORITI AMALIA ALFONSINA"
+  },
+  {
+    "fullName": "SAPORITTI PAULINA",
+    "normalizedName": "SAPORITTI PAULINA",
+    "sortedName": "PAULINA SAPORITTI",
+    "excelRows": [
+      202
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "161530a6-02b6-40ea-a32d-1d7df44b787b",
+    "studentDni": "56327046",
+    "currentFullName": "SAPORITTI PAULINA"
+  },
+  {
+    "fullName": "SCHAAB SABRINA",
+    "normalizedName": "SCHAAB SABRINA",
+    "sortedName": "SABRINA SCHAAB",
+    "excelRows": [
+      203
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "8456df92-458f-4081-9a21-e926ef940a0e",
+    "studentDni": "36205100",
+    "currentFullName": "SCHAAB SABRINA"
+  },
+  {
+    "fullName": "SCRIBANO CYNTHIA",
+    "normalizedName": "SCRIBANO CYNTHIA",
+    "sortedName": "CYNTHIA SCRIBANO",
+    "excelRows": [
+      204
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "883d9857-a34a-43cd-8467-bb67ba08d27f",
+    "studentDni": "29565404",
+    "currentFullName": "SCRIBANO CYNTHIA"
+  },
+  {
+    "fullName": "SERVIN FLORENCIA",
+    "normalizedName": "SERVIN FLORENCIA",
+    "sortedName": "FLORENCIA SERVIN",
+    "excelRows": [
+      205
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "a3a92c1a-d667-4962-b1a1-3c1ac3c5f365",
+    "studentDni": "56315675",
+    "currentFullName": "SERVIN FLORENCIA"
+  },
+  {
+    "fullName": "SILVERA ILEANA",
+    "normalizedName": "SILVERA ILEANA",
+    "sortedName": "ILEANA SILVERA",
+    "excelRows": [
+      206
+    ],
+    "payload": {
+      "dni": "900000062",
+      "firstName": "ILEANA",
+      "lastName": "SILVERA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "3d6a1882-aaa5-4411-965d-eea4e8bb045c",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "SOLIS TERESITA CECILIA",
+    "normalizedName": "SOLIS TERESITA CECILIA",
+    "sortedName": "CECILIA SOLIS TERESITA",
+    "excelRows": [
+      207
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "287e8a09-5b0b-40e6-8c30-3fb6c065dbff",
+    "studentDni": "55590091",
+    "currentFullName": "SOLIS TERESITA CECILIA"
+  },
+  {
+    "fullName": "SORABELLA ARIEL",
+    "normalizedName": "SORABELLA ARIEL",
+    "sortedName": "ARIEL SORABELLA",
+    "excelRows": [
+      208
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "f2aae84b-e156-4d9d-81f3-d50a56e02255",
+    "studentDni": "24537072",
+    "currentFullName": "SORABELLA ARIEL"
+  },
+  {
+    "fullName": "SORAIRE NATALIA",
+    "normalizedName": "SORAIRE NATALIA",
+    "sortedName": "NATALIA SORAIRE",
+    "excelRows": [
+      209
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+    "studentDni": "29080223",
+    "currentFullName": "SORAIRE NATALIA"
+  },
+  {
+    "fullName": "SORAIRE NOELIA",
+    "normalizedName": "SORAIRE NOELIA",
+    "sortedName": "NOELIA SORAIRE",
+    "excelRows": [
+      210
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "27152b91-3376-464f-b17b-b011d278918f",
+    "studentDni": "30854724",
+    "currentFullName": "SORAIRE NOELIA"
+  },
+  {
+    "fullName": "SORAIRE PAOLA",
+    "normalizedName": "SORAIRE PAOLA",
+    "sortedName": "PAOLA SORAIRE",
+    "excelRows": [
+      211
+    ],
+    "payload": {
+      "dni": "900000063",
+      "firstName": "PAOLA",
+      "lastName": "SORAIRE",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "bd45daf1-865c-4187-9c5c-41323f7ecf8a",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "SOSA ALMA",
+    "normalizedName": "SOSA ALMA",
+    "sortedName": "ALMA SOSA",
+    "excelRows": [
+      212
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "5bb9359d-768a-4cce-a92c-16a95641759f",
+    "studentDni": "57288151",
+    "currentFullName": "SOSA ALMA"
+  },
+  {
+    "fullName": "SOSA EMMA",
+    "normalizedName": "SOSA EMMA",
+    "sortedName": "EMMA SOSA",
+    "excelRows": [
+      213
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "26ec3b0a-5193-465e-9d38-45cfb38ae0b3",
+    "studentDni": "53790120",
+    "currentFullName": "SOSA EMMA"
+  },
+  {
+    "fullName": "SOSA EVANGELINA",
+    "normalizedName": "SOSA EVANGELINA",
+    "sortedName": "EVANGELINA SOSA",
+    "excelRows": [
+      214
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "a7c74644-d186-44fb-917b-3882623523b9",
+    "studentDni": "58631617",
+    "currentFullName": "SOSA EVANGELINA"
+  },
+  {
+    "fullName": "SOSA LIÑAN ANTONIA",
+    "normalizedName": "SOSA LINAN ANTONIA",
+    "sortedName": "ANTONIA LINAN SOSA",
+    "excelRows": [
+      215
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "da3087f6-e133-44b6-b62b-a9c53836e170",
+    "studentDni": "57143503",
+    "currentFullName": "SOSA LIÑAN ANTONIA"
+  },
+  {
+    "fullName": "SOSA LORENA",
+    "normalizedName": "SOSA LORENA",
+    "sortedName": "LORENA SOSA",
+    "excelRows": [
+      216
+    ],
+    "payload": {
+      "dni": "900000064",
+      "firstName": "LORENA",
+      "lastName": "SOSA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "40aa21c7-6da6-47c5-8b98-071589040438",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "SOSA RAMONA",
+    "normalizedName": "SOSA RAMONA",
+    "sortedName": "RAMONA SOSA",
+    "excelRows": [
+      217
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "8a27a773-fda2-4bd2-ac79-caaf4bf972fe",
+    "studentDni": "21307309",
+    "currentFullName": "SOSA RAMONA"
+  },
+  {
+    "fullName": "SOSA TEDIN AGUSTINA",
+    "normalizedName": "SOSA TEDIN AGUSTINA",
+    "sortedName": "AGUSTINA SOSA TEDIN",
+    "excelRows": [
+      218
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "8aed5d20-bbe6-4316-b78b-0e6cd9de1ace",
+    "studentDni": "55917250",
+    "currentFullName": "SOSA TEDIN AGUSTINA"
+  },
+  {
+    "fullName": "SOSA VICTORIA",
+    "normalizedName": "SOSA VICTORIA",
+    "sortedName": "SOSA VICTORIA",
+    "excelRows": [
+      219
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "90d7e5d0-0b7e-458a-8d99-faa82cce9d68",
+    "studentDni": "55915519",
+    "currentFullName": "SOSA VICTORIA"
+  },
+  {
+    "fullName": "TOLOSA NOEMI",
+    "normalizedName": "TOLOSA NOEMI",
+    "sortedName": "NOEMI TOLOSA",
+    "excelRows": [
+      220
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "1eb674f1-d0c8-4e43-9414-f322dac17aa3",
+    "studentDni": "34034154",
+    "currentFullName": "TOLOSA NOEMI"
+  },
+  {
+    "fullName": "TOPACIO FATIMA",
+    "normalizedName": "TOPACIO FATIMA",
+    "sortedName": "FATIMA TOPACIO",
+    "excelRows": [
+      221
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "d5c24860-da44-4c74-b22a-97bdf8f42c22",
+    "studentDni": "51380522",
+    "currentFullName": "TOPACIO FATIMA"
+  },
+  {
+    "fullName": "TORRES TATIANA",
+    "normalizedName": "TORRES TATIANA",
+    "sortedName": "TATIANA TORRES",
+    "excelRows": [
+      222
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "674c8e8e-1a1d-4c62-9785-16d526fd3c95",
+    "studentDni": "52143128",
+    "currentFullName": "TORRES TATIANA"
+  },
+  {
+    "fullName": "ULIAMBRE UMA GUILLERMINA",
+    "normalizedName": "ULIAMBRE UMA GUILLERMINA",
+    "sortedName": "GUILLERMINA ULIAMBRE UMA",
+    "excelRows": [
+      223
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "790eae5e-6087-40a6-b640-651843ec4646",
+    "studentDni": "56310356",
+    "currentFullName": "ULIAMBRE UMA GUILLERMINA"
+  },
+  {
+    "fullName": "VALDEZ GOMEZ RAYSSA",
+    "normalizedName": "VALDEZ GOMEZ RAYSSA",
+    "sortedName": "GOMEZ RAYSSA VALDEZ",
+    "excelRows": [
+      224
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "aa4f35db-ca8b-4829-ab74-60c57521f462",
+    "studentDni": "56974010",
+    "currentFullName": "VALDEZ GOMEZ RAYSSA"
+  },
+  {
+    "fullName": "VALDOVINO LOURDES",
+    "normalizedName": "VALDOVINO LOURDES",
+    "sortedName": "LOURDES VALDOVINO",
+    "excelRows": [
+      225
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "0304d8cf-6f00-41a8-a675-b98592bafb97",
+    "studentDni": "29244884",
+    "currentFullName": "VALDOVINO LOURDES"
+  },
+  {
+    "fullName": "VALLEJOS ABYGAIL",
+    "normalizedName": "VALLEJOS ABYGAIL",
+    "sortedName": "ABYGAIL VALLEJOS",
+    "excelRows": [
+      226
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "c5e570bd-6a3f-4e60-a1bb-c6fa5e823cf2",
+    "studentDni": "55916841",
+    "currentFullName": "VALLEJOS ABYGAIL"
+  },
+  {
+    "fullName": "VALLEJOS ORIANA",
+    "normalizedName": "VALLEJOS ORIANA",
+    "sortedName": "ORIANA VALLEJOS",
+    "excelRows": [
+      227
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "16c93792-8688-4a6d-89d3-ca97e4ad944f",
+    "studentDni": "55589231",
+    "currentFullName": "VALLEJOS ORIANA"
+  },
+  {
+    "fullName": "VELAZQUEZ NATALIA",
+    "normalizedName": "VELAZQUEZ NATALIA",
+    "sortedName": "NATALIA VELAZQUEZ",
+    "excelRows": [
+      228
+    ],
+    "payload": {
+      "dni": "900000065",
+      "firstName": "NATALIA",
+      "lastName": "VELAZQUEZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "61c2d14a-0a44-48f9-ba66-f1fff2f268fd",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "VERA JOSEFINA NICOLE",
+    "normalizedName": "VERA JOSEFINA NICOLE",
+    "sortedName": "JOSEFINA NICOLE VERA",
+    "excelRows": [
+      229
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "9a24244d-0c3b-461b-95c7-57d682862292",
+    "studentDni": "55915777",
+    "currentFullName": "VERA JOSEFINA NICOLE"
+  },
+  {
+    "fullName": "VIERA ANALIA",
+    "normalizedName": "VIERA ANALIA",
+    "sortedName": "ANALIA VIERA",
+    "excelRows": [
+      230
+    ],
+    "payload": {
+      "dni": "900000066",
+      "firstName": "ANALIA",
+      "lastName": "VIERA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "e693f3c0-ccdc-485b-b4b9-bc58aae6badd",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "VILLA VALERIA",
+    "normalizedName": "VILLA VALERIA",
+    "sortedName": "VALERIA VILLA",
+    "excelRows": [
+      231
+    ],
+    "payload": {
+      "dni": "900000067",
+      "firstName": "VALERIA",
+      "lastName": "VILLA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "42c47e3a-2aa2-48f4-a224-d7acab609aa8",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "VILLAGRA LUCIANA",
+    "normalizedName": "VILLAGRA LUCIANA",
+    "sortedName": "LUCIANA VILLAGRA",
+    "excelRows": [
+      232
+    ],
+    "payload": {
+      "dni": "900000068",
+      "firstName": "LUCIANA",
+      "lastName": "VILLAGRA",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "997f0b86-ece1-4b58-a25f-894a80521309",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "VILLALBA DELFINA",
+    "normalizedName": "VILLALBA DELFINA",
+    "sortedName": "DELFINA VILLALBA",
+    "excelRows": [
+      233
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "b0bb2d93-1d20-4cf3-8867-2250bd830889",
+    "studentDni": "53793087",
+    "currentFullName": "VILLALBA DELFINA"
+  },
+  {
+    "fullName": "VILLAMAYOR LORENA",
+    "normalizedName": "VILLAMAYOR LORENA",
+    "sortedName": "LORENA VILLAMAYOR",
+    "excelRows": [
+      234
+    ],
+    "payload": {
+      "dni": "900000069",
+      "firstName": "LORENA",
+      "lastName": "VILLAMAYOR",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "3c3c5aca-529e-47b4-ba86-a75edc058f5a",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "VON SCHMELING AUSTIN",
+    "normalizedName": "VON SCHMELING AUSTIN",
+    "sortedName": "AUSTIN SCHMELING VON",
+    "excelRows": [
+      235
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "64a99306-c339-401e-8461-d2c2f93b0c61",
+    "studentDni": "58631698",
+    "currentFullName": "VON SCHMELING AUSTIN"
+  },
+  {
+    "fullName": "WIERNES MAGALI",
+    "normalizedName": "WIERNES MAGALI",
+    "sortedName": "MAGALI WIERNES",
+    "excelRows": [
+      236
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "074b51e1-fa83-411b-a297-0971b3e4f074",
+    "studentDni": "28099029",
+    "currentFullName": "WIERNES MAGALI"
+  },
+  {
+    "fullName": "YANINA ORTIZ",
+    "normalizedName": "YANINA ORTIZ",
+    "sortedName": "ORTIZ YANINA",
+    "excelRows": [
+      237
+    ],
+    "payload": {
+      "dni": "900000070",
+      "firstName": "YANINA",
+      "lastName": "ORTIZ",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "ab94828d-c73a-46a2-84e9-e708b0f27c96",
+    "finalStatus": "INACTIVE"
+  },
+  {
+    "fullName": "YEGE YAMILE",
+    "normalizedName": "YEGE YAMILE",
+    "sortedName": "YAMILE YEGE",
+    "excelRows": [
+      238
+    ],
+    "result": "ALREADY_EXISTS",
+    "matchType": "EXACT_NAME",
+    "studentId": "408771b7-b499-4521-bb0d-ac790af66da1",
+    "studentDni": "14827549",
+    "currentFullName": "YEGE YAMILE"
+  },
+  {
+    "fullName": "ZARACHO ALEJANDRO",
+    "normalizedName": "ZARACHO ALEJANDRO",
+    "sortedName": "ALEJANDRO ZARACHO",
+    "excelRows": [
+      239
+    ],
+    "payload": {
+      "dni": "900000071",
+      "firstName": "ALEJANDRO",
+      "lastName": "ZARACHO",
+      "birthDate": null,
+      "phone": null,
+      "email": null,
+      "address": null
+    },
+    "result": "CREATED_INACTIVE",
+    "createdStudentId": "621c263e-af9f-4315-8870-1c374afb5534",
+    "finalStatus": "INACTIVE"
+  }
+]

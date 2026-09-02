@@ -15,7 +15,14 @@ export interface EnrollmentRepository {
     query: EnrollmentQuery,
   ): Promise<{ items: EnrollmentDto[]; total: number; page: number; pageSize: number }>;
   create(input: { studentId: string; classId: string; startDate: Date }): Promise<EnrollmentDto>;
+  createHistorical(input: {
+  studentId: string;
+  classId: string;
+  startDate: Date;
+  endDate: Date;
+}): Promise<EnrollmentDto>;
   end(id: string, endDate: Date): Promise<EnrollmentDto>;
   hasActiveForStudent(studentId: string): Promise<boolean>;
   hasActiveForClass(classId: string): Promise<boolean>;
+  updateStartDate(id: string, startDate: Date): Promise<EnrollmentDto>;
 }

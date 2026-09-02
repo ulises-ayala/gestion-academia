@@ -26,6 +26,75 @@ export class EnrollmentsService {
       startDate: parseEnrollmentDate(input.startDate, 'startDate'),
     });
   }
+  async createHistorical(input: {
+  studentId: string;
+  classId: string;
+  startDate: string;
+  endDate: string;
+}) {
+  const startDate =
+    parseEnrollmentDate(
+      input.startDate,
+      'startDate',
+    );
+
+  const endDate =
+    validateEndDate(
+      startDate,
+      input.endDate,
+    );
+
+  return this.repository.createHistorical({
+    studentId:
+      input.studentId,
+
+    classId:
+      input.classId,
+
+    startDate,
+
+    endDate,
+  });
+}
+      async updateStartDate(
+      id: string,
+      startDateValue: string,
+    ) {
+      const enrollment =
+        await this.get(id);
+
+      const startDate =
+        parseEnrollmentDate(
+          startDateValue,
+          'startDate',
+        );
+
+      /*
+      * Si la inscripción ya terminó,
+      * la nueva fecha de inicio no puede
+      * quedar después del endDate.
+      */
+      if (
+        enrollment.endDate &&
+        startDate >
+          new Date(
+            `${enrollment.endDate}T00:00:00.000Z`,
+          )
+      ) {
+        throw new DomainError(
+          'INVALID_ENROLLMENT_DATE',
+          'La fecha de inicio no puede ser posterior a la fecha de finalización.',
+          {
+            field: 'startDate',
+          },
+        );
+      }
+
+      return this.repository.updateStartDate(
+        id,
+        startDate,
+      );
+    }
   async end(id: string, input: EndEnrollmentDto) {
     const enrollment = await this.get(id);
     if (enrollment.status === 'ENDED')
