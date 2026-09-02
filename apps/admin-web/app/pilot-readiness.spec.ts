@@ -36,4 +36,25 @@ describe('Pilot readiness critical screens', () => {
       'href={`/payments?tab=history&from=${data.businessDate}&to=${data.businessDate}`}',
     );
   });
+
+  it('distribuye las acciones rápidas en una grilla visual uniforme', () => {
+    const styles = read('./styles.css');
+    expect(styles).toContain('grid-template-columns: repeat(3, minmax(0, 1fr))');
+    expect(styles).toContain('.quick-actions-card .quick-action span');
+    expect(styles).toMatch(
+      /@media \(max-width: 28rem\)[\s\S]*\.quick-actions-card \.quick-actions[\s\S]*grid-template-columns: 1fr/,
+    );
+  });
+
+  it('no bloquea clases y tarifas si falla la consulta de caja durante el alta', () => {
+    const onboarding = read('./students/new/page.tsx');
+    expect(onboarding).toContain('const [classList, activeTariffs] = await Promise.all');
+    const requiredOptionsLoad = onboarding.slice(
+      onboarding.indexOf('const loadOptions'),
+      onboarding.indexOf('useEffect(() =>'),
+    );
+    expect(requiredOptionsLoad).not.toContain('/cash-shifts/current');
+    expect(onboarding).toContain('onClick={() => void loadOptions()}');
+    expect(onboarding).toContain('Cargando clases y tarifas…');
+  });
 });

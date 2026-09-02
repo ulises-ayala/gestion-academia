@@ -281,7 +281,7 @@ Los roles administrativos son acumulativos: **Admisión** (`RECEPTION`) se ocupa
 | Gestionar caja propia            |           ✅           |             ✅             |             ✅              |
 | Arqueos/reconciliación           |           —            |             ✅             |             ✅              |
 | Gestionar asistencias            |           ✅           |             ✅             |             ✅              |
-| Gestionar usuarios               |           —            |             ✅             |             ✅              |
+| Gestionar usuarios               |           —            |             —              |             ✅              |
 | Gestionar usuarios de Dirección  |           —            |             —              |             ✅              |
 | Vender indumentaria              |           ✅           |             ✅             |             ✅              |
 | Administrar inventario           |           —            |             ✅             |             ✅              |
@@ -298,12 +298,12 @@ La API es la autoridad real de permisos. Ocultar módulos, opciones o acciones e
 
 ### Gestión de usuarios
 
-- `GET /api/v1/users`: listar usuarios permitidos para el nivel actual.
+- `GET /api/v1/users`: listar usuarios y sus niveles de acceso (sólo Dirección).
 - `GET /api/v1/users/:id`: consultar.
 - `POST /api/v1/users`: crear.
 - `PATCH /api/v1/users/:id`: cambiar usuario, contraseña, rol o estado.
 
-No se eliminan usuarios físicamente. Una cuenta no puede desactivarse ni cambiar su propio rol, y siempre debe quedar una cuenta activa de Dirección.
+No se eliminan usuarios físicamente. Solamente Dirección puede administrar cuentas y roles. Una cuenta no puede desactivarse ni cambiar su propio rol, siempre debe quedar una cuenta activa de Dirección y toda desactivación requiere confirmar la contraseña actual de quien realiza la acción.
 
 ## Próxima etapa
 

@@ -7,7 +7,7 @@ import { parseUuid } from '../../shared/presentation/request-validation';
 import { UsersService } from '../application/users.service';
 
 @Controller('users')
-@Permissions('users:manage')
+@Permissions('users:manage-direction')
 export class UsersController {
   constructor(@Inject(UsersService) private readonly service: UsersService) {}
   @Get() list(@CurrentUser() actor: PublicAuthUser) {
