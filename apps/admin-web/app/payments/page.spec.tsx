@@ -92,6 +92,11 @@ describe('Payments center markup', () => {
     expect(styles).toMatch(/\.payment-context-chip[\s\S]*margin: 0 0 var\(--space-4\)/);
   });
 
+  it('ofrece abrir Caja preservando el contexto del cobro', () => {
+    expect(page).toContain('cashHrefForPayment(locationSearch)');
+    expect(page).toContain('Abrir caja');
+  });
+
   it('loads debtors without selecting a student and exposes the operational controls', () => {
     expect(page).toContain("!location.studentId && location.tab === 'accounts'");
     expect(page).toContain('Total por cobrar');

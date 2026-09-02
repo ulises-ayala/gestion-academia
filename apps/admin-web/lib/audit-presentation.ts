@@ -16,6 +16,7 @@ export const auditEntityOptions = [
   ['ENROLLMENT', 'Inscripción'],
   ['BILLING_CONDITION', 'Condición de facturación'],
   ['MONTHLY_CHARGE_ADJUSTMENT', 'Ajuste de cuota'],
+  ['CASH_SHIFT', 'Turno de caja'],
 ] as const;
 export const auditActionOptions = [
   ['', 'Todas'],
@@ -27,6 +28,8 @@ export const auditActionOptions = [
   ['END', 'Finalización'],
   ['CREATE', 'Alta'],
   ['RENEW', 'Renovación'],
+  ['OPEN', 'Apertura'],
+  ['CLOSE', 'Cierre'],
 ] as const;
 
 const entityLabels = Object.fromEntries(auditEntityOptions);

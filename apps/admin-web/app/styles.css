@@ -71,6 +71,12 @@
   gap: var(--space-3);
   margin: var(--space-4) 0;
 }
+.cash-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
 .cash-totals article,
 .cash-totals label {
   display: grid;
@@ -123,7 +129,12 @@
     flex-direction: column;
   }
   .cash-heading button,
+  .cash-heading .button,
   .cash-range button {
+    width: 100%;
+  }
+  .cash-heading-actions {
+    display: grid;
     width: 100%;
   }
 }
@@ -1908,7 +1919,7 @@ dd {
     display: none;
   }
   .admin-content > main {
-    padding: var(--space-5) var(--space-2) var(--space-10);
+    padding: var(--space-4) var(--space-2) var(--space-8);
   }
   .card,
   .attendance-filters,
@@ -1986,7 +1997,7 @@ dd {
 }
 .audit-event-context span,
 .audit-entity span {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 0.84rem;
   overflow-wrap: anywhere;
 }
@@ -2032,7 +2043,7 @@ dd {
 .audit-metadata dt,
 .audit-section-label,
 .audit-reason span {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -2079,7 +2090,7 @@ dd {
   overflow-wrap: anywhere;
 }
 .audit-changes small {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 0.72rem;
 }
 .audit-change-arrow {
@@ -2102,7 +2113,7 @@ dd {
 }
 .audit-feedback p,
 .audit-empty p {
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .audit-pagination {
   display: flex;
@@ -2112,7 +2123,7 @@ dd {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
   border-top: 1px solid var(--border);
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .audit-pagination div {
   display: flex;
