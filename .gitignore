@@ -12,6 +12,7 @@ backup_academia_completa_2026-08-28.sql
 backup_antes_alumnos.sql
 backup_con_alumnos.sql
 academy_backup_2026-09-01.sql
-scripts/data
+backup_academia_completa_2026-08-28_reparado.sql
+backup_academia_completa_2026-08-28_utf8.sql
 
 
