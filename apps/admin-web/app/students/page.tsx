@@ -99,16 +99,27 @@ export default function StudentsPage() {
           <button type="submit">Buscar</button>
         </form>
         {message && (
-          <p className="message" role="alert">
-            {message}
-          </p>
+          <div className="module-state" role="alert">
+            <p>{message}</p>
+            <button className="secondary" onClick={() => void load()}>
+              Reintentar
+            </button>
+          </div>
         )}
         {loading ? (
-          <p>Cargando…</p>
-        ) : result.items.length === 0 ? (
+          <p role="status">Cargando alumnos…</p>
+        ) : message ? null : result.items.length === 0 ? (
           <div className="empty-state">
-            <h2>No se encontraron alumnos</h2>
-            <p>Probá cambiar la búsqueda o el filtro.</p>
+            <h2>
+              {query || status
+                ? 'No hay alumnos con estos filtros.'
+                : 'No hay alumnos registrados.'}
+            </h2>
+            <p>
+              {query || status
+                ? 'Probá cambiar la búsqueda o limpiar el filtro.'
+                : 'Creá el primer alumno para comenzar.'}
+            </p>
           </div>
         ) : (
           <div className="table-wrap">

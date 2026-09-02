@@ -40,6 +40,7 @@ describe('role permissions', () => {
       ]),
     ).toBe(true);
     expect(hasPermissions(manager, ['users:manage-direction'])).toBe(false);
+    expect(hasPermissions(manager, ['users:manage'])).toBe(false);
     expect(hasPermissions(manager, ['settlements:approve'])).toBe(false);
     expect(hasPermissions(manager, ['audit:read'])).toBe(true);
   });
@@ -53,6 +54,7 @@ describe('role permissions', () => {
         'payments:void',
         'cash:manage',
         'cash:reconcile',
+        'users:manage',
         'users:manage-direction',
         'reports:all',
         'settlements:approve',

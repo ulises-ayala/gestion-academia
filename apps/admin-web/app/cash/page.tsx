@@ -6,9 +6,11 @@ import type {
   CashShiftListDto,
   PaymentMethodDto,
 } from '@academy/contracts';
+import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../components/auth-provider';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
+import { safePaymentReturnTo } from '../../lib/contextual-filters';
 
 const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'CARD'];
 const labels: Record<PaymentMethodDto, string> = {
@@ -43,6 +45,9 @@ export default function CashPage() {
   const [correctionMethod, setCorrectionMethod] = useState<PaymentMethodDto>('CASH');
   const [correctedDeclared, setCorrectedDeclared] = useState('');
   const [correctionReason, setCorrectionReason] = useState('');
+  const [returnTo] = useState(() =>
+    typeof window === 'undefined' ? '' : safePaymentReturnTo(window.location.search),
+  );
 
   const load = useCallback(async (signal?: AbortSignal) => {
     setCurrentLoading(true);
@@ -149,6 +154,13 @@ export default function CashPage() {
       );
     }
   }
+  const closingDifference = current
+    ? methods.reduce(
+        (sum, method) =>
+          sum + Number(declared[method] || 0) - Number(current.expectedByMethod[method]),
+        0,
+      )
+    : 0;
 
   return (
     <div className="cash-page">
@@ -160,9 +172,12 @@ export default function CashPage() {
         </div>
       </header>
       {message && (
-        <p className="form-message error" role="alert">
-          {message}
-        </p>
+        <div className="module-state" role="alert">
+          <p>{message}</p>
+          <button className="secondary" onClick={() => void load()}>
+            Reintentar
+          </button>
+        </div>
       )}
       {currentLoading ? (
         <section className="cash-empty panel" aria-busy="true" role="status">
@@ -187,7 +202,14 @@ export default function CashPage() {
                 <p className="form-message">Tenés un turno abierto desde un día anterior.</p>
               )}
             </div>
-            <button onClick={() => setClosing(true)}>Cerrar turno</button>
+            <div className="cash-heading-actions">
+              {returnTo && (
+                <Link className="button secondary" href={returnTo}>
+                  Volver al cobro
+                </Link>
+              )}
+              <button onClick={() => setClosing(true)}>Cerrar turno</button>
+            </div>
           </div>
           <div className="cash-totals">
             {methods.map((method) => (
@@ -230,6 +252,12 @@ export default function CashPage() {
               );
             })}
           </div>
+          {methods.every((method) => declared[method] !== '') && closingDifference !== 0 && (
+            <p className="form-message" role="status">
+              Hay una diferencia de {money(closingDifference.toFixed(2))} entre lo registrado y lo
+              declarado. Podés cerrar el turno igualmente.
+            </p>
+          )}
           <div className="form-actions">
             <button className="secondary" onClick={() => setClosing(false)}>
               Cancelar
@@ -401,6 +429,12 @@ function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
                 {item.type === 'COLLECTION' ? '+' : '-'}
                 {money(item.amount)}
               </strong>
+              <Link
+                className="text-link"
+                href={`/payments?tab=history&studentId=${item.student.id}`}
+              >
+                Ver cobro
+              </Link>
             </article>
           ))}
         </div>

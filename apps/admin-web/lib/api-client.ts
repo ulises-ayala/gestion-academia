@@ -16,6 +16,13 @@ export class ApiClientError extends Error {
   }
 }
 
+export const apiErrorMessage = (status: number, error: ApiErrorDto) => {
+  if (status === 403) return 'No tenés permisos para realizar esta acción.';
+  if (status === 401) return 'Tu sesión expiró. Volvé a iniciar sesión.';
+  if (status >= 500) return 'Ocurrió un problema en el servidor. Intentá nuevamente.';
+  return error.message;
+};
+
 export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiUrl}${path}`, {
     ...init,
@@ -32,7 +39,10 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     }
     if (response.status === 401 && typeof window !== 'undefined' && !path.startsWith('/auth/'))
       window.dispatchEvent(new Event('academy:unauthorized'));
-    throw new ApiClientError(response.status, error);
+    throw new ApiClientError(response.status, {
+      ...error,
+      message: apiErrorMessage(response.status, error),
+    });
   }
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;

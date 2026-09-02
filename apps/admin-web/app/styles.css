@@ -71,6 +71,12 @@
   gap: var(--space-3);
   margin: var(--space-4) 0;
 }
+.cash-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
 .cash-totals article,
 .cash-totals label {
   display: grid;
@@ -123,7 +129,12 @@
     flex-direction: column;
   }
   .cash-heading button,
+  .cash-heading .button,
   .cash-range button {
+    width: 100%;
+  }
+  .cash-heading-actions {
+    display: grid;
     width: 100%;
   }
 }
@@ -386,10 +397,31 @@ svg {
   margin-bottom: 0;
 }
 .quick-actions-card .quick-actions {
-  grid-template-columns: repeat(5, minmax(7.5rem, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-.quick-action {
+.quick-actions-card .quick-action {
+  min-height: 3.5rem;
   justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-color: var(--border);
+  background: var(--surface-muted);
+  color: var(--text);
+  text-align: left;
+}
+.quick-actions-card .quick-action:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--text);
+}
+.quick-actions-card .quick-action span {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 1.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--brand-fill);
+  color: var(--brand-on-fill);
 }
 .metric-action {
   color: var(--brand) !important;
@@ -619,6 +651,11 @@ svg {
   }
   .payment-bar-value {
     font-size: 0.62rem;
+  }
+}
+@media (max-width: 28rem) {
+  .quick-actions-card .quick-actions {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 22rem) {
@@ -1908,7 +1945,7 @@ dd {
     display: none;
   }
   .admin-content > main {
-    padding: var(--space-5) var(--space-2) var(--space-10);
+    padding: var(--space-4) var(--space-2) var(--space-8);
   }
   .card,
   .attendance-filters,
@@ -1986,7 +2023,7 @@ dd {
 }
 .audit-event-context span,
 .audit-entity span {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 0.84rem;
   overflow-wrap: anywhere;
 }
@@ -2032,7 +2069,7 @@ dd {
 .audit-metadata dt,
 .audit-section-label,
 .audit-reason span {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -2079,7 +2116,7 @@ dd {
   overflow-wrap: anywhere;
 }
 .audit-changes small {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 0.72rem;
 }
 .audit-change-arrow {
@@ -2102,7 +2139,7 @@ dd {
 }
 .audit-feedback p,
 .audit-empty p {
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .audit-pagination {
   display: flex;
@@ -2112,7 +2149,7 @@ dd {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
   border-top: 1px solid var(--border);
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .audit-pagination div {
   display: flex;

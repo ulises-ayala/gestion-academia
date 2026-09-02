@@ -23,6 +23,9 @@ describe('Cash page', () => {
     expect(page).toContain('new AbortController()');
     expect(page).toContain('Promise.allSettled');
     expect(apiClient).toContain("cache: init?.cache ?? 'no-store'");
+    expect(page).toContain('safePaymentReturnTo(window.location.search)');
+    expect(page).toContain('Volver al cobro');
+    expect(page).toContain('Ver cobro');
   });
 
   it('muestra cierre original, estado corregido y corrección append-only', () => {
@@ -30,6 +33,7 @@ describe('Cash page', () => {
     expect(page).toContain('Estado corregido');
     expect(page).toContain('Corregir declaración');
     expect(page).toContain('el cierre original no se modifica');
+    expect(page).toContain('Podés cerrar el turno igualmente.');
   });
 
   it('incluye adaptación móvil sin tabla horizontal', () => {

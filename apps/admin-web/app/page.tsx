@@ -23,6 +23,8 @@ const actionLabels: Readonly<Record<string, string>> = {
   VOID: 'Anulación',
   CORRECTION: 'Corrección',
   END: 'Finalización',
+  OPEN: 'Apertura',
+  CLOSE: 'Cierre',
 };
 const entityLabels: Readonly<Record<string, string>> = {
   STUDENT: 'Alumno',
@@ -34,6 +36,7 @@ const entityLabels: Readonly<Record<string, string>> = {
   PAYMENT: 'Pago',
   ATTENDANCE: 'Asistencia',
   ENROLLMENT: 'Inscripción',
+  CASH_SHIFT: 'Turno de caja',
 };
 
 const greeting = () => {
@@ -120,7 +123,7 @@ function Dashboard() {
         )}
         {data.payments && (
           <Metric
-            href="/payments"
+            href={`/payments?tab=history&from=${data.businessDate}&to=${data.businessDate}`}
             label="Cobrado hoy"
             value={money.format(Number(data.payments.confirmedAmountToday))}
             detail={`${data.payments.confirmedToday} pagos confirmados`}

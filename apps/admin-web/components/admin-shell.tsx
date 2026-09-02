@@ -22,8 +22,8 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
         { href: '/', label: 'Inicio', permission: 'students:manage' },
         { href: '/students', label: 'Alumnos', permission: 'students:manage' },
         { href: '/leads', label: 'Potenciales', permission: 'leads:manage' },
-        { href: '/classes', label: 'Clases', permission: 'offering:read' },
         { href: '/attendances', label: 'Asistencias', permission: 'attendance:manage' },
+        { href: '/classes', label: 'Clases', permission: 'offering:read' },
         { href: '/teachers', label: 'Profesores', permission: 'offering:manage' },
       ],
     },
@@ -46,7 +46,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     {
       label: 'Administración',
       links: [
-        { href: '/users', label: 'Usuarios', permission: 'users:manage' },
+        { href: '/users', label: 'Usuarios', permission: 'users:manage-direction' },
         { href: '/audit', label: 'Auditoría', permission: 'audit:read' },
       ],
     },
