@@ -1,6 +1,7 @@
 import type { AdminRoleDto, AdminUserDto, RecordStatusDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
+import { hashPassword } from '../../auth/domain/password';
 import type { UserRepository, UserWithPassword } from './user.repository';
 import { UsersService } from './users.service';
 
@@ -63,11 +64,11 @@ const seed = (repository: MemoryUsers, role: AdminRoleDto, id = crypto.randomUUI
 };
 
 describe('UsersService', () => {
-  it('Administración crea Admisión pero no Dirección', async () => {
+  it('sólo Dirección puede listar y crear usuarios de cualquier rol', async () => {
     const repository = new MemoryUsers();
     const service = new UsersService(repository);
     await expect(
-      service.create(actor('MANAGER'), {
+      service.create(actor('ADMINISTRATOR'), {
         username: 'recepcion',
         password: 'una-clave-segura',
         role: 'RECEPTION',
@@ -75,21 +76,12 @@ describe('UsersService', () => {
     ).resolves.toMatchObject({ role: 'RECEPTION' });
     await expect(
       service.create(actor('MANAGER'), {
-        username: 'direccion',
+        username: 'otra-recepcion',
         password: 'otra-clave-segura',
-        role: 'ADMINISTRATOR',
+        role: 'RECEPTION',
       }),
     ).rejects.toMatchObject({ code: 'FORBIDDEN' });
-  });
-  it('Administración no lista ni consulta usuarios de Dirección', async () => {
-    const repository = new MemoryUsers();
-    const directionId = seed(repository, 'ADMINISTRATOR');
-    seed(repository, 'RECEPTION');
-    const service = new UsersService(repository);
-    await expect(service.list(actor('MANAGER'))).resolves.toHaveLength(1);
-    await expect(service.get(actor('MANAGER'), directionId)).rejects.toMatchObject({
-      code: 'FORBIDDEN',
-    });
+    await expect(service.list(actor('MANAGER'))).rejects.toMatchObject({ code: 'FORBIDDEN' });
   });
   it('impide auto-desactivarse y eliminar la última Dirección activa', async () => {
     const repository = new MemoryUsers();
@@ -102,5 +94,33 @@ describe('UsersService', () => {
     await expect(
       service.update(actor('ADMINISTRATOR'), directionId, { status: 'INACTIVE' }),
     ).rejects.toMatchObject({ code: 'LAST_DIRECTION_USER_REQUIRED' });
+  });
+
+  it('exige la contraseña actual de Dirección para desactivar otro usuario', async () => {
+    const repository = new MemoryUsers();
+    const directionId = crypto.randomUUID();
+    repository.items.push({
+      id: directionId,
+      username: 'direccion',
+      passwordHash: await hashPassword('clave-direccion-segura'),
+      role: 'ADMINISTRATOR',
+      status: 'ACTIVE',
+    });
+    const receptionId = seed(repository, 'RECEPTION');
+    const service = new UsersService(repository);
+    const direction = actor('ADMINISTRATOR', directionId);
+
+    await expect(
+      service.update(direction, receptionId, {
+        status: 'INACTIVE',
+        currentPassword: 'incorrecta',
+      }),
+    ).rejects.toMatchObject({ code: 'CURRENT_PASSWORD_INVALID' });
+    await expect(
+      service.update(direction, receptionId, {
+        status: 'INACTIVE',
+        currentPassword: 'clave-direccion-segura',
+      }),
+    ).resolves.toMatchObject({ status: 'INACTIVE' });
   });
 });

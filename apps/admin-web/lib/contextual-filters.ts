@@ -14,7 +14,21 @@ export const dashboardQuickActions: readonly [string, string, UiPermission][] = 
   ['Tomar asistencia', '/attendances', 'attendance:manage'],
   ['Nuevo potencial', '/leads/new', 'leads:manage'],
   ['Inscribir alumno', dashboardContextLinks.activeStudents, 'enrollments:manage'],
+  ['Abrir o consultar caja', '/cash', 'cash:manage'],
 ];
+
+export const safePaymentReturnTo = (search: string) => {
+  const value = new URLSearchParams(search).get('returnTo');
+  if (!value || !value.startsWith('/payments') || value.startsWith('//') || value.includes('\\'))
+    return '';
+  const url = new URL(value, 'https://internal.invalid');
+  return url.origin === 'https://internal.invalid' && url.pathname === '/payments'
+    ? `${url.pathname}${url.search}${url.hash}`
+    : '';
+};
+
+export const cashHrefForPayment = (paymentSearch: string) =>
+  `/cash?${new URLSearchParams({ returnTo: `/payments${paymentSearch}` })}`;
 
 export const paymentViewFromSearch = (search: string): '' | 'pending' | 'overdue' => {
   const value = new URLSearchParams(search).get('view');

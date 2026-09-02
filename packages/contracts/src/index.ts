@@ -98,6 +98,7 @@ export type CreateAdminUserDto = Readonly<{
 export type UpdateAdminUserDto = Readonly<{
   username?: string;
   password?: string;
+  currentPassword?: string;
   role?: AdminRoleDto;
   status?: RecordStatusDto;
 }>;

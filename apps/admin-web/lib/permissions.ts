@@ -49,7 +49,6 @@ const administrationPermissions: readonly UiPermission[] = [
   'charges:manage',
   'payments:void',
   'cash:reconcile',
-  'users:manage',
   'inventory:manage',
   'trainings:manage',
   'reports:operational',
@@ -62,6 +61,7 @@ const byRole: Readonly<Record<AdminRoleDto, readonly UiPermission[]>> = {
   MANAGER: administrationPermissions,
   ADMINISTRATOR: [
     ...administrationPermissions,
+    'users:manage',
     'users:manage-direction',
     'reports:all',
     'settlements:approve',
