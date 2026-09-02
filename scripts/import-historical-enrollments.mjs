@@ -502,7 +502,7 @@ for (
         'MISSING_START_DATE';
     } else {
       candidate.result =
-        'NEEDS_END_DATE';
+        'READY';
     }
 
     candidates.push(
@@ -723,8 +723,8 @@ function findHistoricalClass(
   );
 
   console.log(
-    `🕐 Falta endDate: ${
-      counts.NEEDS_END_DATE ??
+    `✅ Listos para crear: ${
+      counts.READY ??
       0
     }`,
   );

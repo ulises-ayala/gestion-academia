@@ -10,9 +10,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "dc710853-0a16-4238-a849-6ac0cc8cbeb7",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-04-01",
     "newStartDate": "2025-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 3,
@@ -25,9 +25,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "6c43601f-6b6f-4f4e-b0db-5e45292dc39e",
     "className": "Clase LT - A.Frank",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 3,
@@ -37,9 +37,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Grupo C. - A.Frank",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "52737ab5-437a-4fd4-897f-05e616d35b82",
+    "className": "Grupo C. - A.Frank",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 3,
@@ -49,9 +52,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "S.C Adultos (+18 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "19909b3d-5b01-4c28-a9bb-ca12155d7112",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 4,
@@ -64,9 +70,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "938d7e10-3c2a-403a-8074-aea33227512b",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 5,
@@ -79,9 +85,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "f6538920-7951-4797-97b5-a708a526fb1a",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 6,
@@ -94,9 +100,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "5565ac81-f785-42c8-8f91-21aa0992bbad",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 7,
@@ -109,9 +115,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "16bd52dc-0827-4123-9fe4-80f38594c798",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 8,
@@ -124,9 +130,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "97f59f09-2841-4691-929e-ff86cf773d4b",
     "className": "Bachata y Salsa Inicial",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 9,
@@ -135,30 +141,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "ALARCON GABRIELA",
-        "score": 0.5
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.5
-      },
-      {
-        "name": "RIVAROLA MARTIN",
-        "score": 0.4444
-      },
-      {
-        "name": "CAZAL VIRGINIA ISABELLA",
-        "score": 0.3913
-      },
-      {
-        "name": "BARBIERI MABEL",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "be4ff6c5-29f6-4707-aebf-8174ccc9f0b7",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 10,
@@ -171,9 +160,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "334630a6-7ed1-4163-baf6-8e2ff76b26f0",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-04-01",
     "newStartDate": "2025-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 11,
@@ -186,9 +175,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "b709dfc8-6ba3-45ab-93b2-06fb2d057193",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-06-01",
     "newStartDate": "2025-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 12,
@@ -201,9 +190,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "b251e2c9-b8ff-4c6e-be60-314ebb86945d",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 13,
@@ -213,9 +202,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Bachata y Salsa Inicial",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "1727f3a8-f17e-4bad-92ab-33705fd01145",
+    "className": "Bachata y Salsa Inicial",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 13,
@@ -225,9 +217,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Clase femenino Sofi",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "1bf86f68-66c1-452d-b3f0-29955bbf7fc6",
+    "className": "Clase femenino Sofi",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 13,
@@ -240,9 +235,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e4d06c2e-d22a-4b63-b6d4-a82a24eb6f11",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 14,
@@ -252,9 +247,12 @@
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Hells",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "36f41804-f7df-41f0-9148-47b49b4b07ea",
+    "className": "Hells",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 15,
@@ -267,9 +265,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9924272a-de32-4d2b-b4be-31022f0f3f54",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 16,
@@ -278,30 +276,13 @@
     "activity": "Salsa Y Bachata En Pareja _Fabi",
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "ROJAS LUCAS SEBASTIAN",
-        "score": 0.4286
-      },
-      {
-        "name": "SOSA ALMA",
-        "score": 0.4286
-      },
-      {
-        "name": "SALINAS CONSTANZA",
-        "score": 0.4118
-      },
-      {
-        "name": "ALARCON DYLAN ALEXIS",
-        "score": 0.4
-      },
-      {
-        "name": "CABRERA CLAUDIA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "c952a405-2f19-4f97-839a-4b3b690afac7",
+    "className": "S&B Parejas",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 16,
@@ -310,30 +291,13 @@
     "activity": "Coreografico E.Masc- Bachata/Urban",
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "ROJAS LUCAS SEBASTIAN",
-        "score": 0.4286
-      },
-      {
-        "name": "SOSA ALMA",
-        "score": 0.4286
-      },
-      {
-        "name": "SALINAS CONSTANZA",
-        "score": 0.4118
-      },
-      {
-        "name": "ALARCON DYLAN ALEXIS",
-        "score": 0.4
-      },
-      {
-        "name": "CABRERA CLAUDIA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "0bf6b683-81b0-4c52-89b8-e8e73dcc45b7",
+    "className": "Coreografico E.Masc-Bachata/Urban",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 17,
@@ -346,9 +310,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "821ed7e9-4663-4924-8b4c-112efa6e4601",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-02-01",
     "newStartDate": "2026-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 18,
@@ -361,9 +325,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "272f4993-c935-4f72-9192-70f5497afa2b",
     "className": "Árabe infantil",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 19,
@@ -376,9 +340,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "cd6301f0-6bfa-49e0-b66c-83c2013f3602",
     "className": "Árabe infantil",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-10-01",
     "newStartDate": "2025-10-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 20,
@@ -391,9 +355,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ed47d74a-5fc4-4fe7-a4c3-b615b67eef6b",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 20,
@@ -406,9 +370,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "54ea49b5-199e-4a95-bdf3-ceb1143ea367",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 20,
@@ -421,9 +385,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "1c2ab5eb-df2c-4f3d-8c3b-f76dd4a19127",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 21,
@@ -436,9 +400,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ca8b0125-30c6-4c92-8ed8-1cdb3d919ca6",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 22,
@@ -448,9 +412,12 @@
     "startMonth": "03/2026",
     "startDate": "2026-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "f8ad12bb-2e92-4ecd-9093-c6804f6c9e5c",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2026-03-01",
+    "newStartDate": "2026-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 23,
@@ -463,9 +430,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "618dec37-fa62-4126-8f71-1800825d93f8",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 24,
@@ -489,9 +456,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "48606f18-b95d-491b-aebb-853fe3cf9ea2",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 26,
@@ -504,9 +471,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d8556163-6a96-47cc-93f7-8587bf14e441",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-04-01",
     "newStartDate": "2025-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 26,
@@ -519,9 +486,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "cc8729c0-5918-4543-83b7-4f3efc32a84b",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-04-01",
     "newStartDate": "2025-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 26,
@@ -534,9 +501,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "b540cab0-4dc5-42b7-8eea-c458bee72aec",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-04-01",
     "newStartDate": "2025-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 27,
@@ -549,9 +516,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "efe1c7c5-34ea-4e9d-8ac2-c39b239233c7",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 28,
@@ -571,30 +538,13 @@
     "activity": "Heels",
     "startMonth": "05/2026",
     "startDate": "2026-05-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "BAEZ SANDRA",
-        "score": 0.5455
-      },
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.4545
-      },
-      {
-        "name": "CABALLERO CLAUDIA",
-        "score": 0.4118
-      },
-      {
-        "name": "LUGO MAIRA",
-        "score": 0.4
-      },
-      {
-        "name": "CABRERA CLAUDIA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "6bda8b66-adbf-4433-bb0b-d0838c920543",
+    "className": "Hells",
+    "currentStartDate": "2026-05-01",
+    "newStartDate": "2026-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 30,
@@ -607,9 +557,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9494f045-39f5-4152-b08d-6c81a1ff00df",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-01-01",
     "newStartDate": "2026-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 31,
@@ -622,9 +572,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "04a8bd30-efff-4095-b38d-3fcdaacd90df",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 31,
@@ -637,9 +587,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a55f1d83-95b0-4ed1-82c1-915f89f741ae",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 31,
@@ -649,9 +599,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Coreografico E.Masc- Bachata/Urban",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "f16881e1-58a3-427d-a016-92d33e6d2b64",
+    "className": "Coreografico E.Masc-Bachata/Urban",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 32,
@@ -660,30 +613,13 @@
     "activity": "KIDS",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "BENITEZ DANIEL",
-        "score": 0.6429
-      },
-      {
-        "name": "BENITEZ MARISOL",
-        "score": 0.5333
-      },
-      {
-        "name": "AYALA BENITEZ MAIA",
-        "score": 0.5
-      },
-      {
-        "name": "AYALA BENITEZ LUZ MIA",
-        "score": 0.4762
-      },
-      {
-        "name": "FERNANDESZ JULIETA",
-        "score": 0.4444
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "017ce5ed-fcff-4046-b6be-cabd0c737961",
+    "className": "Kids 4-5 años",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 33,
@@ -696,9 +632,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c23136b0-96f1-4f27-ae3d-c642b5a09010",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 34,
@@ -711,9 +647,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "5f6d3dd5-1e91-40a4-91ce-b5d5cc52f42d",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 34,
@@ -726,9 +662,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "49539e1a-7e3f-47e7-a398-4b49fa3b707d",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 34,
@@ -741,9 +677,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "130ff8fb-70c3-4760-9960-b27893a990f1",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 35,
@@ -756,9 +692,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "27e77571-f588-468b-871f-0904be7131b1",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-01-01",
     "newStartDate": "2026-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 36,
@@ -771,9 +707,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d88067e7-c807-43c9-9ac1-6b7d13b25a62",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 37,
@@ -808,9 +744,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "0d8c35e5-3a79-45b5-87e4-d91ccfbaddde",
     "className": "Street Int/Avanzado",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 39,
@@ -834,9 +770,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "6789125c-821e-4618-b76e-7f6f50e74af7",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 40,
@@ -849,9 +785,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "58ffe3b5-90e6-4b00-8cfd-4f0c471119cf",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 40,
@@ -861,9 +797,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Clase femenino Sofi",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "7136dc70-a312-4b27-b261-9f88b3c53c5f",
+    "className": "Clase femenino Sofi",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 41,
@@ -876,9 +815,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9ff83e27-5c73-4691-b95c-1ac1b7607d32",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 41,
@@ -891,9 +830,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e197eaf2-6df7-49e1-9050-2432306bc6fd",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 41,
@@ -906,9 +845,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "aa9aad11-b141-4fab-b698-abafe3332d66",
     "className": "Bachata y Salsa Inicial",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 42,
@@ -921,9 +860,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "dfb1c37c-4de2-4394-9e2e-7dc9c76c5110",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 42,
@@ -933,9 +872,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Grupo C. Sofi",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "17f59a10-b6db-4166-b835-dfe08fcbcc4c",
+    "className": "Grupo C. Sofi",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 42,
@@ -948,9 +890,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "dd461a48-adde-435b-abe1-367fa1e7aca1",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 42,
@@ -963,9 +905,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "bc836422-a9d6-44b8-92af-13497e61914f",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 42,
@@ -978,9 +920,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "27e17064-1159-43eb-9715-5a0ba0daf55f",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 43,
@@ -993,9 +935,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "0e52d82d-93ef-48f3-9736-3eb4076d9493",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 44,
@@ -1004,30 +946,13 @@
     "activity": "Heels",
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "RAMIREZ AGUSTINA",
-        "score": 0.4615
-      },
-      {
-        "name": "SOSA TEDIN AGUSTINA",
-        "score": 0.4231
-      },
-      {
-        "name": "MENDEZ FATIMA ARIADNA",
-        "score": 0.4231
-      },
-      {
-        "name": "MENDOZA AGUSTINA",
-        "score": 0.4231
-      },
-      {
-        "name": "VERA JOSEFINA NICOLE",
-        "score": 0.4231
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "304619e4-ed41-4819-958e-f5b6b08a21c6",
+    "className": "Hells",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 45,
@@ -1040,9 +965,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "677485ff-90ae-4541-aa32-05894f2d9916",
     "className": "Mambo en parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-05-01",
     "newStartDate": "2026-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 45,
@@ -1052,9 +977,12 @@
     "startMonth": "05/2026",
     "startDate": "2026-05-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "S&B Parejas",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "9bc74f98-3d58-4076-822a-c804c7834e44",
+    "className": "S&B Parejas",
+    "currentStartDate": "2026-05-01",
+    "newStartDate": "2026-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 46,
@@ -1067,9 +995,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "02ddd619-230c-4032-9b37-15360f07bfbc",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-06-01",
     "newStartDate": "2025-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 47,
@@ -1082,9 +1010,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "add0649b-99b5-4832-a920-df0c09ee03b5",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 48,
@@ -1097,9 +1025,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a7ffc953-4a7a-4b70-82ba-0f2debb7c98b",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-04-01",
     "newStartDate": "2026-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 49,
@@ -1108,30 +1036,13 @@
     "activity": "Kids",
     "startMonth": "04/2026",
     "startDate": "2026-04-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "CABRERA PIA",
-        "score": 0.8182
-      },
-      {
-        "name": "CABRERA CLAUDIA",
-        "score": 0.6
-      },
-      {
-        "name": "DELGADO MARIA CARLA",
-        "score": 0.4737
-      },
-      {
-        "name": "PEREIRA NORA HAIRE",
-        "score": 0.4444
-      },
-      {
-        "name": "MEDINA CECILIA",
-        "score": 0.4286
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "d3de109d-673d-4515-b9a2-e466b7476345",
+    "className": "Kids 4-5 años",
+    "currentStartDate": "2026-04-01",
+    "newStartDate": "2026-04-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 50,
@@ -1140,30 +1051,13 @@
     "activity": "Ladys Kizz",
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "CASTILLO LUANA",
-        "score": 0.6667
-      },
-      {
-        "name": "FLORES -TANGO CAMILA",
-        "score": 0.5263
-      },
-      {
-        "name": "FLORES ARGUELLO CAMILA",
-        "score": 0.5
-      },
-      {
-        "name": "CABALLERO CLAUDIA",
-        "score": 0.4706
-      },
-      {
-        "name": "MARTINEZ PAULINA",
-        "score": 0.4375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "d85bdd8f-ec24-4bc1-919a-c5a213535c44",
+    "className": "Ladys Kizz",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 50,
@@ -1172,30 +1066,13 @@
     "activity": "Salsa Y Bachata En Pareja _Fabi",
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "CASTILLO LUANA",
-        "score": 0.6667
-      },
-      {
-        "name": "FLORES -TANGO CAMILA",
-        "score": 0.5263
-      },
-      {
-        "name": "FLORES ARGUELLO CAMILA",
-        "score": 0.5
-      },
-      {
-        "name": "CABALLERO CLAUDIA",
-        "score": 0.4706
-      },
-      {
-        "name": "MARTINEZ PAULINA",
-        "score": 0.4375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "72e87f7c-1020-4c21-b772-75ca12af2bdb",
+    "className": "S&B Parejas",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 51,
@@ -1205,9 +1082,12 @@
     "startMonth": "03/2026",
     "startDate": "2026-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "83e0385a-32af-4bfd-9275-ce0f8c1b4471",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2026-03-01",
+    "newStartDate": "2026-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 52,
@@ -1220,9 +1100,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "cb879a9f-a9ba-4c87-872d-e71a520e4518",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 53,
@@ -1235,9 +1115,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ea8f292c-0152-453e-8a0c-9dfb78be4da7",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-10-01",
     "newStartDate": "2025-10-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 54,
@@ -1246,30 +1126,13 @@
     "activity": "Heels",
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "CANTON AMADO",
-        "score": 0.5
-      },
-      {
-        "name": "DEL TURCO RITA",
-        "score": 0.4375
-      },
-      {
-        "name": "YEGE YAMILE",
-        "score": 0.4375
-      },
-      {
-        "name": "FABIO BENICIO",
-        "score": 0.4375
-      },
-      {
-        "name": "FLORES -TANGO CAMILA",
-        "score": 0.4211
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "e5bd086a-e46f-4b28-848e-f247e46824d6",
+    "className": "Hells",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 55,
@@ -1293,9 +1156,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c507451a-a69e-41c0-bc9d-bd625a76c4b0",
     "className": "Teens (8 a 12 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 57,
@@ -1308,9 +1171,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "aca14f90-9e94-40ad-973a-02cd7bb728fa",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 58,
@@ -1323,9 +1186,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d7fb4d41-d97d-404c-999e-07f3ed712ed9",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-02-01",
     "newStartDate": "2026-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 59,
@@ -1338,9 +1201,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a0234d55-9968-4ea4-829f-e6a36c1c5dab",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 60,
@@ -1353,9 +1216,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "1e5270bb-cf5d-45fd-b160-fe766c48a2d4",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 61,
@@ -1368,9 +1231,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "5db84a3e-f483-4667-a7ca-23d9cf50249d",
     "className": "Street Int/Avanzado",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 62,
@@ -1390,30 +1253,13 @@
     "activity": "Heels",
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "FLORES -TANGO CAMILA",
-        "score": 0.4
-      },
-      {
-        "name": "DEL TURCO RITA",
-        "score": 0.4
-      },
-      {
-        "name": "SOSA EVANGELINA",
-        "score": 0.4
-      },
-      {
-        "name": "GOMEZ ANA MARIA",
-        "score": 0.35
-      },
-      {
-        "name": "DUARTE CATALINA",
-        "score": 0.35
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "ce0188a5-edb0-4d96-b5c2-a4e2914a60cf",
+    "className": "Hells",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 64,
@@ -1437,9 +1283,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "8d4d413e-2f89-4533-97be-6ead75ef9489",
     "className": "Street Int/Avanzado",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 65,
@@ -1452,9 +1298,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "34bd6178-6c00-4210-a5f0-00b16dcb0d77",
     "className": "Hells",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 66,
@@ -1478,9 +1324,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "667b69d3-a853-4a35-8290-b2612ff756c4",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-10-01",
     "newStartDate": "2025-10-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 68,
@@ -1493,9 +1339,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "4209760c-fa9f-4ed9-a701-05ef616dbaf7",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-02-01",
     "newStartDate": "2026-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 68,
@@ -1505,9 +1351,12 @@
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Clase kizomba",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "95b5e446-442a-402b-963a-6e2cc6b507ff",
+    "className": "Clase kizomba",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 68,
@@ -1517,9 +1366,12 @@
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Ladys Kizz",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "a030dffc-3e92-414e-a328-f7732cbe1a5f",
+    "className": "Ladys Kizz",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 69,
@@ -1554,9 +1406,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "73540a7e-dc2e-46bd-a2d9-0014cf41ba53",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 71,
@@ -1569,9 +1421,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ee0fa5aa-ecf7-4507-8780-35789ef95a6d",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-11-01",
     "newStartDate": "2025-11-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 72,
@@ -1580,30 +1432,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "05/2025",
     "startDate": "2025-05-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "RUIZ DIANA BELEN",
-        "score": 0.5
-      },
-      {
-        "name": "CANEPA SELENE AYELEN",
-        "score": 0.4
-      },
-      {
-        "name": "DUARTE CATALINA",
-        "score": 0.4
-      },
-      {
-        "name": "GONZALEZ CELENE",
-        "score": 0.4
-      },
-      {
-        "name": "AYALA BENITEZ MAIA",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "9e90f7cb-9b25-471a-8c11-c97ab26f875f",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-05-01",
+    "newStartDate": "2025-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 73,
@@ -1612,30 +1447,13 @@
     "activity": "Tango Inter/Avanz",
     "startMonth": "08/2026",
     "startDate": "2026-08-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "ROMERO DOMINGUEZ EMA",
-        "score": 0.6
-      },
-      {
-        "name": "GONZALEZ ANGEL",
-        "score": 0.4375
-      },
-      {
-        "name": "BENITEZ DANIEL",
-        "score": 0.4375
-      },
-      {
-        "name": "CORTEZ AVRIL",
-        "score": 0.375
-      },
-      {
-        "name": "DEL CARMEN GEREZ NANCI",
-        "score": 0.3636
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "4181a23e-1970-4d63-a192-1dbfa40bba7c",
+    "className": "Tango (Inter/Avanz)",
+    "currentStartDate": "2026-08-01",
+    "newStartDate": "2026-08-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 74,
@@ -1645,9 +1463,12 @@
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "56cf09a1-48bd-43ab-9812-702b0451767b",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 75,
@@ -1657,9 +1478,12 @@
     "startMonth": "05/2025",
     "startDate": "2025-05-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Grupo C. - A.Frank",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "31f023d5-ebce-429c-af77-32896f547eb9",
+    "className": "Grupo C. - A.Frank",
+    "currentStartDate": "2025-05-01",
+    "newStartDate": "2025-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 75,
@@ -1669,9 +1493,12 @@
     "startMonth": "05/2025",
     "startDate": "2025-05-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "S.C Adultos (+18 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "e8f3a343-4e98-41a7-888b-31c03cfd87b6",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-05-01",
+    "newStartDate": "2025-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 75,
@@ -1684,9 +1511,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "62336ef3-f403-4649-b60e-eaa90e2f7994",
     "className": "Clase LT - A.Frank",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 76,
@@ -1695,30 +1522,13 @@
     "activity": "Teens",
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "DUARTE CATALINA",
-        "score": 0.6667
-      },
-      {
-        "name": "DUARTE CECILIA VANINA",
-        "score": 0.619
-      },
-      {
-        "name": "DUARTE SUNNY",
-        "score": 0.6
-      },
-      {
-        "name": "GUERRA SILVANA",
-        "score": 0.5333
-      },
-      {
-        "name": "RIQUELME GUILLERMINA",
-        "score": 0.45
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "266093a5-a21c-4a46-bd04-41687031a1f5",
+    "className": "Teens (8 a 12 años)",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 77,
@@ -1731,9 +1541,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "85ab018a-b375-4100-846c-48027433d12e",
     "className": "Bachata y Salsa Inicial",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 78,
@@ -1742,30 +1552,13 @@
     "activity": "Heels",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "CELLIO FLORENCIA",
-        "score": 0.4375
-      },
-      {
-        "name": "VALLEJOS ORIANA",
-        "score": 0.4
-      },
-      {
-        "name": "CELLIO RUTH",
-        "score": 0.3846
-      },
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.3846
-      },
-      {
-        "name": "DUARTE CECILIA VANINA",
-        "score": 0.381
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "5430c4a2-0416-496e-94dc-e51b4ef6e3f9",
+    "className": "Hells",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 79,
@@ -1774,30 +1567,13 @@
     "activity": "Street Coreografico Infantil",
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MEDINA PATRICIA",
-        "score": 0.6
-      },
-      {
-        "name": "FABIO BENICIO",
-        "score": 0.4667
-      },
-      {
-        "name": "FERNANDEZ PATRI GAIA",
-        "score": 0.45
-      },
-      {
-        "name": "LUCERO MIA PRICILA",
-        "score": 0.4444
-      },
-      {
-        "name": "MENDEZ ROCIO",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "80bada5e-406b-41f8-94a2-c970c164c97e",
+    "className": "S.C Infantil (6-11 años)",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 80,
@@ -1821,9 +1597,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "90dc9b84-3ee1-4eef-95e2-2c772f601d2d",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 82,
@@ -1847,9 +1623,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c9a452ce-e16a-4d47-a067-e5c2f6e40360",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 84,
@@ -1858,30 +1634,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "FERNANDEZ PATRI GAIA",
-        "score": 0.6087
-      },
-      {
-        "name": "FERNANDEZ CELENNE GERALDINE",
-        "score": 0.5926
-      },
-      {
-        "name": "HERNANDEZ OLIVIA",
-        "score": 0.5217
-      },
-      {
-        "name": "MENDEZ FATIMA ARIADNA",
-        "score": 0.4783
-      },
-      {
-        "name": "FERNANDESZ JULIETA",
-        "score": 0.4783
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "c1962b7d-33f1-485d-8e45-9569081f1399",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 85,
@@ -1894,9 +1653,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "4b3f4cba-1b9c-47b0-8033-e86dc6de0eea",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 86,
@@ -1906,9 +1665,12 @@
     "startMonth": "03/2026",
     "startDate": "2026-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Clase LT - A.Frank",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "7e6b922a-a963-4ad7-ba43-74b4b123cd0f",
+    "className": "Clase LT - A.Frank",
+    "currentStartDate": "2026-03-01",
+    "newStartDate": "2026-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 86,
@@ -1921,9 +1683,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "26fd9e54-9a6a-4f07-85bd-2a7778561c78",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 87,
@@ -1932,30 +1694,13 @@
     "activity": "Bachata Y Salsa Inicial",
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "FLEITAS MARIA JOSE",
-        "score": 0.5556
-      },
-      {
-        "name": "SOLIS TERESITA CECILIA",
-        "score": 0.4545
-      },
-      {
-        "name": "FLORENTIN SELENE",
-        "score": 0.4375
-      },
-      {
-        "name": "PEREIRA GUILLERMINA",
-        "score": 0.4211
-      },
-      {
-        "name": "SERVIN FLORENCIA",
-        "score": 0.375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "5779d0b7-cb92-44bd-981d-3e7745eb7954",
+    "className": "Bachata y Salsa Inicial",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 88,
@@ -1968,9 +1713,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9d584459-467b-46d6-856b-b92873bd7210",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 89,
@@ -1983,9 +1728,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "4cedc994-5cab-4dd1-84bb-4bbd4069777f",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 90,
@@ -1998,9 +1743,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "6ddc6e3f-7b76-4924-aefa-dc5f58693a76",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 91,
@@ -2013,9 +1758,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "f31bec5c-f1cb-471f-9151-3670c1fd52dc",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 91,
@@ -2028,9 +1773,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "5dfe6754-f87d-4f3f-9d4b-24317f65d117",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 92,
@@ -2043,9 +1788,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "fd172c23-5b49-450c-be20-1a9308e0a53f",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 93,
@@ -2058,9 +1803,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d2f857cb-50e5-4dbd-80f1-b7c40ef18cb2",
     "className": "Street Int/Avanzado",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 94,
@@ -2069,30 +1814,13 @@
     "activity": "Heels",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "DELGADO MARIA CARLA",
-        "score": 0.4737
-      },
-      {
-        "name": "GOMEZ ANA MARIA",
-        "score": 0.4375
-      },
-      {
-        "name": "CANO NAYELI",
-        "score": 0.4375
-      },
-      {
-        "name": "AYALA ANALIA",
-        "score": 0.4375
-      },
-      {
-        "name": "GUARE MATTEO NAVILA",
-        "score": 0.4211
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "2044807e-eb67-47a3-b855-a1d05f25ee7e",
+    "className": "Hells",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 95,
@@ -2101,30 +1829,13 @@
     "activity": "Salsa Y Bachata En Pareja _Fabi",
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "AQUINO FLAVIA",
-        "score": 0.5
-      },
-      {
-        "name": "GUERRA SILVANA",
-        "score": 0.5
-      },
-      {
-        "name": "PEÑA SOFIA",
-        "score": 0.4286
-      },
-      {
-        "name": "PINO SOFIA",
-        "score": 0.4286
-      },
-      {
-        "name": "SOSA ALMA",
-        "score": 0.4286
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "540374b9-6a2f-440e-b518-454882228a89",
+    "className": "S&B Parejas",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 96,
@@ -2137,9 +1848,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "f5106f21-fc88-4a1d-b7f7-f144eaf686d5",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-01-01",
     "newStartDate": "2026-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 96,
@@ -2152,9 +1863,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "f1ab3374-8eb7-475b-88dd-0bce75ddb025",
     "className": "Bachata y Salsa Inicial",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-01-01",
     "newStartDate": "2026-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 97,
@@ -2167,9 +1878,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ba663c8b-78b1-40f6-ab11-c91e8b82ddd0",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 98,
@@ -2189,30 +1900,13 @@
     "activity": "MAMBO EN PAREJA",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "CANTON AMADO",
-        "score": 0.4
-      },
-      {
-        "name": "FERNANDEZ PATRI GAIA",
-        "score": 0.35
-      },
-      {
-        "name": "OVIEDO MAGALI",
-        "score": 0.3333
-      },
-      {
-        "name": "PEART SOL",
-        "score": 0.3333
-      },
-      {
-        "name": "LOMBARDO EVA NANCY",
-        "score": 0.3333
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_REORDERED",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "916c1e22-dcc3-488b-984a-8c9d3396d01b",
+    "className": "Mambo en parejas",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 100,
@@ -2225,9 +1919,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "97924a23-2721-45df-89ea-629dccf4073a",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 101,
@@ -2236,30 +1930,13 @@
     "activity": "Coreografico_Puchini",
     "startMonth": "04/2025",
     "startDate": "2025-04-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "GIMENEZ DELFINA",
-        "score": 0.625
-      },
-      {
-        "name": "ALARCON GABRIELA",
-        "score": 0.5625
-      },
-      {
-        "name": "GIMENEZ NATALIA SOLEDAD",
-        "score": 0.5217
-      },
-      {
-        "name": "CIGEL GRACIELA",
-        "score": 0.5
-      },
-      {
-        "name": "MIÑOS SABRINA",
-        "score": 0.5
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "29be8ba9-869d-4490-a99d-0261cf31383a",
+    "className": "Grupo C. Sofi",
+    "currentStartDate": "2025-04-01",
+    "newStartDate": "2025-04-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 102,
@@ -2268,30 +1945,13 @@
     "activity": "Heels",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "GIMENEZ DELFINA",
-        "score": 0.6
-      },
-      {
-        "name": "GIMENEZ NATALIA SOLEDAD",
-        "score": 0.4783
-      },
-      {
-        "name": "GUTIERRES NAHIARA",
-        "score": 0.4706
-      },
-      {
-        "name": "ROJAS MARIA DEL CARMEN",
-        "score": 0.4091
-      },
-      {
-        "name": "GOMEZ ANA MARIA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "f4916477-ff25-4c5a-bfcf-bb3fee6aef98",
+    "className": "Hells",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 103,
@@ -2304,9 +1964,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9ed439ed-809c-45c1-8dde-ad4977936276",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 104,
@@ -2326,30 +1986,13 @@
     "activity": "Inst.Sup.Coreografico -Tango /18 Meses",
     "startMonth": "07/2025",
     "startDate": "2025-07-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MEDINA PATRICIA",
-        "score": 0.7333
-      },
-      {
-        "name": "LUCERO MIA PRICILA",
-        "score": 0.5
-      },
-      {
-        "name": "FERNANDEZ PATRI GAIA",
-        "score": 0.5
-      },
-      {
-        "name": "PEREIRA GUILLERMINA",
-        "score": 0.4737
-      },
-      {
-        "name": "BERNAL FATIMA",
-        "score": 0.4667
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "EXACT_CLASS",
+    "enrollmentId": "7d78ad9c-72c2-44fb-a3cd-1eff485b9a29",
+    "className": "Inst.Sup.Coreografico -Tango /18 Meses",
+    "currentStartDate": "2025-07-01",
+    "newStartDate": "2025-07-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 106,
@@ -2362,9 +2005,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "2ca0812d-7f61-446c-9217-cde43fef8629",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 107,
@@ -2377,9 +2020,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d03e7b63-654a-4698-9e9f-2b57647a3f3a",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 108,
@@ -2388,30 +2031,13 @@
     "activity": "Coreografico E.Masc- Bachata/Urban",
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "GOMEZ ANA MARIA",
-        "score": 0.4762
-      },
-      {
-        "name": "MENDEZ FATIMA ARIADNA",
-        "score": 0.381
-      },
-      {
-        "name": "DEL TURCO RITA",
-        "score": 0.381
-      },
-      {
-        "name": "LOPEZ CLAUDIA",
-        "score": 0.381
-      },
-      {
-        "name": "CORTEZ AVRIL",
-        "score": 0.381
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "e7d8e429-e5a6-4ebc-9a7e-603b32646a2b",
+    "className": "Coreografico E.Masc-Bachata/Urban",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 109,
@@ -2435,9 +2061,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "efc63ca6-264a-4c6a-bdbc-f33bfb76ac37",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 111,
@@ -2450,9 +2076,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "62f7c8f8-6cd5-4547-ab18-f18ee4b8f504",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 112,
@@ -2465,9 +2091,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "2406e794-18c1-4222-b8e5-74518bc30151",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-02-01",
     "newStartDate": "2026-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 113,
@@ -2476,30 +2102,13 @@
     "activity": "Kizomba",
     "startMonth": "04/2025",
     "startDate": "2025-04-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "GONZALEZ ANGEL",
-        "score": 0.6667
-      },
-      {
-        "name": "GONZALEZ ALEJANDRA",
-        "score": 0.6111
-      },
-      {
-        "name": "GONZALEZ CELENE",
-        "score": 0.6
-      },
-      {
-        "name": "GONZALEZ ISABELLA",
-        "score": 0.5882
-      },
-      {
-        "name": "GONZALEZ VIERA PILAR",
-        "score": 0.55
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "ca1cd0bd-3e50-4bb2-b686-22c3c1dbf386",
+    "className": "Clase kizomba",
+    "currentStartDate": "2025-04-01",
+    "newStartDate": "2025-04-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 114,
@@ -2509,9 +2118,12 @@
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "9621f6a6-735f-46c5-898e-87213ed03be7",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 115,
@@ -2524,9 +2136,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "52a50c78-df99-4cd3-88ad-6a6fefea748a",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-01-01",
     "newStartDate": "2026-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 115,
@@ -2536,9 +2148,12 @@
     "startMonth": "01/2026",
     "startDate": "2026-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Clase femenino Sofi",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "ed035b29-8de4-46bc-85c6-ac53b071f8df",
+    "className": "Clase femenino Sofi",
+    "currentStartDate": "2026-01-01",
+    "newStartDate": "2026-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 116,
@@ -2551,9 +2166,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "07e76d09-099f-47b8-a47b-0f2a9085abda",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 117,
@@ -2577,9 +2192,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "3fac09ba-5286-450e-a187-b9445a39a109",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 119,
@@ -2603,9 +2218,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "703341c8-6013-4d00-9a39-074c0bb71d3d",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 120,
@@ -2618,9 +2233,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a8ab5ac2-9879-4bcd-a5bb-d63726ea796a",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 121,
@@ -2629,30 +2244,13 @@
     "activity": "Infantil 1",
     "startMonth": "05/2026",
     "startDate": "2026-05-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "LEIVA ISABELLA",
-        "score": 0.4286
-      },
-      {
-        "name": "SOSA ALMA",
-        "score": 0.4167
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.4167
-      },
-      {
-        "name": "SAPORITTI PAULINA",
-        "score": 0.4118
-      },
-      {
-        "name": "RIVAROLA MARTIN",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "8a87dae5-e2dd-45b0-a57f-3d3550a95936",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2026-05-01",
+    "newStartDate": "2026-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 122,
@@ -2661,30 +2259,13 @@
     "activity": "Street Coreografico Infantil",
     "startMonth": "09/2025",
     "startDate": "2025-09-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "SOSA LIÑAN ANTONIA",
-        "score": 0.4545
-      },
-      {
-        "name": "BULLON EUGENIA",
-        "score": 0.4091
-      },
-      {
-        "name": "BERNAL MARIA ROSA",
-        "score": 0.4091
-      },
-      {
-        "name": "FLEITAS MARIA JOSE",
-        "score": 0.3636
-      },
-      {
-        "name": "ALARCON GABRIELA",
-        "score": 0.3636
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "7237b28b-83c2-41e9-8256-5cc68f5a725b",
+    "className": "S.C Infantil (6-11 años)",
+    "currentStartDate": "2025-09-01",
+    "newStartDate": "2025-09-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 123,
@@ -2697,9 +2278,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "450dab8e-cc4b-4cb6-89e0-2f0ba8e226aa",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-11-01",
     "newStartDate": "2025-11-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 123,
@@ -2709,9 +2290,12 @@
     "startMonth": "11/2025",
     "startDate": "2025-11-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Coreografico E.Masc- Bachata/Urban",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "ee7ea00f-98aa-4621-aaf6-7fc1bd063bbd",
+    "className": "Coreografico E.Masc-Bachata/Urban",
+    "currentStartDate": "2025-11-01",
+    "newStartDate": "2025-11-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 124,
@@ -2724,9 +2308,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "dd9857b9-8502-4bb5-a1b6-22ed7694180b",
     "className": "Clase LT - A.Frank",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 124,
@@ -2739,9 +2323,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e58e1908-a9ac-4b7f-b7dc-9da5595de45a",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 124,
@@ -2751,9 +2335,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Grupo C. - A.Frank",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "8a424fd1-143f-40d5-900f-e6731858a921",
+    "className": "Grupo C. - A.Frank",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 125,
@@ -2763,9 +2350,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "78feeceb-4e74-4cf9-9034-fa424a655463",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 126,
@@ -2774,30 +2364,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.5833
-      },
-      {
-        "name": "VALLEJOS ORIANA",
-        "score": 0.5333
-      },
-      {
-        "name": "ALVAREZ MARTINA",
-        "score": 0.5333
-      },
-      {
-        "name": "LOPEZ IRUPE",
-        "score": 0.5
-      },
-      {
-        "name": "TORRES TATIANA",
-        "score": 0.5
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "007ac4be-d884-4726-9311-36ab08e146a6",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 127,
@@ -2810,9 +2383,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "59c589da-3a44-41f0-813f-8c87c215d133",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 127,
@@ -2825,9 +2398,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e3d1b240-ba9d-4b00-9991-9f72e58ed76a",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 127,
@@ -2840,9 +2413,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a31491f2-90cc-448b-bc80-2ff825ef5e12",
     "className": "Bachata y Salsa Inicial",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 128,
@@ -2851,30 +2424,13 @@
     "activity": "Tango Inter/Avanz",
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "FLEITAS MARIA JOSE",
-        "score": 0.4444
-      },
-      {
-        "name": "PAREDES ROMINA",
-        "score": 0.4286
-      },
-      {
-        "name": "VALLEJOS ORIANA",
-        "score": 0.4
-      },
-      {
-        "name": "LESME CLARISA",
-        "score": 0.3846
-      },
-      {
-        "name": "CESPEDES SOLEDAD",
-        "score": 0.375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "ce152949-50f6-4869-bc68-e7c6e95cefa7",
+    "className": "Tango (Inter/Avanz)",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 129,
@@ -2883,30 +2439,13 @@
     "activity": "Kids",
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "TOPACIO FATIMA",
-        "score": 0.5294
-      },
-      {
-        "name": "SANCHEZ MARTINA",
-        "score": 0.5294
-      },
-      {
-        "name": "ALVAREZ MARTINA",
-        "score": 0.5294
-      },
-      {
-        "name": "MEDINA CECILIA",
-        "score": 0.4706
-      },
-      {
-        "name": "RIVAROLA MARTIN",
-        "score": 0.4706
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "6191d1ac-b618-4ede-bace-6c9aed4cbde4",
+    "className": "Kids 4-5 años",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 130,
@@ -2919,9 +2458,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "2c9f5f00-40f6-4cee-a33a-e30d05c08792",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 130,
@@ -2934,9 +2473,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "2a10630c-984d-4eed-b63c-1e32adb3d6cf",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 131,
@@ -2949,9 +2488,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c84ad4ef-fd58-4b52-a059-00afff51b226",
     "className": "Clase LT - A.Frank",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 131,
@@ -2961,9 +2500,12 @@
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Grupo C. - A.Frank",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "549561c0-b1a0-4227-a2ed-69ce9876e2e8",
+    "className": "Grupo C. - A.Frank",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 131,
@@ -2973,9 +2515,12 @@
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Mambo en parejas",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "e6495508-5564-431d-9fc9-1a8ffb8b168a",
+    "className": "Mambo en parejas",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 132,
@@ -2988,9 +2533,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a903a415-fd3f-473d-bca8-94d8df8f28de",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-08-01",
     "newStartDate": "2025-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 133,
@@ -3003,9 +2548,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d59dbdfb-4111-43b4-811b-4a61eeb2bcd2",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 134,
@@ -3018,9 +2563,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "824d7160-dd8c-41e2-8b10-f61222407028",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-05-01",
     "newStartDate": "2026-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 135,
@@ -3033,9 +2578,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "4fffa97b-98c9-4b9e-9217-2b663efbb14a",
     "className": "Hells",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-10-01",
     "newStartDate": "2025-10-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 136,
@@ -3059,9 +2604,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ca390232-a9e8-40b3-af1e-0400387bcbb7",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-08-01",
     "newStartDate": "2025-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 138,
@@ -3085,9 +2630,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "21e68f45-8f24-4ca2-8811-81d39230d5af",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-05-01",
     "newStartDate": "2026-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 140,
@@ -3096,30 +2641,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MARTINEZ PAULINA",
-        "score": 0.6471
-      },
-      {
-        "name": "RIVAROLA MARTIN",
-        "score": 0.4706
-      },
-      {
-        "name": "SANCHEZ MARTINA",
-        "score": 0.4706
-      },
-      {
-        "name": "BAEZ SANDRA",
-        "score": 0.4118
-      },
-      {
-        "name": "MEDINA CECILIA",
-        "score": 0.4118
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "0352fb4c-ded1-4e2d-8ecf-13d62220df59",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 141,
@@ -3128,30 +2656,13 @@
     "activity": "TEENS",
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MARTINEZ PAULINA",
-        "score": 0.5625
-      },
-      {
-        "name": "SAPORITTI PAULINA",
-        "score": 0.4118
-      },
-      {
-        "name": "DUARTE CATALINA",
-        "score": 0.4
-      },
-      {
-        "name": "SALINAS VIVIANA",
-        "score": 0.4
-      },
-      {
-        "name": "TORRES TATIANA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "97432f15-947e-442c-ad91-1d2502159c45",
+    "className": "Teens (8 a 12 años)",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 142,
@@ -3164,9 +2675,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ddbf6134-fc66-4bc0-990c-13ac16fb23b0",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-11-01",
     "newStartDate": "2025-11-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 142,
@@ -3179,9 +2690,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a3f629d5-a079-4e65-9a7b-6b63e52a72b1",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-11-01",
     "newStartDate": "2025-11-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 142,
@@ -3194,9 +2705,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ee008ad3-2ebd-4791-8346-6c4e01d616df",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-11-01",
     "newStartDate": "2025-11-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 143,
@@ -3205,30 +2716,13 @@
     "activity": "Kids",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MEDINA CECILIA",
-        "score": 0.6429
-      },
-      {
-        "name": "MEDINA PATRICIA",
-        "score": 0.6
-      },
-      {
-        "name": "MOLINA MERCEDES",
-        "score": 0.4667
-      },
-      {
-        "name": "GOMEZ ANA MARIA",
-        "score": 0.4667
-      },
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.4545
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "b2d2f6f4-ebac-4898-959c-a372299efd86",
+    "className": "Kids 4-5 años",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 144,
@@ -3237,30 +2731,13 @@
     "activity": "Kizomba",
     "startMonth": "03/2026",
     "startDate": "2026-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MEDINA PATRICIA",
-        "score": 0.6111
-      },
-      {
-        "name": "MEDINA CECILIA",
-        "score": 0.5
-      },
-      {
-        "name": "SANCHEZ ORTIZ DELFINA",
-        "score": 0.4286
-      },
-      {
-        "name": "MENDEZ FATIMA ARIADNA",
-        "score": 0.4286
-      },
-      {
-        "name": "BERNAL FATIMA",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "9e1271ca-0e5e-48ab-a1c1-cfc70bca45f7",
+    "className": "Clase kizomba",
+    "currentStartDate": "2026-03-01",
+    "newStartDate": "2026-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 144,
@@ -3269,30 +2746,13 @@
     "activity": "Salsa Y Bachata En Pareja _Fabi",
     "startMonth": "03/2026",
     "startDate": "2026-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MEDINA PATRICIA",
-        "score": 0.6111
-      },
-      {
-        "name": "MEDINA CECILIA",
-        "score": 0.5
-      },
-      {
-        "name": "SANCHEZ ORTIZ DELFINA",
-        "score": 0.4286
-      },
-      {
-        "name": "MENDEZ FATIMA ARIADNA",
-        "score": 0.4286
-      },
-      {
-        "name": "BERNAL FATIMA",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "fe49655f-c53a-4cbf-b5b8-ebd4ff95f82d",
+    "className": "S&B Parejas",
+    "currentStartDate": "2026-03-01",
+    "newStartDate": "2026-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 145,
@@ -3305,9 +2765,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "14b43222-dc42-4861-bfbe-9a85f60718cb",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 145,
@@ -3320,9 +2780,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "fe6b20b5-a837-4220-96ce-7dfb2cb24674",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 145,
@@ -3335,9 +2795,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "677e814f-65da-4baa-bfd0-d67c2d94dc17",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 145,
@@ -3350,9 +2810,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "8391b952-cff0-4051-af5d-727bf7a9305f",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 146,
@@ -3365,9 +2825,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "6067ecc8-7f73-4706-994b-dfe7b6043900",
     "className": "Street Int/Avanzado",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 147,
@@ -3380,9 +2840,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "af7c7fc8-6289-43bc-a865-3ed87785fe58",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-04-01",
     "newStartDate": "2026-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 148,
@@ -3395,9 +2855,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "4a7f0fed-2e85-40a3-b6eb-0eadea007e59",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 149,
@@ -3407,9 +2867,12 @@
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "815662fb-2c19-4dc3-92a2-13a30bafed03",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 150,
@@ -3422,9 +2885,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "7e0b6822-956b-460e-b875-560bd1185249",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-01-01",
     "newStartDate": "2026-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 151,
@@ -3437,9 +2900,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "879cd81d-7f71-4e72-a3da-4571a6821ee4",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 151,
@@ -3452,9 +2915,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "216dc74c-968b-41bf-9cd6-92654246809b",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 152,
@@ -3464,9 +2927,12 @@
     "startMonth": "06/2025",
     "startDate": "2025-06-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "2abe3100-dc24-4148-a477-203c7d69dcb9",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2025-06-01",
+    "newStartDate": "2025-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 153,
@@ -3475,30 +2941,13 @@
     "activity": "Heels",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "ALVAREZ MARTINA",
-        "score": 0.4667
-      },
-      {
-        "name": "ALARCON GABRIELA",
-        "score": 0.4375
-      },
-      {
-        "name": "MARTINEZ PAULINA",
-        "score": 0.4375
-      },
-      {
-        "name": "ROJAS MARIA DEL CARMEN",
-        "score": 0.4091
-      },
-      {
-        "name": "SORABELLA ARIEL",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "9f4b0bb6-50a6-4d18-8bde-a8c5fb3ca426",
+    "className": "Hells",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 154,
@@ -3507,30 +2956,13 @@
     "activity": "Mambo En Pareja",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MIÑO LEIRE",
-        "score": 0.5455
-      },
-      {
-        "name": "MIÑOS SABRINA",
-        "score": 0.4615
-      },
-      {
-        "name": "LOPEZ CLAUDIA",
-        "score": 0.4615
-      },
-      {
-        "name": "LUGO MAIRA",
-        "score": 0.4545
-      },
-      {
-        "name": "GONZALEZ ALEJANDRA",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "8ff43903-81d2-4367-8810-6b4626f0c01b",
+    "className": "Mambo en parejas",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 155,
@@ -3554,9 +2986,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "b8bca902-7b92-48e2-8335-0df4287f7958",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-11-01",
     "newStartDate": "2025-11-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 157,
@@ -3565,30 +2997,13 @@
     "activity": "Mambo En Pareja",
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "CORTI VIOLETA",
-        "score": 0.4615
-      },
-      {
-        "name": "LASPIUR JORGE",
-        "score": 0.4615
-      },
-      {
-        "name": "OLIVA SOLEDAD",
-        "score": 0.3846
-      },
-      {
-        "name": "CESPEDES SOLEDAD",
-        "score": 0.375
-      },
-      {
-        "name": "PEÑA SOFIA",
-        "score": 0.3636
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "144f4489-4c14-49f9-9b2a-59e6b3c471c7",
+    "className": "Mambo en parejas",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 158,
@@ -3601,9 +3016,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c18cb91d-7d51-4a6f-a6f2-33c365a57d46",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 159,
@@ -3623,30 +3038,13 @@
     "activity": "Kizomba",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "SAPORITI AMALIA ALFONSINA",
-        "score": 0.4
-      },
-      {
-        "name": "SORABELLA ARIEL",
-        "score": 0.4
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.4
-      },
-      {
-        "name": "SORAIRE NOELIA",
-        "score": 0.4
-      },
-      {
-        "name": "FLEITAS MARIA JOSE",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "2ee1659e-5758-4b92-aea7-fb3c0c0bbc59",
+    "className": "Clase kizomba",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 160,
@@ -3655,30 +3053,13 @@
     "activity": "Ladys Kizz",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "SAPORITI AMALIA ALFONSINA",
-        "score": 0.4
-      },
-      {
-        "name": "SORABELLA ARIEL",
-        "score": 0.4
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.4
-      },
-      {
-        "name": "SORAIRE NOELIA",
-        "score": 0.4
-      },
-      {
-        "name": "FLEITAS MARIA JOSE",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "c75e4482-1018-4453-abae-73400630985e",
+    "className": "Ladys Kizz",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 160,
@@ -3687,30 +3068,13 @@
     "activity": "Salsa Y Bachata En Pareja _Fabi",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "SAPORITI AMALIA ALFONSINA",
-        "score": 0.4
-      },
-      {
-        "name": "SORABELLA ARIEL",
-        "score": 0.4
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.4
-      },
-      {
-        "name": "SORAIRE NOELIA",
-        "score": 0.4
-      },
-      {
-        "name": "FLEITAS MARIA JOSE",
-        "score": 0.3889
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "d1664f68-dc81-419f-8dde-abe37a9d2f61",
+    "className": "S&B Parejas",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 161,
@@ -3723,9 +3087,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e252aec7-2d70-4164-b895-d9267304411e",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 161,
@@ -3735,9 +3099,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Mambo en parejas",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "91a0172d-0b96-4d95-b940-cbab71432051",
+    "className": "Mambo en parejas",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 162,
@@ -3747,9 +3114,12 @@
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "S&B Parejas",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "aaac8451-d66f-4bf5-9077-2b1f0e587d77",
+    "className": "S&B Parejas",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 162,
@@ -3762,9 +3132,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c85563ae-f620-43f8-a1d3-af281ddd7330",
     "className": "Mambo en parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 162,
@@ -3774,9 +3144,12 @@
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Clase kizomba",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "1c1d9ab6-ca28-46f0-89ad-02fe45872ee9",
+    "className": "Clase kizomba",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 162,
@@ -3789,9 +3162,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d79f04c2-ca72-4afc-b6e3-e0b9a1f27f0d",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 163,
@@ -3804,9 +3177,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "3f2cf1c5-8b5c-4b89-95ab-b722d76cd180",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-05-01",
     "newStartDate": "2026-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 164,
@@ -3819,9 +3192,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "47ae2631-91ee-4ff7-91b1-368a713b932c",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 165,
@@ -3830,30 +3203,13 @@
     "activity": "KIDS",
     "startMonth": "07/2026",
     "startDate": "2026-07-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "GUTIERRES NAHIARA",
-        "score": 0.5294
-      },
-      {
-        "name": "PEÑA SOFIA",
-        "score": 0.5
-      },
-      {
-        "name": "DELGADO MARIA CARLA",
-        "score": 0.4737
-      },
-      {
-        "name": "AMARILLA LEONARDO",
-        "score": 0.4706
-      },
-      {
-        "name": "BERNAL MARIA ROSA",
-        "score": 0.4706
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "2bb911ac-9e4f-435e-97c2-357d426cbc01",
+    "className": "Kids 4-5 años",
+    "currentStartDate": "2026-07-01",
+    "newStartDate": "2026-07-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 166,
@@ -3862,30 +3218,13 @@
     "activity": "Street Coreografico Juvenil",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "LUCERO MIA PRICILA",
-        "score": 0.5556
-      },
-      {
-        "name": "DELALOYE GRACIELA",
-        "score": 0.4706
-      },
-      {
-        "name": "PEART SOL",
-        "score": 0.4375
-      },
-      {
-        "name": "MEDINA PATRICIA",
-        "score": 0.4375
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.4375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "ddbd9f7e-52dd-47b6-b72a-2252d00359c7",
+    "className": "S.C Juvenil (12-17 años)",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 167,
@@ -3898,9 +3237,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ad855591-50b0-4e87-8eb6-66dd7d559f1f",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-08-01",
     "newStartDate": "2025-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 168,
@@ -3913,9 +3252,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "24563f81-b88c-4a31-87dc-f99e680794b8",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 168,
@@ -3928,9 +3267,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c8ecc0d9-c8fb-49a7-83a7-c5f7b060eb0d",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 168,
@@ -3943,9 +3282,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "94a878eb-5fd1-44e6-8cd2-fc89ea3a5ff7",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 169,
@@ -3958,9 +3297,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "4cba1d2d-a4bf-4c3f-a809-9a783d1a6323",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-05-01",
     "newStartDate": "2026-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 170,
@@ -3969,30 +3308,13 @@
     "activity": "Bachata Y Salsa Inicial",
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "IRALA ALBA",
-        "score": 0.4286
-      },
-      {
-        "name": "AQUINO FLAVIA",
-        "score": 0.4286
-      },
-      {
-        "name": "GUERRA SILVANA",
-        "score": 0.4286
-      },
-      {
-        "name": "GOMEZ ANA MARIA",
-        "score": 0.4
-      },
-      {
-        "name": "SALINAS VIVIANA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "a1af6247-425d-4f56-9c63-b7439e3d57e0",
+    "className": "Bachata y Salsa Inicial",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 171,
@@ -4005,9 +3327,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "42cf5454-9699-4b03-800c-35fe51589f73",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 172,
@@ -4020,9 +3342,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ad3d6cb1-4ca4-488b-b0b3-50de931755b2",
     "className": "Clase LT - A.Frank",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 172,
@@ -4032,9 +3354,12 @@
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Grupo C. - A.Frank",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "00ce605b-e9a0-4266-9c24-bc1652d75fe7",
+    "className": "Grupo C. - A.Frank",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 172,
@@ -4047,9 +3372,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "aa4de275-e0ef-48ba-9fa3-ac09e7733d87",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 173,
@@ -4058,30 +3383,13 @@
     "activity": "Salsa Y Bachata En Pareja _Fabi",
     "startMonth": "03/2026",
     "startDate": "2026-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "RAMIREZ AGUSTINA",
-        "score": 0.5625
-      },
-      {
-        "name": "GONZALEZ CELENE",
-        "score": 0.4667
-      },
-      {
-        "name": "DELALOYE GRACIELA",
-        "score": 0.4118
-      },
-      {
-        "name": "MIÑO LEIRE",
-        "score": 0.4
-      },
-      {
-        "name": "BENITEZ DANIEL",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "127ea4cd-e6ec-4e49-beb6-8579b2748cb3",
+    "className": "S&B Parejas",
+    "currentStartDate": "2026-03-01",
+    "newStartDate": "2026-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 174,
@@ -4090,30 +3398,13 @@
     "activity": "Street Coreografico Avanzado Intermedio",
     "startMonth": "05/2026",
     "startDate": "2026-05-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "TORRES TATIANA",
-        "score": 0.5714
-      },
-      {
-        "name": "RIVAROLA MARTIN",
-        "score": 0.4667
-      },
-      {
-        "name": "SALINAS VIVIANA",
-        "score": 0.4667
-      },
-      {
-        "name": "SOSA RAMONA",
-        "score": 0.4615
-      },
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.4615
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "891c485c-73f7-49c4-abfc-772fd679b870",
+    "className": "Street Int/Avanzado",
+    "currentStartDate": "2026-05-01",
+    "newStartDate": "2026-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 175,
@@ -4122,30 +3413,13 @@
     "activity": "Heels",
     "startMonth": "08/2026",
     "startDate": "2026-08-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "PAREDES ROMINA",
-        "score": 0.5
-      },
-      {
-        "name": "WIERNES MAGALI",
-        "score": 0.5
-      },
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.4545
-      },
-      {
-        "name": "MERELES ALISSE",
-        "score": 0.4286
-      },
-      {
-        "name": "TORRES TATIANA",
-        "score": 0.4286
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "79589376-db43-47df-9981-27dff47fe0ab",
+    "className": "Hells",
+    "currentStartDate": "2026-08-01",
+    "newStartDate": "2026-08-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 176,
@@ -4154,30 +3428,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "01/2026",
     "startDate": "2026-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "WIERNES MAGALI",
-        "score": 0.5
-      },
-      {
-        "name": "MERELES ALISSE",
-        "score": 0.4286
-      },
-      {
-        "name": "PAREDES ROMINA",
-        "score": 0.4286
-      },
-      {
-        "name": "BENITEZ MARISOL",
-        "score": 0.4
-      },
-      {
-        "name": "OVIEDO MAGALI",
-        "score": 0.3846
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "aeb20f93-7bd0-4a3b-b5b9-f515e3bc5378",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2026-01-01",
+    "newStartDate": "2026-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 176,
@@ -4186,30 +3443,13 @@
     "activity": "Street Coreografico Avanzado Intermedio",
     "startMonth": "01/2026",
     "startDate": "2026-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "WIERNES MAGALI",
-        "score": 0.5
-      },
-      {
-        "name": "MERELES ALISSE",
-        "score": 0.4286
-      },
-      {
-        "name": "PAREDES ROMINA",
-        "score": 0.4286
-      },
-      {
-        "name": "BENITEZ MARISOL",
-        "score": 0.4
-      },
-      {
-        "name": "OVIEDO MAGALI",
-        "score": 0.3846
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "b6559bfc-2c0c-4225-b85e-9b2fa2e1bfc1",
+    "className": "Street Int/Avanzado",
+    "currentStartDate": "2026-01-01",
+    "newStartDate": "2026-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 177,
@@ -4218,30 +3458,13 @@
     "activity": "Bachata Y Salsa Inicial",
     "startMonth": "03/2026",
     "startDate": "2026-03-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "BRIGNOLE FLORENCIA ANDREA",
-        "score": 0.48
-      },
-      {
-        "name": "AMARILLA LEONARDO",
-        "score": 0.4118
-      },
-      {
-        "name": "GONZALEZ ANGEL",
-        "score": 0.4
-      },
-      {
-        "name": "MIÑO LEIRE",
-        "score": 0.4
-      },
-      {
-        "name": "BAEZ SANDRA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "e916218b-56e7-4b72-ad95-58a5659cefc5",
+    "className": "Bachata y Salsa Inicial",
+    "currentStartDate": "2026-03-01",
+    "newStartDate": "2026-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 178,
@@ -4254,9 +3477,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "7ef87448-5616-4244-99eb-e502c671d911",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 179,
@@ -4269,9 +3492,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "19ba6290-6517-4d0b-b691-c35bbf62ab2f",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 180,
@@ -4284,9 +3507,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "14885617-4c4a-485b-a812-f421e3aeec7d",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 181,
@@ -4295,30 +3518,13 @@
     "activity": "Heels",
     "startMonth": "05/2026",
     "startDate": "2026-05-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MIÑOS SABRINA",
-        "score": 0.6154
-      },
-      {
-        "name": "RIOS AVRIL",
-        "score": 0.5833
-      },
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.5833
-      },
-      {
-        "name": "TORRES TATIANA",
-        "score": 0.5714
-      },
-      {
-        "name": "BRITEZ MARIA ANGELICA",
-        "score": 0.4762
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "4ba1794e-c421-43e1-becc-6afb77d55034",
+    "className": "Hells",
+    "currentStartDate": "2026-05-01",
+    "newStartDate": "2026-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 182,
@@ -4331,9 +3537,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "5ae97a03-0bd7-4ead-af9e-b4b6c0f9ddb0",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-11-01",
     "newStartDate": "2025-11-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 183,
@@ -4346,9 +3552,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c94467c6-5442-46b1-90b4-58e440fd15eb",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 183,
@@ -4361,9 +3567,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "efb610bc-02e8-42c2-afc6-30fcac84da8b",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-05-01",
     "newStartDate": "2025-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 184,
@@ -4372,30 +3578,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "01/2026",
     "startDate": "2026-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "RAMIREZ AGUSTINA",
-        "score": 0.55
-      },
-      {
-        "name": "SOSA TEDIN AGUSTINA",
-        "score": 0.5
-      },
-      {
-        "name": "ACOSTA GLADIS",
-        "score": 0.5
-      },
-      {
-        "name": "RIVAROLA MARTIN",
-        "score": 0.5
-      },
-      {
-        "name": "BRITEZ MARIA ANGELICA",
-        "score": 0.4762
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "4802eefc-7491-4f09-ae58-bb19b6599ae4",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2026-01-01",
+    "newStartDate": "2026-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 185,
@@ -4404,30 +3593,13 @@
     "activity": "ZUMBA",
     "startMonth": "08/2026",
     "startDate": "2026-08-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "PAREDES ROMINA",
-        "score": 0.5714
-      },
-      {
-        "name": "RIVAS ROCIO",
-        "score": 0.5385
-      },
-      {
-        "name": "ROMERO DOMINGUEZ EMA",
-        "score": 0.5
-      },
-      {
-        "name": "RIVAROLA MARTIN",
-        "score": 0.4667
-      },
-      {
-        "name": "PINO SOFIA",
-        "score": 0.4615
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "0e12bd4a-3cfd-4572-bc3f-6bcc128a1a69",
+    "className": "Zumba - Profe Joselo",
+    "currentStartDate": "2026-08-01",
+    "newStartDate": "2026-08-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 186,
@@ -4440,9 +3612,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "63742952-9ce9-4879-8c78-22dafd4f4255",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-02-01",
     "newStartDate": "2026-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 187,
@@ -4455,9 +3627,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "6a8c4084-48b1-4da8-890d-6f2c811aee42",
     "className": "Mambo en parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 187,
@@ -4470,9 +3642,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "5f312c32-1003-4ba2-9f07-8eba908f7575",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 188,
@@ -4496,9 +3668,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "0e123909-bfa4-490e-90ae-530c6e98070f",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-04-01",
     "newStartDate": "2026-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 190,
@@ -4511,9 +3683,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "f0358837-25f3-4550-ab32-2bf034ee2c80",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 191,
@@ -4526,9 +3698,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "2c98df00-09f4-4ae5-aca8-7ccbce71e645",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 192,
@@ -4541,9 +3713,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "ca875684-25f3-46cf-9245-6f3afa3c9ab2",
     "className": "S.C Adultos (+18 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 193,
@@ -4552,30 +3724,13 @@
     "activity": "Heels",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "AQUINO FLORENCIA",
-        "score": 0.5789
-      },
-      {
-        "name": "CELLIO FLORENCIA",
-        "score": 0.5789
-      },
-      {
-        "name": "SERVIN FLORENCIA",
-        "score": 0.5789
-      },
-      {
-        "name": "RUIZ DIANA BELEN",
-        "score": 0.5263
-      },
-      {
-        "name": "BRIGNOLE FLORENCIA ANDREA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "2a7a923e-a080-4301-aedc-688b439c9ead",
+    "className": "Hells",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 194,
@@ -4588,9 +3743,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "6faccecb-2be5-4d78-9e10-700be0047f9c",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 195,
@@ -4614,9 +3769,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "bcf0f2e9-4a11-457c-8eb7-e82fd4b7b776",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 196,
@@ -4629,9 +3784,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9be516fc-051a-420e-92d4-1e004b4df42a",
     "className": "Bachata y Salsa Inicial",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 197,
@@ -4644,9 +3799,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c1349c0c-3093-4dbe-a157-35e7751ed221",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 198,
@@ -4659,9 +3814,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e197b78c-75a8-4959-a142-40aad231c434",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 199,
@@ -4674,9 +3829,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "79a3bb65-4169-466b-85cc-217e9625b46f",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 200,
@@ -4689,9 +3844,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "86269235-6937-4ea3-b186-6f15cc3c307c",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 201,
@@ -4712,9 +3867,12 @@
     "startMonth": "03/2025",
     "startDate": "2025-03-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "a211df19-0be6-4974-8114-efcbb3806271",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2025-03-01",
+    "newStartDate": "2025-03-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 203,
@@ -4727,9 +3885,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "dc019bd9-7bb9-4688-b23d-082ac2088e97",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-10-01",
     "newStartDate": "2025-10-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 203,
@@ -4742,9 +3900,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e212c100-cbcc-4a05-a571-3e64a08f1b1f",
     "className": "Hells",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-10-01",
     "newStartDate": "2025-10-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 203,
@@ -4754,9 +3912,12 @@
     "startMonth": "10/2025",
     "startDate": "2025-10-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "S.C Adultos (+18 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "406652b4-06c3-448e-83bf-a6f49ee80c7b",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-10-01",
+    "newStartDate": "2025-10-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 204,
@@ -4769,9 +3930,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "6e5e090d-823b-4292-9ce2-9fdf057c07c3",
     "className": "Zumba - Profe Joselo",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 205,
@@ -4784,9 +3945,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "cc86acd4-4ea1-4f2d-83fb-ffeed34f35b1",
     "className": "Árabe infantil",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 206,
@@ -4795,30 +3956,13 @@
     "activity": "Heels",
     "startMonth": "06/2026",
     "startDate": "2026-06-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "GUERRA SILVANA",
-        "score": 0.5714
-      },
-      {
-        "name": "VERA JOSEFINA NICOLE",
-        "score": 0.5
-      },
-      {
-        "name": "SALINAS VIVIANA",
-        "score": 0.4667
-      },
-      {
-        "name": "ARANDA GUILLERMINA",
-        "score": 0.4444
-      },
-      {
-        "name": "VILLALBA DELFINA",
-        "score": 0.4375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "32b9d96f-4358-4e5b-8ea6-ec633173debc",
+    "className": "Hells",
+    "currentStartDate": "2026-06-01",
+    "newStartDate": "2026-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 207,
@@ -4831,9 +3975,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c4cbe39d-8828-4f5e-bc59-3e3a3c172917",
     "className": "Teens (8 a 12 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 208,
@@ -4846,9 +3990,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "262b19f7-109b-400e-a06f-3f1cf24a4b9e",
     "className": "S&B Parejas",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 208,
@@ -4861,9 +4005,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "446d48bc-b72a-434c-a9ff-b2d930dba75f",
     "className": "Clase kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 208,
@@ -4873,9 +4017,12 @@
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Coreografico E.Masc- Bachata/Urban",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "60dc32fd-7c42-4159-a749-0711f92932c7",
+    "className": "Coreografico E.Masc-Bachata/Urban",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 209,
@@ -4885,9 +4032,12 @@
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Hells",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "38fba932-bc81-4739-bdfe-7bd8df909f0c",
+    "className": "Hells",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 209,
@@ -4900,9 +4050,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "2a6ad745-05a9-4b74-bb00-5d66b221752f",
     "className": "Ladys Kizz",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 209,
@@ -4915,9 +4065,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c91bf3aa-0c80-43c2-9526-99f3a45d3cb7",
     "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 209,
@@ -4927,9 +4077,12 @@
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Clase kizomba",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "82315bd5-196e-40a5-a82b-684ed52efbbd",
+    "className": "Clase kizomba",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 209,
@@ -4942,9 +4095,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "5a1b5302-ecb3-406d-9f68-06a1b67f119d",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 210,
@@ -4957,9 +4110,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "8cb1c60c-f7fb-4553-98c6-c31cabaac525",
     "className": "Clase LT - A.Frank",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 210,
@@ -4972,9 +4125,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "66bdc1fe-31ad-4156-add0-1ec8e780d325",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 210,
@@ -4984,9 +4137,12 @@
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Grupo C. - A.Frank",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "db893ccf-e649-4804-b448-01ee54583131",
+    "className": "Grupo C. - A.Frank",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 210,
@@ -4996,9 +4152,12 @@
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Hells",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "bb2e3df5-386f-481e-ae65-6d7fab8b036a",
+    "className": "Hells",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 211,
@@ -5007,30 +4166,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "04/2025",
     "startDate": "2025-04-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "SORAIRE NATALIA",
-        "score": 0.7333
-      },
-      {
-        "name": "SORAIRE NOELIA",
-        "score": 0.7143
-      },
-      {
-        "name": "MARTINEZ PAULINA",
-        "score": 0.5
-      },
-      {
-        "name": "SAPORITTI PAULINA",
-        "score": 0.4706
-      },
-      {
-        "name": "PEÑA SOFIA",
-        "score": 0.4615
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "1ffe2d92-debe-4d28-bde5-deef14d88d93",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-04-01",
+    "newStartDate": "2025-04-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 212,
@@ -5043,9 +4185,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9150e89a-f4fb-44f4-b080-621d1116c9ac",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-03-01",
     "newStartDate": "2025-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 213,
@@ -5058,9 +4200,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c59c8931-a690-4f76-8b43-ca1c3041294a",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 214,
@@ -5070,9 +4212,12 @@
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Kids 4-5 años",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "98aef5ad-3b7b-4cda-9c47-a75eb04e37c8",
+    "className": "Kids 4-5 años",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 215,
@@ -5085,9 +4230,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "d2fb15e4-533a-4cae-9044-e45d7d45dfe2",
     "className": "Infantil (6 a 7 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 216,
@@ -5096,30 +4241,13 @@
     "activity": "Street Coreografico Adulto",
     "startMonth": "01/2025",
     "startDate": "2025-01-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "SOSA RAMONA",
-        "score": 0.6364
-      },
-      {
-        "name": "PEÑA SOFIA",
-        "score": 0.5455
-      },
-      {
-        "name": "SOSA ALMA",
-        "score": 0.5455
-      },
-      {
-        "name": "SOSA EMMA",
-        "score": 0.5455
-      },
-      {
-        "name": "SOSA VICTORIA",
-        "score": 0.5385
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "63b3da60-5426-4bfb-9313-46857f7fc42c",
+    "className": "S.C Adultos (+18 años)",
+    "currentStartDate": "2025-01-01",
+    "newStartDate": "2025-01-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 217,
@@ -5132,9 +4260,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "0336cf0a-2b57-4e86-93c2-a39e5f6682ed",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 218,
@@ -5144,9 +4272,12 @@
     "startMonth": "06/2025",
     "startDate": "2025-06-01",
     "studentMatch": "EXACT_NAME",
-    "classMatch": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "mappedClass": "Infantil (6 a 7 años)",
-    "result": "HISTORICAL_CLASS_NOT_ENROLLED"
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "8d5aafc1-6f91-40cf-aeac-c382825a1cc0",
+    "className": "Infantil (6 a 7 años)",
+    "currentStartDate": "2025-06-01",
+    "newStartDate": "2025-06-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 219,
@@ -5159,9 +4290,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "28767b4e-0b0f-4c06-952c-5919375861a7",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-06-01",
     "newStartDate": "2026-06-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 220,
@@ -5174,9 +4305,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "7daa6195-adfa-4cd3-a21b-98e216551732",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-08-01",
     "newStartDate": "2025-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 221,
@@ -5189,9 +4320,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "f1127eb6-4f70-4c4a-aa15-4ff037faabbc",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 222,
@@ -5204,9 +4335,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "a69a236f-ad70-4ef7-9a36-1782a6f6424d",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-02-01",
     "newStartDate": "2025-02-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 223,
@@ -5219,9 +4350,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "741acf2d-dfe9-4dd1-8d94-940749ca56e0",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-10-01",
     "newStartDate": "2025-10-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 224,
@@ -5234,9 +4365,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "846e044a-aedc-4490-9d6d-ee4002e3f0b4",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 225,
@@ -5249,9 +4380,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "fd9ee0ed-dcac-460e-830f-9b2cff826d98",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 225,
@@ -5264,9 +4395,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "364ab26d-bde3-4a73-95d0-2d9bada46a25",
     "className": "Clase LT - A.Frank",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-08-01",
     "newStartDate": "2026-08-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 226,
@@ -5279,9 +4410,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "bf63fa09-3a9a-4561-a8c7-357ab803500c",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 227,
@@ -5294,9 +4425,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "908c3761-e400-4060-a732-1527991f2fd7",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 228,
@@ -5305,30 +4436,13 @@
     "activity": "Bachata Y Salsa Inicial",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "SORAIRE NATALIA",
-        "score": 0.5882
-      },
-      {
-        "name": "DUARTE CATALINA",
-        "score": 0.4706
-      },
-      {
-        "name": "DELLAGNOLO MAGALI",
-        "score": 0.4118
-      },
-      {
-        "name": "CANDIA ELIZABETH",
-        "score": 0.4118
-      },
-      {
-        "name": "AYALA ANALIA",
-        "score": 0.4118
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "68cfa185-c39b-4ee8-83de-6e341bf953bb",
+    "className": "Bachata y Salsa Inicial",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 229,
@@ -5341,9 +4455,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "8fd95b2b-862b-416e-a0f5-f19adce933f8",
     "className": "S.C Infantil (6-11 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-09-01",
     "newStartDate": "2025-09-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 230,
@@ -5352,30 +4466,13 @@
     "activity": "Kizomba",
     "startMonth": "09/2025",
     "startDate": "2025-09-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "AYALA ANALIA",
-        "score": 0.6667
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.5833
-      },
-      {
-        "name": "GONZALEZ VIERA PILAR",
-        "score": 0.55
-      },
-      {
-        "name": "OVIEDO MAGALI",
-        "score": 0.5385
-      },
-      {
-        "name": "INSFRAN ANGELINA",
-        "score": 0.5
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "ea2fad69-bde2-4df0-a9e1-f648dc238fa3",
+    "className": "Clase kizomba",
+    "currentStartDate": "2025-09-01",
+    "newStartDate": "2025-09-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 230,
@@ -5384,30 +4481,13 @@
     "activity": "Ladys Kizz",
     "startMonth": "09/2025",
     "startDate": "2025-09-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "AYALA ANALIA",
-        "score": 0.6667
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.5833
-      },
-      {
-        "name": "GONZALEZ VIERA PILAR",
-        "score": 0.55
-      },
-      {
-        "name": "OVIEDO MAGALI",
-        "score": 0.5385
-      },
-      {
-        "name": "INSFRAN ANGELINA",
-        "score": 0.5
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "2700287e-e327-4977-8ab6-01bcd51fddbc",
+    "className": "Ladys Kizz",
+    "currentStartDate": "2025-09-01",
+    "newStartDate": "2025-09-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 230,
@@ -5416,30 +4496,13 @@
     "activity": "Salsa Y Bachata En Pareja _Fabi",
     "startMonth": "09/2025",
     "startDate": "2025-09-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "AYALA ANALIA",
-        "score": 0.6667
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.5833
-      },
-      {
-        "name": "GONZALEZ VIERA PILAR",
-        "score": 0.55
-      },
-      {
-        "name": "OVIEDO MAGALI",
-        "score": 0.5385
-      },
-      {
-        "name": "INSFRAN ANGELINA",
-        "score": 0.5
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "f8f879e8-e7b6-4baf-bd3a-aac9b6b33dd0",
+    "className": "S&B Parejas",
+    "currentStartDate": "2025-09-01",
+    "newStartDate": "2025-09-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 231,
@@ -5448,30 +4511,13 @@
     "activity": "Zumba",
     "startMonth": "02/2026",
     "startDate": "2026-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "VILLALBA DELFINA",
-        "score": 0.5625
-      },
-      {
-        "name": "CABRERA PIA",
-        "score": 0.4615
-      },
-      {
-        "name": "AYALA ANALIA",
-        "score": 0.4615
-      },
-      {
-        "name": "IRALA ALBA",
-        "score": 0.4615
-      },
-      {
-        "name": "GONZALEZ VIERA PILAR",
-        "score": 0.45
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "60a932dd-4ca0-494e-8ab9-77f9508ec57d",
+    "className": "Zumba - Profe Joselo",
+    "currentStartDate": "2026-02-01",
+    "newStartDate": "2026-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 232,
@@ -5480,30 +4526,13 @@
     "activity": "Street Coreografico Juvenil",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "VILLALBA DELFINA",
-        "score": 0.5625
-      },
-      {
-        "name": "GAMARRA LUCAS",
-        "score": 0.5
-      },
-      {
-        "name": "VALLEJOS ORIANA",
-        "score": 0.5
-      },
-      {
-        "name": "SALINAS VIVIANA",
-        "score": 0.4375
-      },
-      {
-        "name": "CIGEL GRACIELA",
-        "score": 0.4375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "7886ff5b-3bc0-4683-9ccc-a6ce3390f1d7",
+    "className": "S.C Juvenil (12-17 años)",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 232,
@@ -5512,30 +4541,13 @@
     "activity": "Street Coreografico Avanzado Intermedio",
     "startMonth": "02/2025",
     "startDate": "2025-02-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "VILLALBA DELFINA",
-        "score": 0.5625
-      },
-      {
-        "name": "GAMARRA LUCAS",
-        "score": 0.5
-      },
-      {
-        "name": "VALLEJOS ORIANA",
-        "score": 0.5
-      },
-      {
-        "name": "SALINAS VIVIANA",
-        "score": 0.4375
-      },
-      {
-        "name": "CIGEL GRACIELA",
-        "score": 0.4375
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "3a2da978-a772-4bb0-a5bd-645c332ae049",
+    "className": "Street Int/Avanzado",
+    "currentStartDate": "2025-02-01",
+    "newStartDate": "2025-02-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 233,
@@ -5548,9 +4560,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "1d5ecf7e-b20f-4626-99d8-766cca96a82f",
     "className": "S.C Juvenil (12-17 años)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-04-01",
     "newStartDate": "2026-04-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 234,
@@ -5559,30 +4571,13 @@
     "activity": "Zumba",
     "startMonth": "05/2026",
     "startDate": "2026-05-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "VILLALBA DELFINA",
-        "score": 0.4706
-      },
-      {
-        "name": "VALLEJOS ORIANA",
-        "score": 0.4706
-      },
-      {
-        "name": "CELLIO FLORENCIA",
-        "score": 0.4118
-      },
-      {
-        "name": "CORTI VIOLETA",
-        "score": 0.4118
-      },
-      {
-        "name": "SAPORITI AMALIA ALFONSINA",
-        "score": 0.4
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "94c8152a-6cf6-41fe-ad5f-a0493ea0d5f7",
+    "className": "Zumba - Profe Joselo",
+    "currentStartDate": "2026-05-01",
+    "newStartDate": "2026-05-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 235,
@@ -5595,9 +4590,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "9c797deb-6d4c-4d88-b430-89fd1843df7f",
     "className": "Kids 4-5 años",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-05-01",
     "newStartDate": "2026-05-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 236,
@@ -5610,9 +4605,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "4924a721-6a90-418c-9e18-9b22bce8fef3",
     "className": "Grupo C. Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 236,
@@ -5625,9 +4620,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "69ead856-f1f4-4ee4-ab2a-1de459df358a",
     "className": "Clase femenino Sofi",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 236,
@@ -5640,9 +4635,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "c6701bc0-1dc5-4499-9c0a-f7c0845e20b3",
     "className": "Bachata y Salsa Inicial",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2025-01-01",
     "newStartDate": "2025-01-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 237,
@@ -5651,30 +4646,13 @@
     "activity": "ESTILO FEMENINO",
     "startMonth": "08/2026",
     "startDate": "2026-08-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "MARTINEZ PAULINA",
-        "score": 0.5625
-      },
-      {
-        "name": "BAEZ MARINA",
-        "score": 0.5
-      },
-      {
-        "name": "SALINAS CONSTANZA",
-        "score": 0.4706
-      },
-      {
-        "name": "BORDON DELFINA",
-        "score": 0.4286
-      },
-      {
-        "name": "BENITEZ DANIEL",
-        "score": 0.4286
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_REORDERED",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "8c90f912-7a19-4502-9645-85a61fd83042",
+    "className": "Clase femenino Sofi",
+    "currentStartDate": "2026-08-01",
+    "newStartDate": "2026-08-01",
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 238,
@@ -5687,9 +4665,9 @@
     "classMatch": "ACTIVITY_MAP",
     "enrollmentId": "e980a2d2-a8b3-42d0-a19e-cc7910a58a0d",
     "className": "Tango (Inter/Avanz)",
-    "currentStartDate": "2026-08-28",
+    "currentStartDate": "2026-03-01",
     "newStartDate": "2026-03-01",
-    "result": "WOULD_UPDATE"
+    "result": "UNCHANGED"
   },
   {
     "excelRow": 239,
@@ -5698,29 +4676,12 @@
     "activity": "Street Coreografico Juvenil",
     "startMonth": "07/2026",
     "startDate": "2026-07-01",
-    "studentMatch": "NO_STUDENT",
-    "possibleStudents": [
-      {
-        "name": "GONZALEZ ALEJANDRA",
-        "score": 0.5556
-      },
-      {
-        "name": "MENDEZ ROCIO",
-        "score": 0.4118
-      },
-      {
-        "name": "CUQUEJO ALENKA",
-        "score": 0.3529
-      },
-      {
-        "name": "BAEZ SANDRA",
-        "score": 0.3529
-      },
-      {
-        "name": "AMARILLA LEONARDO",
-        "score": 0.3529
-      }
-    ],
-    "result": "MISSING_STUDENT"
+    "studentMatch": "EXACT_NAME",
+    "classMatch": "ACTIVITY_MAP",
+    "enrollmentId": "785f606b-9b28-4cc0-b772-31802c3d9eac",
+    "className": "S.C Juvenil (12-17 años)",
+    "currentStartDate": "2026-07-01",
+    "newStartDate": "2026-07-01",
+    "result": "UNCHANGED"
   }
 ]

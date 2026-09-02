@@ -98,6 +98,20 @@
     "updatedAt": "2026-08-28T23:07:36.910Z"
   },
   {
+    "id": "e0811a68-dd31-4be0-be6c-88be271765d7",
+    "dni": "900000001",
+    "firstName": "MICAELA",
+    "lastName": "ALBARRACIN",
+    "fullName": "ALBARRACIN MICAELA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.225Z",
+    "updatedAt": "2026-09-02T22:24:12.246Z"
+  },
+  {
     "id": "08c5343e-fc53-41ed-bd41-05429bd7995b",
     "dni": "57878092",
     "firstName": "MARTINA",
@@ -194,6 +208,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.671Z",
     "updatedAt": "2026-08-28T23:07:37.671Z"
+  },
+  {
+    "id": "5f9946ba-3eea-444c-b8aa-664d7686fe6d",
+    "dni": "900000002",
+    "firstName": "CRISTIAN",
+    "lastName": "ARMOA",
+    "fullName": "ARMOA CRISTIAN",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.280Z",
+    "updatedAt": "2026-09-02T22:24:12.294Z"
   },
   {
     "id": "b8bae188-1b10-4118-8cd3-e97cfd4aeec5",
@@ -294,6 +322,20 @@
     "updatedAt": "2026-08-28T23:07:37.072Z"
   },
   {
+    "id": "bd4533b9-c38a-4df2-b4b9-e6a0c8ced4bb",
+    "dni": "900000003",
+    "firstName": "GUSTAVO",
+    "lastName": "BARBOZA",
+    "fullName": "BARBOZA GUSTAVO",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.305Z",
+    "updatedAt": "2026-09-02T22:24:12.320Z"
+  },
+  {
     "id": "aa6f3582-c3be-4632-a28b-6a52572af725",
     "dni": "53960039",
     "firstName": "GUILLERMINA",
@@ -350,6 +392,20 @@
     "updatedAt": "2026-08-28T23:07:36.323Z"
   },
   {
+    "id": "088e7435-5cea-4497-a371-6b11fce3c045",
+    "dni": "900000004",
+    "firstName": "LAURA",
+    "lastName": "BAY",
+    "fullName": "BAY LAURA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.331Z",
+    "updatedAt": "2026-09-02T22:24:12.356Z"
+  },
+  {
     "id": "9cb09f48-0770-4af1-b9cf-54fae1fd15ef",
     "dni": "18701064",
     "firstName": "JOSE LUIS",
@@ -390,6 +446,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.300Z",
     "updatedAt": "2026-08-28T23:07:37.300Z"
+  },
+  {
+    "id": "c9c8f310-d002-4085-9e15-d05f99db5f0a",
+    "dni": "900000005",
+    "firstName": "JUANA",
+    "lastName": "BENITEZ",
+    "fullName": "BENITEZ JUANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.394Z",
+    "updatedAt": "2026-09-02T22:24:12.414Z"
   },
   {
     "id": "c3e2f29d-7147-4ffd-967b-ec3c9472b6ac",
@@ -490,6 +560,20 @@
     "updatedAt": "2026-08-28T23:07:37.882Z"
   },
   {
+    "id": "630d576f-5360-40b8-95ce-965a4f9a41dc",
+    "dni": "900000006",
+    "firstName": "AGOSTINA MICAELA",
+    "lastName": "CABALLERO",
+    "fullName": "CABALLERO AGOSTINA MICAELA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.439Z",
+    "updatedAt": "2026-09-02T22:24:12.458Z"
+  },
+  {
     "id": "f237f4bc-8093-431f-8598-ff503ef70187",
     "dni": "23730114",
     "firstName": "CLAUDIA",
@@ -544,6 +628,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.950Z",
     "updatedAt": "2026-08-28T23:07:36.950Z"
+  },
+  {
+    "id": "abf306d4-83d7-4467-aa81-6cda65fe4c1d",
+    "dni": "900000007",
+    "firstName": "AGOSTINA",
+    "lastName": "CACERES FERNANDEZ",
+    "fullName": "CACERES FERNANDEZ AGOSTINA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.485Z",
+    "updatedAt": "2026-09-02T22:24:12.505Z"
   },
   {
     "id": "c6108d50-a4d4-4193-8305-c3e06b7eaf17",
@@ -602,6 +700,34 @@
     "updatedAt": "2026-08-28T23:07:35.125Z"
   },
   {
+    "id": "62de9f40-7027-4b13-997f-1ce9106757ce",
+    "dni": "900000008",
+    "firstName": "MIA",
+    "lastName": "CARRERA",
+    "fullName": "CARRERA MIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.517Z",
+    "updatedAt": "2026-09-02T22:24:12.540Z"
+  },
+  {
+    "id": "1ca2cd22-ac1c-4627-a0f4-8a1ce8bce0be",
+    "dni": "900000009",
+    "firstName": "CAMILA",
+    "lastName": "CASTILLO",
+    "fullName": "CASTILLO CAMILA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.551Z",
+    "updatedAt": "2026-09-02T22:24:12.588Z"
+  },
+  {
     "id": "d9a7a5b9-cad3-45a6-9499-44d0e4fe8ce8",
     "dni": "58841098",
     "firstName": "LUANA",
@@ -656,6 +782,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.296Z",
     "updatedAt": "2026-08-28T23:07:36.296Z"
+  },
+  {
+    "id": "cd7321aa-45a3-4fa8-aa96-79f146db1290",
+    "dni": "900000010",
+    "firstName": "YAMILA",
+    "lastName": "CENTURION",
+    "fullName": "CENTURION YAMILA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.610Z",
+    "updatedAt": "2026-09-02T22:24:12.629Z"
   },
   {
     "id": "b48cbe49-b182-45ec-a845-5a64ef0ab8b7",
@@ -756,6 +896,20 @@
     "updatedAt": "2026-08-28T23:07:37.790Z"
   },
   {
+    "id": "7328ff49-6386-41f6-ac7a-7e7808697bd6",
+    "dni": "900000011",
+    "firstName": "CLAUDIA BEATRIZ",
+    "lastName": "D AUGERO",
+    "fullName": "D AUGERO CLAUDIA BEATRIZ",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.657Z",
+    "updatedAt": "2026-09-02T22:24:12.716Z"
+  },
+  {
     "id": "2167fac4-4feb-42cb-815d-a3f9a7b2e2c8",
     "dni": "52270796",
     "firstName": "MICHELIS AZUL",
@@ -768,6 +922,34 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.857Z",
     "updatedAt": "2026-08-28T23:07:36.857Z"
+  },
+  {
+    "id": "6e71dbbc-029d-45d6-affc-c68fa0e5ccd2",
+    "dni": "900000012",
+    "firstName": "MELISA",
+    "lastName": "DE LOS SANTOS",
+    "fullName": "DE LOS SANTOS MELISA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.763Z",
+    "updatedAt": "2026-09-02T22:24:12.785Z"
+  },
+  {
+    "id": "f3ab44dd-f9c9-4a0a-8297-954e9fb04117",
+    "dni": "900000013",
+    "firstName": "AZUL",
+    "lastName": "DE MICHIELIS",
+    "fullName": "DE MICHIELIS AZUL",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.810Z",
+    "updatedAt": "2026-09-02T22:24:12.827Z"
   },
   {
     "id": "42e15f9c-7320-4458-9d43-d755b9fb8a03",
@@ -798,6 +980,20 @@
     "updatedAt": "2026-08-28T23:07:36.203Z"
   },
   {
+    "id": "dc44e246-c8db-48b2-9710-4ab57615b347",
+    "dni": "900000014",
+    "firstName": "AITANA NICOL",
+    "lastName": "DEL VALLE",
+    "fullName": "DEL VALLE AITANA NICOL",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.853Z",
+    "updatedAt": "2026-09-02T22:24:12.881Z"
+  },
+  {
     "id": "a6104629-708b-46d0-9b13-5d074bcbed25",
     "dni": "13647051",
     "firstName": "GRACIELA",
@@ -824,6 +1020,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.897Z",
     "updatedAt": "2026-08-28T23:07:37.897Z"
+  },
+  {
+    "id": "eb1a1c31-27f5-454d-b23e-83f171d59f6b",
+    "dni": "900000015",
+    "firstName": "CAMILA",
+    "lastName": "DELLAGNOLO",
+    "fullName": "DELLAGNOLO CAMILA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.903Z",
+    "updatedAt": "2026-09-02T22:24:12.920Z"
   },
   {
     "id": "ddd1ae0f-e5b1-4aa5-a1e7-5a96798d5786",
@@ -854,6 +1064,34 @@
     "updatedAt": "2026-08-28T23:07:37.564Z"
   },
   {
+    "id": "e7438a66-db50-4610-9fa8-ec00833ed1f0",
+    "dni": "900000016",
+    "firstName": "AYELEN",
+    "lastName": "DIAZ",
+    "fullName": "DIAZ AYELEN",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.943Z",
+    "updatedAt": "2026-09-02T22:24:12.960Z"
+  },
+  {
+    "id": "dd8b06a2-f18b-4a36-b91e-62cd3bb09cf8",
+    "dni": "900000017",
+    "firstName": "NAHUEL",
+    "lastName": "DOMINGUEZ",
+    "fullName": "DOMINGUEZ NAHUEL",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:12.995Z",
+    "updatedAt": "2026-09-02T22:24:13.052Z"
+  },
+  {
     "id": "85a80831-c1f1-4c7e-8198-ee05d349a8f4",
     "dni": "56314099",
     "firstName": "CATALINA",
@@ -882,6 +1120,20 @@
     "updatedAt": "2026-08-28T23:07:35.804Z"
   },
   {
+    "id": "aebc5d6c-914a-49f6-87b8-3354105f5103",
+    "dni": "900000018",
+    "firstName": "GUILIANA",
+    "lastName": "DUARTE",
+    "fullName": "DUARTE GUILIANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.079Z",
+    "updatedAt": "2026-09-02T22:24:13.096Z"
+  },
+  {
     "id": "d29a7fa8-7611-4762-94cd-4680bc6ce241",
     "dni": "22192232",
     "firstName": "SUNNY",
@@ -894,6 +1146,34 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.697Z",
     "updatedAt": "2026-08-28T23:07:37.697Z"
+  },
+  {
+    "id": "332b258e-69a8-4cb7-b1cc-75971f504cd3",
+    "dni": "900000019",
+    "firstName": "JOAQUINA",
+    "lastName": "ELLI",
+    "fullName": "ELLI JOAQUINA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.120Z",
+    "updatedAt": "2026-09-02T22:24:13.140Z"
+  },
+  {
+    "id": "2047b20c-6313-4ba5-994b-12b45f3a23ac",
+    "dni": "900000020",
+    "firstName": "PATRICIO",
+    "lastName": "ENCISO",
+    "fullName": "ENCISO PATRICIO",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.151Z",
+    "updatedAt": "2026-09-02T22:24:13.174Z"
   },
   {
     "id": "bfa38797-b517-4143-b7d1-0c893df2af11",
@@ -952,6 +1232,20 @@
     "updatedAt": "2026-08-28T23:07:36.509Z"
   },
   {
+    "id": "d18fc40a-f574-44de-8d14-6fa56f77b179",
+    "dni": "900000021",
+    "firstName": "LETICIA AILEN",
+    "lastName": "FERNANDEZ",
+    "fullName": "FERNANDEZ LETICIA AILEN",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.197Z",
+    "updatedAt": "2026-09-02T22:24:13.214Z"
+  },
+  {
     "id": "25c63902-bc14-4221-a549-441c09cf4768",
     "dni": "54266359",
     "firstName": "PATRI GAIA",
@@ -978,6 +1272,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.858Z",
     "updatedAt": "2026-08-28T23:07:37.858Z"
+  },
+  {
+    "id": "8576617b-4be5-4548-9125-cd2888b9f11c",
+    "dni": "900000022",
+    "firstName": "TERESA",
+    "lastName": "FLEITAS",
+    "fullName": "FLEITAS TERESA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.239Z",
+    "updatedAt": "2026-09-02T22:24:13.253Z"
   },
   {
     "id": "dab98409-0209-4981-a923-b964aed7d26f",
@@ -1064,6 +1372,34 @@
     "updatedAt": "2026-08-28T23:07:35.763Z"
   },
   {
+    "id": "4ab8b2c4-86d0-4e63-b14c-7b4ef7db62f7",
+    "dni": "900000023",
+    "firstName": "ANAPAULA",
+    "lastName": "GALEANO",
+    "fullName": "GALEANO ANAPAULA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.277Z",
+    "updatedAt": "2026-09-02T22:24:13.291Z"
+  },
+  {
+    "id": "af5dabec-f6a6-4cea-b71b-924ce22443c8",
+    "dni": "900000024",
+    "firstName": "SILVIA",
+    "lastName": "GALEANO",
+    "fullName": "GALEANO SILVIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.303Z",
+    "updatedAt": "2026-09-02T22:24:13.321Z"
+  },
+  {
     "id": "daada42a-8ccb-40ad-b8c8-66f65dcf2a39",
     "dni": "95726481",
     "firstName": "LUCAS",
@@ -1106,6 +1442,20 @@
     "updatedAt": "2026-08-28T23:07:36.392Z"
   },
   {
+    "id": "3afe25e0-e4f6-499a-97c9-558179fbf02b",
+    "dni": "900000025",
+    "firstName": "FRANCESCA",
+    "lastName": "GAUTO",
+    "fullName": "GAUTO FRANCESCA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.346Z",
+    "updatedAt": "2026-09-02T22:24:13.359Z"
+  },
+  {
     "id": "88dcb0b7-845e-4f80-9584-ab11d60786d0",
     "dni": "58081123",
     "firstName": "FRANCHESCA",
@@ -1134,6 +1484,34 @@
     "updatedAt": "2026-08-28T23:07:36.498Z"
   },
   {
+    "id": "0527d151-0fd0-48b5-ae9f-26d26cd19f3b",
+    "dni": "900000027",
+    "firstName": "GABRIELA",
+    "lastName": "GIMENEZ",
+    "fullName": "GIMENEZ GABRIELA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.412Z",
+    "updatedAt": "2026-09-02T22:24:13.427Z"
+  },
+  {
+    "id": "9199d897-0441-41ef-9396-67575b644e7e",
+    "dni": "900000028",
+    "firstName": "KIARA",
+    "lastName": "GIMENEZ",
+    "fullName": "GIMENEZ KIARA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.455Z",
+    "updatedAt": "2026-09-02T22:24:13.470Z"
+  },
+  {
     "id": "ff5d8b46-3458-40cd-a9a8-9b47fc500d33",
     "dni": "26211779",
     "firstName": "NATALIA SOLEDAD",
@@ -1146,6 +1524,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.470Z",
     "updatedAt": "2026-08-28T23:07:36.470Z"
+  },
+  {
+    "id": "6580c661-c4b4-4c27-9ac0-53c62e941754",
+    "dni": "900000030",
+    "firstName": "PATRICIA",
+    "lastName": "GLERIA",
+    "fullName": "GLERIA PATRICIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.516Z",
+    "updatedAt": "2026-09-02T22:24:13.534Z"
   },
   {
     "id": "36fbeaff-eaf4-4acd-bfed-95fe5e3d07c3",
@@ -1174,6 +1566,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.514Z",
     "updatedAt": "2026-08-28T23:07:37.514Z"
+  },
+  {
+    "id": "a2baa8f1-d52f-4263-aeb2-647c3f2f8e6b",
+    "dni": "900000031",
+    "firstName": "FEDERICO ADRIAN",
+    "lastName": "GOMEZ",
+    "fullName": "GOMEZ FEDERICO ADRIAN",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.546Z",
+    "updatedAt": "2026-09-02T22:24:13.575Z"
   },
   {
     "id": "21c54b2e-1542-4f84-a96d-1758f848b973",
@@ -1230,6 +1636,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.593Z",
     "updatedAt": "2026-08-28T23:07:37.593Z"
+  },
+  {
+    "id": "5fe8147b-071b-49b8-982d-9841570d3df4",
+    "dni": "900000032",
+    "firstName": "MONICA",
+    "lastName": "GONZALEZ",
+    "fullName": "GONZALEZ MONICA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.599Z",
+    "updatedAt": "2026-09-02T22:24:13.613Z"
   },
   {
     "id": "2896238a-f2a3-4c9b-8ea2-22083e8f59a9",
@@ -1302,6 +1722,20 @@
     "updatedAt": "2026-08-28T23:07:36.186Z"
   },
   {
+    "id": "b0364a68-55f7-45bb-a2f8-121b0330fdeb",
+    "dni": "900000033",
+    "firstName": "VANESA",
+    "lastName": "INSAURRALDE",
+    "fullName": "INSAURRALDE VANESA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.641Z",
+    "updatedAt": "2026-09-02T22:24:13.659Z"
+  },
+  {
     "id": "9254f230-7913-4feb-be5c-1264137f3b9a",
     "dni": "48349528",
     "firstName": "ANGELINA",
@@ -1328,6 +1762,34 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:35.602Z",
     "updatedAt": "2026-08-28T23:07:35.602Z"
+  },
+  {
+    "id": "cf232c58-308a-419d-a714-b5902b143f2c",
+    "dni": "900000034",
+    "firstName": "YASLIN",
+    "lastName": "ISASI",
+    "fullName": "ISASI YASLIN",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.679Z",
+    "updatedAt": "2026-09-02T22:24:13.698Z"
+  },
+  {
+    "id": "e42a187e-ef04-45f9-9fd8-8c24a5fcfcdf",
+    "dni": "900000035",
+    "firstName": "EUGENIA ROSELY",
+    "lastName": "LAGRAÑA",
+    "fullName": "LAGRAÑA EUGENIA ROSELY",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.710Z",
+    "updatedAt": "2026-09-02T22:24:13.765Z"
   },
   {
     "id": "e3d42e74-cf95-499a-9ad2-35d0abf7e500",
@@ -1372,6 +1834,20 @@
     "updatedAt": "2026-08-28T23:07:37.430Z"
   },
   {
+    "id": "4ba9a189-06e0-4787-8dd3-edf55ec58a22",
+    "dni": "900000036",
+    "firstName": "ARIANA",
+    "lastName": "LEPEZ",
+    "fullName": "LEPEZ ARIANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.810Z",
+    "updatedAt": "2026-09-02T22:24:13.852Z"
+  },
+  {
     "id": "60ffaac9-4651-41d0-8f32-23d99aa67420",
     "dni": "20057294",
     "firstName": "CLARISA",
@@ -1384,6 +1860,34 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.723Z",
     "updatedAt": "2026-08-28T23:07:36.723Z"
+  },
+  {
+    "id": "e9b4b1f5-1d06-4ad3-b102-76554c3d5581",
+    "dni": "900000037",
+    "firstName": "OMAR",
+    "lastName": "LEYES",
+    "fullName": "LEYES OMAR",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.882Z",
+    "updatedAt": "2026-09-02T22:24:13.899Z"
+  },
+  {
+    "id": "9a062ed6-c4fe-4cf6-b590-8a04240d57fd",
+    "dni": "900000038",
+    "firstName": "MARTINA",
+    "lastName": "LO CURCIO",
+    "fullName": "LO CURCIO MARTINA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.939Z",
+    "updatedAt": "2026-09-02T22:24:13.959Z"
   },
   {
     "id": "e6d631b5-ec70-460b-9835-66eabfb66176",
@@ -1470,6 +1974,20 @@
     "updatedAt": "2026-08-28T23:07:35.189Z"
   },
   {
+    "id": "15d4419b-004a-4a05-9130-bff521459113",
+    "dni": "900000039",
+    "firstName": "ANDREA ISABEL",
+    "lastName": "LUQUE",
+    "fullName": "LUQUE ANDREA ISABEL",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.986Z",
+    "updatedAt": "2026-09-02T22:24:14.006Z"
+  },
+  {
     "id": "40950d87-dc66-405f-9295-7b0625b592aa",
     "dni": "57687953",
     "firstName": "HAYLLI ALAIA",
@@ -1512,6 +2030,34 @@
     "updatedAt": "2026-08-28T23:07:36.817Z"
   },
   {
+    "id": "595b3f8d-4997-478f-8bd9-f6f10ac6fe00",
+    "dni": "900000040",
+    "firstName": "STEFANIA",
+    "lastName": "MARTINEZ",
+    "fullName": "MARTINEZ STEFANIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.033Z",
+    "updatedAt": "2026-09-02T22:24:14.053Z"
+  },
+  {
+    "id": "3df5c6f2-82e5-4b28-a2ed-310573216eaa",
+    "dni": "900000041",
+    "firstName": "GIULIANA",
+    "lastName": "MATTEO",
+    "fullName": "MATTEO GIULIANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.064Z",
+    "updatedAt": "2026-09-02T22:24:14.080Z"
+  },
+  {
     "id": "46c94200-44c3-4d33-8a1c-3b5cbc7d6ef8",
     "dni": "37534846",
     "firstName": "CECILIA",
@@ -1526,6 +2072,20 @@
     "updatedAt": "2026-08-28T23:07:37.471Z"
   },
   {
+    "id": "354818ea-b773-4be4-92d5-548f2fc48f82",
+    "dni": "900000042",
+    "firstName": "ERIK",
+    "lastName": "MEDINA",
+    "fullName": "MEDINA ERIK",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.103Z",
+    "updatedAt": "2026-09-02T22:24:14.121Z"
+  },
+  {
     "id": "97e34e29-16e6-4644-aa44-0f7c88dba8aa",
     "dni": "29080503",
     "firstName": "PATRICIA",
@@ -1538,6 +2098,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:35.630Z",
     "updatedAt": "2026-08-28T23:07:35.630Z"
+  },
+  {
+    "id": "4266485a-8c0a-41b5-bc21-8b3c0b5c0123",
+    "dni": "900000043",
+    "firstName": "YANI",
+    "lastName": "MEDINA PATIÑO",
+    "fullName": "MEDINA PATIÑO YANI",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.138Z",
+    "updatedAt": "2026-09-02T22:24:14.159Z"
   },
   {
     "id": "8d18ee38-ca45-4ee5-af25-2df796d371eb",
@@ -1610,6 +2184,20 @@
     "updatedAt": "2026-08-28T23:07:36.062Z"
   },
   {
+    "id": "51c0bc75-327c-41f7-bcd9-2c1dbe7f83e5",
+    "dni": "900000029",
+    "firstName": "GISSELLA",
+    "lastName": "MIQUEL",
+    "fullName": "MIQUEL GISSELLA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.490Z",
+    "updatedAt": "2026-09-02T22:24:13.504Z"
+  },
+  {
     "id": "7042c4d8-7739-41bd-8ae5-676cec196953",
     "dni": "56615745",
     "firstName": "LEIRE",
@@ -1652,6 +2240,34 @@
     "updatedAt": "2026-08-28T23:07:37.763Z"
   },
   {
+    "id": "394dab71-975b-44a5-97a1-9f2771beb52e",
+    "dni": "900000044",
+    "firstName": "KAREN",
+    "lastName": "MONTIEL",
+    "fullName": "MONTIEL KAREN",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.195Z",
+    "updatedAt": "2026-09-02T22:24:14.238Z"
+  },
+  {
+    "id": "2dee74ee-8d96-435d-9919-796132c2c721",
+    "dni": "900000045",
+    "firstName": "LAURA",
+    "lastName": "MONYO",
+    "fullName": "MONYO LAURA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.274Z",
+    "updatedAt": "2026-09-02T22:24:14.320Z"
+  },
+  {
     "id": "e535d5fc-d1f4-4e83-a5eb-47bca35ad4d2",
     "dni": "57879421",
     "firstName": "AGUILAR BRUNO BENJAMIN",
@@ -1666,6 +2282,20 @@
     "updatedAt": "2026-08-28T23:07:35.336Z"
   },
   {
+    "id": "6b13f068-8818-4a06-afa1-0f823c14c584",
+    "dni": "900000046",
+    "firstName": "ALEJANDRA",
+    "lastName": "MORCILLO",
+    "fullName": "MORCILLO ALEJANDRA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.365Z",
+    "updatedAt": "2026-09-02T22:24:14.415Z"
+  },
+  {
     "id": "431cfc10-dbfd-446e-882a-a07f2f1e70e8",
     "dni": "58081437",
     "firstName": "ISABELLA",
@@ -1678,6 +2308,34 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.964Z",
     "updatedAt": "2026-08-28T23:07:37.964Z"
+  },
+  {
+    "id": "2966dca5-5db5-4180-846e-aee8a3d8550b",
+    "dni": "900000026",
+    "firstName": "GERARDO",
+    "lastName": "OBREGON",
+    "fullName": "OBREGON GERARDO",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:13.370Z",
+    "updatedAt": "2026-09-02T22:24:13.389Z"
+  },
+  {
+    "id": "27df3a27-a07e-4a5b-8b17-27c3cc47ae55",
+    "dni": "900000047",
+    "firstName": "JORGE",
+    "lastName": "OJEDA",
+    "fullName": "OJEDA JORGE",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.426Z",
+    "updatedAt": "2026-09-02T22:24:14.437Z"
   },
   {
     "id": "9e6f4296-6c59-4e21-919d-5394e6e48ad2",
@@ -1706,6 +2364,34 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.246Z",
     "updatedAt": "2026-08-28T23:07:37.246Z"
+  },
+  {
+    "id": "43bb40a7-3e58-417c-b486-0c4ddb7822ff",
+    "dni": "900000048",
+    "firstName": "ELIDA",
+    "lastName": "ORRABALIS",
+    "fullName": "ORRABALIS ELIDA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.458Z",
+    "updatedAt": "2026-09-02T22:24:14.470Z"
+  },
+  {
+    "id": "a0c222dc-ca48-46f8-ba14-e862c38ffd9f",
+    "dni": "900000070",
+    "firstName": "YANINA",
+    "lastName": "ORTIZ",
+    "fullName": "ORTIZ YANINA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.277Z",
+    "updatedAt": "2026-09-02T22:24:15.294Z"
   },
   {
     "id": "e0e12c86-9b1d-4fd0-914a-62fc37f00dd1",
@@ -1748,6 +2434,34 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.710Z",
     "updatedAt": "2026-08-28T23:07:37.710Z"
+  },
+  {
+    "id": "90f5e1a8-2c50-404a-bacc-a85b6546541e",
+    "dni": "900000049",
+    "firstName": "NAHIARA",
+    "lastName": "PENAYO",
+    "fullName": "PENAYO NAHIARA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.489Z",
+    "updatedAt": "2026-09-02T22:24:14.510Z"
+  },
+  {
+    "id": "578ec62c-5e6f-4ad0-8d28-f2a4117c4aba",
+    "dni": "900000050",
+    "firstName": "PRISCILA",
+    "lastName": "PERALTA",
+    "fullName": "PERALTA PRISCILA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.540Z",
+    "updatedAt": "2026-09-02T22:24:14.560Z"
   },
   {
     "id": "d5bd7500-6267-473f-aa6a-1d5f129fe33c",
@@ -1806,6 +2520,20 @@
     "updatedAt": "2026-08-28T23:07:37.379Z"
   },
   {
+    "id": "0185c457-daad-4f7b-86cd-132fe29eb79b",
+    "dni": "900000051",
+    "firstName": "LAURA",
+    "lastName": "QUINTANA",
+    "fullName": "QUINTANA LAURA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.587Z",
+    "updatedAt": "2026-09-02T22:24:14.606Z"
+  },
+  {
     "id": "440f71df-52eb-4c53-9b3a-a7ee701c29ba",
     "dni": "58841036",
     "firstName": "LUANA MAILEN",
@@ -1832,6 +2560,76 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.017Z",
     "updatedAt": "2026-08-28T23:07:37.017Z"
+  },
+  {
+    "id": "16443c47-5f93-49d5-8fc2-0b8e8eed17a6",
+    "dni": "900000052",
+    "firstName": "CELESTE",
+    "lastName": "RAMIREZ",
+    "fullName": "RAMIREZ CELESTE",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.617Z",
+    "updatedAt": "2026-09-02T22:24:14.637Z"
+  },
+  {
+    "id": "93eb3719-9602-4843-bded-dd9b84d8fc85",
+    "dni": "900000053",
+    "firstName": "TATIANA",
+    "lastName": "RAMOA",
+    "fullName": "RAMOA TATIANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.649Z",
+    "updatedAt": "2026-09-02T22:24:14.668Z"
+  },
+  {
+    "id": "91b5b534-5e64-46fe-8cf2-af0d6cd19375",
+    "dni": "900000054",
+    "firstName": "MAIA",
+    "lastName": "REYES",
+    "fullName": "REYES MAIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.680Z",
+    "updatedAt": "2026-09-02T22:24:14.700Z"
+  },
+  {
+    "id": "bf22c095-e25d-45d8-bec9-c162e867c7a5",
+    "dni": "900000055",
+    "firstName": "MAXI",
+    "lastName": "REYES",
+    "fullName": "REYES MAXI",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.711Z",
+    "updatedAt": "2026-09-02T22:24:14.730Z"
+  },
+  {
+    "id": "644fcc38-1091-4820-af7d-0ea909f2f7d3",
+    "dni": "900000056",
+    "firstName": "ANDREA",
+    "lastName": "RIGONATO",
+    "fullName": "RIGONATO ANDREA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.746Z",
+    "updatedAt": "2026-09-02T22:24:14.765Z"
   },
   {
     "id": "6a556835-d1d2-4a99-8888-3e47ae0cc87c",
@@ -1876,6 +2674,20 @@
     "updatedAt": "2026-08-28T23:07:36.803Z"
   },
   {
+    "id": "02e64ebe-65ee-419e-a706-e27ce4705d26",
+    "dni": "900000057",
+    "firstName": "MARIANA",
+    "lastName": "RIOS",
+    "fullName": "RIOS MARIANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.777Z",
+    "updatedAt": "2026-09-02T22:24:14.796Z"
+  },
+  {
     "id": "8aacb8af-ee64-4623-8933-16f754b34eb1",
     "dni": "54266283",
     "firstName": "GUILLERMINA",
@@ -1904,6 +2716,20 @@
     "updatedAt": "2026-08-28T23:07:36.937Z"
   },
   {
+    "id": "3000ba63-6b94-4117-ac49-b864162e5c98",
+    "dni": "900000058",
+    "firstName": "KARLA AGOSTINA",
+    "lastName": "RIVAS",
+    "fullName": "RIVAS KARLA AGOSTINA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.824Z",
+    "updatedAt": "2026-09-02T22:24:14.843Z"
+  },
+  {
     "id": "132b2658-c520-4be0-9f93-93827720fdf1",
     "dni": "35488161",
     "firstName": "ROCIO",
@@ -1916,6 +2742,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.537Z",
     "updatedAt": "2026-08-28T23:07:36.537Z"
+  },
+  {
+    "id": "eabdb8b6-3845-4fd0-b251-194ce48cc7d5",
+    "dni": "900000059",
+    "firstName": "ROMINA",
+    "lastName": "RIVERO",
+    "fullName": "RIVERO ROMINA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.854Z",
+    "updatedAt": "2026-09-02T22:24:14.874Z"
   },
   {
     "id": "b2566873-7ef4-4c30-b0b8-6f71f092436e",
@@ -1944,6 +2784,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.380Z",
     "updatedAt": "2026-08-28T23:07:36.380Z"
+  },
+  {
+    "id": "639d4c47-7cdb-4d17-a606-46cd152dc99c",
+    "dni": "900000060",
+    "firstName": "RENATTA",
+    "lastName": "ROLDAN",
+    "fullName": "ROLDAN RENATTA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.886Z",
+    "updatedAt": "2026-09-02T22:24:14.906Z"
   },
   {
     "id": "b17eaffc-65da-459b-85ac-e1ddbde9c54e",
@@ -2000,6 +2854,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.760Z",
     "updatedAt": "2026-08-28T23:07:36.760Z"
+  },
+  {
+    "id": "7f6b993b-3935-4a20-b017-75a8c8956f48",
+    "dni": "900000061",
+    "firstName": "FLORENCIA",
+    "lastName": "RUIZ DIAZ",
+    "fullName": "RUIZ DIAZ FLORENCIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.917Z",
+    "updatedAt": "2026-09-02T22:24:14.943Z"
   },
   {
     "id": "0f66f0ff-d9e6-4195-94bb-060aeafe2502",
@@ -2170,6 +3038,20 @@
     "updatedAt": "2026-08-28T23:07:35.484Z"
   },
   {
+    "id": "832092f8-877d-4980-81c8-3a992b980b23",
+    "dni": "900000062",
+    "firstName": "ILEANA",
+    "lastName": "SILVERA",
+    "fullName": "SILVERA ILEANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:14.972Z",
+    "updatedAt": "2026-09-02T22:24:14.991Z"
+  },
+  {
     "id": "287e8a09-5b0b-40e6-8c30-3fb6c065dbff",
     "dni": "55590091",
     "firstName": "TERESITA CECILIA",
@@ -2240,6 +3122,20 @@
     "updatedAt": "2026-08-28T23:07:35.576Z"
   },
   {
+    "id": "c38fe8da-7530-42c4-bc42-257b2a3f947d",
+    "dni": "900000063",
+    "firstName": "PAOLA",
+    "lastName": "SORAIRE",
+    "fullName": "SORAIRE PAOLA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.019Z",
+    "updatedAt": "2026-09-02T22:24:15.037Z"
+  },
+  {
     "id": "5bb9359d-768a-4cce-a92c-16a95641759f",
     "dni": "57288151",
     "firstName": "ALMA",
@@ -2294,6 +3190,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:37.205Z",
     "updatedAt": "2026-08-28T23:07:37.205Z"
+  },
+  {
+    "id": "4f2227bd-707f-4fbe-8531-649359533dac",
+    "dni": "900000064",
+    "firstName": "LORENA",
+    "lastName": "SOSA",
+    "fullName": "SOSA LORENA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.066Z",
+    "updatedAt": "2026-09-02T22:24:15.081Z"
   },
   {
     "id": "8a27a773-fda2-4bd2-ac79-caaf4bf972fe",
@@ -2450,6 +3360,20 @@
     "updatedAt": "2026-08-28T23:07:35.910Z"
   },
   {
+    "id": "0525fe97-d116-4493-b08b-5e9406256a33",
+    "dni": "900000065",
+    "firstName": "NATALIA",
+    "lastName": "VELAZQUEZ",
+    "fullName": "VELAZQUEZ NATALIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.104Z",
+    "updatedAt": "2026-09-02T22:24:15.122Z"
+  },
+  {
     "id": "9a24244d-0c3b-461b-95c7-57d682862292",
     "dni": "55915777",
     "firstName": "JOSEFINA NICOLE",
@@ -2464,6 +3388,48 @@
     "updatedAt": "2026-08-28T23:07:36.217Z"
   },
   {
+    "id": "03d84eb6-75ca-4c8e-b8a7-b1afa2506408",
+    "dni": "900000066",
+    "firstName": "ANALIA",
+    "lastName": "VIERA",
+    "fullName": "VIERA ANALIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.140Z",
+    "updatedAt": "2026-09-02T22:24:15.160Z"
+  },
+  {
+    "id": "14c2fc1f-9bf8-44b5-8143-d38a5204f6e8",
+    "dni": "900000067",
+    "firstName": "VALERIA",
+    "lastName": "VILLA",
+    "fullName": "VILLA VALERIA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.184Z",
+    "updatedAt": "2026-09-02T22:24:15.201Z"
+  },
+  {
+    "id": "331355b9-731b-4ae6-9e2d-a8de8c43c837",
+    "dni": "900000068",
+    "firstName": "LUCIANA",
+    "lastName": "VILLAGRA",
+    "fullName": "VILLAGRA LUCIANA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.213Z",
+    "updatedAt": "2026-09-02T22:24:15.231Z"
+  },
+  {
     "id": "b0bb2d93-1d20-4cf3-8867-2250bd830889",
     "dni": "53793087",
     "firstName": "DELFINA",
@@ -2476,6 +3442,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:36.430Z",
     "updatedAt": "2026-08-28T23:07:36.430Z"
+  },
+  {
+    "id": "8de58389-ee6e-4750-8e63-2cbd68647d78",
+    "dni": "900000069",
+    "firstName": "LORENA",
+    "lastName": "VILLAMAYOR",
+    "fullName": "VILLAMAYOR LORENA",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.242Z",
+    "updatedAt": "2026-09-02T22:24:15.262Z"
   },
   {
     "id": "64a99306-c339-401e-8461-d2c2f93b0c61",
@@ -2518,6 +3498,20 @@
     "status": "ACTIVE",
     "createdAt": "2026-08-28T23:07:35.509Z",
     "updatedAt": "2026-08-28T23:07:35.509Z"
+  },
+  {
+    "id": "dbd63745-e037-438b-a665-88df5347b07c",
+    "dni": "900000071",
+    "firstName": "ALEJANDRO",
+    "lastName": "ZARACHO",
+    "fullName": "ZARACHO ALEJANDRO",
+    "phone": null,
+    "email": null,
+    "birthDate": null,
+    "address": null,
+    "status": "INACTIVE",
+    "createdAt": "2026-09-02T22:24:15.319Z",
+    "updatedAt": "2026-09-02T22:24:15.344Z"
   },
   {
     "id": "8bed59f3-936a-4fdd-bf39-475c686481b7",

@@ -133,6 +133,7 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
             const potentiallyConcurrentEnrollments = await tx.enrollment.findMany({
               where: {
                 studentId: input.studentId,
+                status: 'ACTIVE',
                 OR: [{ endDate: null }, { endDate: { gte: input.startDate } }],
               },
               select: {

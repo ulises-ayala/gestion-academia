@@ -10,7 +10,8 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "52737ab5-437a-4fd4-897f-05e616d35b82"
   },
   {
     "fullName": "ACOSTA MILVA EDITH",
@@ -23,7 +24,22 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "19909b3d-5b01-4c28-a9bb-ca12155d7112"
+  },
+  {
+    "fullName": "ALBARRACIN MICAELA",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "e0811a68-dd31-4be0-be6c-88be271765d7",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-10-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "be4ff6c5-29f6-4707-aebf-8174ccc9f0b7"
   },
   {
     "fullName": "AQUINO FLAVIA",
@@ -36,7 +52,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "1727f3a8-f17e-4bad-92ab-33705fd01145"
   },
   {
     "fullName": "AQUINO FLAVIA",
@@ -49,7 +66,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "1bf86f68-66c1-452d-b3f0-29955bbf7fc6"
   },
   {
     "fullName": "AQUINO FLORENCIA",
@@ -62,7 +80,36 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "36f41804-f7df-41f0-9148-47b49b4b07ea"
+  },
+  {
+    "fullName": "ARMOA CRISTIAN",
+    "activity": "Salsa Y Bachata En Pareja _Fabi",
+    "studentId": "5f9946ba-3eea-444c-b8aa-664d7686fe6d",
+    "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+    "className": "S&B Parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-01-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "c952a405-2f19-4f97-839a-4b3b690afac7"
+  },
+  {
+    "fullName": "ARMOA CRISTIAN",
+    "activity": "Coreografico E.Masc- Bachata/Urban",
+    "studentId": "5f9946ba-3eea-444c-b8aa-664d7686fe6d",
+    "classId": "2d17175b-22b0-4565-9342-1e93ad221855",
+    "className": "Coreografico E.Masc-Bachata/Urban",
+    "classMatchType": "HISTORICAL_CLASS_ID",
+    "startDate": "2025-01-01",
+    "classStatus": "INACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "0bf6b683-81b0-4c52-89b8-e8e73dcc45b7"
   },
   {
     "fullName": "BALBUENA SOFIA CONSTANZA",
@@ -75,7 +122,22 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "f8ad12bb-2e92-4ecd-9093-c6804f6c9e5c"
+  },
+  {
+    "fullName": "BAY LAURA",
+    "activity": "Heels",
+    "studentId": "088e7435-5cea-4497-a371-6b11fce3c045",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-05-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "6bda8b66-adbf-4433-bb0b-d0838c920543"
   },
   {
     "fullName": "BENITEZ DANIEL",
@@ -88,7 +150,22 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "f16881e1-58a3-427d-a016-92d33e6d2b64"
+  },
+  {
+    "fullName": "BENITEZ JUANA",
+    "activity": "KIDS",
+    "studentId": "c9c8f310-d002-4085-9e15-d05f99db5f0a",
+    "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+    "className": "Kids 4-5 años",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "017ce5ed-fcff-4046-b6be-cabd0c737961"
   },
   {
     "fullName": "CABALLERO CLAUDIA",
@@ -101,7 +178,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "7136dc70-a312-4b27-b261-9f88b3c53c5f"
   },
   {
     "fullName": "CABRERA CLAUDIA",
@@ -114,7 +192,22 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "17f59a10-b6db-4166-b835-dfe08fcbcc4c"
+  },
+  {
+    "fullName": "CACERES FERNANDEZ AGOSTINA",
+    "activity": "Heels",
+    "studentId": "abf306d4-83d7-4467-aa81-6cda65fe4c1d",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-10-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "304619e4-ed41-4819-958e-f5b6b08a21c6"
   },
   {
     "fullName": "CANDIA ELIZABETH",
@@ -127,7 +220,50 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "9bc74f98-3d58-4076-822a-c804c7834e44"
+  },
+  {
+    "fullName": "CARRERA MIA",
+    "activity": "Kids",
+    "studentId": "62de9f40-7027-4b13-997f-1ce9106757ce",
+    "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+    "className": "Kids 4-5 años",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-04-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "d3de109d-673d-4515-b9a2-e466b7476345"
+  },
+  {
+    "fullName": "CASTILLO CAMILA",
+    "activity": "Ladys Kizz",
+    "studentId": "1ca2cd22-ac1c-4627-a0f4-8a1ce8bce0be",
+    "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+    "className": "Ladys Kizz",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-01-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "d85bdd8f-ec24-4bc1-919a-c5a213535c44"
+  },
+  {
+    "fullName": "CASTILLO CAMILA",
+    "activity": "Salsa Y Bachata En Pareja _Fabi",
+    "studentId": "1ca2cd22-ac1c-4627-a0f4-8a1ce8bce0be",
+    "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+    "className": "S&B Parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-01-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "72e87f7c-1020-4c21-b772-75ca12af2bdb"
   },
   {
     "fullName": "CAZAL VIRGINIA ISABELLA",
@@ -140,7 +276,36 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "83e0385a-32af-4bfd-9275-ce0f8c1b4471"
+  },
+  {
+    "fullName": "CENTURION YAMILA",
+    "activity": "Heels",
+    "studentId": "cd7321aa-45a3-4fa8-aa96-79f146db1290",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-10-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "e5bd086a-e46f-4b28-848e-f247e46824d6"
+  },
+  {
+    "fullName": "DE LOS SANTOS MELISA",
+    "activity": "Heels",
+    "studentId": "6e71dbbc-029d-45d6-affc-c68fa0e5ccd2",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-10-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "ce0188a5-edb0-4d96-b5c2-a4e2914a60cf"
   },
   {
     "fullName": "DELGADO MARIA CARLA",
@@ -153,7 +318,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "95b5e446-442a-402b-963a-6e2cc6b507ff"
   },
   {
     "fullName": "DELGADO MARIA CARLA",
@@ -166,7 +332,36 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "a030dffc-3e92-414e-a328-f7732cbe1a5f"
+  },
+  {
+    "fullName": "DIAZ AYELEN",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "e7438a66-db50-4610-9fa8-ec00833ed1f0",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-05-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "9e90f7cb-9b25-471a-8c11-c97ab26f875f"
+  },
+  {
+    "fullName": "DOMINGUEZ NAHUEL",
+    "activity": "Tango Inter/Avanz",
+    "studentId": "dd8b06a2-f18b-4a36-b91e-62cd3bb09cf8",
+    "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+    "className": "Tango (Inter/Avanz)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-08-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "4181a23e-1970-4d63-a192-1dbfa40bba7c"
   },
   {
     "fullName": "DUARTE CATALINA",
@@ -179,7 +374,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "56cf09a1-48bd-43ab-9812-702b0451767b"
   },
   {
     "fullName": "DUARTE CECILIA VANINA",
@@ -192,7 +388,8 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "31f023d5-ebce-429c-af77-32896f547eb9"
   },
   {
     "fullName": "DUARTE CECILIA VANINA",
@@ -205,7 +402,64 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "e8f3a343-4e98-41a7-888b-31c03cfd87b6"
+  },
+  {
+    "fullName": "DUARTE GUILIANA",
+    "activity": "Teens",
+    "studentId": "aebc5d6c-914a-49f6-87b8-3354105f5103",
+    "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+    "className": "Teens (8 a 12 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "266093a5-a21c-4a46-bd04-41687031a1f5"
+  },
+  {
+    "fullName": "ELLI JOAQUINA",
+    "activity": "Heels",
+    "studentId": "332b258e-69a8-4cb7-b1cc-75971f504cd3",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "5430c4a2-0416-496e-94dc-e51b4ef6e3f9"
+  },
+  {
+    "fullName": "ENCISO PATRICIO",
+    "activity": "Street Coreografico Infantil",
+    "studentId": "2047b20c-6313-4ba5-994b-12b45f3a23ac",
+    "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+    "className": "S.C Infantil (6-11 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "80bada5e-406b-41f8-94a2-c970c164c97e"
+  },
+  {
+    "fullName": "FERNANDEZ LETICIA AILEN",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "d18fc40a-f574-44de-8d14-6fa56f77b179",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "c1962b7d-33f1-485d-8e45-9569081f1399"
   },
   {
     "fullName": "FLEITAS MARIA JOSE",
@@ -218,7 +472,134 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "7e6b922a-a963-4ad7-ba43-74b4b123cd0f"
+  },
+  {
+    "fullName": "FLEITAS TERESA",
+    "activity": "Bachata Y Salsa Inicial",
+    "studentId": "8576617b-4be5-4548-9125-cd2888b9f11c",
+    "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+    "className": "Bachata y Salsa Inicial",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-10-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "5779d0b7-cb92-44bd-981d-3e7745eb7954"
+  },
+  {
+    "fullName": "GALEANO ANAPAULA",
+    "activity": "Heels",
+    "studentId": "4ab8b2c4-86d0-4e63-b14c-7b4ef7db62f7",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "2044807e-eb67-47a3-b855-a1d05f25ee7e"
+  },
+  {
+    "fullName": "GALEANO SILVIA",
+    "activity": "Salsa Y Bachata En Pareja _Fabi",
+    "studentId": "af5dabec-f6a6-4cea-b71b-924ce22443c8",
+    "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+    "className": "S&B Parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "540374b9-6a2f-440e-b518-454882228a89"
+  },
+  {
+    "fullName": "GERARDO OBREGON",
+    "activity": "MAMBO EN PAREJA",
+    "studentId": "2966dca5-5db5-4180-846e-aee8a3d8550b",
+    "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+    "className": "Mambo en parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "916c1e22-dcc3-488b-984a-8c9d3396d01b"
+  },
+  {
+    "fullName": "GIMENEZ GABRIELA",
+    "activity": "Coreografico_Puchini",
+    "studentId": "0527d151-0fd0-48b5-ae9f-26d26cd19f3b",
+    "classId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+    "className": "Grupo C. Sofi",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-04-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "29be8ba9-869d-4490-a99d-0261cf31383a"
+  },
+  {
+    "fullName": "GIMENEZ KIARA",
+    "activity": "Heels",
+    "studentId": "9199d897-0441-41ef-9396-67575b644e7e",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "f4916477-ff25-4c5a-bfcf-bb3fee6aef98"
+  },
+  {
+    "fullName": "GLERIA PATRICIA",
+    "activity": "Inst.Sup.Coreografico -Tango /18 Meses",
+    "studentId": "6580c661-c4b4-4c27-9ac0-53c62e941754",
+    "classId": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+    "className": "Inst.Sup.Coreografico -Tango /18 Meses",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-07-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "7d78ad9c-72c2-44fb-a3cd-1eff485b9a29"
+  },
+  {
+    "fullName": "GOMEZ FEDERICO ADRIAN",
+    "activity": "Coreografico E.Masc- Bachata/Urban",
+    "studentId": "a2baa8f1-d52f-4263-aeb2-647c3f2f8e6b",
+    "classId": "2d17175b-22b0-4565-9342-1e93ad221855",
+    "className": "Coreografico E.Masc-Bachata/Urban",
+    "classMatchType": "HISTORICAL_CLASS_ID",
+    "startDate": "2026-02-01",
+    "classStatus": "INACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "e7d8e429-e5a6-4ebc-9a7e-603b32646a2b"
+  },
+  {
+    "fullName": "GONZALEZ MONICA",
+    "activity": "Kizomba",
+    "studentId": "5fe8147b-071b-49b8-982d-9841570d3df4",
+    "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+    "className": "Clase kizomba",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-04-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "ca1cd0bd-3e50-4bb2-b686-22c3c1dbf386"
   },
   {
     "fullName": "GONZALEZ VIERA PILAR",
@@ -231,7 +612,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "9621f6a6-735f-46c5-898e-87213ed03be7"
   },
   {
     "fullName": "GUARE MATTEO NAVILA",
@@ -244,7 +626,36 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "ed035b29-8de4-46bc-85c6-ac53b071f8df"
+  },
+  {
+    "fullName": "ISASI YASLIN",
+    "activity": "Infantil 1",
+    "studentId": "cf232c58-308a-419d-a714-b5902b143f2c",
+    "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+    "className": "Infantil (6 a 7 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-05-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "8a87dae5-e2dd-45b0-a57f-3d3550a95936"
+  },
+  {
+    "fullName": "LAGRAÑA EUGENIA ROSELY",
+    "activity": "Street Coreografico Infantil",
+    "studentId": "e42a187e-ef04-45f9-9fd8-8c24a5fcfcdf",
+    "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+    "className": "S.C Infantil (6-11 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-09-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "7237b28b-83c2-41e9-8256-5cc68f5a725b"
   },
   {
     "fullName": "LASPIUR JORGE",
@@ -257,7 +668,8 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "ee7ea00f-98aa-4621-aaf6-7fc1bd063bbd"
   },
   {
     "fullName": "LEGUIZAMON JOHANNA",
@@ -270,7 +682,8 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "8a424fd1-143f-40d5-900f-e6731858a921"
   },
   {
     "fullName": "LEIVA ISABELLA",
@@ -283,7 +696,50 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "78feeceb-4e74-4cf9-9034-fa424a655463"
+  },
+  {
+    "fullName": "LEPEZ ARIANA",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "4ba9a189-06e0-4787-8dd3-edf55ec58a22",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "007ac4be-d884-4726-9311-36ab08e146a6"
+  },
+  {
+    "fullName": "LEYES OMAR",
+    "activity": "Tango Inter/Avanz",
+    "studentId": "e9b4b1f5-1d06-4ad3-b102-76554c3d5581",
+    "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+    "className": "Tango (Inter/Avanz)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "ce152949-50f6-4869-bc68-e7c6e95cefa7"
+  },
+  {
+    "fullName": "LO CURCIO MARTINA",
+    "activity": "Kids",
+    "studentId": "9a062ed6-c4fe-4cf6-b590-8a04240d57fd",
+    "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+    "className": "Kids 4-5 años",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-10-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "6191d1ac-b618-4ede-bace-6c9aed4cbde4"
   },
   {
     "fullName": "LOPEZ CLAUDIA",
@@ -296,7 +752,8 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "549561c0-b1a0-4227-a2ed-69ce9876e2e8"
   },
   {
     "fullName": "LOPEZ CLAUDIA",
@@ -309,7 +766,78 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "e6495508-5564-431d-9fc9-1a8ffb8b168a"
+  },
+  {
+    "fullName": "MARTINEZ STEFANIA",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "595b3f8d-4997-478f-8bd9-f6f10ac6fe00",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "0352fb4c-ded1-4e2d-8ecf-13d62220df59"
+  },
+  {
+    "fullName": "MATTEO GIULIANA",
+    "activity": "TEENS",
+    "studentId": "3df5c6f2-82e5-4b28-a2ed-310573216eaa",
+    "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+    "className": "Teens (8 a 12 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "97432f15-947e-442c-ad91-1d2502159c45"
+  },
+  {
+    "fullName": "MEDINA ERIK",
+    "activity": "Kids",
+    "studentId": "354818ea-b773-4be4-92d5-548f2fc48f82",
+    "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+    "className": "Kids 4-5 años",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "b2d2f6f4-ebac-4898-959c-a372299efd86"
+  },
+  {
+    "fullName": "MEDINA PATIÑO YANI",
+    "activity": "Kizomba",
+    "studentId": "4266485a-8c0a-41b5-bc21-8b3c0b5c0123",
+    "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+    "className": "Clase kizomba",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "9e1271ca-0e5e-48ab-a1c1-cfc70bca45f7"
+  },
+  {
+    "fullName": "MEDINA PATIÑO YANI",
+    "activity": "Salsa Y Bachata En Pareja _Fabi",
+    "studentId": "4266485a-8c0a-41b5-bc21-8b3c0b5c0123",
+    "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+    "className": "S&B Parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "fe49655f-c53a-4cbf-b5b8-ebd4ff95f82d"
   },
   {
     "fullName": "MENDOZA AGUSTINA",
@@ -322,7 +850,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "815662fb-2c19-4dc3-92a2-13a30bafed03"
   },
   {
     "fullName": "MOLINA MERCEDES",
@@ -335,7 +864,92 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "2abe3100-dc24-4148-a477-203c7d69dcb9"
+  },
+  {
+    "fullName": "MONTIEL KAREN",
+    "activity": "Heels",
+    "studentId": "394dab71-975b-44a5-97a1-9f2771beb52e",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "9f4b0bb6-50a6-4d18-8bde-a8c5fb3ca426"
+  },
+  {
+    "fullName": "MONYO LAURA",
+    "activity": "Mambo En Pareja",
+    "studentId": "2dee74ee-8d96-435d-9919-796132c2c721",
+    "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+    "className": "Mambo en parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "8ff43903-81d2-4367-8810-6b4626f0c01b"
+  },
+  {
+    "fullName": "OJEDA JORGE",
+    "activity": "Mambo En Pareja",
+    "studentId": "27df3a27-a07e-4a5b-8b17-27c3cc47ae55",
+    "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+    "className": "Mambo en parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "144f4489-4c14-49f9-9b2a-59e6b3c471c7"
+  },
+  {
+    "fullName": "ORRABALIS ELIDA",
+    "activity": "Kizomba",
+    "studentId": "43bb40a7-3e58-417c-b486-0c4ddb7822ff",
+    "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+    "className": "Clase kizomba",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "2ee1659e-5758-4b92-aea7-fb3c0c0bbc59"
+  },
+  {
+    "fullName": "ORRABALIS ELIDA",
+    "activity": "Ladys Kizz",
+    "studentId": "43bb40a7-3e58-417c-b486-0c4ddb7822ff",
+    "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+    "className": "Ladys Kizz",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "c75e4482-1018-4453-abae-73400630985e"
+  },
+  {
+    "fullName": "ORRABALIS ELIDA",
+    "activity": "Salsa Y Bachata En Pareja _Fabi",
+    "studentId": "43bb40a7-3e58-417c-b486-0c4ddb7822ff",
+    "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+    "className": "S&B Parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "d1664f68-dc81-419f-8dde-abe37a9d2f61"
   },
   {
     "fullName": "OVIEDO MAGALI",
@@ -348,7 +962,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "91a0172d-0b96-4d95-b940-cbab71432051"
   },
   {
     "fullName": "PAREDES ROMINA",
@@ -361,7 +976,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "aaac8451-d66f-4bf5-9077-2b1f0e587d77"
   },
   {
     "fullName": "PAREDES ROMINA",
@@ -374,7 +990,50 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "1c1d9ab6-ca28-46f0-89ad-02fe45872ee9"
+  },
+  {
+    "fullName": "PENAYO NAHIARA",
+    "activity": "KIDS",
+    "studentId": "90f5e1a8-2c50-404a-bacc-a85b6546541e",
+    "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+    "className": "Kids 4-5 años",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-07-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "2bb911ac-9e4f-435e-97c2-357d426cbc01"
+  },
+  {
+    "fullName": "PERALTA PRISCILA",
+    "activity": "Street Coreografico Juvenil",
+    "studentId": "578ec62c-5e6f-4ad0-8d28-f2a4117c4aba",
+    "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+    "className": "S.C Juvenil (12-17 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "ddbd9f7e-52dd-47b6-b72a-2252d00359c7"
+  },
+  {
+    "fullName": "QUINTANA LAURA",
+    "activity": "Bachata Y Salsa Inicial",
+    "studentId": "0185c457-daad-4f7b-86cd-132fe29eb79b",
+    "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+    "className": "Bachata y Salsa Inicial",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-10-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "a1af6247-425d-4f56-9c63-b7439e3d57e0"
   },
   {
     "fullName": "RAMIREZ AGUSTINA",
@@ -387,7 +1046,148 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "00ce605b-e9a0-4266-9c24-bc1652d75fe7"
+  },
+  {
+    "fullName": "RAMIREZ CELESTE",
+    "activity": "Salsa Y Bachata En Pareja _Fabi",
+    "studentId": "16443c47-5f93-49d5-8fc2-0b8e8eed17a6",
+    "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+    "className": "S&B Parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "127ea4cd-e6ec-4e49-beb6-8579b2748cb3"
+  },
+  {
+    "fullName": "RAMOA TATIANA",
+    "activity": "Street Coreografico Avanzado Intermedio",
+    "studentId": "93eb3719-9602-4843-bded-dd9b84d8fc85",
+    "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+    "className": "Street Int/Avanzado",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-05-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "891c485c-73f7-49c4-abfc-772fd679b870"
+  },
+  {
+    "fullName": "REYES MAIA",
+    "activity": "Heels",
+    "studentId": "91b5b534-5e64-46fe-8cf2-af0d6cd19375",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-08-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "79589376-db43-47df-9981-27dff47fe0ab"
+  },
+  {
+    "fullName": "REYES MAXI",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "bf22c095-e25d-45d8-bec9-c162e867c7a5",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-01-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "aeb20f93-7bd0-4a3b-b5b9-f515e3bc5378"
+  },
+  {
+    "fullName": "REYES MAXI",
+    "activity": "Street Coreografico Avanzado Intermedio",
+    "studentId": "bf22c095-e25d-45d8-bec9-c162e867c7a5",
+    "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+    "className": "Street Int/Avanzado",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-01-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "b6559bfc-2c0c-4225-b85e-9b2fa2e1bfc1"
+  },
+  {
+    "fullName": "RIGONATO ANDREA",
+    "activity": "Bachata Y Salsa Inicial",
+    "studentId": "644fcc38-1091-4820-af7d-0ea909f2f7d3",
+    "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+    "className": "Bachata y Salsa Inicial",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-03-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "e916218b-56e7-4b72-ad95-58a5659cefc5"
+  },
+  {
+    "fullName": "RIOS MARIANA",
+    "activity": "Heels",
+    "studentId": "02e64ebe-65ee-419e-a706-e27ce4705d26",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-05-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "4ba1794e-c421-43e1-becc-6afb77d55034"
+  },
+  {
+    "fullName": "RIVAS KARLA AGOSTINA",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "3000ba63-6b94-4117-ac49-b864162e5c98",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-01-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "4802eefc-7491-4f09-ae58-bb19b6599ae4"
+  },
+  {
+    "fullName": "RIVERO ROMINA",
+    "activity": "ZUMBA",
+    "studentId": "eabdb8b6-3845-4fd0-b251-194ce48cc7d5",
+    "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+    "className": "Zumba - Profe Joselo",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-08-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "0e12bd4a-3cfd-4572-bc3f-6bcc128a1a69"
+  },
+  {
+    "fullName": "RUIZ DIAZ FLORENCIA",
+    "activity": "Heels",
+    "studentId": "7f6b993b-3935-4a20-b017-75a8c8956f48",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "2a7a923e-a080-4301-aedc-688b439c9ead"
   },
   {
     "fullName": "SAPORITTI PAULINA",
@@ -400,7 +1200,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "a211df19-0be6-4974-8114-efcbb3806271"
   },
   {
     "fullName": "SCHAAB SABRINA",
@@ -413,7 +1214,22 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "406652b4-06c3-448e-83bf-a6f49ee80c7b"
+  },
+  {
+    "fullName": "SILVERA ILEANA",
+    "activity": "Heels",
+    "studentId": "832092f8-877d-4980-81c8-3a992b980b23",
+    "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+    "className": "Hells",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-06-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "32b9d96f-4358-4e5b-8ea6-ec633173debc"
   },
   {
     "fullName": "SORABELLA ARIEL",
@@ -426,7 +1242,8 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "60dc32fd-7c42-4159-a749-0711f92932c7"
   },
   {
     "fullName": "SORAIRE NATALIA",
@@ -439,7 +1256,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "38fba932-bc81-4739-bdfe-7bd8df909f0c"
   },
   {
     "fullName": "SORAIRE NATALIA",
@@ -452,7 +1270,8 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "82315bd5-196e-40a5-a82b-684ed52efbbd"
   },
   {
     "fullName": "SORAIRE NOELIA",
@@ -465,7 +1284,8 @@
     "classStatus": "INACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "db893ccf-e649-4804-b448-01ee54583131"
   },
   {
     "fullName": "SORAIRE NOELIA",
@@ -478,7 +1298,22 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "bb2e3df5-386f-481e-ae65-6d7fab8b036a"
+  },
+  {
+    "fullName": "SORAIRE PAOLA",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "c38fe8da-7530-42c4-bc42-257b2a3f947d",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-04-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "1ffe2d92-debe-4d28-bde5-deef14d88d93"
   },
   {
     "fullName": "SOSA EVANGELINA",
@@ -491,7 +1326,22 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "98aef5ad-3b7b-4cda-9c47-a75eb04e37c8"
+  },
+  {
+    "fullName": "SOSA LORENA",
+    "activity": "Street Coreografico Adulto",
+    "studentId": "4f2227bd-707f-4fbe-8531-649359533dac",
+    "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+    "className": "S.C Adultos (+18 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-01-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "63b3da60-5426-4bfb-9313-46857f7fc42c"
   },
   {
     "fullName": "SOSA TEDIN AGUSTINA",
@@ -504,6 +1354,147 @@
     "classStatus": "ACTIVE",
     "endDate": null,
     "sourceResult": "HISTORICAL_CLASS_NOT_ENROLLED",
-    "result": "NEEDS_END_DATE"
+    "result": "CREATED",
+    "enrollmentId": "8d5aafc1-6f91-40cf-aeac-c382825a1cc0"
+  },
+  {
+    "fullName": "VELAZQUEZ NATALIA",
+    "activity": "Bachata Y Salsa Inicial",
+    "studentId": "0525fe97-d116-4493-b08b-5e9406256a33",
+    "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+    "className": "Bachata y Salsa Inicial",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "68cfa185-c39b-4ee8-83de-6e341bf953bb"
+  },
+  {
+    "fullName": "VIERA ANALIA",
+    "activity": "Kizomba",
+    "studentId": "03d84eb6-75ca-4c8e-b8a7-b1afa2506408",
+    "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+    "className": "Clase kizomba",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-09-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "ea2fad69-bde2-4df0-a9e1-f648dc238fa3"
+  },
+  {
+    "fullName": "VIERA ANALIA",
+    "activity": "Ladys Kizz",
+    "studentId": "03d84eb6-75ca-4c8e-b8a7-b1afa2506408",
+    "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+    "className": "Ladys Kizz",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-09-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "2700287e-e327-4977-8ab6-01bcd51fddbc"
+  },
+  {
+    "fullName": "VIERA ANALIA",
+    "activity": "Salsa Y Bachata En Pareja _Fabi",
+    "studentId": "03d84eb6-75ca-4c8e-b8a7-b1afa2506408",
+    "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+    "className": "S&B Parejas",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-09-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "f8f879e8-e7b6-4baf-bd3a-aac9b6b33dd0"
+  },
+  {
+    "fullName": "VILLA VALERIA",
+    "activity": "Zumba",
+    "studentId": "14c2fc1f-9bf8-44b5-8143-d38a5204f6e8",
+    "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+    "className": "Zumba - Profe Joselo",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "60a932dd-4ca0-494e-8ab9-77f9508ec57d"
+  },
+  {
+    "fullName": "VILLAGRA LUCIANA",
+    "activity": "Street Coreografico Juvenil",
+    "studentId": "331355b9-731b-4ae6-9e2d-a8de8c43c837",
+    "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+    "className": "S.C Juvenil (12-17 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "7886ff5b-3bc0-4683-9ccc-a6ce3390f1d7"
+  },
+  {
+    "fullName": "VILLAGRA LUCIANA",
+    "activity": "Street Coreografico Avanzado Intermedio",
+    "studentId": "331355b9-731b-4ae6-9e2d-a8de8c43c837",
+    "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+    "className": "Street Int/Avanzado",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2025-02-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "3a2da978-a772-4bb0-a5bd-645c332ae049"
+  },
+  {
+    "fullName": "VILLAMAYOR LORENA",
+    "activity": "Zumba",
+    "studentId": "8de58389-ee6e-4750-8e63-2cbd68647d78",
+    "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+    "className": "Zumba - Profe Joselo",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-05-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "94c8152a-6cf6-41fe-ad5f-a0493ea0d5f7"
+  },
+  {
+    "fullName": "YANINA ORTIZ",
+    "activity": "ESTILO FEMENINO",
+    "studentId": "a0c222dc-ca48-46f8-ba14-e862c38ffd9f",
+    "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+    "className": "Clase femenino Sofi",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-08-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "8c90f912-7a19-4502-9645-85a61fd83042"
+  },
+  {
+    "fullName": "ZARACHO ALEJANDRO",
+    "activity": "Street Coreografico Juvenil",
+    "studentId": "dbd63745-e037-438b-a665-88df5347b07c",
+    "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+    "className": "S.C Juvenil (12-17 años)",
+    "classMatchType": "EXACT_CLASS_NAME",
+    "startDate": "2026-07-01",
+    "classStatus": "ACTIVE",
+    "endDate": null,
+    "sourceResult": "STUDENT_WITHOUT_ENROLLMENT",
+    "result": "CREATED",
+    "enrollmentId": "785f606b-9b28-4cc0-b772-31802c3d9eac"
   }
 ]

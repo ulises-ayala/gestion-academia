@@ -1596,6 +1596,76 @@
     }
   },
   {
+    "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+    "name": "Inst.Sup.Coreografico -Tango /18 Meses",
+    "level": "3",
+    "capacity": 30,
+    "status": "ACTIVE",
+    "danceType": {
+      "id": "19e25d27-319e-4311-ab1f-389444d1e332",
+      "name": "Tango"
+    },
+    "teacher": {
+      "id": "79685a44-f200-473c-9185-4c45b97e7441",
+      "firstName": "Roberto Carlos",
+      "lastName": "Dominguez",
+      "fullName": "Dominguez Roberto Carlos"
+    },
+    "schedules": [
+      {
+        "id": "e23165d4-2310-4bed-a4be-48946b48efb8",
+        "dayOfWeek": "SATURDAY",
+        "startTime": "22:00",
+        "endTime": "23:00",
+        "room": {
+          "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+          "name": "Salón 2",
+          "branch": {
+            "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+            "name": "Carmesí"
+          }
+        }
+      }
+    ],
+    "createdAt": "2026-09-02T22:27:27.046Z",
+    "updatedAt": "2026-09-02T22:27:27.046Z",
+    "raw": {
+      "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+      "name": "Inst.Sup.Coreografico -Tango /18 Meses",
+      "level": "3",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "danceType": {
+        "id": "19e25d27-319e-4311-ab1f-389444d1e332",
+        "name": "Tango"
+      },
+      "teacher": {
+        "id": "79685a44-f200-473c-9185-4c45b97e7441",
+        "firstName": "Roberto Carlos",
+        "lastName": "Dominguez"
+      },
+      "schedules": [
+        {
+          "id": "e23165d4-2310-4bed-a4be-48946b48efb8",
+          "dayOfWeek": "SATURDAY",
+          "startTime": "22:00",
+          "endTime": "23:00",
+          "room": {
+            "id": "1b22371d-3ab7-4c8f-9579-96cf4e466f8c",
+            "name": "Salón 2",
+            "branch": {
+              "id": "12661d97-3998-4789-a9e5-44d72c5c7513",
+              "name": "Carmesí"
+            }
+          }
+        }
+      ],
+      "activeEnrollmentCount": 0,
+      "createdAt": "2026-09-02T22:27:27.046Z",
+      "updatedAt": "2026-09-02T22:27:27.046Z"
+    }
+  },
+  {
     "id": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
     "name": "Kids 4-5 años",
     "level": "1",
