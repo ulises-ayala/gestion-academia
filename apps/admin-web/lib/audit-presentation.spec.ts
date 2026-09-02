@@ -10,7 +10,10 @@ import {
 describe('audit presentation', () => {
   it('traduce entidades, acciones, campos y valores conocidos', () => {
     expect(formatAuditEntity('ACADEMY_CLASS')).toBe('Clase');
+    expect(formatAuditEntity('CASH_SHIFT')).toBe('Turno de caja');
     expect(formatAuditAction('VOID')).toBe('Anulación');
+    expect(formatAuditAction('OPEN')).toBe('Apertura');
+    expect(formatAuditAction('CLOSE')).toBe('Cierre');
     expect(formatAuditField('validFrom')).toBe('Vigente desde');
     expect(formatAuditValue('status', 'CONFIRMED')).toBe('Confirmado');
     expect(formatAuditValue('role', 'MANAGER')).toBe('Administración');

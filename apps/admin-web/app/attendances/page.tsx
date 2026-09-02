@@ -65,6 +65,12 @@ export default function AttendancesPage() {
   const [rosterFilter, setRosterFilter] = useState('');
   const [loadingRoster, setLoadingRoster] = useState(false);
   const [savingRoster, setSavingRoster] = useState(false);
+  const changeDate = (nextDate: string) => {
+    setDate(nextDate);
+    const url = new URL(window.location.href);
+    url.searchParams.set('date', nextDate);
+    window.history.pushState({}, '', url);
+  };
 
   const loadDay = useCallback(async () => {
     setLoadingDay(true);
@@ -88,6 +94,13 @@ export default function AttendancesPage() {
     setMessage(null);
     void loadDay();
   }, [loadDay]);
+
+  useEffect(() => {
+    const onPopState = () =>
+      setDate(attendanceDateFromSearch(window.location.search, businessToday()));
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   useEffect(() => {
     const normalizedQuery = query.trim();
@@ -253,7 +266,11 @@ export default function AttendancesPage() {
             </label>
             <label className="attendance-field">
               Fecha
-              <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+              <input
+                type="date"
+                value={date}
+                onChange={(event) => changeDate(event.target.value)}
+              />
             </label>
             <div className="attendance-search-status" aria-live="polite">
               {quickLoading ? 'Buscando...' : 'La búsqueda se actualiza automáticamente.'}

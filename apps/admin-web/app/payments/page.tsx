@@ -23,6 +23,7 @@ import {
   paymentLocationFromSearch,
   paymentSearch,
 } from '../../lib/payment-center';
+import { cashHrefForPayment } from '../../lib/contextual-filters';
 import {
   centsToDecimal,
   createPaymentPayload,
@@ -376,7 +377,7 @@ export default function PaymentsPage() {
       {cashShiftRequired && (
         <p className="message" role="alert">
           Necesitás abrir tu turno de caja antes de registrar un cobro.{' '}
-          <Link href="/cash">Abrir turno de caja</Link>
+          <Link href={cashHrefForPayment(locationSearch)}>Abrir caja</Link>
         </p>
       )}
 
