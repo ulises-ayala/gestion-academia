@@ -397,10 +397,31 @@ svg {
   margin-bottom: 0;
 }
 .quick-actions-card .quick-actions {
-  grid-template-columns: repeat(5, minmax(7.5rem, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-.quick-action {
+.quick-actions-card .quick-action {
+  min-height: 3.5rem;
   justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-color: var(--border);
+  background: var(--surface-muted);
+  color: var(--text);
+  text-align: left;
+}
+.quick-actions-card .quick-action:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--text);
+}
+.quick-actions-card .quick-action span {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 1.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--brand-fill);
+  color: var(--brand-on-fill);
 }
 .metric-action {
   color: var(--brand) !important;
@@ -630,6 +651,11 @@ svg {
   }
   .payment-bar-value {
     font-size: 0.62rem;
+  }
+}
+@media (max-width: 28rem) {
+  .quick-actions-card .quick-actions {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 22rem) {

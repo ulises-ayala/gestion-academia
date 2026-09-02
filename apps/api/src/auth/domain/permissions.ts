@@ -49,7 +49,6 @@ const administrationPermissions: readonly Permission[] = [
   'charges:manage',
   'payments:void',
   'cash:reconcile',
-  'users:manage',
   'inventory:manage',
   'trainings:manage',
   'reports:operational',
@@ -62,6 +61,7 @@ export const rolePermissions: Readonly<Record<PublicAuthUser['role'], readonly P
   MANAGER: administrationPermissions,
   ADMINISTRATOR: [
     ...administrationPermissions,
+    'users:manage',
     'users:manage-direction',
     'reports:all',
     'settlements:approve',

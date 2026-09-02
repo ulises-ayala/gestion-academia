@@ -10,7 +10,7 @@ import type {
   TariffDto,
 } from '@academy/contracts';
 import Link from 'next/link';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { dayLabels } from '../../../lib/offering';
 import {
@@ -57,32 +57,40 @@ export default function NewStudentPage() {
   const [collect, setCollect] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodDto>('CASH');
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const [optionsError, setOptionsError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [result, setResult] = useState<StudentOnboardingResultDto | null>(null);
   const [cashShiftOpen, setCashShiftOpen] = useState(false);
 
-  useEffect(() => {
-    Promise.all([
-      apiRequest<ClassListDto>('/classes?status=ACTIVE&pageSize=100'),
-      apiRequest<readonly TariffDto[]>('/tariffs/active'),
-      apiRequest<CashShiftDto | null>('/cash-shifts/current'),
-    ])
-      .then(([classList, activeTariffs, cashShift]) => {
-        setClasses(classList.items);
-        setTariffs(activeTariffs);
-        setCashShiftOpen(Boolean(cashShift));
-      })
-      .catch((error) =>
-        setMessage(
-          error instanceof ApiClientError
-            ? error.message
-            : 'No se pudieron cargar clases y tarifas',
-        ),
-      )
-      .finally(() => setLoadingOptions(false));
+  const loadOptions = useCallback(async () => {
+    setLoadingOptions(true);
+    setOptionsError('');
+    try {
+      const [classList, activeTariffs] = await Promise.all([
+        apiRequest<ClassListDto>('/classes?status=ACTIVE&pageSize=100'),
+        apiRequest<readonly TariffDto[]>('/tariffs/active'),
+      ]);
+      setClasses(classList.items);
+      setTariffs(activeTariffs);
+    } catch (error) {
+      setOptionsError(
+        error instanceof ApiClientError
+          ? error.message
+          : 'No se pudieron cargar las clases y tarifas. Verificá la conexión e intentá nuevamente.',
+      );
+    } finally {
+      setLoadingOptions(false);
+    }
   }, []);
+
+  useEffect(() => {
+    void loadOptions();
+    apiRequest<CashShiftDto | null>('/cash-shifts/current')
+      .then((cashShift) => setCashShiftOpen(Boolean(cashShift)))
+      .catch(() => setCashShiftOpen(false));
+  }, [loadOptions]);
 
   const conflict = useMemo(() => selectedClassConflict(selections, classes), [selections, classes]);
   const total = onboardingTotal(selections, tariffs);
@@ -332,6 +340,15 @@ export default function NewStudentPage() {
               );
             })}
           </div>
+          {loadingOptions && <p className="subtitle">Cargando clases y tarifas…</p>}
+          {optionsError && (
+            <div className="module-state" role="alert">
+              <p>{optionsError}</p>
+              <button className="secondary" type="button" onClick={() => void loadOptions()}>
+                Reintentar
+              </button>
+            </div>
+          )}
           {conflict && (
             <p className="message" role="alert">
               Estas clases se superponen: {conflict[0].name} y {conflict[1].name}.
