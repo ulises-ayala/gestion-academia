@@ -79,7 +79,80 @@ function normalizeTeacher(value) {
  * Solo ponemos aquí equivalencias que ya conocemos.
  * Los casos dudosos deben quedar para revisión manual.
  * ========================================================= */
+const PRICE_DECISIONS = {
+  /*
+   * Julio 2026:
+   * $15.000 fue medio mes / condición especial.
+   * No representa el valor normal de la cuota.
+   */
 
+  'BACHATA Y SALSA INICIAL | JOSELO | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'COREOGRAFICO FEMENINO | SOFIA | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'ESTILO FEMENINO | SOFIA | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'INFANTIL | SOFIA | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'KIDS | SOFIA | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'MAMBO EN PAREJA | FER | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'TANGO AVANZADO INTERMEDIO | ROBERTO | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'TEENS | SOFIA | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  'ZUMBA | JOSELO | 2026-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Medio mes o condición especial',
+  },
+
+  /*
+   * Confirmado como cambio real de tarifa.
+   */
+  'BACHATA Y SALSA INICIAL | JOSELO | 2026-08': {
+    decision: 'CONFIRMED',
+    amount: '40000.00',
+    reason: 'Desde agosto de 2026 la cuota normal pasó a $40.000',
+  },
+
+  /*
+   * Condiciones especiales individuales.
+   */
+  'COREOGRAFICO BACHATA EN PAREJA | KEVIN | 2025-07': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Condición especial definida por el profesor',
+  },
+
+  'SALSA INICIAL SIESTA | JAVI | 2025-09': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Condición especial definida por el profesor',
+  },
+};
 const CLASS_NAME_MAP = {
   'BACHATA Y SALSA INICIAL':
     'Bachata y Salsa Inicial',
@@ -171,6 +244,9 @@ const CLASS_ACTIVITY_TEACHER_MAP = {
 
   'BACHATA INICIAL SIESTA | JAVI':
     'Bachata y Salsa Inicial',
+    
+    'INFANTIL | SANTY':
+    'S.C Infantil (6-11 años)',
 };
 
 /* =========================================================
@@ -314,6 +390,68 @@ function similarity(a, b) {
     ]).size;
 
   return intersection / union;
+}
+
+function tariffDecisionKey(
+  activity,
+  teacher,
+  validFrom,
+) {
+  if (!validFrom) {
+    return null;
+  }
+
+  const period =
+    validFrom.slice(0, 7);
+
+  return [
+    normalizeText(activity),
+    normalizeTeacher(teacher),
+    period,
+  ].join(' | ');
+}
+
+function resolvePriceDecision({
+  activity,
+  teacher,
+  validFrom,
+  amount,
+}) {
+  if (!validFrom) {
+    return null;
+  }
+
+  const period =
+    validFrom.slice(0, 7);
+
+  /*
+   * REGLA GENERAL CONFIRMADA POR LA ACADEMIA:
+   * desde agosto 2026 la cuota normal pasa a $40.000.
+   */
+  if (period === '2026-08') {
+    return {
+      decision: 'CONFIRMED',
+      amount: '40000.00',
+      reason:
+        'La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.',
+    };
+  }
+
+  /*
+   * Para el resto, buscamos las decisiones específicas.
+   */
+  const decisionKey =
+    tariffDecisionKey(
+      activity,
+      teacher,
+      validFrom,
+    );
+
+  return (
+    PRICE_DECISIONS[
+      decisionKey
+    ] ?? null
+  );
 }
 
 function suggestClasses(
@@ -744,6 +882,29 @@ async function main() {
         'Profesor normalizado'
       ];
 
+      const validFrom =
+        excelDateToIso(
+          row['Vigencia desde'],
+        );
+
+      const validTo =
+        excelDateToIso(
+          row['Vigencia hasta'],
+        );
+
+    const candidateAmount =
+      decimal(
+        row['Importe candidato'],
+      );
+
+    const priceDecision =
+      resolvePriceDecision({
+        activity,
+        teacher,
+        validFrom,
+        amount: candidateAmount,
+      });
+
     const classMatch =
       resolveClass({
         activity,
@@ -790,22 +951,31 @@ async function main() {
       classMatchConfidence:
         classMatch.confidence,
 
-      validFrom:
-        excelDateToIso(
-          row['Vigencia desde'],
-        ),
+validFrom,
 
-      validTo:
-        excelDateToIso(
-          row['Vigencia hasta'],
-        ),
+validTo,
 
-      amount:
-        decimal(
-          row[
-            'Importe candidato'
-          ],
-        ),
+amount:
+  priceDecision?.amount ??
+  candidateAmount,
+
+priceDecision:
+  priceDecision?.decision ??
+  null,
+
+priceDecisionReason:
+  priceDecision?.reason ??
+  null,
+
+result:
+  priceDecision?.decision ===
+  'NOT_A_TARIFF'
+    ? 'NOT_A_TARIFF'
+    : priceDecision?.decision ===
+        'CONFIRMED' &&
+      academicClass
+      ? 'OK'
+      : result,
 
       months:
         Number(
@@ -815,15 +985,10 @@ async function main() {
         ),
 
       sourceConfidence,
-
       sourceReview,
-
       sourceRows:
         row['Filas origen'] ??
         null,
-
-      result,
-
       suggestions:
         classMatch.suggestions,
     });
@@ -879,7 +1044,11 @@ async function main() {
       0
     }`,
   );
-
+  console.log(
+    `🚫 No son tarifa: ${
+      counts.NOT_A_TARIFF ?? 0
+    }`,
+  );
   /* =======================================================
    * JSON
    * ======================================================= */

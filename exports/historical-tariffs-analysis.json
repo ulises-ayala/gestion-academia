@@ -1,13 +1,11 @@
 {
-  "generatedAt": "2026-09-17T01:29:26.803Z",
+  "generatedAt": "2026-09-17T22:39:13.661Z",
   "source": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\scripts\\data\\Historial_Carmesi_2025_2026_NORMALIZADO.xlsx",
   "classesSource": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\classes-current.json",
   "summary": {
     "total": 97,
-    "OK": 72,
-    "REVIEW_CLASS": 13,
-    "REVIEW_PRICE": 11,
-    "REVIEW_CLASS_AND_PRICE": 1
+    "OK": 86,
+    "NOT_A_TARIFF": 11
   },
   "items": [
     {
@@ -21,11 +19,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "18",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -39,11 +39,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-07-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 5,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "34, 49, 62, 75, 88",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -57,49 +59,34 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "179",
-      "result": "OK",
       "suggestions": []
     },
     {
       "activity": "Bachata en Pareja",
       "teacher": "MAX",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "d06eb88b-a6e3-4cda-8bf9-5278455b3b7e",
+      "className": "Bachata en Pareja",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2026-02-01",
       "validTo": "2026-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "120",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
-          "name": "Mambo en parejas",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-          "name": "Bachata y Salsa Inicial",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "2d17175b-22b0-4565-9342-1e93ad221855",
-          "name": "Coreografico E.Masc-Bachata/Urban",
-          "status": "INACTIVE",
-          "score": 0.14285714285714285
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Bachata Inicial / Siesta",
@@ -112,43 +99,34 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-10-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "95, 103",
-      "result": "OK",
       "suggestions": []
     },
     {
       "activity": "Bachata Pasos Sueltos",
       "teacher": "MAX",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "8da07d2d-b252-4618-9370-34f8ca23e93e",
+      "className": "Bachata Pasos Sueltos",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2026-02-01",
       "validTo": "2026-02-28",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "119",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-          "name": "Bachata y Salsa Inicial",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "2d17175b-22b0-4565-9342-1e93ad221855",
-          "name": "Coreografico E.Masc-Bachata/Urban",
-          "status": "INACTIVE",
-          "score": 0.14285714285714285
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Bachata y Salsa Inicial",
@@ -161,11 +139,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "2",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -179,11 +159,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-05-31",
       "amount": "10000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "19, 35, 50",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -197,11 +179,13 @@
       "validFrom": "2025-06-01",
       "validTo": "2025-07-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "63, 76",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -215,11 +199,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "138, 149",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -233,11 +219,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "160",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -251,141 +239,94 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_PRECIO",
       "sourceRows": "169",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
       "activity": "Belly Dance Alternativo",
       "teacher": "VIRGINIA",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "dbd5af21-ec55-4380-8ca1-d643a10d2003",
+      "className": "Belly Dance Alternativo",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-02-01",
       "validTo": "2025-03-31",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "3, 20",
-      "result": "REVIEW_CLASS",
       "suggestions": []
     },
     {
       "activity": "Coreográfico Bachata en Pareja",
       "teacher": "KEVIN",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+      "className": "Coreográfico Bachata en Pareja",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-05-01",
       "validTo": "2025-05-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "51",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "2d17175b-22b0-4565-9342-1e93ad221855",
-          "name": "Coreografico E.Masc-Bachata/Urban",
-          "status": "INACTIVE",
-          "score": 0.2857142857142857
-        },
-        {
-          "id": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
-          "name": "Mambo en parejas",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-          "name": "Bachata y Salsa Inicial",
-          "status": "ACTIVE",
-          "score": 0.14285714285714285
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Coreográfico Bachata en Pareja",
       "teacher": "KEVIN",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+      "className": "Coreográfico Bachata en Pareja",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-06-01",
       "validTo": "2025-06-30",
       "amount": "10000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "64",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "2d17175b-22b0-4565-9342-1e93ad221855",
-          "name": "Coreografico E.Masc-Bachata/Urban",
-          "status": "INACTIVE",
-          "score": 0.2857142857142857
-        },
-        {
-          "id": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
-          "name": "Mambo en parejas",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-          "name": "Bachata y Salsa Inicial",
-          "status": "ACTIVE",
-          "score": 0.14285714285714285
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Coreográfico Bachata en Pareja",
       "teacher": "KEVIN",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+      "className": "Coreográfico Bachata en Pareja",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-07-01",
       "validTo": "2025-07-31",
       "amount": "5000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Condición especial definida por el profesor",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_PRECIO",
       "sourceRows": "77",
-      "result": "REVIEW_CLASS_AND_PRICE",
-      "suggestions": [
-        {
-          "id": "2d17175b-22b0-4565-9342-1e93ad221855",
-          "name": "Coreografico E.Masc-Bachata/Urban",
-          "status": "INACTIVE",
-          "score": 0.2857142857142857
-        },
-        {
-          "id": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
-          "name": "Mambo en parejas",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-          "name": "Bachata y Salsa Inicial",
-          "status": "ACTIVE",
-          "score": 0.14285714285714285
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Coreográfico Femenino",
@@ -398,11 +339,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-03-31",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "4, 21",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -416,11 +359,13 @@
       "validFrom": "2025-04-01",
       "validTo": "2025-08-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 5,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "36, 52, 65, 78, 89",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -434,11 +379,13 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-09-30",
       "amount": "21000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "96",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -452,11 +399,13 @@
       "validFrom": "2026-02-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "121, 128",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -470,11 +419,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "139, 150",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -488,11 +439,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "161",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -506,11 +459,13 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "170",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -524,11 +479,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "7500.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "5",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -542,11 +499,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-08-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 6,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "22, 37, 53, 66, 79, 90",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -560,11 +519,13 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-10-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "97, 104",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -578,11 +539,13 @@
       "validFrom": "2025-11-01",
       "validTo": "2025-11-30",
       "amount": "25000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "110",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -596,11 +559,13 @@
       "validFrom": "2026-02-01",
       "validTo": "2026-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "122",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -614,11 +579,13 @@
       "validFrom": "2026-03-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "129",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -632,11 +599,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "140, 151",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -650,11 +619,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "162",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -668,11 +639,13 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "171",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -686,11 +659,13 @@
       "validFrom": "2026-03-01",
       "validTo": "2026-03-31",
       "amount": "25000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "130",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -704,104 +679,74 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "25000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "141, 152",
-      "result": "OK",
       "suggestions": []
     },
     {
       "activity": "Fitdance + Axé",
       "teacher": "JOSELO",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "db1e0e5e-c5e0-429e-aec3-4f28d406dad9",
+      "className": "Fitdance + Axé",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "7500.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "6",
-      "result": "REVIEW_CLASS",
       "suggestions": []
     },
     {
       "activity": "Infantil",
       "teacher": "SANTY",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "classStatus": "ACTIVE",
+      "classMatchType": "MANUAL_ACTIVITY_TEACHER",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "7",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
-          "name": "Árabe infantil",
-          "status": "ACTIVE",
-          "score": 0.5
-        },
-        {
-          "id": "bcea570e-e3dd-499f-8a4b-88f079773871",
-          "name": "Infantil (6 a 7 años)",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
-          "name": "S.C Infantil (6-11 años)",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Infantil",
       "teacher": "SANTY",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "classStatus": "ACTIVE",
+      "classMatchType": "MANUAL_ACTIVITY_TEACHER",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-03-01",
       "validTo": "2025-04-30",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "23, 38",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
-          "name": "Árabe infantil",
-          "status": "ACTIVE",
-          "score": 0.5
-        },
-        {
-          "id": "bcea570e-e3dd-499f-8a4b-88f079773871",
-          "name": "Infantil (6 a 7 años)",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
-          "name": "S.C Infantil (6-11 años)",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Infantil",
@@ -814,11 +759,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "8",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -832,11 +779,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-08-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 6,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "24, 39, 54, 67, 80, 91",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -850,11 +799,13 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-11-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "98, 105, 111",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -868,11 +819,13 @@
       "validFrom": "2026-01-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "115, 123, 131",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -886,11 +839,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "142, 153",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -904,11 +859,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "163",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -922,11 +879,13 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "172",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -940,11 +899,13 @@
       "validFrom": "2025-05-01",
       "validTo": "2025-07-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "55, 68, 81",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -958,11 +919,13 @@
       "validFrom": "2026-01-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "116, 124, 132",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -976,11 +939,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "143, 154",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -994,11 +959,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "164",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -1012,11 +979,13 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "173",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1030,11 +999,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "7500.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "9",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1048,160 +1019,94 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-07-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 5,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "25, 40, 56, 69, 82",
-      "result": "OK",
       "suggestions": []
     },
     {
       "activity": "Ladys Tango - Gabriela P.",
       "teacher": "GABI",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "7500.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "10",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
-          "name": "Ladys Kizz",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "cc392129-75e3-4205-b7fc-fafceb55b996",
-          "name": "Tango (Inter/Avanz)",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
-          "name": "Inst.Sup.Coreografico -Tango /18 Meses",
-          "status": "ACTIVE",
-          "score": 0.1111111111111111
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Ladys Tango - Gabriela P.",
       "teacher": "GABI",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-03-01",
       "validTo": "2025-04-30",
       "amount": "10000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "26, 41",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
-          "name": "Ladys Kizz",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "cc392129-75e3-4205-b7fc-fafceb55b996",
-          "name": "Tango (Inter/Avanz)",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
-          "name": "Inst.Sup.Coreografico -Tango /18 Meses",
-          "status": "ACTIVE",
-          "score": 0.1111111111111111
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Ladys Tango - Gabriela P.",
       "teacher": "GABI",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-05-01",
       "validTo": "2025-06-30",
       "amount": "11000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "57, 70",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
-          "name": "Ladys Kizz",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "cc392129-75e3-4205-b7fc-fafceb55b996",
-          "name": "Tango (Inter/Avanz)",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
-          "name": "Inst.Sup.Coreografico -Tango /18 Meses",
-          "status": "ACTIVE",
-          "score": 0.1111111111111111
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Ladys Tango - Gabriela P.",
       "teacher": "GABI",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2025-07-01",
       "validTo": "2025-07-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "83",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
-          "name": "Ladys Kizz",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "cc392129-75e3-4205-b7fc-fafceb55b996",
-          "name": "Tango (Inter/Avanz)",
-          "status": "ACTIVE",
-          "score": 0.16666666666666666
-        },
-        {
-          "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
-          "name": "Inst.Sup.Coreografico -Tango /18 Meses",
-          "status": "ACTIVE",
-          "score": 0.1111111111111111
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Ladys Training",
@@ -1214,11 +1119,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "11",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1232,11 +1139,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-08-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 6,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "27, 42, 58, 71, 84, 92",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1250,11 +1159,13 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-11-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "99, 106, 112",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1268,11 +1179,13 @@
       "validFrom": "2026-01-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "117, 125, 133",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1286,11 +1199,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "144, 155",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1304,11 +1219,13 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "174",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1322,11 +1239,13 @@
       "validFrom": "2026-02-01",
       "validTo": "2026-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "126",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1340,11 +1259,13 @@
       "validFrom": "2026-03-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "134",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1358,11 +1279,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "145, 156",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1376,11 +1299,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "165",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -1394,11 +1319,13 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "175",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1412,11 +1339,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "12",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1430,11 +1359,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-07-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 5,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "28, 43, 59, 72, 85",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1448,11 +1379,13 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-09-30",
       "amount": "7500.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Condición especial definida por el profesor",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_PRECIO",
       "sourceRows": "100",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -1466,11 +1399,13 @@
       "validFrom": "2025-10-01",
       "validTo": "2025-10-31",
       "amount": "25000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "107",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1484,11 +1419,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "13",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1502,11 +1439,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-04-30",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "29, 44",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1520,11 +1459,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "14",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1538,11 +1479,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-04-30",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "30, 45",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1556,11 +1499,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "15",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1574,11 +1519,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-04-30",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "31, 46",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1592,11 +1539,13 @@
       "validFrom": "2026-03-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "135",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1610,11 +1559,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "146, 157",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1628,11 +1579,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "166",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -1646,49 +1599,34 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "176",
-      "result": "OK",
       "suggestions": []
     },
     {
       "activity": "Tango Inicial",
       "teacher": "GABI",
-      "classId": null,
-      "className": null,
-      "classStatus": null,
-      "classMatchType": "NO_MATCH",
-      "classMatchConfidence": "LOW",
+      "classId": "23888530-c53d-4c40-94ee-982518e5d2f6",
+      "className": "Tango Inicial",
+      "classStatus": "INACTIVE",
+      "classMatchType": "EXACT_NAME",
+      "classMatchConfidence": "HIGH",
       "validFrom": "2026-03-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "136",
-      "result": "REVIEW_CLASS",
-      "suggestions": [
-        {
-          "id": "cc392129-75e3-4205-b7fc-fafceb55b996",
-          "name": "Tango (Inter/Avanz)",
-          "status": "ACTIVE",
-          "score": 0.25
-        },
-        {
-          "id": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-          "name": "Bachata y Salsa Inicial",
-          "status": "ACTIVE",
-          "score": 0.2
-        },
-        {
-          "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
-          "name": "Inst.Sup.Coreografico -Tango /18 Meses",
-          "status": "ACTIVE",
-          "score": 0.14285714285714285
-        }
-      ]
+      "suggestions": []
     },
     {
       "activity": "Tango",
@@ -1701,11 +1639,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "16",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1719,11 +1659,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-08-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 6,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "32, 47, 60, 73, 86, 93",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1737,11 +1679,13 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-11-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 3,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "101, 108, 113",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1755,11 +1699,13 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "17",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1773,11 +1719,13 @@
       "validFrom": "2025-03-01",
       "validTo": "2025-08-31",
       "amount": "20000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 6,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "33, 48, 61, 74, 87, 94",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1791,11 +1739,13 @@
       "validFrom": "2025-09-01",
       "validTo": "2025-10-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "102, 109",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1809,11 +1759,13 @@
       "validFrom": "2025-11-01",
       "validTo": "2025-11-30",
       "amount": "25000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "114",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1827,11 +1779,13 @@
       "validFrom": "2026-01-01",
       "validTo": "2026-01-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "118",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1845,11 +1799,13 @@
       "validFrom": "2026-02-01",
       "validTo": "2026-02-28",
       "amount": "15000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "127",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1863,11 +1819,13 @@
       "validFrom": "2026-03-01",
       "validTo": "2026-03-31",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "137",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1881,11 +1839,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "147, 158",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1899,11 +1859,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "167",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -1917,11 +1879,13 @@
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
       "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "ALTA",
       "sourceReview": "SIN_ALERTAS",
       "sourceRows": "177",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1935,11 +1899,13 @@
       "validFrom": "2026-05-01",
       "validTo": "2026-06-30",
       "amount": "30000.00",
+      "priceDecision": null,
+      "priceDecisionReason": null,
+      "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "148, 159",
-      "result": "OK",
       "suggestions": []
     },
     {
@@ -1953,11 +1919,13 @@
       "validFrom": "2026-07-01",
       "validTo": "2026-07-31",
       "amount": "15000.00",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "Medio mes o condición especial",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "BAJA",
       "sourceReview": "REVISAR_JULIO",
       "sourceRows": "168",
-      "result": "REVIEW_PRICE",
       "suggestions": []
     },
     {
@@ -1970,12 +1938,14 @@
       "classMatchConfidence": "HIGH",
       "validFrom": "2026-08-01",
       "validTo": "2026-08-31",
-      "amount": "35000.00",
+      "amount": "40000.00",
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.",
+      "result": "OK",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
       "sourceRows": "178",
-      "result": "OK",
       "suggestions": []
     }
   ]
