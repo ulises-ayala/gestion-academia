@@ -32,6 +32,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
       links: [
         { href: '/payments', label: 'Pagos', permission: 'payments:read' },
         { href: '/cash', label: 'Caja', permission: 'cash:manage' },
+        { href: '/reports', label: 'Reportes', permission: 'reports:operational' },
       ],
     },
     {
