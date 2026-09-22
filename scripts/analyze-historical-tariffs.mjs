@@ -152,6 +152,37 @@ const PRICE_DECISIONS = {
     decision: 'NOT_A_TARIFF',
     reason: 'Condición especial definida por el profesor',
   },
+
+  'BACHATA Y SALSA INICIAL | JOSELO | 2025-10': {
+  decision: 'NOT_A_TARIFF',
+  reason: 'La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial.',
+},
+
+'ESTILO FEMENINO | SOFIA | 2025-09': {
+  decision: 'NOT_A_TARIFF',
+  reason: 'Importe particular o condición especial; no representa la tarifa general.',
+},
+
+'COREOGRAFICO FEMENINO | SOFIA | 2025-09': {
+  decision: 'NOT_A_TARIFF',
+  reason: 'Importe particular o condición especial; no representa la tarifa general.',
+},
+
+'ESTILO FEMENINO | SOFIA | 2026-02': {
+  decision: 'NOT_A_TARIFF',
+  reason: 'La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial.',
+},
+
+'COREOGRAFICO FEMENINO | SOFIA | 2026-02': {
+  decision: 'NOT_A_TARIFF',
+  reason: 'La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial.',
+},
+
+'SALSA INICIAL SIESTA | JAVI | 2025-10': {
+  decision: 'NOT_A_TARIFF',
+  reason: 'La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial.',
+},
+
 };
 const CLASS_NAME_MAP = {
   'BACHATA Y SALSA INICIAL':

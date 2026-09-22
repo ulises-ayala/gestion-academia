@@ -30,6 +30,183 @@ const OUTPUT_XLSX = path.join(
   'historical-tariffs-ready.xlsx',
 );
 
+const GAP_DECISIONS = {
+
+  'ARABE INFANTIL|2026-05': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'La actividad continuó vigente y el cambio a $40.000 ocurrió recién en agosto de 2026.',
+  },
+
+  'ARABE INFANTIL|2026-06': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'La actividad continuó vigente y el cambio a $40.000 ocurrió recién en agosto de 2026.',
+  },
+
+  'ARABE INFANTIL|2026-07': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'La cuota normal era $30.000; los $15.000 observados correspondían a medio mes.',
+  },
+
+  'ALL|2025-12': {
+    decision: 'NO_ACTIVITY',
+    reason: 'La academia confirmó que no hubo actividad en diciembre de 2025.',
+  },
+
+  'ALL|2026-04': {
+    decision: 'CARRY_FORWARD',
+    amount: '30000.00',
+    reason: 'La academia confirmó actividad en abril de 2026 y cuota general de $30.000.',
+  },
+
+  'ARABE INFANTIL|2025-08': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '20000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'ARABE INFANTIL|2025-09': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'ARABE INFANTIL|2025-10': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'ARABE INFANTIL|2025-11': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'KIDS 4 5 ANOS|2025-08': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '20000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'KIDS 4 5 ANOS|2025-09': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'KIDS 4 5 ANOS|2025-10': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'KIDS 4 5 ANOS|2025-11': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2025-08': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '20000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2025-09': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2025-10': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2025-11': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Tarifa confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2026-01': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Cuota general confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2026-02': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Cuota general confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2026-03': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Cuota general confirmada por la academia.',
+  },
+
+  'BACHATA Y SALSA INICIAL|2026-04': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Cuota general confirmada por la academia.',
+  },
+
+  'ARABE INFANTIL|2026-01': {
+  decision: 'CONFIRMED_AMOUNT',
+  amount: '30000.00',
+  reason: 'La academia confirmó que retomó en enero de 2026 con cuota general de $30.000.',
+},
+
+  'ARABE INFANTIL|2026-02': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Cuota general confirmada por la academia.',
+  },
+
+  'ARABE INFANTIL|2026-03': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Cuota general confirmada por la academia.',
+  },
+
+  'ARABE INFANTIL|2026-04': {
+    decision: 'CONFIRMED_AMOUNT',
+    amount: '30000.00',
+    reason: 'Cuota general confirmada por la academia.',
+  },
+
+};
+
+function normalizeKey(value) {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function gapDecisionKey(className, period) {
+  return `${normalizeKey(className)}|${period}`;
+}
+
+function resolveGapDecision(className, period) {
+  return (
+    GAP_DECISIONS[
+      gapDecisionKey(className, period)
+    ] ??
+    GAP_DECISIONS[`ALL|${period}`] ??
+    null
+  );
+}
+
 /* =========================================================
  * HELPERS
  * ========================================================= */
@@ -39,9 +216,35 @@ function parseIsoDate(value) {
     return null;
   }
 
+  /*
+   * Si ya recibimos un Date,
+   * simplemente lo copiamos.
+   */
+  if (value instanceof Date) {
+    if (
+      Number.isNaN(
+        value.getTime(),
+      )
+    ) {
+      return null;
+    }
+
+    return new Date(
+      value.getTime(),
+    );
+  }
+
+  /*
+   * Si recibimos YYYY-MM-DD,
+   * lo convertimos en UTC.
+   */
+  const stringValue =
+    String(value)
+      .trim();
+
   const date =
     new Date(
-      `${value}T00:00:00.000Z`,
+      `${stringValue}T00:00:00.000Z`,
     );
 
   if (
@@ -56,6 +259,17 @@ function parseIsoDate(value) {
 }
 
 function isoDate(date) {
+  if (
+    !(date instanceof Date) ||
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
+    throw new Error(
+      `isoDate recibió una fecha inválida: ${date}`,
+    );
+  }
+
   return date
     .toISOString()
     .slice(0, 10);
@@ -497,97 +711,95 @@ function consolidateTimeline(
           );
       }
 
-      const bridgeable =
-        missingMonths.every(
-          (month) => {
-            const key =
-              `${current.classId}|` +
-              `${isoDate(month).slice(0, 7)}`;
-
-            return specialPeriods.has(
-              key,
-            );
-          },
-        );
-
-      /*
-       * Si hay meses especiales y la tarifa
-       * siguiente cambia, extendemos la tarifa
-       * anterior hasta el mes anterior al cambio.
-       *
-       * Ejemplo:
-       * Junio $30k
-       * Julio $15k especial
-       * Agosto $40k
-       *
-       * => tarifa $30k hasta julio
-       */
-      if (
-        bridgeable
-      ) {
-        const bridgeEnd =
-          previousMonthEnd(
-            nextStart,
-          );
-
-        current.validTo =
-          isoDate(
-            bridgeEnd,
-          );
-        if (sameAmount) {
-            current.validTo =
-                next.validTo;
-
-            current.sourcePeriods.push({
-                validFrom:
-                next.validFrom,
-
-                validTo:
-                next.validTo,
-
-                amount:
-                next.amount,
-
-                sourceRows:
-                next.sourceRows,
-            });
-
-            current.bridgedSpecialPeriods.push(
-                ...missingMonths.map(
-                (month) => {
-                    const period =
-                    isoDate(month)
-                        .slice(0, 7);
-
-                    const special =
-                    specialPeriods.get(
-                        `${current.classId}|${period}`,
-                    );
-
-                    return {
-                    period,
-
-                    observedAmount:
-                        special?.amount ??
-                        null,
-
-                    reason:
-                        special?.priceDecisionReason ??
-                        'Importe especial confirmado como no tarifa',
-                    };
-                },
-                ),
-            );
-
-            continue;
-            }
-        current.bridgedSpecialPeriods.push(
-          ...missingMonths.map(
+        const gapDecisions =
+          missingMonths.map(
             (month) => {
               const period =
                 isoDate(month)
                   .slice(0, 7);
 
+              return {
+                period,
+                month,
+                decision:
+                  resolveGapDecision(
+                    current.className,
+                    period,
+                  ),
+              };
+            },
+          );
+
+          const specialGapPeriods =
+            gapDecisions.filter(
+              ({ period, decision }) =>
+                !decision &&
+                specialPeriods.has(
+                  `${current.classId}|${period}`,
+                ),
+            );
+
+
+
+        const unresolved =
+          gapDecisions.filter(
+             ({ period, decision }) =>
+              !decision &&
+               !specialPeriods.has(
+                 `${current.classId}|${period}`,
+              ),
+            );
+
+        if (
+          unresolved.length > 0
+        ) {
+          alerts.push({
+            type:
+              'UNEXPLAINED_GAP',
+
+            classId:
+              current.classId,
+
+            className:
+              current.className,
+
+            previousValidTo:
+              current.validTo,
+
+            nextValidFrom:
+              next.validFrom,
+
+            missingMonths:
+              unresolved.map(
+                ({ period }) =>
+                  period,
+              ),
+          });
+        }
+
+        const carryForward =
+        gapDecisions.filter(
+          ({ decision }) =>
+            decision?.decision ===
+            'CARRY_FORWARD',
+        );
+
+        if (specialGapPeriods.length > 0) {
+        const lastSpecial =
+          specialGapPeriods[
+            specialGapPeriods.length - 1
+          ];
+
+        current.validTo =
+          isoDate(
+            lastDayOfMonth(
+              lastSpecial.month,
+            ),
+          );
+
+        current.bridgedSpecialPeriods.push(
+          ...specialGapPeriods.map(
+            ({ period }) => {
               const special =
                 specialPeriods.get(
                   `${current.classId}|${period}`,
@@ -595,41 +807,73 @@ function consolidateTimeline(
 
               return {
                 period,
-
                 observedAmount:
-                  special?.amount ??
-                  null,
-
+                  special?.amount ?? null,
                 reason:
-                  special
-                    ?.priceDecisionReason ??
+                  special?.priceDecisionReason ??
                   'Importe especial confirmado como no tarifa',
               };
             },
           ),
         );
-      } else {
-        alerts.push({
-          type:
-            'UNEXPLAINED_GAP',
+      }
+      if (
+        carryForward.length > 0
+      ) {
+        const last =
+          carryForward[
+            carryForward.length - 1
+          ];
 
+        current.validTo =
+          isoDate(
+            lastDayOfMonth(
+              last.month,
+            ),
+          );
+      }
+      for (
+        const gap
+        of gapDecisions
+      ) {
+        if (
+          gap.decision?.decision !==
+          'CONFIRMED_AMOUNT'
+        ) {
+          continue;
+        }
+
+        tariffs.push({
           classId:
             current.classId,
 
           className:
             current.className,
 
-          previousValidTo:
-            current.validTo,
+          amount:
+            gap.decision.amount,
 
-          nextValidFrom:
-            next.validFrom,
+          validFrom:
+            `${gap.period}-01`,
 
-          missingMonths:
-            missingMonths.map(
-              (month) =>
-                isoDate(month)
-                  .slice(0, 7),
+          validTo:
+            isoDate(
+              lastDayOfMonth(
+                gap.month,
+              ),
+            ),
+
+          sourcePeriods:
+            [],
+
+          bridgedSpecialPeriods:
+            [],
+
+          name:
+            tariffName(
+              current.className,
+              `${gap.period}-01`,
+              gap.decision.amount,
             ),
         });
       }
@@ -705,6 +949,136 @@ function consolidateTimeline(
     alerts,
   };
 }
+
+function consolidateFinalTariffs(tariffs) {
+  const sorted = [...tariffs].sort(
+    (a, b) =>
+      a.classId.localeCompare(b.classId) ||
+      a.validFrom.localeCompare(b.validFrom) ||
+      a.validTo.localeCompare(b.validTo),
+  );
+
+  const result = [];
+  const overlaps = [];
+
+  for (const tariff of sorted) {
+    const normalized = {
+      ...tariff,
+      amount: normalizeAmount(tariff.amount),
+    };
+
+    const previous =
+      result.length > 0
+        ? result[result.length - 1]
+        : null;
+
+    if (
+      !previous ||
+      previous.classId !== normalized.classId
+    ) {
+      result.push(normalized);
+      continue;
+    }
+
+    const previousEnd =
+      parseIsoDate(previous.validTo);
+
+    const currentStart =
+      parseIsoDate(normalized.validFrom);
+
+    const previousNextMonth =
+      nextMonth(
+        firstDayOfMonth(previous.validTo),
+      );
+
+    /*
+     * SOLAPAMIENTO:
+     * dos tarifas de la misma clase cubren
+     * al menos parte del mismo período.
+     */
+    if (currentStart <= previousEnd) {
+      /*
+       * Si importe es igual, podemos fusionarlas.
+       */
+      if (previous.amount === normalized.amount) {
+        if (
+          parseIsoDate(normalized.validTo) >
+          previousEnd
+        ) {
+          previous.validTo =
+            normalized.validTo;
+        }
+
+        previous.sourcePeriods.push(
+          ...(normalized.sourcePeriods ?? []),
+        );
+
+        previous.bridgedSpecialPeriods.push(
+          ...(normalized.bridgedSpecialPeriods ?? []),
+        );
+
+        continue;
+      }
+
+      /*
+       * Si importes son distintos, NO decidimos automáticamente.
+       */
+      overlaps.push({
+        type: 'OVERLAPPING_DIFFERENT_AMOUNTS',
+        classId: normalized.classId,
+        className: normalized.className,
+
+        first: {
+          amount: previous.amount,
+          validFrom: previous.validFrom,
+          validTo: previous.validTo,
+        },
+
+        second: {
+          amount: normalized.amount,
+          validFrom: normalized.validFrom,
+          validTo: normalized.validTo,
+        },
+      });
+
+      result.push(normalized);
+      continue;
+    }
+
+    /*
+     * Contiguos y mismo importe:
+     * fusionar.
+     */
+    if (
+      previous.amount === normalized.amount &&
+      previousNextMonth.getTime() ===
+        firstDayOfMonth(
+          normalized.validFrom,
+        ).getTime()
+    ) {
+      previous.validTo =
+        normalized.validTo;
+
+      previous.sourcePeriods.push(
+        ...(normalized.sourcePeriods ?? []),
+      );
+
+      previous.bridgedSpecialPeriods.push(
+        ...(normalized.bridgedSpecialPeriods ?? []),
+      );
+
+      continue;
+    }
+
+    result.push(normalized);
+  }
+
+  return {
+    tariffs: result,
+    overlaps,
+  };
+}
+
 
 /* =========================================================
  * MAIN
@@ -865,6 +1239,17 @@ async function main() {
     );
   }
 
+  const postProcessed =
+    consolidateFinalTariffs(
+      finalTariffs,
+    );
+
+  finalTariffs.length = 0;
+
+  finalTariffs.push(
+    ...postProcessed.tariffs,
+  );
+
   finalTariffs.sort(
     (a, b) =>
       a.className.localeCompare(
@@ -914,9 +1299,16 @@ async function main() {
       )
     }`,
   );
+  
 
   console.log(
     `⚠️ Huecos sin explicar: ${alerts.length}`,
+  );
+
+  console.log(
+    `💥 Solapamientos conflictivos: ${
+      postProcessed.overlaps.length
+    }`,
   );
 
   /* =======================================================
@@ -966,6 +1358,9 @@ async function main() {
 
       unexplainedGaps:
         alerts.length,
+
+      conflictingOverlaps:
+        postProcessed.overlaps.length,
     },
 
     tariffs:
@@ -1002,6 +1397,9 @@ async function main() {
       ),
 
     alerts,
+
+    overlaps:
+      postProcessed.overlaps,
   };
 
   await fs.writeFile(
@@ -1126,6 +1524,40 @@ async function main() {
     'Alertas',
   );
 
+    utils.book_append_sheet(
+      workbook,
+      utils.json_to_sheet(
+        postProcessed.overlaps.map(
+          (overlap) => ({
+            Tipo:
+              overlap.type,
+
+            Clase:
+              overlap.className,
+
+            'Importe 1':
+              overlap.first.amount,
+
+            'Desde 1':
+              overlap.first.validFrom,
+
+            'Hasta 1':
+              overlap.first.validTo,
+
+            'Importe 2':
+              overlap.second.amount,
+
+            'Desde 2':
+              overlap.second.validFrom,
+
+            'Hasta 2':
+              overlap.second.validTo,
+          }),
+        ),
+      ),
+      'Solapamientos',
+    );
+
   utils.book_append_sheet(
     workbook,
     utils.json_to_sheet([
@@ -1185,6 +1617,14 @@ async function main() {
         Cantidad:
           alerts.length,
       },
+
+      {
+        Métrica:
+          'Solapamientos conflictivos',
+
+        Cantidad:
+          postProcessed.overlaps.length,
+      },
     ]),
     'Resumen',
   );
@@ -1204,21 +1644,22 @@ async function main() {
     `📊 Excel: ${OUTPUT_XLSX}`,
   );
 
-  if (
-    alerts.length > 0
-  ) {
-    console.log('');
+    if (
+      alerts.length > 0 ||
+      postProcessed.overlaps.length > 0
+    ) {
+      console.log('');
 
-    console.log(
-      '⚠️ Hay huecos sin explicar. No recomiendo importar todavía.',
-    );
-  } else {
-    console.log('');
+      console.log(
+        '⚠️ Quedan huecos o solapamientos sin resolver. No recomiendo importar todavía.',
+      );
+    } else {
+      console.log('');
 
-    console.log(
-      '✅ Dataset final listo para revisión.',
-    );
-  }
+      console.log(
+        '✅ Dataset final listo para revisión.',
+      );
+    }
 }
 
 await main();

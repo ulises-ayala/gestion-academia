@@ -1,14 +1,15 @@
 {
-  "generatedAt": "2026-09-17T22:41:29.404Z",
+  "generatedAt": "2026-09-22T00:44:36.877Z",
   "source": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\historical-tariffs-analysis.json",
   "summary": {
     "sourceItems": 97,
-    "validSourceItems": 86,
-    "specialSourceItems": 11,
+    "validSourceItems": 81,
+    "specialSourceItems": 16,
     "classCount": 24,
-    "tariffCount": 86,
-    "bridgedSpecialPeriods": 8,
-    "unexplainedGaps": 18
+    "tariffCount": 73,
+    "bridgedSpecialPeriods": 10,
+    "unexplainedGaps": 4,
+    "conflictingOverlaps": 2
   },
   "tariffs": [
     {
@@ -33,7 +34,7 @@
       "className": "Árabe infantil",
       "amount": "20000.00",
       "validFrom": "2025-03-01",
-      "validTo": "2025-07-31",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-03-01",
@@ -44,6 +45,26 @@
       ],
       "bridgedSpecialPeriods": [],
       "name": "Histórica - Árabe infantil - 2025 - $20.000"
+    },
+    {
+      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "className": "Árabe infantil",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "sourcePeriods": [],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Árabe infantil - 2025 - $30.000"
+    },
+    {
+      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "className": "Árabe infantil",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-07-31",
+      "sourcePeriods": [],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Árabe infantil - 2026 - $30.000"
     },
     {
       "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
@@ -135,7 +156,7 @@
       "className": "Bachata y Salsa Inicial",
       "amount": "20000.00",
       "validFrom": "2025-06-01",
-      "validTo": "2025-07-31",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-06-01",
@@ -152,7 +173,7 @@
       "className": "Bachata y Salsa Inicial",
       "amount": "30000.00",
       "validFrom": "2025-09-01",
-      "validTo": "2025-10-31",
+      "validTo": "2025-11-30",
       "sourcePeriods": [
         {
           "validFrom": "2025-09-01",
@@ -167,25 +188,8 @@
     {
       "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
       "className": "Bachata y Salsa Inicial",
-      "amount": "25000.00",
-      "validFrom": "2025-10-01",
-      "validTo": "2025-10-31",
-      "sourcePeriods": [
-        {
-          "validFrom": "2025-10-01",
-          "validTo": "2025-10-31",
-          "amount": "25000.00",
-          "sourceRows": "107"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Bachata y Salsa Inicial - 2025 - $25.000"
-    },
-    {
-      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-      "className": "Bachata y Salsa Inicial",
       "amount": "30000.00",
-      "validFrom": "2026-05-01",
+      "validFrom": "2026-01-01",
       "validTo": "2026-07-31",
       "sourcePeriods": [
         {
@@ -241,23 +245,6 @@
     {
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
       "className": "Clase femenino Sofi",
-      "amount": "15000.00",
-      "validFrom": "2025-02-01",
-      "validTo": "2025-03-31",
-      "sourcePeriods": [
-        {
-          "validFrom": "2025-02-01",
-          "validTo": "2025-03-31",
-          "amount": "15000.00",
-          "sourceRows": "4, 21"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2025 - $15.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
       "amount": "7500.00",
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
@@ -275,27 +262,33 @@
     {
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
       "className": "Clase femenino Sofi",
+      "amount": "15000.00",
+      "validFrom": "2025-02-01",
+      "validTo": "2025-03-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2025-02-01",
+          "validTo": "2025-03-31",
+          "amount": "15000.00",
+          "sourceRows": "4, 21"
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Clase femenino Sofi - 2025 - $15.000"
+    },
+    {
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
       "amount": "20000.00",
       "validFrom": "2025-03-01",
-      "validTo": "2025-08-31",
+      "validTo": "2025-09-30",
       "sourcePeriods": [
         {
           "validFrom": "2025-03-01",
           "validTo": "2025-08-31",
           "amount": "20000.00",
           "sourceRows": "22, 37, 53, 66, 79, 90"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2025 - $20.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "20000.00",
-      "validFrom": "2025-04-01",
-      "validTo": "2025-08-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2025-04-01",
           "validTo": "2025-08-31",
@@ -303,49 +296,21 @@
           "sourceRows": "36, 52, 65, 78, 89"
         }
       ],
-      "bridgedSpecialPeriods": [],
+      "bridgedSpecialPeriods": [
+        {
+          "period": "2025-09",
+          "observedAmount": "30000.00",
+          "reason": "Importe particular o condición especial; no representa la tarifa general."
+        }
+      ],
       "name": "Histórica - Clase femenino Sofi - 2025 - $20.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "21000.00",
-      "validFrom": "2025-09-01",
-      "validTo": "2025-09-30",
-      "sourcePeriods": [
-        {
-          "validFrom": "2025-09-01",
-          "validTo": "2025-09-30",
-          "amount": "21000.00",
-          "sourceRows": "96"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2025 - $21.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "30000.00",
-      "validFrom": "2025-09-01",
-      "validTo": "2025-10-31",
-      "sourcePeriods": [
-        {
-          "validFrom": "2025-09-01",
-          "validTo": "2025-10-31",
-          "amount": "30000.00",
-          "sourceRows": "97, 104"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2025 - $30.000"
     },
     {
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
       "className": "Clase femenino Sofi",
       "amount": "25000.00",
       "validFrom": "2025-11-01",
-      "validTo": "2025-11-30",
+      "validTo": "2026-02-28",
       "sourcePeriods": [
         {
           "validFrom": "2025-11-01",
@@ -354,84 +319,34 @@
           "sourceRows": "110"
         }
       ],
-      "bridgedSpecialPeriods": [],
+      "bridgedSpecialPeriods": [
+        {
+          "period": "2026-02",
+          "observedAmount": "15000.00",
+          "reason": "La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial."
+        }
+      ],
       "name": "Histórica - Clase femenino Sofi - 2025 - $25.000"
     },
     {
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
       "className": "Clase femenino Sofi",
       "amount": "30000.00",
-      "validFrom": "2026-02-01",
-      "validTo": "2026-03-31",
-      "sourcePeriods": [
-        {
-          "validFrom": "2026-02-01",
-          "validTo": "2026-03-31",
-          "amount": "30000.00",
-          "sourceRows": "121, 128"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2026 - $30.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "15000.00",
-      "validFrom": "2026-02-01",
-      "validTo": "2026-02-28",
-      "sourcePeriods": [
-        {
-          "validFrom": "2026-02-01",
-          "validTo": "2026-02-28",
-          "amount": "15000.00",
-          "sourceRows": "122"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2026 - $15.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "30000.00",
       "validFrom": "2026-03-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-07-31",
       "sourcePeriods": [
         {
           "validFrom": "2026-03-01",
           "validTo": "2026-03-31",
           "amount": "30000.00",
           "sourceRows": "129"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2026 - $30.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-06-30",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
           "amount": "30000.00",
           "sourceRows": "139, 150"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2026 - $30.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-07-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -460,18 +375,7 @@
           "validTo": "2026-08-31",
           "amount": "40000.00",
           "sourceRows": "170"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2026 - $40.000"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "40000.00",
-      "validFrom": "2026-08-01",
-      "validTo": "2026-08-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-08-01",
           "validTo": "2026-08-31",
@@ -538,25 +442,14 @@
       "className": "Clase LT - A.Frank",
       "amount": "30000.00",
       "validFrom": "2026-01-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-06-30",
       "sourcePeriods": [
         {
           "validFrom": "2026-01-01",
           "validTo": "2026-03-31",
           "amount": "30000.00",
           "sourceRows": "117, 125, 133"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase LT - A.Frank - 2026 - $30.000"
-    },
-    {
-      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
-      "className": "Clase LT - A.Frank",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-06-30",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -640,25 +533,14 @@
       "className": "Grupo C. - A.Frank",
       "amount": "25000.00",
       "validFrom": "2026-03-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-06-30",
       "sourcePeriods": [
         {
           "validFrom": "2026-03-01",
           "validTo": "2026-03-31",
           "amount": "25000.00",
           "sourceRows": "130"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Grupo C. - A.Frank - 2026 - $25.000"
-    },
-    {
-      "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
-      "className": "Grupo C. - A.Frank",
-      "amount": "25000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-06-30",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -725,25 +607,14 @@
       "className": "Infantil (6 a 7 años)",
       "amount": "30000.00",
       "validFrom": "2026-01-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-07-31",
       "sourcePeriods": [
         {
           "validFrom": "2026-01-01",
           "validTo": "2026-03-31",
           "amount": "30000.00",
           "sourceRows": "115, 123, 131"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Infantil (6 a 7 años) - 2026 - $30.000"
-    },
-    {
-      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
-      "className": "Infantil (6 a 7 años)",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-07-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -782,7 +653,7 @@
       "className": "Kids 4-5 años",
       "amount": "20000.00",
       "validFrom": "2025-05-01",
-      "validTo": "2025-07-31",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-05-01",
@@ -798,26 +669,25 @@
       "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
       "className": "Kids 4-5 años",
       "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "sourcePeriods": [],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Kids 4-5 años - 2025 - $30.000"
+    },
+    {
+      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+      "className": "Kids 4-5 años",
+      "amount": "30000.00",
       "validFrom": "2026-01-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-07-31",
       "sourcePeriods": [
         {
           "validFrom": "2026-01-01",
           "validTo": "2026-03-31",
           "amount": "30000.00",
           "sourceRows": "116, 124, 132"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Kids 4-5 años - 2026 - $30.000"
-    },
-    {
-      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
-      "className": "Kids 4-5 años",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-07-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -975,25 +845,14 @@
       "className": "Mambo en parejas",
       "amount": "30000.00",
       "validFrom": "2026-03-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-07-31",
       "sourcePeriods": [
         {
           "validFrom": "2026-03-01",
           "validTo": "2026-03-31",
           "amount": "30000.00",
           "sourceRows": "134"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Mambo en parejas - 2026 - $30.000"
-    },
-    {
-      "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
-      "className": "Mambo en parejas",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-07-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -1253,25 +1112,14 @@
       "className": "Tango (Inter/Avanz)",
       "amount": "30000.00",
       "validFrom": "2026-03-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-07-31",
       "sourcePeriods": [
         {
           "validFrom": "2026-03-01",
           "validTo": "2026-03-31",
           "amount": "30000.00",
           "sourceRows": "135"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Tango (Inter/Avanz) - 2026 - $30.000"
-    },
-    {
-      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
-      "className": "Tango (Inter/Avanz)",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-07-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -1429,25 +1277,14 @@
       "className": "Teens (8 a 12 años)",
       "amount": "30000.00",
       "validFrom": "2026-03-01",
-      "validTo": "2026-03-31",
+      "validTo": "2026-07-31",
       "sourcePeriods": [
         {
           "validFrom": "2026-03-01",
           "validTo": "2026-03-31",
           "amount": "30000.00",
           "sourceRows": "137"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Teens (8 a 12 años) - 2026 - $30.000"
-    },
-    {
-      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
-      "className": "Teens (8 a 12 años)",
-      "amount": "30000.00",
-      "validFrom": "2026-05-01",
-      "validTo": "2026-07-31",
-      "sourcePeriods": [
+        },
         {
           "validFrom": "2026-05-01",
           "validTo": "2026-06-30",
@@ -1546,9 +1383,45 @@
       "className": "Clase femenino Sofi",
       "activity": "Coreográfico Femenino",
       "teacher": "SOFIA",
+      "period": "2025-09",
+      "observedAmount": "21000.00",
+      "reason": "Importe particular o condición especial; no representa la tarifa general."
+    },
+    {
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "activity": "Coreográfico Femenino",
+      "teacher": "SOFIA",
+      "period": "2026-02",
+      "observedAmount": "30000.00",
+      "reason": "La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial."
+    },
+    {
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "activity": "Coreográfico Femenino",
+      "teacher": "SOFIA",
       "period": "2026-07",
       "observedAmount": "15000.00",
       "reason": "Medio mes o condición especial"
+    },
+    {
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "activity": "Estilo Femenino",
+      "teacher": "SOFIA",
+      "period": "2025-09",
+      "observedAmount": "30000.00",
+      "reason": "Importe particular o condición especial; no representa la tarifa general."
+    },
+    {
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "activity": "Estilo Femenino",
+      "teacher": "SOFIA",
+      "period": "2026-02",
+      "observedAmount": "15000.00",
+      "reason": "La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial."
     },
     {
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
@@ -1596,6 +1469,15 @@
       "reason": "Condición especial definida por el profesor"
     },
     {
+      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "className": "Bachata y Salsa Inicial",
+      "activity": "Salsa Inicial / Siesta",
+      "teacher": "JAVI",
+      "period": "2025-10",
+      "observedAmount": "25000.00",
+      "reason": "La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial."
+    },
+    {
       "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
       "className": "Tango (Inter/Avanz)",
       "activity": "Tango Avanzado/Intermedio",
@@ -1626,48 +1508,12 @@
   "alerts": [
     {
       "type": "UNEXPLAINED_GAP",
-      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
-      "className": "Árabe infantil",
-      "previousValidTo": "2025-07-31",
-      "nextValidFrom": "2026-08-01",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "previousValidTo": "2025-08-31",
+      "nextValidFrom": "2025-11-01",
       "missingMonths": [
-        "2025-08",
-        "2025-09",
-        "2025-10",
-        "2025-11",
-        "2025-12",
-        "2026-01",
-        "2026-02",
-        "2026-03",
-        "2026-04",
-        "2026-05",
-        "2026-06",
-        "2026-07"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-      "className": "Bachata y Salsa Inicial",
-      "previousValidTo": "2025-07-31",
-      "nextValidFrom": "2025-09-01",
-      "missingMonths": [
-        "2025-08"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
-      "className": "Bachata y Salsa Inicial",
-      "previousValidTo": "2025-10-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2025-11",
-        "2025-12",
-        "2026-01",
-        "2026-02",
-        "2026-03",
-        "2026-04"
+        "2025-10"
       ]
     },
     {
@@ -1675,94 +1521,9 @@
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
       "className": "Clase femenino Sofi",
       "previousValidTo": "2025-11-30",
-      "nextValidFrom": "2026-02-01",
+      "nextValidFrom": "2026-03-01",
       "missingMonths": [
-        "2025-12",
         "2026-01"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
-      "className": "Grupo C. - A.Frank",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
-      "className": "Infantil (6 a 7 años)",
-      "previousValidTo": "2025-11-30",
-      "nextValidFrom": "2026-01-01",
-      "missingMonths": [
-        "2025-12"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
-      "className": "Infantil (6 a 7 años)",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
-      "className": "Kids 4-5 años",
-      "previousValidTo": "2025-07-31",
-      "nextValidFrom": "2026-01-01",
-      "missingMonths": [
-        "2025-08",
-        "2025-09",
-        "2025-10",
-        "2025-11",
-        "2025-12"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
-      "className": "Kids 4-5 años",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
-      "className": "Clase LT - A.Frank",
-      "previousValidTo": "2025-11-30",
-      "nextValidFrom": "2026-01-01",
-      "missingMonths": [
-        "2025-12"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
-      "className": "Clase LT - A.Frank",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
       ]
     },
     {
@@ -1777,55 +1538,46 @@
     },
     {
       "type": "UNEXPLAINED_GAP",
-      "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
-      "className": "Mambo en parejas",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
       "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
       "className": "Tango (Inter/Avanz)",
       "previousValidTo": "2025-11-30",
       "nextValidFrom": "2026-03-01",
       "missingMonths": [
-        "2025-12",
         "2026-01",
         "2026-02"
       ]
+    }
+  ],
+  "overlaps": [
+    {
+      "type": "OVERLAPPING_DIFFERENT_AMOUNTS",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "first": {
+        "amount": "7500.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28"
+      },
+      "second": {
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-03-31"
+      }
     },
     {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
-      "className": "Tango (Inter/Avanz)",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
-      "className": "Teens (8 a 12 años)",
-      "previousValidTo": "2025-11-30",
-      "nextValidFrom": "2026-01-01",
-      "missingMonths": [
-        "2025-12"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
-      "className": "Teens (8 a 12 años)",
-      "previousValidTo": "2026-03-31",
-      "nextValidFrom": "2026-05-01",
-      "missingMonths": [
-        "2026-04"
-      ]
+      "type": "OVERLAPPING_DIFFERENT_AMOUNTS",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "first": {
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-03-31"
+      },
+      "second": {
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31"
+      }
     }
   ]
 }
