@@ -111,6 +111,106 @@ export type PageDto<T> = Readonly<{
   pageSize: number;
 }>;
 
+export type ReportMoneyByMethodDto = Readonly<{
+  method: PaymentMethodDto;
+  amount: string;
+}>;
+export type ReportsSummaryDto = Readonly<{
+  activeStudents: number;
+  inactiveStudents: number;
+  newStudents: number;
+  pendingDebt: string;
+  overdueCharges: number;
+  overdueDebt: string;
+  collectedAmount: string;
+  confirmedPayments: number;
+  closedCashShifts: number;
+  cashDifference: string;
+}>;
+export type ReportStudentDto = Readonly<{
+  id: string;
+  firstName: string;
+  lastName: string;
+  dni: string;
+  status: RecordStatusDto;
+  joinedAt: string;
+  activeEnrollments: number;
+  currentDebt: string;
+}>;
+export type ReportDebtorDto = Readonly<{
+  studentId: string;
+  firstName: string;
+  lastName: string;
+  dni: string;
+  openCharges: number;
+  overdueCharges: number;
+  totalDebt: string;
+  overdueDebt: string;
+  oldestDueDate: string;
+}>;
+export type ReportAttendanceClassDto = Readonly<{
+  classId: string;
+  className: string;
+  teacherName: string;
+  records: number;
+  present: number;
+  absent: number;
+  justified: number;
+}>;
+export type ReportCashMethodDto = Readonly<{
+  method: PaymentMethodDto;
+  expected: string;
+  declared: string;
+  difference: string;
+  correctedDeclared: string;
+  correctedDifference: string;
+}>;
+export type ReportCashOperatorDto = Readonly<{
+  userId: string;
+  username: string;
+  shifts: number;
+  expected: string;
+  declared: string;
+  difference: string;
+  correctedDifference: string;
+}>;
+export type ReportCashDifferenceDto = Readonly<{
+  shiftId: string;
+  closedAt: string;
+  username: string;
+  difference: string;
+  correctedDifference: string;
+}>;
+export type OperationalReportsDto = Readonly<{
+  generatedAt: string;
+  businessDate: string;
+  from: string;
+  to: string;
+  summary: ReportsSummaryDto;
+  students: PageDto<ReportStudentDto>;
+  collections: Readonly<{
+    total: string;
+    count: number;
+    byMethod: readonly ReportMoneyByMethodDto[];
+    byDay: readonly Readonly<{ date: string; amount: string }>[];
+  }>;
+  debtors: PageDto<ReportDebtorDto>;
+  attendance: Readonly<{
+    records: number;
+    present: number;
+    absent: number;
+    justified: number;
+    byClass: readonly ReportAttendanceClassDto[];
+  }>;
+  cash: Readonly<{
+    closedShifts: number;
+    openShifts: number;
+    byMethod: readonly ReportCashMethodDto[];
+    byOperator: readonly ReportCashOperatorDto[];
+    differences: readonly ReportCashDifferenceDto[];
+  }>;
+}>;
+
 export type TeacherDto = Readonly<{
   id: string;
   dni: string;

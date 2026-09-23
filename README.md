@@ -129,6 +129,13 @@ Todos estos endpoints requieren una sesión administrativa activa.
 
 Cada recurso admite consulta, alta, edición, desactivación y reactivación. Las clases se crean con uno o más horarios `{ dayOfWeek, startTime, endTime, roomId }`.
 
+## API de reportes operativos
+
+- `GET /api/v1/reports/operational?from=&to=&studentStatus=&q=&classId=&debtSort=&page=&pageSize=`: resumen y detalle paginado de alumnos, cobros, deuda actual, asistencia y caja.
+- `GET /api/v1/reports/export/:kind?from=&to=...`: exportar CSV completo para `students`, `collections`, `debtors`, `attendance` o `cash` respetando los filtros.
+
+Ambas rutas requieren `reports:operational`, disponible para Administración y Dirección. Deuda, vencidas y deudores reflejan la situación actual; el período sólo afecta altas, cobros confirmados, asistencias registradas y cierres de caja. Los cobros no representan ingresos, ganancia ni rentabilidad.
+
 ## Calidad
 
 ```bash

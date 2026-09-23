@@ -131,3 +131,11 @@ erDiagram
 - Cada sección conserva el permiso del módulo que resume; Auditoría nunca se consulta ni se entrega sin `audit:read`.
 - La evolución de cobros agrega únicamente pagos `CONFIRMED` de seis meses calendario. Es información preliminar de gestión y no reemplaza un futuro modelo contable completo.
 - La vista de cuentas pendientes agrupa saldos abiertos de cuotas `PENDING`/`PARTIAL` por alumno. “Vencida” sigue siendo una condición derivada de `dueDate < businessToday`; no es un estado persistido nuevo.
+
+## Reportes operativos v1
+
+- Reportes es un modelo de lectura, no una entidad persistente. No crea snapshots ni modifica el esquema.
+- Alumnos, deuda, vencidas y deudores son snapshots actuales. `Student.createdAt` permite contar altas, pero no existe una fecha de baja confiable para reconstruir bajas por período.
+- Cobros agrega solamente pagos `CONFIRMED` por `paidAt`; la distribución por medio agrega tenders y conserva exactamente los pagos mixtos.
+- Asistencia cuenta exclusivamente `StudentAttendance` persistidas. Profesor y nombre de clase representan sus valores actuales.
+- Caja informa únicamente turnos cerrados dentro del período, conserva el cierre original y deriva el estado corregido desde movimientos y correcciones append-only. Los turnos abiertos se cuentan aparte.
