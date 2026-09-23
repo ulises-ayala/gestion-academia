@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@academy/database';
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PrismaService } from '../../database/prisma.service';
 import { ReceivablesService } from '../application/receivables.service';
 import { PrismaBillingRepository } from './prisma-billing.repository';
@@ -149,6 +149,13 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
 
   beforeAll(() => prisma.$connect());
   afterAll(() => prisma.$disconnect());
+  beforeEach(() => {
+    // Agosto vencido y septiembre aún vigente, sin depender del día de ejecución.
+    // Sólo se simula Date: los timers de Prisma y los reintentos siguen funcionando.
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-08-31T15:00:00.000Z'));
+  });
+  afterEach(() => vi.useRealTimers());
 
   it('rechaza un Payment sin turno abierto sin persistirlo', async () => {
     const fixture = await createFixture();
@@ -221,7 +228,13 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         overdue: true,
       });
       await expect(
-        receivables.list({ scope: 'pending', sort: 'oldest', page: 1, pageSize: 100 }),
+        receivables.list({
+          scope: 'pending',
+          q: fixture.student.dni,
+          sort: 'oldest',
+          page: 1,
+          pageSize: 100,
+        }),
       ).resolves.toMatchObject({
         items: expect.arrayContaining([
           expect.objectContaining({
@@ -370,8 +383,6 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
   });
 
   it('filtra cuentas e historial global sobre saldos y tenders reales', async () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-08-31T15:00:00.000Z'));
     const fixture = await createFixture();
     try {
       const mixed = await repository.create(
@@ -487,7 +498,6 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
         }),
       ).resolves.toMatchObject({ summary: { totalCharges: 1, totalOutstanding: '40000.00' } });
     } finally {
-      vi.useRealTimers();
       await cleanupFixture(fixture);
     }
   });
