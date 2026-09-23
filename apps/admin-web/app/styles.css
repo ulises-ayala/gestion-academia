@@ -45,7 +45,13 @@
 .reports-page,
 .reports-stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: var(--space-4);
+}
+.reports-page > *,
+.reports-stack > * {
+  min-width: 0;
 }
 .reports-tabs {
   display: flex;
@@ -81,6 +87,7 @@
 }
 .reports-filters {
   flex-wrap: wrap;
+  align-items: flex-end;
 }
 .reports-filters label,
 .reports-inline-filters label,
@@ -148,6 +155,8 @@
 }
 .reports-chart {
   height: 13rem;
+  max-width: 100%;
+  overflow-x: auto;
   display: flex;
   align-items: end;
   gap: var(--space-2);
