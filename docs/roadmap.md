@@ -18,6 +18,7 @@
 14. **Dashboard operativo v1 (terminado):** inicio agregado y responsive con agenda diaria, indicadores, alertas, seguimientos y actividad reciente según permisos.
 15. **Payments v2 — centro operativo (terminado):** `/payments` muestra cuentas por cobrar agrupadas por alumno, resumen global filtrado, navegación contextual desde Dashboard e historial global de cobros; conserva íntegramente las reglas de Payments v2 core.
 16. **Pilot Readiness v1 (terminado):** navegación operativa, retorno seguro entre Pagos y Caja, estados de carga/error/vacío específicos, feedback de permisos, deep links y consistencia responsive preparados para el primer piloto real.
+17. **Reportes operativos v1 (terminado):** resumen, alumnos, cobros y deuda, asistencia y caja con filtros por período, paginación server-side y exportaciones CSV autorizadas.
 
 Cada etapa entrega migraciones, casos de uso, endpoints documentados, UI mínima y pruebas críticas.
 

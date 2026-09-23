@@ -284,3 +284,10 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 138. **Anulación append-only:** un `VOID` agrega un `REVERSAL` por cada collection y conserva el movimiento original. Si ocurre después del cierre, se agrega al turno cerrado sin reescribir el snapshot.
 139. **Cierre inmutable:** el backend recalcula `expected = COLLECTION - REVERSAL`, guarda por medio lo esperado, declarado y `declared - expected`, y luego cierra. Las diferencias están permitidas. Las correcciones posteriores sólo ajustan la declaración mediante registros append-only con actor y motivo.
 140. **Límites v1:** no hay fondo inicial, Income, Expenses, retiros, depósitos, transferencia, crédito, refund ni reapertura. El tracking comienza al activar esta migración y no se hace backfill de pagos históricos.
+
+## Reportes operativos v1
+
+141. **Snapshot versus período:** alumnos activos/inactivos, deuda, vencidas y deudores representan el estado actual. Altas, cobros confirmados, asistencias registradas y cierres de caja se filtran por el período elegido en `America/Buenos_Aires`. No se reconstruye deuda histórica ni bajas por período porque no existen snapshots o una fecha de baja confiable.
+142. **Cobros, no ingresos:** los totales usan exclusivamente `Payment.status = CONFIRMED` y `paidAt`; la apertura por medio suma `PaymentTender`, por lo que un pago mixto se divide sin duplicar su importe. No se presentan ganancia, rentabilidad ni resultado económico.
+143. **Deuda central y Caja corregida:** deuda y vencimiento reutilizan `studentDueAmount`, allocations confirmadas, mora y saldo derivado. Caja parte de los snapshots de cierre y aplica movimientos y correcciones append-only según el read model vigente; los turnos abiertos se informan aparte.
+144. **Exportación autorizada:** CSV se genera en API bajo `reports:operational`, respeta filtros, usa UTF-8, encabezados humanos, fechas inequívocas y decimal strings. Consultar o exportar no genera auditoría porque es una lectura.
