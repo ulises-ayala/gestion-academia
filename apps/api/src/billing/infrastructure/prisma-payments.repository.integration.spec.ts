@@ -63,6 +63,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       });
       const tariff = await tx.tariff.create({
         data: {
+          classId: academicClass.id,
           name: `Tarifa pagos ${token}`,
           amount: '40000.00',
           validFrom: new Date('2026-08-01T00:00:00.000Z'),

@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-09-22T00:44:36.877Z",
+  "generatedAt": "2026-09-28T20:05:24.589Z",
   "source": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\historical-tariffs-analysis.json",
   "summary": {
     "sourceItems": 97,
-    "validSourceItems": 81,
-    "specialSourceItems": 16,
+    "validSourceItems": 80,
+    "specialSourceItems": 17,
     "classCount": 24,
     "tariffCount": 73,
     "bridgedSpecialPeriods": 10,
-    "unexplainedGaps": 4,
-    "conflictingOverlaps": 2
+    "unexplainedGaps": 0,
+    "conflictingOverlaps": 0
   },
   "tariffs": [
     {
@@ -245,30 +245,13 @@
     {
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
       "className": "Clase femenino Sofi",
-      "amount": "7500.00",
+      "amount": "15000.00",
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "sourcePeriods": [
         {
           "validFrom": "2025-02-01",
           "validTo": "2025-02-28",
-          "amount": "7500.00",
-          "sourceRows": "5"
-        }
-      ],
-      "bridgedSpecialPeriods": [],
-      "name": "Histórica - Clase femenino Sofi - 2025 - $7.500"
-    },
-    {
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "amount": "15000.00",
-      "validFrom": "2025-02-01",
-      "validTo": "2025-03-31",
-      "sourcePeriods": [
-        {
-          "validFrom": "2025-02-01",
-          "validTo": "2025-03-31",
           "amount": "15000.00",
           "sourceRows": "4, 21"
         }
@@ -304,6 +287,16 @@
         }
       ],
       "name": "Histórica - Clase femenino Sofi - 2025 - $20.000"
+    },
+    {
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "amount": "30000.00",
+      "validFrom": "2025-10-01",
+      "validTo": "2025-10-31",
+      "sourcePeriods": [],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Clase femenino Sofi - 2025 - $30.000"
     },
     {
       "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
@@ -1410,6 +1403,15 @@
       "className": "Clase femenino Sofi",
       "activity": "Estilo Femenino",
       "teacher": "SOFIA",
+      "period": "2025-02",
+      "observedAmount": "7500.00",
+      "reason": "La academia confirmó que la cuota general de febrero de 2025 era $15.000; $7.500 correspondía a una condición especial."
+    },
+    {
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "activity": "Estilo Femenino",
+      "teacher": "SOFIA",
       "period": "2025-09",
       "observedAmount": "30000.00",
       "reason": "Importe particular o condición especial; no representa la tarifa general."
@@ -1505,79 +1507,6 @@
       "reason": "Medio mes o condición especial"
     }
   ],
-  "alerts": [
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "previousValidTo": "2025-08-31",
-      "nextValidFrom": "2025-11-01",
-      "missingMonths": [
-        "2025-10"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "previousValidTo": "2025-11-30",
-      "nextValidFrom": "2026-03-01",
-      "missingMonths": [
-        "2026-01"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
-      "className": "Clase LT - A.Frank",
-      "previousValidTo": "2026-06-30",
-      "nextValidFrom": "2026-08-01",
-      "missingMonths": [
-        "2026-07"
-      ]
-    },
-    {
-      "type": "UNEXPLAINED_GAP",
-      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
-      "className": "Tango (Inter/Avanz)",
-      "previousValidTo": "2025-11-30",
-      "nextValidFrom": "2026-03-01",
-      "missingMonths": [
-        "2026-01",
-        "2026-02"
-      ]
-    }
-  ],
-  "overlaps": [
-    {
-      "type": "OVERLAPPING_DIFFERENT_AMOUNTS",
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "first": {
-        "amount": "7500.00",
-        "validFrom": "2025-02-01",
-        "validTo": "2025-02-28"
-      },
-      "second": {
-        "amount": "15000.00",
-        "validFrom": "2025-02-01",
-        "validTo": "2025-03-31"
-      }
-    },
-    {
-      "type": "OVERLAPPING_DIFFERENT_AMOUNTS",
-      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-      "className": "Clase femenino Sofi",
-      "first": {
-        "amount": "15000.00",
-        "validFrom": "2025-02-01",
-        "validTo": "2025-03-31"
-      },
-      "second": {
-        "amount": "20000.00",
-        "validFrom": "2025-03-01",
-        "validTo": "2025-08-31"
-      }
-    }
-  ]
+  "alerts": [],
+  "overlaps": []
 }

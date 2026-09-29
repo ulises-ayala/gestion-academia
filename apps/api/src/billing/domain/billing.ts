@@ -38,31 +38,65 @@ export const normalizeMoney = (value: string, field = 'amount') => {
 };
 
 export const validateTariff = (input: {
+  classId: string;
   name: string;
   amount: string;
   validFrom: string;
   validTo?: string | null;
   status?: 'ACTIVE' | 'INACTIVE';
 }) => {
+  const classId = input.classId?.trim();
+
+  if (!classId) {
+    throw new DomainError(
+      'VALIDATION_ERROR',
+      'La clase es obligatoria',
+      { field: 'classId' },
+    );
+  }
+
   const name = input.name?.trim();
+
   if (!name || name.length > 120)
-    throw new DomainError('VALIDATION_ERROR', 'El nombre es obligatorio y admite 120 caracteres', {
-      field: 'name',
-    });
-  const validFrom = parseBillingDate(input.validFrom, 'validFrom');
-  const validTo = input.validTo ? parseBillingDate(input.validTo, 'validTo') : null;
+    throw new DomainError(
+      'VALIDATION_ERROR',
+      'El nombre es obligatorio y admite 120 caracteres',
+      { field: 'name' },
+    );
+
+  const validFrom =
+    parseBillingDate(
+      input.validFrom,
+      'validFrom',
+    );
+
+  const validTo =
+    input.validTo
+      ? parseBillingDate(
+          input.validTo,
+          'validTo',
+        )
+      : null;
+
   if (validTo && validTo < validFrom)
     throw new DomainError(
       'VALIDATION_ERROR',
       'La fecha de fin no puede ser anterior a la fecha de inicio',
       { field: 'validTo' },
     );
+
   return {
+    classId,
     name,
-    amount: normalizeMoney(input.amount),
+    amount:
+      normalizeMoney(
+        input.amount,
+      ),
     validFrom,
     validTo,
-    status: input.status ?? ('ACTIVE' as const),
+    status:
+      input.status ??
+      ('ACTIVE' as const),
   };
 };
 

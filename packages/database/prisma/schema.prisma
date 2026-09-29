@@ -218,6 +218,7 @@ model AcademyClass {
   teacher     Teacher         @relation(fields: [teacherId], references: [id])
   schedules   ClassSchedule[]
   enrollments Enrollment[]
+  tariffs Tariff[]
 
   @@index([danceTypeId, status])
   @@index([teacherId, status])
@@ -247,6 +248,7 @@ model Enrollment {
 
 model Tariff {
   id             String          @id @default(uuid()) @db.Uuid
+  classId        String          @map("class_id") @db.Uuid
   name           String          @db.VarChar(120)
   amount         Decimal         @db.Decimal(12, 2)
   validFrom      DateTime        @map("valid_from") @db.Date
@@ -254,8 +256,11 @@ model Tariff {
   status         RecordStatus    @default(ACTIVE)
   createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  class          AcademyClass    @relation(fields: [classId], references: [id], onDelete: Restrict)
   monthlyCharges MonthlyCharge[]
 
+  @@index([classId, validFrom, validTo])
   @@index([status, validFrom, validTo])
   @@index([name])
   @@map("tariffs")

@@ -38,6 +38,32 @@ const GAP_DECISIONS = {
     reason: 'La actividad continuó vigente y el cambio a $40.000 ocurrió recién en agosto de 2026.',
   },
 
+  'CLASE FEMENINO SOFI|2025-10': {
+  decision: 'CONFIRMED_AMOUNT',
+  amount: '30000.00',
+  reason: 'La academia confirmó que la cuota base de octubre de 2025 era $30.000.',
+},
+
+  'CLASE FEMENINO SOFI|2026-01': {
+    decision: 'NO_ACTIVITY',
+    reason: 'La academia confirmó que Coreográfico Femenino no estuvo activo en enero de 2026.',
+  },
+
+  'CLASE LT A FRANK|2026-07': {
+    decision: 'NO_ACTIVITY',
+    reason: 'La academia confirmó que Ladys Training no tuvo actividad en julio de 2026.',
+  },
+
+  'TANGO INTER AVANZ|2026-01': {
+    decision: 'NO_ACTIVITY',
+    reason: 'La academia confirmó que Tango Inter/Avanz no tuvo actividad en enero de 2026.',
+  },
+
+  'TANGO INTER AVANZ|2026-02': {
+    decision: 'NO_ACTIVITY',
+    reason: 'La academia confirmó que Tango Inter/Avanz no tuvo actividad en febrero de 2026.',
+  },
+
   'ARABE INFANTIL|2026-06': {
     decision: 'CONFIRMED_AMOUNT',
     amount: '30000.00',

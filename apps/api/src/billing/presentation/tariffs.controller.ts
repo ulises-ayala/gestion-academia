@@ -30,14 +30,22 @@ export class TariffsController {
     return this.service.getTariff(parseUuid(id));
   }
   @Post() @Permissions('tariffs:manage') create(@Body() input: CreateTariffDto) {
-    return this.service.createTariff(input);
+    return this.service.createTariff({...input,
+      classId: parseUuid(input.classId),
+    });
   }
   @Patch(':id') @Permissions('tariffs:manage') update(
     @Param('id') id: string,
     @Body() input: UpdateTariffDto,
     @CurrentUser() user: PublicAuthUser,
   ) {
-    return this.service.updateTariff(parseUuid(id), input, user.id);
+    return this.service.updateTariff(parseUuid(id), {
+      ...input,
+      ...(input.classId
+        ? { classId: parseUuid(input.classId) }
+        : {}),
+    },
+    user.id);
   }
   @Delete(':id') @HttpCode(200) @Permissions('tariffs:manage') deactivate(
     @Param('id') id: string,
@@ -45,6 +53,18 @@ export class TariffsController {
   ) {
     return this.service.updateTariff(parseUuid(id), { status: 'INACTIVE' }, user.id);
   }
+
+  @Delete(':id/permanent')
+    @HttpCode(200)
+    @Permissions('tariffs:manage')
+    remove(
+      @Param('id') id: string,
+    ) {
+      return this.service.deleteTariff(
+        parseUuid(id),
+      );
+    }
+    
   @Post(':id/reactivate') @Permissions('tariffs:manage') reactivate(
     @Param('id') id: string,
     @CurrentUser() user: PublicAuthUser,

@@ -183,6 +183,29 @@ const PRICE_DECISIONS = {
   reason: 'La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial.',
 },
 
+/*
+ * Sofi - febrero 2025.
+ *
+ * Estilo Femenino $7.500:
+ * condición especial, no tarifa general.
+ */
+'ESTILO FEMENINO | SOFIA | 2025-02': {
+  decision: 'NOT_A_TARIFF',
+  reason: 'La academia confirmó que la cuota general de febrero de 2025 era $15.000; $7.500 correspondía a una condición especial.',
+},
+
+/*
+ * Coreográfico Femenino:
+ * $15.000 sí fue la tarifa general de febrero,
+ * pero NO debe extenderse a marzo.
+ */
+'COREOGRAFICO FEMENINO | SOFIA | 2025-02': {
+  decision: 'CONFIRMED',
+  amount: '15000.00',
+  validTo: '2025-02-28',
+  reason: 'La academia confirmó tarifa general de $15.000 para febrero de 2025. En marzo cambió a $20.000.',
+},
+
 };
 const CLASS_NAME_MAP = {
   'BACHATA Y SALSA INICIAL':
@@ -918,7 +941,7 @@ async function main() {
           row['Vigencia desde'],
         );
 
-      const validTo =
+      const sourceValidTo =
         excelDateToIso(
           row['Vigencia hasta'],
         );
@@ -935,6 +958,10 @@ async function main() {
         validFrom,
         amount: candidateAmount,
       });
+
+    const validTo =
+      priceDecision?.validTo ??
+      sourceValidTo;
 
     const classMatch =
       resolveClass({

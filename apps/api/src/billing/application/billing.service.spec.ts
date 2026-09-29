@@ -7,13 +7,14 @@ import { BillingService } from './billing.service';
 const studentId = crypto.randomUUID();
 const enrollmentId = crypto.randomUUID();
 const secondEnrollmentId = crypto.randomUUID();
+const classId = crypto.randomUUID();
 
 class MemoryBillingRepository implements BillingRepository {
   tariffs: TariffDto[] = [];
   charges: MonthlyChargeDto[] = [];
   enrollments = new Map<string, EnrollmentForCharge>([
-    [enrollmentId, { id: enrollmentId, studentId, status: 'ACTIVE' }],
-    [secondEnrollmentId, { id: secondEnrollmentId, studentId, status: 'ACTIVE' }],
+    [enrollmentId, { id: enrollmentId, studentId, classId, status: 'ACTIVE' }],
+    [secondEnrollmentId, { id: secondEnrollmentId, studentId, classId, status: 'ACTIVE' }],
   ]);
   async listTariffs(status?: 'ACTIVE' | 'INACTIVE') {
     return this.tariffs.filter((item) => !status || item.status === status);
@@ -37,6 +38,21 @@ class MemoryBillingRepository implements BillingRepository {
     this.tariffs[this.tariffs.indexOf(current)] = updated;
     return updated;
   }
+
+  async deleteTariff(id: string) {
+  const index = this.tariffs.findIndex(
+    (item) => item.id === id,
+  );
+
+  if (index === -1) {
+    throw new DomainError(
+      'TARIFF_NOT_FOUND',
+      'Tarifa no encontrada',
+    );
+  }
+
+  this.tariffs.splice(index, 1);
+}
   async findEnrollment(id: string) {
     return this.enrollments.get(id) ?? null;
   }
@@ -68,7 +84,7 @@ class MemoryBillingRepository implements BillingRepository {
       studentDueAmount: data.finalAmount,
       settlementBaseAmount: data.finalAmount,
       overdue: false,
-      academicClass: { id: crypto.randomUUID(), name: 'Bachata' },
+      academicClass: { id: classId, name: 'Bachata' },
       tariff: { id: data.tariffId, name: tariff?.name ?? '' },
       adjustments: [],
       createdAt: new Date().toISOString(),
@@ -94,6 +110,7 @@ const createService = async () => {
   const repository = new MemoryBillingRepository();
   const service = new BillingService(repository);
   const tariff = await service.createTariff({
+    classId,
     name: 'Clase mensual',
     amount: '40000',
     validFrom: '2026-01-01',
@@ -157,7 +174,7 @@ describe('BillingService', () => {
       }),
     ).rejects.toMatchObject({ code: 'TARIFF_INACTIVE' });
     await service.updateTariff(tariff.id, { status: 'ACTIVE' });
-    repository.enrollments.set(enrollmentId, { id: enrollmentId, studentId, status: 'ENDED' });
+    repository.enrollments.set(enrollmentId, { id: enrollmentId, studentId, classId, status: 'ENDED' });
     await expect(
       service.createCharge({
         enrollmentId,
@@ -171,7 +188,7 @@ describe('BillingService', () => {
   it.each(['-1', '1.234', 'abc'])('rechaza monto inválido %s', async (amount) => {
     const service = new BillingService(new MemoryBillingRepository());
     expect(() =>
-      service.createTariff({ name: 'Mensual', amount, validFrom: '2026-01-01' }),
+      service.createTariff({ classId, name: 'Mensual', amount, validFrom: '2026-01-01' }),
     ).toThrowError(expect.objectContaining({ code: 'VALIDATION_ERROR' }));
   });
 
@@ -212,7 +229,7 @@ describe('BillingService', () => {
       dueDate: '2026-08-05',
     });
     await service.updateTariff(tariff.id, { status: 'INACTIVE' });
-    repository.enrollments.set(enrollmentId, { id: enrollmentId, studentId, status: 'ENDED' });
+    repository.enrollments.set(enrollmentId, { id: enrollmentId, studentId, classId, status: 'ENDED' });
     await expect(service.getCharge(charge.id)).resolves.toMatchObject({ id: charge.id });
   });
 });

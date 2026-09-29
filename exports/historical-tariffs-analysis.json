@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-22T00:44:28.825Z",
+  "generatedAt": "2026-09-28T20:04:59.117Z",
   "source": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\scripts\\data\\Historial_Carmesi_2025_2026_NORMALIZADO.xlsx",
   "classesSource": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\classes-current.json",
   "summary": {
     "total": 97,
-    "OK": 81,
-    "NOT_A_TARIFF": 16
+    "OK": 80,
+    "NOT_A_TARIFF": 17
   },
   "items": [
     {
@@ -337,10 +337,10 @@
       "classMatchType": "MANUAL_ACTIVITY_TEACHER",
       "classMatchConfidence": "HIGH",
       "validFrom": "2025-02-01",
-      "validTo": "2025-03-31",
+      "validTo": "2025-02-28",
       "amount": "15000.00",
-      "priceDecision": null,
-      "priceDecisionReason": null,
+      "priceDecision": "CONFIRMED",
+      "priceDecisionReason": "La academia confirmó tarifa general de $15.000 para febrero de 2025. En marzo cambió a $20.000.",
       "result": "OK",
       "months": 2,
       "sourceConfidence": "MEDIA",
@@ -479,9 +479,9 @@
       "validFrom": "2025-02-01",
       "validTo": "2025-02-28",
       "amount": "7500.00",
-      "priceDecision": null,
-      "priceDecisionReason": null,
-      "result": "OK",
+      "priceDecision": "NOT_A_TARIFF",
+      "priceDecisionReason": "La academia confirmó que la cuota general de febrero de 2025 era $15.000; $7.500 correspondía a una condición especial.",
+      "result": "NOT_A_TARIFF",
       "months": 1,
       "sourceConfidence": "MEDIA",
       "sourceReview": "CANDIDATO_CON_VARIANTES",
