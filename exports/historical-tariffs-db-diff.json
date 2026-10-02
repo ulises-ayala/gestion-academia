@@ -1,0 +1,3490 @@
+{
+  "generatedAt": "2026-10-01T20:19:29.912Z",
+  "source": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\historical-tariffs-ready.json",
+  "summary": {
+    "readyTariffCount": 93,
+    "dbTariffCount": 93,
+    "unchanged": 93,
+    "new": 0,
+    "updateRange": 0,
+    "conflict": 0,
+    "obsolete": 0,
+    "readyInternalOverlaps": 0
+  },
+  "diff": [
+    {
+      "result": "UNCHANGED",
+      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "className": "Árabe infantil",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "className": "Árabe infantil",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "18"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Árabe infantil - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "aa882452-96fa-4ace-90e5-b43b424968cf",
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "name": "Histórica - Árabe infantil - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.328Z",
+        "updatedAt": "2026-09-28T22:19:28.345Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "className": "Árabe infantil",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "className": "Árabe infantil",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-07-31",
+            "amount": "20000.00",
+            "sourceRows": "34, 49, 62, 75, 88"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Árabe infantil - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "e459a08c-97b0-4afb-8d9b-d9ff81c10f47",
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "name": "Histórica - Árabe infantil - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.358Z",
+        "updatedAt": "2026-09-28T22:19:28.377Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "className": "Árabe infantil",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "className": "Árabe infantil",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Árabe infantil - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "5a80f542-151d-4047-85eb-2cfc9bcc3d9b",
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "name": "Histórica - Árabe infantil - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.405Z",
+        "updatedAt": "2026-09-28T22:19:28.422Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "className": "Árabe infantil",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "className": "Árabe infantil",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Árabe infantil - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "7d5f0b87-464a-43f8-bea5-320bf5e1c0bd",
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "name": "Histórica - Árabe infantil - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.435Z",
+        "updatedAt": "2026-09-28T22:19:28.454Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+      "className": "Árabe infantil",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "className": "Árabe infantil",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "179"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Árabe infantil - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "a76f171c-377e-4573-99a9-b6fd588a7abb",
+        "classId": "2b9ee038-bf48-4bb5-9315-c2015733d11c",
+        "name": "Histórica - Árabe infantil - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.467Z",
+        "updatedAt": "2026-09-28T22:19:28.486Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "d06eb88b-a6e3-4cda-8bf9-5278455b3b7e",
+      "className": "Bachata en Pareja",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "d06eb88b-a6e3-4cda-8bf9-5278455b3b7e",
+        "className": "Bachata en Pareja",
+        "amount": "15000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-02-01",
+            "validTo": "2026-02-28",
+            "amount": "15000.00",
+            "sourceRows": "120"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Bachata en Pareja - 2026 - $15.000"
+      },
+      "dbTariff": {
+        "id": "c4b4c25b-eb7e-433e-934b-0cca6781b4f8",
+        "classId": "d06eb88b-a6e3-4cda-8bf9-5278455b3b7e",
+        "name": "Histórica - Bachata en Pareja - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.498Z",
+        "updatedAt": "2026-09-28T22:19:28.516Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "8da07d2d-b252-4618-9370-34f8ca23e93e",
+      "className": "Bachata Pasos Sueltos",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "8da07d2d-b252-4618-9370-34f8ca23e93e",
+        "className": "Bachata Pasos Sueltos",
+        "amount": "30000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-02-01",
+            "validTo": "2026-02-28",
+            "amount": "30000.00",
+            "sourceRows": "119"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Bachata Pasos Sueltos - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "364a71bb-c8cb-4dcc-884a-b2932034e9f6",
+        "classId": "8da07d2d-b252-4618-9370-34f8ca23e93e",
+        "name": "Histórica - Bachata Pasos Sueltos - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.529Z",
+        "updatedAt": "2026-09-28T22:19:28.548Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "className": "Bachata y Salsa Inicial",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "className": "Bachata y Salsa Inicial",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "2"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "e194c2af-4420-4b55-899f-a6b82592282d",
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.584Z",
+        "updatedAt": "2026-09-28T22:19:28.608Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "className": "Bachata y Salsa Inicial",
+      "amount": "10000.00",
+      "readyTariff": {
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "className": "Bachata y Salsa Inicial",
+        "amount": "10000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-05-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-05-31",
+            "amount": "10000.00",
+            "sourceRows": "19, 35, 50"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $10.000"
+      },
+      "dbTariff": {
+        "id": "3dbdd5a1-cfb4-4a23-8fa8-27cca7ee2d07",
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $10.000",
+        "amount": "10000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-05-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.618Z",
+        "updatedAt": "2026-09-28T22:19:28.639Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "className": "Bachata y Salsa Inicial",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "className": "Bachata y Salsa Inicial",
+        "amount": "20000.00",
+        "validFrom": "2025-06-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-06-01",
+            "validTo": "2025-07-31",
+            "amount": "20000.00",
+            "sourceRows": "63, 76"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "b431c0e1-78da-44f4-9a39-d3ce59dfe35e",
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-06-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.651Z",
+        "updatedAt": "2026-09-28T22:19:28.670Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "className": "Bachata y Salsa Inicial",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "className": "Bachata y Salsa Inicial",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-10-31",
+            "amount": "30000.00",
+            "sourceRows": "95, 103"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "5a111de4-98a3-4d13-a47e-ae36180b9fbf",
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "name": "Histórica - Bachata y Salsa Inicial - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.684Z",
+        "updatedAt": "2026-09-28T22:19:28.701Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "className": "Bachata y Salsa Inicial",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "className": "Bachata y Salsa Inicial",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "138, 149"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Bachata y Salsa Inicial - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "c6af6f71-e559-40f1-a2fe-66f62fa7a565",
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "name": "Histórica - Bachata y Salsa Inicial - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.714Z",
+        "updatedAt": "2026-09-28T22:19:28.731Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+      "className": "Bachata y Salsa Inicial",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "className": "Bachata y Salsa Inicial",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "169"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Bachata y Salsa Inicial - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "441a9a62-ed1f-4ee1-a897-d52018f67a09",
+        "classId": "acbbc26b-2a55-4952-97a0-92dc025024d2",
+        "name": "Histórica - Bachata y Salsa Inicial - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.744Z",
+        "updatedAt": "2026-09-28T22:19:28.763Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "dbd5af21-ec55-4380-8ca1-d643a10d2003",
+      "className": "Belly Dance Alternativo",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "dbd5af21-ec55-4380-8ca1-d643a10d2003",
+        "className": "Belly Dance Alternativo",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-03-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-03-31",
+            "amount": "15000.00",
+            "sourceRows": "3, 20"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Belly Dance Alternativo - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "9b0d1a7a-a562-4945-9999-dd4cbdccdfbc",
+        "classId": "dbd5af21-ec55-4380-8ca1-d643a10d2003",
+        "name": "Histórica - Belly Dance Alternativo - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-03-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.775Z",
+        "updatedAt": "2026-09-28T22:19:28.786Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "className": "Clase femenino Sofi",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "4, 21"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase femenino Sofi - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "5ff5584b-dd90-4a81-90b6-117e1f17a52a",
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "name": "Histórica - Clase femenino Sofi - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.806Z",
+        "updatedAt": "2026-09-28T22:19:28.824Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "className": "Clase femenino Sofi",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-09-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": "22, 37, 53, 66, 79, 90"
+          },
+          {
+            "validFrom": "2025-04-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": "36, 52, 65, 78, 89"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2025-09",
+            "observedAmount": "30000.00",
+            "reason": "Importe particular o condición especial; no representa la tarifa general."
+          }
+        ],
+        "name": "Histórica - Clase femenino Sofi - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "bb2fa800-9be7-4383-8484-562843342740",
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "name": "Histórica - Clase femenino Sofi - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-09-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.837Z",
+        "updatedAt": "2026-09-28T22:19:28.857Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "className": "Clase femenino Sofi",
+        "amount": "30000.00",
+        "validFrom": "2025-10-01",
+        "validTo": "2025-10-31",
+        "sourcePeriods": [],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase femenino Sofi - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "ae72f4d3-99d2-4ee2-bffd-07f7517e1dde",
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "name": "Histórica - Clase femenino Sofi - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-10-01",
+        "validTo": "2025-10-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.867Z",
+        "updatedAt": "2026-09-28T22:19:28.878Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "amount": "25000.00",
+      "readyTariff": {
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "className": "Clase femenino Sofi",
+        "amount": "25000.00",
+        "validFrom": "2025-11-01",
+        "validTo": "2026-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-11-01",
+            "validTo": "2025-11-30",
+            "amount": "25000.00",
+            "sourceRows": "110"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-02",
+            "observedAmount": "15000.00",
+            "reason": "La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial."
+          }
+        ],
+        "name": "Histórica - Clase femenino Sofi - 2025 - $25.000"
+      },
+      "dbTariff": {
+        "id": "c637f5c3-8007-4f2c-b43b-7522c9fba43b",
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "name": "Histórica - Clase femenino Sofi - 2025 - $25.000",
+        "amount": "25000.00",
+        "validFrom": "2025-11-01",
+        "validTo": "2026-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.900Z",
+        "updatedAt": "2026-09-28T22:19:28.917Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "className": "Clase femenino Sofi",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-03-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "129"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "139, 150"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "140, 151"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Clase femenino Sofi - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "18ca852e-066f-4f53-9463-9543bd7bff6c",
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "name": "Histórica - Clase femenino Sofi - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.930Z",
+        "updatedAt": "2026-09-28T22:19:28.949Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "className": "Clase femenino Sofi",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "className": "Clase femenino Sofi",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "170"
+          },
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "171"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase femenino Sofi - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "6f75e684-b414-4851-b628-d06b7a0d7492",
+        "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "name": "Histórica - Clase femenino Sofi - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:28.960Z",
+        "updatedAt": "2026-09-28T22:19:28.997Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+      "className": "Clase LT - A.Frank",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "className": "Clase LT - A.Frank",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "11"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase LT - A.Frank - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "0456fb7e-484b-4973-986f-8a072570650e",
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "name": "Histórica - Clase LT - A.Frank - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.026Z",
+        "updatedAt": "2026-09-28T22:19:29.041Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+      "className": "Clase LT - A.Frank",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "className": "Clase LT - A.Frank",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": "27, 42, 58, 71, 84, 92"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase LT - A.Frank - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "72f79efb-bde5-47cb-a8b2-f17a3bf03cbd",
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "name": "Histórica - Clase LT - A.Frank - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.054Z",
+        "updatedAt": "2026-09-28T22:19:29.072Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+      "className": "Clase LT - A.Frank",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "className": "Clase LT - A.Frank",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": "99, 106, 112"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase LT - A.Frank - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "676fde03-8873-4301-85ba-cc2a64126552",
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "name": "Histórica - Clase LT - A.Frank - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.085Z",
+        "updatedAt": "2026-09-28T22:19:29.103Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+      "className": "Clase LT - A.Frank",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "className": "Clase LT - A.Frank",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "117, 125, 133"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "144, 155"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase LT - A.Frank - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "d3de6abe-8961-4ad9-b86b-b1fd6523013d",
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "name": "Histórica - Clase LT - A.Frank - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.115Z",
+        "updatedAt": "2026-09-28T22:19:29.134Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+      "className": "Clase LT - A.Frank",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "className": "Clase LT - A.Frank",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "174"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Clase LT - A.Frank - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "ee08da83-5082-4bea-965c-add293d4095f",
+        "classId": "4074b25f-622a-4423-ac82-9d0cf90e3666",
+        "name": "Histórica - Clase LT - A.Frank - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.146Z",
+        "updatedAt": "2026-09-28T22:19:29.156Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+      "className": "Coreográfico Bachata en Pareja",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+        "className": "Coreográfico Bachata en Pareja",
+        "amount": "20000.00",
+        "validFrom": "2025-05-01",
+        "validTo": "2025-05-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-05-01",
+            "validTo": "2025-05-31",
+            "amount": "20000.00",
+            "sourceRows": "51"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Coreográfico Bachata en Pareja - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "2fdefc77-2675-4091-b498-2595ba7a0ca2",
+        "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+        "name": "Histórica - Coreográfico Bachata en Pareja - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-05-01",
+        "validTo": "2025-05-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.177Z",
+        "updatedAt": "2026-09-28T22:19:29.195Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+      "className": "Coreográfico Bachata en Pareja",
+      "amount": "10000.00",
+      "readyTariff": {
+        "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+        "className": "Coreográfico Bachata en Pareja",
+        "amount": "10000.00",
+        "validFrom": "2025-06-01",
+        "validTo": "2025-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-06-01",
+            "validTo": "2025-06-30",
+            "amount": "10000.00",
+            "sourceRows": "64"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Coreográfico Bachata en Pareja - 2025 - $10.000"
+      },
+      "dbTariff": {
+        "id": "734edc8b-9709-46d2-a27f-653e4c6a70a0",
+        "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+        "name": "Histórica - Coreográfico Bachata en Pareja - 2025 - $10.000",
+        "amount": "10000.00",
+        "validFrom": "2025-06-01",
+        "validTo": "2025-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.207Z",
+        "updatedAt": "2026-09-28T22:19:29.225Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "db1e0e5e-c5e0-429e-aec3-4f28d406dad9",
+      "className": "Fitdance + Axé",
+      "amount": "7500.00",
+      "readyTariff": {
+        "classId": "db1e0e5e-c5e0-429e-aec3-4f28d406dad9",
+        "className": "Fitdance + Axé",
+        "amount": "7500.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "7500.00",
+            "sourceRows": "6"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Fitdance + Axé - 2025 - $7.500"
+      },
+      "dbTariff": {
+        "id": "162ee729-b047-4333-a406-87ebf2a0f533",
+        "classId": "db1e0e5e-c5e0-429e-aec3-4f28d406dad9",
+        "name": "Histórica - Fitdance + Axé - 2025 - $7.500",
+        "amount": "7500.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.239Z",
+        "updatedAt": "2026-09-28T22:19:29.258Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+      "className": "Grupo C. - A.Frank",
+      "amount": "25000.00",
+      "readyTariff": {
+        "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+        "className": "Grupo C. - A.Frank",
+        "amount": "25000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-03-01",
+            "validTo": "2026-03-31",
+            "amount": "25000.00",
+            "sourceRows": "130"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "25000.00",
+            "sourceRows": "141, 152"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Grupo C. - A.Frank - 2026 - $25.000"
+      },
+      "dbTariff": {
+        "id": "a16c3950-049b-4fbf-b176-df8327d06f53",
+        "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+        "name": "Histórica - Grupo C. - A.Frank - 2026 - $25.000",
+        "amount": "25000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.269Z",
+        "updatedAt": "2026-09-28T22:19:29.287Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+      "className": "Infantil (6 a 7 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "className": "Infantil (6 a 7 años)",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "8"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Infantil (6 a 7 años) - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "914435a3-afe2-4fe1-963b-11756a49460c",
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "name": "Histórica - Infantil (6 a 7 años) - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.298Z",
+        "updatedAt": "2026-09-28T22:19:29.318Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+      "className": "Infantil (6 a 7 años)",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "className": "Infantil (6 a 7 años)",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": "24, 39, 54, 67, 80, 91"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Infantil (6 a 7 años) - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "123779f5-04b8-4ffa-abee-99e3847f4b73",
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "name": "Histórica - Infantil (6 a 7 años) - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.329Z",
+        "updatedAt": "2026-09-28T22:19:29.349Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+      "className": "Infantil (6 a 7 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "className": "Infantil (6 a 7 años)",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": "98, 105, 111"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Infantil (6 a 7 años) - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "d72e610b-f97f-4f4b-bdac-0b3a2863bd7f",
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "name": "Histórica - Infantil (6 a 7 años) - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.360Z",
+        "updatedAt": "2026-09-28T22:19:29.379Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+      "className": "Infantil (6 a 7 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "className": "Infantil (6 a 7 años)",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "115, 123, 131"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "142, 153"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Infantil (6 a 7 años) - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "fc032672-6b48-4c9a-ba6a-6bd89d550ca5",
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "name": "Histórica - Infantil (6 a 7 años) - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.392Z",
+        "updatedAt": "2026-09-28T22:19:29.410Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+      "className": "Infantil (6 a 7 años)",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "className": "Infantil (6 a 7 años)",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "172"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Infantil (6 a 7 años) - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "8da28256-cc8c-49fc-a870-aba43ee2c5e1",
+        "classId": "bcea570e-e3dd-499f-8a4b-88f079773871",
+        "name": "Histórica - Infantil (6 a 7 años) - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.422Z",
+        "updatedAt": "2026-09-28T22:19:29.441Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+      "className": "Kids 4-5 años",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "className": "Kids 4-5 años",
+        "amount": "20000.00",
+        "validFrom": "2025-05-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-05-01",
+            "validTo": "2025-07-31",
+            "amount": "20000.00",
+            "sourceRows": "55, 68, 81"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Kids 4-5 años - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "103cced5-8bf6-482d-adcf-07ffbbc59b24",
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "name": "Histórica - Kids 4-5 años - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-05-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.453Z",
+        "updatedAt": "2026-09-28T22:19:29.473Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+      "className": "Kids 4-5 años",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "className": "Kids 4-5 años",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Kids 4-5 años - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "925932a4-0520-4015-8371-c3a9be054e08",
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "name": "Histórica - Kids 4-5 años - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.484Z",
+        "updatedAt": "2026-09-28T22:19:29.504Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+      "className": "Kids 4-5 años",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "className": "Kids 4-5 años",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "116, 124, 132"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "143, 154"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Kids 4-5 años - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "3327e836-9638-472d-aba1-041a3a9f4e0d",
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "name": "Histórica - Kids 4-5 años - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.516Z",
+        "updatedAt": "2026-09-28T22:19:29.535Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+      "className": "Kids 4-5 años",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "className": "Kids 4-5 años",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "173"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Kids 4-5 años - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "d486fbe3-9556-4719-9bdd-df68bd63118d",
+        "classId": "4cd54a73-4b21-4bd6-ae3f-7008b4e51e4a",
+        "name": "Histórica - Kids 4-5 años - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.563Z",
+        "updatedAt": "2026-09-28T22:19:29.580Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "7500.00",
+      "readyTariff": {
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "className": "Ladys Kizz",
+        "amount": "7500.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "7500.00",
+            "sourceRows": "9"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Kizz - 2025 - $7.500"
+      },
+      "dbTariff": {
+        "id": "587baadd-638d-4787-8f10-e0f43c6d7881",
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "name": "Histórica - Ladys Kizz - 2025 - $7.500",
+        "amount": "7500.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.592Z",
+        "updatedAt": "2026-09-28T22:19:29.604Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "className": "Ladys Kizz",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-07-31",
+            "amount": "20000.00",
+            "sourceRows": "25, 40, 56, 69, 82"
+          },
+          {
+            "validFrom": "2025-08-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó que Ladys Kizz utilizaba la misma cuota base general que las demás clases."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Kizz - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "9c8c66d8-4e97-4603-903a-ba1d2832c23c",
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "name": "Histórica - Ladys Kizz - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.623Z",
+        "updatedAt": "2026-10-01T20:19:01.687Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "className": "Ladys Kizz",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota base general de $30.000. Los importes menores eran descuentos particulares."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Kizz - 2025 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota base general de $30.000. Los importes menores eran descuentos particulares."
+      },
+      "dbTariff": {
+        "id": "f3d77d64-79df-40f5-bbe9-c7e1212bfa0e",
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "name": "Histórica - Ladys Kizz - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:01.815Z",
+        "updatedAt": "2026-10-01T20:19:01.844Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "className": "Ladys Kizz",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota base general de $30.000. Los descuentos aplicados por Fabi no modifican la tarifa."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Kizz - 2026 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota base general de $30.000. Los descuentos aplicados por Fabi no modifican la tarifa."
+      },
+      "dbTariff": {
+        "id": "7bf87090-6f79-41eb-a46a-9ced068c5759",
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "name": "Histórica - Ladys Kizz - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:01.872Z",
+        "updatedAt": "2026-10-01T20:19:01.883Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "className": "Ladys Kizz",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-07-01",
+            "validTo": "2026-07-31",
+            "amount": "15000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Kizz - 2026 - $15.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+      },
+      "dbTariff": {
+        "id": "14bf708d-20b2-4868-b09e-2103f21d9130",
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "name": "Histórica - Ladys Kizz - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:01.904Z",
+        "updatedAt": "2026-10-01T20:19:01.921Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "className": "Ladys Kizz",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota base general de $40.000 desde agosto de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Kizz - 2026 - $40.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota base general de $40.000 desde agosto de 2026."
+      },
+      "dbTariff": {
+        "id": "a7a80252-57de-41a6-9c22-e9c4da979600",
+        "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+        "name": "Histórica - Ladys Kizz - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:01.934Z",
+        "updatedAt": "2026-10-01T20:19:01.953Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "amount": "7500.00",
+      "readyTariff": {
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "className": "Ladys Tango - Gabriela P.",
+        "amount": "7500.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "7500.00",
+            "sourceRows": "10"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $7.500"
+      },
+      "dbTariff": {
+        "id": "a69183c3-9be5-438e-9a58-1051ecfc6583",
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $7.500",
+        "amount": "7500.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.671Z",
+        "updatedAt": "2026-09-28T22:19:29.688Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "amount": "10000.00",
+      "readyTariff": {
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "className": "Ladys Tango - Gabriela P.",
+        "amount": "10000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-04-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-04-30",
+            "amount": "10000.00",
+            "sourceRows": "26, 41"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $10.000"
+      },
+      "dbTariff": {
+        "id": "0fb22db6-e054-4fce-b307-d358d6dda3de",
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $10.000",
+        "amount": "10000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-04-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.715Z",
+        "updatedAt": "2026-09-28T22:19:29.732Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "amount": "11000.00",
+      "readyTariff": {
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "className": "Ladys Tango - Gabriela P.",
+        "amount": "11000.00",
+        "validFrom": "2025-05-01",
+        "validTo": "2025-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-05-01",
+            "validTo": "2025-06-30",
+            "amount": "11000.00",
+            "sourceRows": "57, 70"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $11.000"
+      },
+      "dbTariff": {
+        "id": "bf30c76e-1c76-4865-a2f8-6dfca3c8c8eb",
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $11.000",
+        "amount": "11000.00",
+        "validFrom": "2025-05-01",
+        "validTo": "2025-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.745Z",
+        "updatedAt": "2026-09-28T22:19:29.765Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+      "className": "Ladys Tango - Gabriela P.",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "className": "Ladys Tango - Gabriela P.",
+        "amount": "20000.00",
+        "validFrom": "2025-07-01",
+        "validTo": "2025-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-07-01",
+            "validTo": "2025-07-31",
+            "amount": "20000.00",
+            "sourceRows": "83"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "1cc0b2c3-cd83-432b-a4a5-d7008819c3c6",
+        "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
+        "name": "Histórica - Ladys Tango - Gabriela P. - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-07-01",
+        "validTo": "2025-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.778Z",
+        "updatedAt": "2026-09-28T22:19:29.796Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+      "className": "Mambo en parejas",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+        "className": "Mambo en parejas",
+        "amount": "15000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-02-01",
+            "validTo": "2026-02-28",
+            "amount": "15000.00",
+            "sourceRows": "126"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Mambo en parejas - 2026 - $15.000"
+      },
+      "dbTariff": {
+        "id": "cba38891-1127-43ad-9dcc-7b8d2581d1c8",
+        "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+        "name": "Histórica - Mambo en parejas - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.809Z",
+        "updatedAt": "2026-09-28T22:19:29.828Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+      "className": "Mambo en parejas",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+        "className": "Mambo en parejas",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-03-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "134"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "145, 156"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Mambo en parejas - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "41fc1130-31df-4b19-94ae-8a83cc28cae7",
+        "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+        "name": "Histórica - Mambo en parejas - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.857Z",
+        "updatedAt": "2026-09-28T22:19:29.875Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+      "className": "Mambo en parejas",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+        "className": "Mambo en parejas",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "175"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Mambo en parejas - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "a191574a-3c02-40e3-927e-41be6b018d55",
+        "classId": "b96017bd-9ee1-4bde-ad35-ad961a78e5f5",
+        "name": "Histórica - Mambo en parejas - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.903Z",
+        "updatedAt": "2026-09-28T22:19:29.920Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+      "className": "Ritmos latinos y caribeños",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+        "className": "Ritmos latinos y caribeños",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "12"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ritmos latinos y caribeños - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "a5717945-007a-44b1-bdf4-686869052f4b",
+        "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+        "name": "Histórica - Ritmos latinos y caribeños - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.934Z",
+        "updatedAt": "2026-09-28T22:19:29.954Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+      "className": "Ritmos latinos y caribeños",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+        "className": "Ritmos latinos y caribeños",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-07-31",
+            "amount": "20000.00",
+            "sourceRows": "28, 43, 59, 72, 85"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Ritmos latinos y caribeños - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "a65d4710-3bcb-4e8c-aef4-a051fad1608a",
+        "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+        "name": "Histórica - Ritmos latinos y caribeños - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:29.966Z",
+        "updatedAt": "2026-09-28T22:19:29.985Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "className": "S.C Adultos (+18 años)",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "13"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Adultos (+18 años) - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "ed097626-3640-44b4-adc4-ac27eec79aee",
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "name": "Histórica - S.C Adultos (+18 años) - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.013Z",
+        "updatedAt": "2026-09-28T22:19:30.030Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "className": "S.C Adultos (+18 años)",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-04-30",
+            "amount": "20000.00",
+            "sourceRows": "29, 44"
+          },
+          {
+            "validFrom": "2025-05-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Adultos (+18 años) - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "86ea823d-1082-45eb-b0d1-d722679d298d",
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "name": "Histórica - S.C Adultos (+18 años) - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.043Z",
+        "updatedAt": "2026-10-01T20:19:01.736Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "className": "S.C Adultos (+18 años)",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Adultos (+18 años) - 2025 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+      },
+      "dbTariff": {
+        "id": "f60f5345-4d4c-446c-a52d-ac9b24884bde",
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "name": "Histórica - S.C Adultos (+18 años) - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:01.966Z",
+        "updatedAt": "2026-10-01T20:19:01.987Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "className": "S.C Adultos (+18 años)",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Adultos (+18 años) - 2026 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+      },
+      "dbTariff": {
+        "id": "0d10e405-d5a7-4a0e-b739-6c1487222fb5",
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "name": "Histórica - S.C Adultos (+18 años) - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.013Z",
+        "updatedAt": "2026-10-01T20:19:02.031Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "className": "S.C Adultos (+18 años)",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-07-01",
+            "validTo": "2026-07-31",
+            "amount": "15000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Adultos (+18 años) - 2026 - $15.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+      },
+      "dbTariff": {
+        "id": "d147d7ff-7103-4e02-bfa0-3d680a515107",
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "name": "Histórica - S.C Adultos (+18 años) - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.040Z",
+        "updatedAt": "2026-10-01T20:19:02.063Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "className": "S.C Adultos (+18 años)",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Adultos (+18 años) - 2026 - $40.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+      },
+      "dbTariff": {
+        "id": "e2f40f29-6daa-4756-8edf-af82fbb35730",
+        "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+        "name": "Histórica - S.C Adultos (+18 años) - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.094Z",
+        "updatedAt": "2026-10-01T20:19:02.111Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "className": "S.C Infantil (6-11 años)",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "7"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "22c0d8ba-2879-435c-8458-2ca064af6c80",
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.074Z",
+        "updatedAt": "2026-09-28T22:19:30.093Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "className": "S.C Infantil (6-11 años)",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-04-30",
+            "amount": "20000.00",
+            "sourceRows": "23, 38"
+          },
+          {
+            "validFrom": "2025-05-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "796a2823-cc0c-4b39-acd8-eb381b088209",
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.104Z",
+        "updatedAt": "2026-10-01T20:19:01.752Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "className": "S.C Infantil (6-11 años)",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+      },
+      "dbTariff": {
+        "id": "f2089824-1e87-48e8-a86d-fa7d9d8bb294",
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.124Z",
+        "updatedAt": "2026-10-01T20:19:02.142Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "className": "S.C Infantil (6-11 años)",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+      },
+      "dbTariff": {
+        "id": "54466e23-901a-474c-b308-1005e6c2e4a1",
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.152Z",
+        "updatedAt": "2026-10-01T20:19:02.174Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "className": "S.C Infantil (6-11 años)",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-07-01",
+            "validTo": "2026-07-31",
+            "amount": "15000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $15.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+      },
+      "dbTariff": {
+        "id": "4821b330-fd0c-465b-aac1-e455c25eafef",
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.201Z",
+        "updatedAt": "2026-10-01T20:19:02.218Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "className": "S.C Infantil (6-11 años)",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $40.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+      },
+      "dbTariff": {
+        "id": "fc32f429-9816-4dd8-b6c6-52dfc093666f",
+        "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+        "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.231Z",
+        "updatedAt": "2026-10-01T20:19:02.250Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "className": "S.C Juvenil (12-17 años)",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "15"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "ac03ca64-6890-458f-bb88-4e14644cf5d2",
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.136Z",
+        "updatedAt": "2026-09-28T22:19:30.154Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "className": "S.C Juvenil (12-17 años)",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-04-30",
+            "amount": "20000.00",
+            "sourceRows": "31, 46"
+          },
+          {
+            "validFrom": "2025-05-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "3779694f-c15e-4e36-b381-d91f46f32549",
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.166Z",
+        "updatedAt": "2026-10-01T20:19:01.782Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "className": "S.C Juvenil (12-17 años)",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+      },
+      "dbTariff": {
+        "id": "7fe71911-f958-40cf-bc93-af63df84e5af",
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.278Z",
+        "updatedAt": "2026-10-01T20:19:02.298Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "className": "S.C Juvenil (12-17 años)",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+      },
+      "dbTariff": {
+        "id": "bc4b4bb2-b26e-498b-96a9-2439361bc017",
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.324Z",
+        "updatedAt": "2026-10-01T20:19:02.343Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "className": "S.C Juvenil (12-17 años)",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-07-01",
+            "validTo": "2026-07-31",
+            "amount": "15000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $15.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+      },
+      "dbTariff": {
+        "id": "61ba6810-4779-4628-9a55-85bcbe50a85b",
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.369Z",
+        "updatedAt": "2026-10-01T20:19:02.387Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "className": "S.C Juvenil (12-17 años)",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $40.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+      },
+      "dbTariff": {
+        "id": "d3762c37-63b7-460f-be9f-d8df59f8593c",
+        "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+        "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.400Z",
+        "updatedAt": "2026-10-01T20:19:02.418Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "className": "Street Int/Avanzado",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "14"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Street Int/Avanzado - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "b2f1e2ca-0630-4bab-a01c-a6bf43949a6d",
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "name": "Histórica - Street Int/Avanzado - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.197Z",
+        "updatedAt": "2026-09-28T22:19:30.217Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "className": "Street Int/Avanzado",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-04-30",
+            "amount": "20000.00",
+            "sourceRows": "30, 45"
+          },
+          {
+            "validFrom": "2025-05-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Street Int/Avanzado - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "22574083-c342-4af1-b475-ff40a4193088",
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "name": "Histórica - Street Int/Avanzado - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.228Z",
+        "updatedAt": "2026-10-01T20:19:01.802Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "className": "Street Int/Avanzado",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Street Int/Avanzado - 2025 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+      },
+      "dbTariff": {
+        "id": "9a5652e7-1099-4915-ba71-739135ec556c",
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "name": "Histórica - Street Int/Avanzado - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.432Z",
+        "updatedAt": "2026-10-01T20:19:02.442Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "className": "Street Int/Avanzado",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Street Int/Avanzado - 2026 - $30.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+      },
+      "dbTariff": {
+        "id": "9444740f-d590-4310-a9e6-afff4f301224",
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "name": "Histórica - Street Int/Avanzado - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-06-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.464Z",
+        "updatedAt": "2026-10-01T20:19:02.482Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "className": "Street Int/Avanzado",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-07-01",
+            "validTo": "2026-07-31",
+            "amount": "15000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Street Int/Avanzado - 2026 - $15.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+      },
+      "dbTariff": {
+        "id": "2d651fdc-1dca-400f-8dab-efe75ef29ade",
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "name": "Histórica - Street Int/Avanzado - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-07-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.494Z",
+        "updatedAt": "2026-10-01T20:19:02.512Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "className": "Street Int/Avanzado",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": [],
+            "source": "PO_CONFIRMATION",
+            "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Street Int/Avanzado - 2026 - $40.000",
+        "manual": true,
+        "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+      },
+      "dbTariff": {
+        "id": "5614c71c-e002-4142-b512-036adedb77ed",
+        "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+        "name": "Histórica - Street Int/Avanzado - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-10-01T20:19:02.525Z",
+        "updatedAt": "2026-10-01T20:19:02.545Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+      "className": "Tango (Inter/Avanz)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "className": "Tango (Inter/Avanz)",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "16"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Tango (Inter/Avanz) - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "3b329983-c407-46e5-8f5a-8e112688ca7a",
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "name": "Histórica - Tango (Inter/Avanz) - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.261Z",
+        "updatedAt": "2026-09-28T22:19:30.278Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+      "className": "Tango (Inter/Avanz)",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "className": "Tango (Inter/Avanz)",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": "32, 47, 60, 73, 86, 93"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Tango (Inter/Avanz) - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "bd91d623-5a66-45f6-9763-3bcc67dc6ab8",
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "name": "Histórica - Tango (Inter/Avanz) - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.291Z",
+        "updatedAt": "2026-09-28T22:19:30.310Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+      "className": "Tango (Inter/Avanz)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "className": "Tango (Inter/Avanz)",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-11-30",
+            "amount": "30000.00",
+            "sourceRows": "101, 108, 113"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Tango (Inter/Avanz) - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "b30eecb7-73ea-46df-8979-9d599a6db2d7",
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "name": "Histórica - Tango (Inter/Avanz) - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.322Z",
+        "updatedAt": "2026-09-28T22:19:30.341Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+      "className": "Tango (Inter/Avanz)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "className": "Tango (Inter/Avanz)",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-03-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "135"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "146, 157"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Tango (Inter/Avanz) - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "86843bf5-f1d7-4175-bb8d-f97019dc8a4c",
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "name": "Histórica - Tango (Inter/Avanz) - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.351Z",
+        "updatedAt": "2026-09-28T22:19:30.372Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+      "className": "Tango (Inter/Avanz)",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "className": "Tango (Inter/Avanz)",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "176"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Tango (Inter/Avanz) - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "52a9429d-f4ca-45cb-b754-2c1fc35ff6ed",
+        "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+        "name": "Histórica - Tango (Inter/Avanz) - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.384Z",
+        "updatedAt": "2026-09-28T22:19:30.404Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "23888530-c53d-4c40-94ee-982518e5d2f6",
+      "className": "Tango Inicial",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "23888530-c53d-4c40-94ee-982518e5d2f6",
+        "className": "Tango Inicial",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-03-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-03-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "136"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Tango Inicial - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "6994486c-c6c5-4256-b4d1-2c6af462fe0d",
+        "classId": "23888530-c53d-4c40-94ee-982518e5d2f6",
+        "name": "Histórica - Tango Inicial - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-03-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.433Z",
+        "updatedAt": "2026-09-28T22:19:30.450Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-02-01",
+            "validTo": "2025-02-28",
+            "amount": "15000.00",
+            "sourceRows": "17"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $15.000"
+      },
+      "dbTariff": {
+        "id": "d30c4d7f-5861-468f-a593-61509fb932db",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2025-02-01",
+        "validTo": "2025-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.462Z",
+        "updatedAt": "2026-09-28T22:19:30.481Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "20000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-03-01",
+            "validTo": "2025-08-31",
+            "amount": "20000.00",
+            "sourceRows": "33, 48, 61, 74, 87, 94"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $20.000"
+      },
+      "dbTariff": {
+        "id": "02f381ef-414d-4e75-9b9e-b657c693b7d9",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $20.000",
+        "amount": "20000.00",
+        "validFrom": "2025-03-01",
+        "validTo": "2025-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.493Z",
+        "updatedAt": "2026-09-28T22:19:30.513Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-10-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-09-01",
+            "validTo": "2025-10-31",
+            "amount": "30000.00",
+            "sourceRows": "102, 109"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $30.000"
+      },
+      "dbTariff": {
+        "id": "0cf97597-0cc8-4424-83f9-09112cbb0a39",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2025-09-01",
+        "validTo": "2025-10-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.524Z",
+        "updatedAt": "2026-09-28T22:19:30.541Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "25000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "25000.00",
+        "validFrom": "2025-11-01",
+        "validTo": "2025-11-30",
+        "sourcePeriods": [
+          {
+            "validFrom": "2025-11-01",
+            "validTo": "2025-11-30",
+            "amount": "25000.00",
+            "sourceRows": "114"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $25.000"
+      },
+      "dbTariff": {
+        "id": "86ee3fcb-eb94-4d7d-a0d0-0e82c5b96081",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2025 - $25.000",
+        "amount": "25000.00",
+        "validFrom": "2025-11-01",
+        "validTo": "2025-11-30",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.555Z",
+        "updatedAt": "2026-09-28T22:19:30.572Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-01-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-01-01",
+            "validTo": "2026-01-31",
+            "amount": "30000.00",
+            "sourceRows": "118"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "641bfe45-cdae-4050-a4d3-09cf6c5dcfd9",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-01-01",
+        "validTo": "2026-01-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.586Z",
+        "updatedAt": "2026-09-28T22:19:30.604Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "15000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "15000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-02-01",
+            "validTo": "2026-02-28",
+            "amount": "15000.00",
+            "sourceRows": "127"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $15.000"
+      },
+      "dbTariff": {
+        "id": "bbe14afa-6e91-48c7-9108-768e253b5656",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $15.000",
+        "amount": "15000.00",
+        "validFrom": "2026-02-01",
+        "validTo": "2026-02-28",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.618Z",
+        "updatedAt": "2026-09-28T22:19:30.636Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-03-01",
+            "validTo": "2026-03-31",
+            "amount": "30000.00",
+            "sourceRows": "137"
+          },
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "147, 158"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "4a619e92-8a47-481c-ba44-3934c97c41d7",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-03-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.648Z",
+        "updatedAt": "2026-09-28T22:19:30.666Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+      "className": "Teens (8 a 12 años)",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "className": "Teens (8 a 12 años)",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "177"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "24b8d991-5d15-429e-8621-45dc871f50fd",
+        "classId": "da4d15d9-c846-4098-8640-e95fd97c604f",
+        "name": "Histórica - Teens (8 a 12 años) - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.679Z",
+        "updatedAt": "2026-09-28T22:19:30.698Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+      "className": "Zumba - Profe Joselo",
+      "amount": "30000.00",
+      "readyTariff": {
+        "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+        "className": "Zumba - Profe Joselo",
+        "amount": "30000.00",
+        "validFrom": "2026-05-01",
+        "validTo": "2026-07-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-05-01",
+            "validTo": "2026-06-30",
+            "amount": "30000.00",
+            "sourceRows": "148, 159"
+          }
+        ],
+        "bridgedSpecialPeriods": [
+          {
+            "period": "2026-07",
+            "observedAmount": "15000.00",
+            "reason": "Medio mes o condición especial"
+          }
+        ],
+        "name": "Histórica - Zumba - Profe Joselo - 2026 - $30.000"
+      },
+      "dbTariff": {
+        "id": "89824a1f-9817-4e7e-9ccb-dec4cacaf971",
+        "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+        "name": "Histórica - Zumba - Profe Joselo - 2026 - $30.000",
+        "amount": "30000.00",
+        "validFrom": "2026-05-01",
+        "validTo": "2026-07-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.710Z",
+        "updatedAt": "2026-09-28T22:19:30.727Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    },
+    {
+      "result": "UNCHANGED",
+      "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+      "className": "Zumba - Profe Joselo",
+      "amount": "40000.00",
+      "readyTariff": {
+        "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+        "className": "Zumba - Profe Joselo",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "sourcePeriods": [
+          {
+            "validFrom": "2026-08-01",
+            "validTo": "2026-08-31",
+            "amount": "40000.00",
+            "sourceRows": "178"
+          }
+        ],
+        "bridgedSpecialPeriods": [],
+        "name": "Histórica - Zumba - Profe Joselo - 2026 - $40.000"
+      },
+      "dbTariff": {
+        "id": "aa569d36-d055-4f83-98c2-04ae62aa9605",
+        "classId": "5e8e8fd7-a08b-4443-8ba0-30ee263ffa1b",
+        "name": "Histórica - Zumba - Profe Joselo - 2026 - $40.000",
+        "amount": "40000.00",
+        "validFrom": "2026-08-01",
+        "validTo": "2026-08-31",
+        "status": "INACTIVE",
+        "createdAt": "2026-09-28T22:19:30.741Z",
+        "updatedAt": "2026-09-28T22:19:30.760Z"
+      },
+      "reason": "La tarifa existe exactamente igual en la BDD."
+    }
+  ],
+  "readyOverlaps": []
+}

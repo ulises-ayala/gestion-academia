@@ -209,6 +209,238 @@ const GAP_DECISIONS = {
 
 };
 
+const MANUAL_TARIFF_PERIODS = [
+  /*
+   * =======================================================
+   * S.C ADULTOS (+18 AÑOS)
+   * =======================================================
+   */
+  {
+    className: 'S.C Adultos (+18 años)',
+    validFrom: '2025-05-01',
+    validTo: '2025-08-31',
+    amount: '20000.00',
+    reason:
+      'PO confirmó cuota general de $20.000 entre mayo y agosto de 2025.',
+  },
+  {
+    className: 'S.C Adultos (+18 años)',
+    validFrom: '2025-09-01',
+    validTo: '2025-11-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025.',
+  },
+  {
+    className: 'S.C Adultos (+18 años)',
+    validFrom: '2026-01-01',
+    validTo: '2026-06-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre enero y junio de 2026.',
+  },
+  {
+    className: 'S.C Adultos (+18 años)',
+    validFrom: '2026-07-01',
+    validTo: '2026-07-31',
+    amount: '15000.00',
+    reason:
+      'PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026.',
+  },
+  {
+    className: 'S.C Adultos (+18 años)',
+    validFrom: '2026-08-01',
+    validTo: '2026-08-31',
+    amount: '40000.00',
+    reason:
+      'PO confirmó cuota general de $40.000 desde agosto de 2026.',
+  },
+
+  /*
+   * =======================================================
+   * S.C INFANTIL (6-11 AÑOS)
+   * =======================================================
+   */
+  {
+    className: 'S.C Infantil (6-11 años)',
+    validFrom: '2025-05-01',
+    validTo: '2025-08-31',
+    amount: '20000.00',
+    reason:
+      'PO confirmó cuota general de $20.000 entre mayo y agosto de 2025.',
+  },
+  {
+    className: 'S.C Infantil (6-11 años)',
+    validFrom: '2025-09-01',
+    validTo: '2025-11-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025.',
+  },
+  {
+    className: 'S.C Infantil (6-11 años)',
+    validFrom: '2026-01-01',
+    validTo: '2026-06-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre enero y junio de 2026.',
+  },
+  {
+    className: 'S.C Infantil (6-11 años)',
+    validFrom: '2026-07-01',
+    validTo: '2026-07-31',
+    amount: '15000.00',
+    reason:
+      'PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026.',
+  },
+  {
+    className: 'S.C Infantil (6-11 años)',
+    validFrom: '2026-08-01',
+    validTo: '2026-08-31',
+    amount: '40000.00',
+    reason:
+      'PO confirmó cuota general de $40.000 desde agosto de 2026.',
+  },
+
+  /*
+   * =======================================================
+   * S.C JUVENIL (12-17 AÑOS)
+   * =======================================================
+   */
+  {
+    className: 'S.C Juvenil (12-17 años)',
+    validFrom: '2025-05-01',
+    validTo: '2025-08-31',
+    amount: '20000.00',
+    reason:
+      'PO confirmó cuota general de $20.000 entre mayo y agosto de 2025.',
+  },
+  {
+    className: 'S.C Juvenil (12-17 años)',
+    validFrom: '2025-09-01',
+    validTo: '2025-11-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025.',
+  },
+  {
+    className: 'S.C Juvenil (12-17 años)',
+    validFrom: '2026-01-01',
+    validTo: '2026-06-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre enero y junio de 2026.',
+  },
+  {
+    className: 'S.C Juvenil (12-17 años)',
+    validFrom: '2026-07-01',
+    validTo: '2026-07-31',
+    amount: '15000.00',
+    reason:
+      'PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026.',
+  },
+  {
+    className: 'S.C Juvenil (12-17 años)',
+    validFrom: '2026-08-01',
+    validTo: '2026-08-31',
+    amount: '40000.00',
+    reason:
+      'PO confirmó cuota general de $40.000 desde agosto de 2026.',
+  },
+
+  /*
+   * =======================================================
+   * STREET INT/AVANZADO
+   * =======================================================
+   */
+  {
+    className: 'Street Int/Avanzado',
+    validFrom: '2025-05-01',
+    validTo: '2025-08-31',
+    amount: '20000.00',
+    reason:
+      'PO confirmó cuota general de $20.000 entre mayo y agosto de 2025.',
+  },
+  {
+    className: 'Street Int/Avanzado',
+    validFrom: '2025-09-01',
+    validTo: '2025-11-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025.',
+  },
+  {
+    className: 'Street Int/Avanzado',
+    validFrom: '2026-01-01',
+    validTo: '2026-06-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota general de $30.000 entre enero y junio de 2026.',
+  },
+  {
+    className: 'Street Int/Avanzado',
+    validFrom: '2026-07-01',
+    validTo: '2026-07-31',
+    amount: '15000.00',
+    reason:
+      'PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026.',
+  },
+  {
+    className: 'Street Int/Avanzado',
+    validFrom: '2026-08-01',
+    validTo: '2026-08-31',
+    amount: '40000.00',
+    reason:
+      'PO confirmó cuota general de $40.000 desde agosto de 2026.',
+  },
+
+  /*
+   * =======================================================
+   * LADYS KIZZ
+   * =======================================================
+   */
+  {
+    className: 'Ladys Kizz',
+    validFrom: '2025-08-01',
+    validTo: '2025-08-31',
+    amount: '20000.00',
+    reason:
+      'PO confirmó que Ladys Kizz utilizaba la misma cuota base general que las demás clases.',
+  },
+  {
+    className: 'Ladys Kizz',
+    validFrom: '2025-09-01',
+    validTo: '2025-11-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota base general de $30.000. Los importes menores eran descuentos particulares.',
+  },
+  {
+    className: 'Ladys Kizz',
+    validFrom: '2026-01-01',
+    validTo: '2026-06-30',
+    amount: '30000.00',
+    reason:
+      'PO confirmó cuota base general de $30.000. Los descuentos aplicados por Fabi no modifican la tarifa.',
+  },
+  {
+    className: 'Ladys Kizz',
+    validFrom: '2026-07-01',
+    validTo: '2026-07-31',
+    amount: '15000.00',
+    reason:
+      'PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026.',
+  },
+  {
+    className: 'Ladys Kizz',
+    validFrom: '2026-08-01',
+    validTo: '2026-08-31',
+    amount: '40000.00',
+    reason:
+      'PO confirmó cuota base general de $40.000 desde agosto de 2026.',
+  },
+];
+
 function normalizeKey(value) {
   return String(value ?? '')
     .normalize('NFD')
@@ -462,6 +694,124 @@ function groupByClass(items) {
   }
 
   return groups;
+}
+
+function buildClassIndex(items) {
+  const index =
+    new Map();
+
+  for (const item of items) {
+    if (
+      !item.classId ||
+      !item.className
+    ) {
+      continue;
+    }
+
+    index.set(
+      normalizeKey(item.className),
+      {
+        classId:
+          item.classId,
+
+        className:
+          item.className,
+      },
+    );
+  }
+
+  return index;
+}
+
+function buildManualTariffs(
+  manualPeriods,
+  classIndex,
+) {
+  const tariffs = [];
+  const unresolved = [];
+
+  for (const period of manualPeriods) {
+    const academicClass =
+      classIndex.get(
+        normalizeKey(
+          period.className,
+        ),
+      );
+
+    if (!academicClass) {
+      unresolved.push({
+        ...period,
+        error:
+          'CLASS_NOT_FOUND',
+      });
+
+      continue;
+    }
+
+    tariffs.push({
+      classId:
+        academicClass.classId,
+
+      className:
+        academicClass.className,
+
+      amount:
+        normalizeAmount(
+          period.amount,
+        ),
+
+      validFrom:
+        period.validFrom,
+
+      validTo:
+        period.validTo,
+
+      sourcePeriods: [
+        {
+          validFrom:
+            period.validFrom,
+
+          validTo:
+            period.validTo,
+
+          amount:
+            normalizeAmount(
+              period.amount,
+            ),
+
+          sourceRows:
+            [],
+
+          source:
+            'PO_CONFIRMATION',
+
+          reason:
+            period.reason,
+        },
+      ],
+
+      bridgedSpecialPeriods:
+        [],
+
+      name:
+        tariffName(
+          academicClass.className,
+          period.validFrom,
+          period.amount,
+        ),
+
+      manual:
+        true,
+
+      manualReason:
+        period.reason,
+    });
+  }
+
+  return {
+    tariffs,
+    unresolved,
+  };
 }
 
 /* =========================================================
@@ -1264,7 +1614,42 @@ async function main() {
       ...result.alerts,
     );
   }
+  const classIndex =
+  buildClassIndex(
+    items,
+  );
 
+  const manual =
+    buildManualTariffs(
+      MANUAL_TARIFF_PERIODS,
+      classIndex,
+    );
+
+  if (
+    manual.unresolved.length > 0
+  ) {
+    console.log('');
+    console.log(
+      '❌ Períodos manuales con clase no encontrada:',
+    );
+
+    for (
+      const item
+      of manual.unresolved
+    ) {
+      console.log(
+        `- ${item.className} | ${item.validFrom} → ${item.validTo}`,
+      );
+    }
+
+    throw new Error(
+      'No se pudieron resolver todas las clases de los períodos manuales.',
+    );
+  }
+
+  finalTariffs.push(
+    ...manual.tariffs,
+  );
   const postProcessed =
     consolidateFinalTariffs(
       finalTariffs,
@@ -1337,6 +1722,10 @@ async function main() {
     }`,
   );
 
+  console.log(
+  `🧑‍💼 Períodos confirmados por PO: ${manual.tariffs.length}`,
+);
+
   /* =======================================================
    * JSON
    * ======================================================= */
@@ -1387,6 +1776,9 @@ async function main() {
 
       conflictingOverlaps:
         postProcessed.overlaps.length,
+      manualTariffPeriods:
+        manual.tariffs.length,
+
     },
 
     tariffs:
@@ -1426,6 +1818,29 @@ async function main() {
 
     overlaps:
       postProcessed.overlaps,
+
+    manualTariffPeriods:
+      manual.tariffs.map(
+        (item) => ({
+          classId:
+            item.classId,
+
+          className:
+            item.className,
+
+          amount:
+            item.amount,
+
+          validFrom:
+            item.validFrom,
+
+          validTo:
+            item.validTo,
+
+          reason:
+            item.manualReason,
+        }),
+      ),
   };
 
   await fs.writeFile(
@@ -1650,6 +2065,14 @@ async function main() {
 
         Cantidad:
           postProcessed.overlaps.length,
+      },
+
+      {
+        Métrica:
+          'Períodos confirmados por PO',
+
+        Cantidad:
+          manual.tariffs.length,
       },
     ]),
     'Resumen',

@@ -1,0 +1,3656 @@
+{
+  "generatedAt": "2026-10-01T20:25:34.852Z",
+  "historicalCutoff": "2026-08-31",
+  "source": {
+    "enrollments": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\enrollments-current.json",
+    "tariffAnalysis": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\historical-tariffs-analysis.json",
+    "tariffReady": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\historical-tariffs-ready.json",
+    "historicalExcel": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\scripts\\data\\Historial_Carmesi_2025_2026_NORMALIZADO.xlsx"
+  },
+  "summary": {
+    "enrollmentCount": 338,
+    "tariffAnalysisItems": 97,
+    "readyTariffCount": 93,
+    "noTariffClassCount": 8,
+    "noTariffEnrollmentCount": 107,
+    "noTariffStudentCount": 76,
+    "diagnosis": [
+      {
+        "key": "NO_SOURCE_EVIDENCE",
+        "count": 4
+      },
+      {
+        "key": "WORKBOOK_EVIDENCE_ONLY",
+        "count": 2
+      },
+      {
+        "key": "POSSIBLE_ALIAS",
+        "count": 1
+      },
+      {
+        "key": "SPECIAL_PROGRAM_REVIEW",
+        "count": 1
+      }
+    ]
+  },
+  "classes": [
+    {
+      "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+      "className": "S&B Parejas",
+      "enrollmentCount": 26,
+      "studentCount": 26,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "firstEndDate": null,
+      "lastEndDate": null,
+      "statusCounts": [
+        {
+          "key": "ACTIVE",
+          "count": 17
+        },
+        {
+          "key": "ENDED",
+          "count": 9
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "87dbe8b1-3837-47f1-9fef-da9a8be9f9ab",
+          "studentId": "6617b5c0-3cc9-4197-b7ed-d9bd279a674f",
+          "studentName": "AMARILLA LEONARDO",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "b59c5cbd-ab51-4f86-8b7b-a5313225bd74",
+          "studentId": "e6d631b5-ec70-460b-9835-66eabfb66176",
+          "studentName": "LOMBARDO EVA NANCY",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "6ca889ba-7c4e-4a04-be82-051b975c34e8",
+          "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+          "studentName": "SORAIRE NATALIA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "d88067e7-c807-43c9-9ac1-6b7d13b25a62",
+          "studentId": "1e53518b-8e46-4670-a5c6-72c101b35134",
+          "studentName": "BRIGNOLE FLORENCIA ANDREA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "5f312c32-1003-4ba2-9f07-8eba908f7575",
+          "studentId": "808556f1-82dc-46fb-b058-5f13582c4b8f",
+          "studentName": "ROJAS MARIA DEL CARMEN",
+          "status": "ACTIVE",
+          "startDate": "2026-08-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "9bc74f98-3d58-4076-822a-c804c7834e44",
+          "studentId": "c6108d50-a4d4-4193-8305-c3e06b7eaf17",
+          "studentName": "CANDIA ELIZABETH",
+          "status": "ENDED",
+          "startDate": "2026-05-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "127ea4cd-e6ec-4e49-beb6-8579b2748cb3",
+          "studentId": "16443c47-5f93-49d5-8fc2-0b8e8eed17a6",
+          "studentName": "RAMIREZ CELESTE",
+          "status": "ENDED",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "fe49655f-c53a-4cbf-b5b8-ebd4ff95f82d",
+          "studentId": "4266485a-8c0a-41b5-bc21-8b3c0b5c0123",
+          "studentName": "MEDINA PATIÑO YANI",
+          "status": "ENDED",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "5dfe6754-f87d-4f3f-9d4b-24317f65d117",
+          "studentId": "e775ae54-82f6-431f-8b77-e66485f4d4d8",
+          "studentName": "FLORES GUADALUPE",
+          "status": "ACTIVE",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "ed47d74a-5fc4-4fe7-a4c3-b615b67eef6b",
+          "studentId": "15dccc6f-7cc5-475b-9704-768d3f3b7bcb",
+          "studentName": "BAEZ MARINA",
+          "status": "ACTIVE",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "540374b9-6a2f-440e-b518-454882228a89",
+          "studentId": "af5dabec-f6a6-4cea-b71b-924ce22443c8",
+          "studentName": "GALEANO SILVIA",
+          "status": "ENDED",
+          "startDate": "2026-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "63742952-9ce9-4879-8c78-22dafd4f4255",
+          "studentId": "b2566873-7ef4-4c30-b0b8-6f71f092436e",
+          "studentName": "ROJAS LUCAS SEBASTIAN",
+          "status": "ACTIVE",
+          "startDate": "2026-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "450dab8e-cc4b-4cb6-89e0-2f0ba8e226aa",
+          "studentId": "e3d42e74-cf95-499a-9ad2-35d0abf7e500",
+          "studentName": "LASPIUR JORGE",
+          "status": "ACTIVE",
+          "startDate": "2025-11-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "f8f879e8-e7b6-4baf-bd3a-aac9b6b33dd0",
+          "studentId": "03d84eb6-75ca-4c8e-b8a7-b1afa2506408",
+          "studentName": "VIERA ANALIA",
+          "status": "ENDED",
+          "startDate": "2025-09-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "bcf0f2e9-4a11-457c-8eb7-e82fd4b7b776",
+          "studentId": "fc282a39-09ec-494f-a177-ccba97d90797",
+          "studentName": "SALINAS VIVIANA",
+          "status": "ACTIVE",
+          "startDate": "2025-09-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "c94467c6-5442-46b1-90b4-58e440fd15eb",
+          "studentId": "d820f750-e7f6-4311-a204-a6994384d585",
+          "studentName": "RIVAROLA MARTIN",
+          "status": "ACTIVE",
+          "startDate": "2025-05-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "cc8729c0-5918-4543-83b7-4f3efc32a84b",
+          "studentId": "9890b644-50c6-47a6-9ff4-ced2356cfa6b",
+          "studentName": "BARRETO FANNY",
+          "status": "ACTIVE",
+          "startDate": "2025-04-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "d1664f68-dc81-419f-8dde-abe37a9d2f61",
+          "studentId": "43bb40a7-3e58-417c-b486-0c4ddb7822ff",
+          "studentName": "ORRABALIS ELIDA",
+          "status": "ENDED",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "a55f1d83-95b0-4ed1-82c1-915f89f741ae",
+          "studentId": "a4030ecd-e658-4a4d-a015-e7d9302e6d58",
+          "studentName": "BENITEZ DANIEL",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "bc836422-a9d6-44b8-92af-13497e61914f",
+          "studentId": "997c0e8e-9152-449a-8ffb-9b68a7536349",
+          "studentName": "CABRERA CLAUDIA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "aaac8451-d66f-4bf5-9077-2b1f0e587d77",
+          "studentId": "7f5c0637-0f59-4fbd-b65f-cf09cbb25687",
+          "studentName": "PAREDES ROMINA",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "72e87f7c-1020-4c21-b772-75ca12af2bdb",
+          "studentId": "1ca2cd22-ac1c-4627-a0f4-8a1ce8bce0be",
+          "studentName": "CASTILLO CAMILA",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "c952a405-2f19-4f97-839a-4b3b690afac7",
+          "studentId": "5f9946ba-3eea-444c-b8aa-664d7686fe6d",
+          "studentName": "ARMOA CRISTIAN",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "c8ecc0d9-c8fb-49a7-83a7-c5f7b060eb0d",
+          "studentId": "14fa3093-57f8-435a-8f8f-abc4279c6f26",
+          "studentName": "PEREIRA NORA HAIRE",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "262b19f7-109b-400e-a06f-3f1cf24a4b9e",
+          "studentId": "f2aae84b-e156-4d9d-81f3-d50a56e02255",
+          "studentName": "SORABELLA ARIEL",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "14b43222-dc42-4861-bfbe-9a85f60718cb",
+          "studentId": "97e34e29-16e6-4644-aa44-0f7c88dba8aa",
+          "studentName": "MEDINA PATRICIA",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        }
+      ],
+      "diagnosis": "NO_SOURCE_EVIDENCE",
+      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [],
+      "readyAliasCandidates": [],
+      "workbookMatches": []
+    },
+    {
+      "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "className": "Clase kizomba",
+      "enrollmentCount": 22,
+      "studentCount": 22,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "firstEndDate": null,
+      "lastEndDate": null,
+      "statusCounts": [
+        {
+          "key": "ACTIVE",
+          "count": 15
+        },
+        {
+          "key": "ENDED",
+          "count": 7
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "8268394f-2ab3-48da-b9d6-6ad804dbd54d",
+          "studentId": "e3d42e74-cf95-499a-9ad2-35d0abf7e500",
+          "studentName": "LASPIUR JORGE",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "9e1271ca-0e5e-48ab-a1c1-cfc70bca45f7",
+          "studentId": "4266485a-8c0a-41b5-bc21-8b3c0b5c0123",
+          "studentName": "MEDINA PATIÑO YANI",
+          "status": "ENDED",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "1c2ab5eb-df2c-4f3d-8c3b-f76dd4a19127",
+          "studentId": "15dccc6f-7cc5-475b-9704-768d3f3b7bcb",
+          "studentName": "BAEZ MARINA",
+          "status": "ACTIVE",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "95b5e446-442a-402b-963a-6e2cc6b507ff",
+          "studentId": "61451526-5906-420c-9d49-ac14b3e7e1e7",
+          "studentName": "DELGADO MARIA CARLA",
+          "status": "ENDED",
+          "startDate": "2026-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "a3f629d5-a079-4e65-9a7b-6b63e52a72b1",
+          "studentId": "46c94200-44c3-4d33-8a1c-3b5cbc7d6ef8",
+          "studentName": "MEDINA CECILIA",
+          "status": "ACTIVE",
+          "startDate": "2025-11-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "ea2fad69-bde2-4df0-a9e1-f648dc238fa3",
+          "studentId": "03d84eb6-75ca-4c8e-b8a7-b1afa2506408",
+          "studentName": "VIERA ANALIA",
+          "status": "ENDED",
+          "startDate": "2025-09-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "b709dfc8-6ba3-45ab-93b2-06fb2d057193",
+          "studentId": "6617b5c0-3cc9-4197-b7ed-d9bd279a674f",
+          "studentName": "AMARILLA LEONARDO",
+          "status": "ACTIVE",
+          "startDate": "2025-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "efb610bc-02e8-42c2-afc6-30fcac84da8b",
+          "studentId": "d820f750-e7f6-4311-a204-a6994384d585",
+          "studentName": "RIVAROLA MARTIN",
+          "status": "ACTIVE",
+          "startDate": "2025-05-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "ca1cd0bd-3e50-4bb2-b686-22c3c1dbf386",
+          "studentId": "5fe8147b-071b-49b8-982d-9841570d3df4",
+          "studentName": "GONZALEZ MONICA",
+          "status": "ENDED",
+          "startDate": "2025-04-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "d8556163-6a96-47cc-93f7-8587bf14e441",
+          "studentId": "9890b644-50c6-47a6-9ff4-ced2356cfa6b",
+          "studentName": "BARRETO FANNY",
+          "status": "ACTIVE",
+          "startDate": "2025-04-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "2ee1659e-5758-4b92-aea7-fb3c0c0bbc59",
+          "studentId": "43bb40a7-3e58-417c-b486-0c4ddb7822ff",
+          "studentName": "ORRABALIS ELIDA",
+          "status": "ENDED",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "130ff8fb-70c3-4760-9960-b27893a990f1",
+          "studentId": "a5f67efa-a60d-465c-996d-acc357010e3b",
+          "studentName": "BERNAL FATIMA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "04a8bd30-efff-4095-b38d-3fcdaacd90df",
+          "studentId": "a4030ecd-e658-4a4d-a015-e7d9302e6d58",
+          "studentName": "BENITEZ DANIEL",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "efe1c7c5-34ea-4e9d-8ac2-c39b239233c7",
+          "studentId": "bbfad32d-4feb-40a4-8fea-90c12297c9d7",
+          "studentName": "BARRIOS JUDITH",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "dfb1c37c-4de2-4394-9e2e-7dc9c76c5110",
+          "studentId": "997c0e8e-9152-449a-8ffb-9b68a7536349",
+          "studentName": "CABRERA CLAUDIA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "82315bd5-196e-40a5-a82b-684ed52efbbd",
+          "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+          "studentName": "SORAIRE NATALIA",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "1c1d9ab6-ca28-46f0-89ad-02fe45872ee9",
+          "studentId": "7f5c0637-0f59-4fbd-b65f-cf09cbb25687",
+          "studentName": "PAREDES ROMINA",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "24563f81-b88c-4a31-87dc-f99e680794b8",
+          "studentId": "14fa3093-57f8-435a-8f8f-abc4279c6f26",
+          "studentName": "PEREIRA NORA HAIRE",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "2c9f5f00-40f6-4cee-a33a-e30d05c08792",
+          "studentId": "e6d631b5-ec70-460b-9835-66eabfb66176",
+          "studentName": "LOMBARDO EVA NANCY",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "97924a23-2721-45df-89ea-629dccf4073a",
+          "studentId": "18c12bef-a4e7-4fc1-854a-91c8347c48f9",
+          "studentName": "GIMENEZ DELFINA",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "446d48bc-b72a-434c-a9ff-b2d930dba75f",
+          "studentId": "f2aae84b-e156-4d9d-81f3-d50a56e02255",
+          "studentName": "SORABELLA ARIEL",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "677e814f-65da-4baa-bfd0-d67c2d94dc17",
+          "studentId": "97e34e29-16e6-4644-aa44-0f7c88dba8aa",
+          "studentName": "MEDINA PATRICIA",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        }
+      ],
+      "diagnosis": "NO_SOURCE_EVIDENCE",
+      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "15000.00",
+          "validFrom": "2025-02-01",
+          "validTo": "2025-02-28",
+          "reason": "La academia confirmó tarifa general de $15.000 para febrero de 2025. En marzo cambió a $20.000."
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "20000.00",
+          "validFrom": "2025-04-01",
+          "validTo": "2025-08-31",
+          "reason": null
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "21000.00",
+          "validFrom": "2025-09-01",
+          "validTo": "2025-09-30",
+          "reason": "Importe particular o condición especial; no representa la tarifa general."
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "30000.00",
+          "validFrom": "2026-02-01",
+          "validTo": "2026-03-31",
+          "reason": "La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial."
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "30000.00",
+          "validFrom": "2026-05-01",
+          "validTo": "2026-06-30",
+          "reason": null
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "15000.00",
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "reason": "Medio mes o condición especial"
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "40000.00",
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "reason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000."
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "7500.00",
+          "validFrom": "2025-02-01",
+          "validTo": "2025-02-28",
+          "reason": "La academia confirmó que la cuota general de febrero de 2025 era $15.000; $7.500 correspondía a una condición especial."
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "20000.00",
+          "validFrom": "2025-03-01",
+          "validTo": "2025-08-31",
+          "reason": null
+        },
+        {
+          "score": 0.25,
+          "matchedValue": "Clase femenino Sofi",
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "30000.00",
+          "validFrom": "2025-09-01",
+          "validTo": "2025-10-31",
+          "reason": "Importe particular o condición especial; no representa la tarifa general."
+        }
+      ],
+      "readyAliasCandidates": [
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "score": 0.25,
+          "tariffCount": 6,
+          "tariffs": [
+            {
+              "amount": "15000.00",
+              "validFrom": "2025-02-01",
+              "validTo": "2025-02-28"
+            },
+            {
+              "amount": "20000.00",
+              "validFrom": "2025-03-01",
+              "validTo": "2025-09-30"
+            },
+            {
+              "amount": "30000.00",
+              "validFrom": "2025-10-01",
+              "validTo": "2025-10-31"
+            },
+            {
+              "amount": "25000.00",
+              "validFrom": "2025-11-01",
+              "validTo": "2026-02-28"
+            },
+            {
+              "amount": "30000.00",
+              "validFrom": "2026-03-01",
+              "validTo": "2026-07-31"
+            },
+            {
+              "amount": "40000.00",
+              "validFrom": "2026-08-01",
+              "validTo": "2026-08-31"
+            }
+          ]
+        }
+      ],
+      "workbookMatches": []
+    },
+    {
+      "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+      "className": "Hells",
+      "enrollmentCount": 22,
+      "studentCount": 22,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "firstEndDate": null,
+      "lastEndDate": null,
+      "statusCounts": [
+        {
+          "key": "ENDED",
+          "count": 15
+        },
+        {
+          "key": "ACTIVE",
+          "count": 7
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "84d5dce8-cc10-439c-b293-30c09836281f",
+          "studentId": "132b2658-c520-4be0-9f93-93827720fdf1",
+          "studentName": "RIVAS ROCIO",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "72d15c2a-eebf-4405-bfc3-5d51f5ffba35",
+          "studentId": "df2e9a16-b155-43e6-9ffd-e70c5026481b",
+          "studentName": "BENEGAS NEYDES",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "b1fbc378-9af1-4df1-9cb4-887eb553c2f0",
+          "studentId": "4d6a3455-1ce6-44d8-846e-382899d35c73",
+          "studentName": "BERNAL MARIA ROSA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "d1c77770-1c9b-47e9-8832-654f619542d9",
+          "studentId": "79224b93-2a40-4d0e-85ee-caec0d3c3a01",
+          "studentName": "FERNANDESZ JULIETA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "79589376-db43-47df-9981-27dff47fe0ab",
+          "studentId": "91b5b534-5e64-46fe-8cf2-af0d6cd19375",
+          "studentName": "REYES MAIA",
+          "status": "ENDED",
+          "startDate": "2026-08-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "32b9d96f-4358-4e5b-8ea6-ec633173debc",
+          "studentId": "832092f8-877d-4980-81c8-3a992b980b23",
+          "studentName": "SILVERA ILEANA",
+          "status": "ENDED",
+          "startDate": "2026-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "2a7a923e-a080-4301-aedc-688b439c9ead",
+          "studentId": "7f6b993b-3935-4a20-b017-75a8c8956f48",
+          "studentName": "RUIZ DIAZ FLORENCIA",
+          "status": "ENDED",
+          "startDate": "2026-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "9f4b0bb6-50a6-4d18-8bde-a8c5fb3ca426",
+          "studentId": "394dab71-975b-44a5-97a1-9f2771beb52e",
+          "studentName": "MONTIEL KAREN",
+          "status": "ENDED",
+          "startDate": "2026-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "f4916477-ff25-4c5a-bfcf-bb3fee6aef98",
+          "studentId": "9199d897-0441-41ef-9396-67575b644e7e",
+          "studentName": "GIMENEZ KIARA",
+          "status": "ENDED",
+          "startDate": "2026-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "2044807e-eb67-47a3-b855-a1d05f25ee7e",
+          "studentId": "4ab8b2c4-86d0-4e63-b14c-7b4ef7db62f7",
+          "studentName": "GALEANO ANAPAULA",
+          "status": "ENDED",
+          "startDate": "2026-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "5430c4a2-0416-496e-94dc-e51b4ef6e3f9",
+          "studentId": "332b258e-69a8-4cb7-b1cc-75971f504cd3",
+          "studentName": "ELLI JOAQUINA",
+          "status": "ENDED",
+          "startDate": "2026-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "4ba1794e-c421-43e1-becc-6afb77d55034",
+          "studentId": "02e64ebe-65ee-419e-a706-e27ce4705d26",
+          "studentName": "RIOS MARIANA",
+          "status": "ENDED",
+          "startDate": "2026-05-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "6bda8b66-adbf-4433-bb0b-d0838c920543",
+          "studentId": "088e7435-5cea-4497-a371-6b11fce3c045",
+          "studentName": "BAY LAURA",
+          "status": "ENDED",
+          "startDate": "2026-05-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "ce0188a5-edb0-4d96-b5c2-a4e2914a60cf",
+          "studentId": "6e71dbbc-029d-45d6-affc-c68fa0e5ccd2",
+          "studentName": "DE LOS SANTOS MELISA",
+          "status": "ENDED",
+          "startDate": "2025-10-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "e5bd086a-e46f-4b28-848e-f247e46824d6",
+          "studentId": "cd7321aa-45a3-4fa8-aa96-79f146db1290",
+          "studentName": "CENTURION YAMILA",
+          "status": "ENDED",
+          "startDate": "2025-10-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "304619e4-ed41-4819-958e-f5b6b08a21c6",
+          "studentId": "abf306d4-83d7-4467-aa81-6cda65fe4c1d",
+          "studentName": "CACERES FERNANDEZ AGOSTINA",
+          "status": "ENDED",
+          "startDate": "2025-10-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "36f41804-f7df-41f0-9148-47b49b4b07ea",
+          "studentId": "bc06e985-bd2a-4319-bf66-8880c6e4e46d",
+          "studentName": "AQUINO FLORENCIA",
+          "status": "ENDED",
+          "startDate": "2025-10-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "e212c100-cbcc-4a05-a571-3e64a08f1b1f",
+          "studentId": "8456df92-458f-4081-9a21-e926ef940a0e",
+          "studentName": "SCHAAB SABRINA",
+          "status": "ACTIVE",
+          "startDate": "2025-10-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "4fffa97b-98c9-4b9e-9217-2b663efbb14a",
+          "studentId": "afec60cd-8a2d-42c3-8730-ddc64ac4bfcf",
+          "studentName": "LUGO MAIRA",
+          "status": "ACTIVE",
+          "startDate": "2025-10-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "34bd6178-6c00-4210-a5f0-00b16dcb0d77",
+          "studentId": "955a0573-f1c3-4810-84bd-f657fd6b734c",
+          "studentName": "DEL TURCO RITA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "bb2e3df5-386f-481e-ae65-6d7fab8b036a",
+          "studentId": "27152b91-3376-464f-b17b-b011d278918f",
+          "studentName": "SORAIRE NOELIA",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "38fba932-bc81-4739-bdfe-7bd8df909f0c",
+          "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+          "studentName": "SORAIRE NATALIA",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        }
+      ],
+      "diagnosis": "NO_SOURCE_EVIDENCE",
+      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [],
+      "readyAliasCandidates": [],
+      "workbookMatches": []
+    },
+    {
+      "classId": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+      "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+      "enrollmentCount": 16,
+      "studentCount": 16,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "firstEndDate": null,
+      "lastEndDate": null,
+      "statusCounts": [
+        {
+          "key": "ACTIVE",
+          "count": 16
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "11c8cc73-13be-439a-a8ff-f95a57684f45",
+          "studentId": "bc06e985-bd2a-4319-bf66-8880c6e4e46d",
+          "studentName": "AQUINO FLORENCIA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "b1bfcb37-5405-4822-94fe-9f84bfc44bab",
+          "studentId": "b48cbe49-b182-45ec-a845-5a64ef0ab8b7",
+          "studentName": "CESPEDES SOLEDAD",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "d5ff245b-9346-439a-8f4f-da707c25fb15",
+          "studentId": "21c54b2e-1542-4f84-a96d-1758f848b973",
+          "studentName": "GONZALEZ ALEJANDRA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "5fe3c8b0-9f11-4116-9c4e-864857dd264a",
+          "studentId": "32a952d0-5c16-456e-be91-e928d6ca4eef",
+          "studentName": "BRITEZ MARIA ANGELICA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "26fd9e54-9a6a-4f07-85bd-2a7778561c78",
+          "studentId": "2d77e8b7-c2d6-472c-91b0-c3af17e916e7",
+          "studentName": "FLEITAS MARIA JOSE",
+          "status": "ACTIVE",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "f31bec5c-f1cb-471f-9151-3670c1fd52dc",
+          "studentId": "e775ae54-82f6-431f-8b77-e66485f4d4d8",
+          "studentName": "FLORES GUADALUPE",
+          "status": "ACTIVE",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "4209760c-fa9f-4ed9-a701-05ef616dbaf7",
+          "studentId": "61451526-5906-420c-9d49-ac14b3e7e1e7",
+          "studentName": "DELGADO MARIA CARLA",
+          "status": "ACTIVE",
+          "startDate": "2026-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "52a50c78-df99-4cd3-88ad-6a6fefea748a",
+          "studentId": "ba9de018-4dcf-4c09-931c-4d569ebdbe1f",
+          "studentName": "GUARE MATTEO NAVILA",
+          "status": "ACTIVE",
+          "startDate": "2026-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "a8ab5ac2-9879-4bcd-a5bb-d63726ea796a",
+          "studentId": "c9d07213-f8ad-40f2-b459-2be739cc05b7",
+          "studentName": "IRALA ALBA",
+          "status": "ACTIVE",
+          "startDate": "2025-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "e252aec7-2d70-4164-b895-d9267304411e",
+          "studentId": "e0e12c86-9b1d-4fd0-914a-62fc37f00dd1",
+          "studentName": "OVIEDO MAGALI",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "5f6d3dd5-1e91-40a4-91ce-b5d5cc52f42d",
+          "studentId": "a5f67efa-a60d-465c-996d-acc357010e3b",
+          "studentName": "BERNAL FATIMA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "aa4de275-e0ef-48ba-9fa3-ac09e7733d87",
+          "studentId": "fb345864-a1e9-4afe-bd89-f7afd399f849",
+          "studentName": "RAMIREZ AGUSTINA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "e58e1908-a9ac-4b7f-b7dc-9da5595de45a",
+          "studentId": "528f5372-4d0f-4864-92b0-93d8bd6d1a93",
+          "studentName": "LEGUIZAMON JOHANNA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "27e17064-1159-43eb-9715-5a0ba0daf55f",
+          "studentId": "997c0e8e-9152-449a-8ffb-9b68a7536349",
+          "studentName": "CABRERA CLAUDIA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "c91bf3aa-0c80-43c2-9526-99f3a45d3cb7",
+          "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+          "studentName": "SORAIRE NATALIA",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "8391b952-cff0-4051-af5d-727bf7a9305f",
+          "studentId": "97e34e29-16e6-4644-aa44-0f7c88dba8aa",
+          "studentName": "MEDINA PATRICIA",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        }
+      ],
+      "diagnosis": "SPECIAL_PROGRAM_REVIEW",
+      "diagnosisReason": "El nombre sugiere una formación/programa especial. Conviene revisar su esquema de cobro antes de crear una tarifa mensual estándar.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [
+        {
+          "score": 0.5,
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+          "className": "Ritmos latinos y caribeños",
+          "activity": "Ritmos Caribeños y Kizomba Parejas",
+          "teacher": "FABI",
+          "result": "OK",
+          "amount": "15000.00",
+          "validFrom": "2025-02-01",
+          "validTo": "2025-02-28",
+          "reason": null
+        },
+        {
+          "score": 0.5,
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+          "className": "Ritmos latinos y caribeños",
+          "activity": "Ritmos Caribeños y Kizomba Parejas",
+          "teacher": "FABI",
+          "result": "OK",
+          "amount": "20000.00",
+          "validFrom": "2025-03-01",
+          "validTo": "2025-07-31",
+          "reason": null
+        }
+      ],
+      "readyAliasCandidates": [
+        {
+          "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
+          "className": "Ritmos latinos y caribeños",
+          "score": 0.375,
+          "tariffCount": 2,
+          "tariffs": [
+            {
+              "amount": "15000.00",
+              "validFrom": "2025-02-01",
+              "validTo": "2025-02-28"
+            },
+            {
+              "amount": "20000.00",
+              "validFrom": "2025-03-01",
+              "validTo": "2025-07-31"
+            }
+          ]
+        }
+      ],
+      "workbookMatches": [
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 12,
+          "score": 0.5,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Fila origen": "12",
+            "Período": "2025-02",
+            "Año": "2025",
+            "Mes": "Febrero",
+            "Actividad original": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad key": "RITMOS CARIBENOS Y KIZOMBA PAREJAS",
+            "Profesor original": "FABI",
+            "Profesor normalizado": "FABI",
+            "Profesor key": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": "3.000, 7.500, 10.000, 20.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $3.000, $7.500, $10.000, $20.000"
+          },
+          "rowText": "Fila origen: 12 | Período: 2025-02 | Año: 2025 | Mes: Febrero | Actividad original: Ritmos Caribeños y Kizomba Parejas | Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Actividad key: RITMOS CARIBENOS Y KIZOMBA PAREJAS | Profesor original: FABI | Profesor normalizado: FABI | Profesor key: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Importe observado: $ 15,000.00 | Otros importes observados: 3.000, 7.500, 10.000, 20.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $3.000, $7.500, $10.000, $20.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 28,
+          "score": 0.5,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Fila origen": "28",
+            "Período": "2025-03",
+            "Año": "2025",
+            "Mes": "Marzo",
+            "Actividad original": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad key": "RITMOS CARIBENOS Y KIZOMBA PAREJAS",
+            "Profesor original": "FABI",
+            "Profesor normalizado": "FABI",
+            "Profesor key": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "10.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000"
+          },
+          "rowText": "Fila origen: 28 | Período: 2025-03 | Año: 2025 | Mes: Marzo | Actividad original: Ritmos Caribeños y Kizomba Parejas | Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Actividad key: RITMOS CARIBENOS Y KIZOMBA PAREJAS | Profesor original: FABI | Profesor normalizado: FABI | Profesor key: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Importe observado: $ 20,000.00 | Otros importes observados: 10.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 43,
+          "score": 0.5,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Fila origen": "43",
+            "Período": "2025-04",
+            "Año": "2025",
+            "Mes": "Abril",
+            "Actividad original": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad key": "RITMOS CARIBENOS Y KIZOMBA PAREJAS",
+            "Profesor original": "FABI",
+            "Profesor normalizado": "FABI",
+            "Profesor key": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "10.000, 21.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000, $21.000"
+          },
+          "rowText": "Fila origen: 43 | Período: 2025-04 | Año: 2025 | Mes: Abril | Actividad original: Ritmos Caribeños y Kizomba Parejas | Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Actividad key: RITMOS CARIBENOS Y KIZOMBA PAREJAS | Profesor original: FABI | Profesor normalizado: FABI | Profesor key: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Importe observado: $ 20,000.00 | Otros importes observados: 10.000, 21.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000, $21.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 59,
+          "score": 0.5,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Fila origen": "59",
+            "Período": "2025-05",
+            "Año": "2025",
+            "Mes": "Mayo",
+            "Actividad original": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad key": "RITMOS CARIBENOS Y KIZOMBA PAREJAS",
+            "Profesor original": "FABI",
+            "Profesor normalizado": "FABI",
+            "Profesor key": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "5.000, 10.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $5.000, $10.000"
+          },
+          "rowText": "Fila origen: 59 | Período: 2025-05 | Año: 2025 | Mes: Mayo | Actividad original: Ritmos Caribeños y Kizomba Parejas | Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Actividad key: RITMOS CARIBENOS Y KIZOMBA PAREJAS | Profesor original: FABI | Profesor normalizado: FABI | Profesor key: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Importe observado: $ 20,000.00 | Otros importes observados: 5.000, 10.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $5.000, $10.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 72,
+          "score": 0.5,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Fila origen": "72",
+            "Período": "2025-06",
+            "Año": "2025",
+            "Mes": "Junio",
+            "Actividad original": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad key": "RITMOS CARIBENOS Y KIZOMBA PAREJAS",
+            "Profesor original": "FABI",
+            "Profesor normalizado": "FABI",
+            "Profesor key": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "10.000, 21.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000, $21.000"
+          },
+          "rowText": "Fila origen: 72 | Período: 2025-06 | Año: 2025 | Mes: Junio | Actividad original: Ritmos Caribeños y Kizomba Parejas | Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Actividad key: RITMOS CARIBENOS Y KIZOMBA PAREJAS | Profesor original: FABI | Profesor normalizado: FABI | Profesor key: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Importe observado: $ 20,000.00 | Otros importes observados: 10.000, 21.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000, $21.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 85,
+          "score": 0.5,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Fila origen": "85",
+            "Período": "2025-07",
+            "Año": "2025",
+            "Mes": "Julio",
+            "Actividad original": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Actividad key": "RITMOS CARIBENOS Y KIZOMBA PAREJAS",
+            "Profesor original": "FABI",
+            "Profesor normalizado": "FABI",
+            "Profesor key": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "10.000, 11.000, 21.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000, $11.000, $21.000"
+          },
+          "rowText": "Fila origen: 85 | Período: 2025-07 | Año: 2025 | Mes: Julio | Actividad original: Ritmos Caribeños y Kizomba Parejas | Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Actividad key: RITMOS CARIBENOS Y KIZOMBA PAREJAS | Profesor original: FABI | Profesor normalizado: FABI | Profesor key: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Importe observado: $ 20,000.00 | Otros importes observados: 10.000, 11.000, 21.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000, $11.000, $21.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 12,
+          "score": 0.5,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Año": "2025",
+            "Mes": "Febrero",
+            "Clase / actividad": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor": "FABI",
+            "Importe registrado": "$15,000",
+            "Observación": "Otros importes registrados: $3.000, $7.500, $10.000, $20.000"
+          },
+          "rowText": "Año: 2025 | Mes: Febrero | Clase / actividad: Ritmos Caribeños y Kizomba Parejas | Profesor: FABI | Importe registrado: $15,000 | Observación: Otros importes registrados: $3.000, $7.500, $10.000, $20.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 28,
+          "score": 0.5,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Año": "2025",
+            "Mes": "Marzo",
+            "Clase / actividad": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor": "FABI",
+            "Importe registrado": "$20,000",
+            "Observación": "Otros importes registrados: $10.000"
+          },
+          "rowText": "Año: 2025 | Mes: Marzo | Clase / actividad: Ritmos Caribeños y Kizomba Parejas | Profesor: FABI | Importe registrado: $20,000 | Observación: Otros importes registrados: $10.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 43,
+          "score": 0.5,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Año": "2025",
+            "Mes": "Abril",
+            "Clase / actividad": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor": "FABI",
+            "Importe registrado": "$20,000",
+            "Observación": "Otros importes registrados: $10.000, $21.000"
+          },
+          "rowText": "Año: 2025 | Mes: Abril | Clase / actividad: Ritmos Caribeños y Kizomba Parejas | Profesor: FABI | Importe registrado: $20,000 | Observación: Otros importes registrados: $10.000, $21.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 59,
+          "score": 0.5,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Año": "2025",
+            "Mes": "Mayo",
+            "Clase / actividad": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor": "FABI",
+            "Importe registrado": "$20,000",
+            "Observación": "Otros importes registrados: $5.000, $10.000"
+          },
+          "rowText": "Año: 2025 | Mes: Mayo | Clase / actividad: Ritmos Caribeños y Kizomba Parejas | Profesor: FABI | Importe registrado: $20,000 | Observación: Otros importes registrados: $5.000, $10.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 72,
+          "score": 0.5,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Año": "2025",
+            "Mes": "Junio",
+            "Clase / actividad": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor": "FABI",
+            "Importe registrado": "$20,000",
+            "Observación": "Otros importes registrados: $10.000, $21.000"
+          },
+          "rowText": "Año: 2025 | Mes: Junio | Clase / actividad: Ritmos Caribeños y Kizomba Parejas | Profesor: FABI | Importe registrado: $20,000 | Observación: Otros importes registrados: $10.000, $21.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 85,
+          "score": 0.5,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Año": "2025",
+            "Mes": "Julio",
+            "Clase / actividad": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor": "FABI",
+            "Importe registrado": "$20,000",
+            "Observación": "Otros importes registrados: $10.000, $11.000, $21.000"
+          },
+          "rowText": "Año: 2025 | Mes: Julio | Clase / actividad: Ritmos Caribeños y Kizomba Parejas | Profesor: FABI | Importe registrado: $20,000 | Observación: Otros importes registrados: $10.000, $11.000, $21.000"
+        },
+        {
+          "sheet": "Diccionario nombres",
+          "excelRow": 24,
+          "score": 0.5,
+          "matchedColumn": "Valor original",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Tipo": "ACTIVIDAD",
+            "Valor original": "Ritmos Caribeños y Kizomba Parejas",
+            "Valor normalizado": "Ritmos Caribeños y Kizomba Parejas",
+            "Confianza": "ALTA",
+            "Criterio": "Sin cambio; etiqueta conservada"
+          },
+          "rowText": "Tipo: ACTIVIDAD | Valor original: Ritmos Caribeños y Kizomba Parejas | Valor normalizado: Ritmos Caribeños y Kizomba Parejas | Confianza: ALTA | Criterio: Sin cambio; etiqueta conservada"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 68,
+          "score": 0.5,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor normalizado": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Vigencia desde": "2025-02-01",
+            "Vigencia hasta": "2025-02-28",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "12"
+          },
+          "rowText": "Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Profesor normalizado: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Vigencia desde: 2025-02-01 | Vigencia hasta: 2025-02-28 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 12"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 69,
+          "score": 0.5,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Ritmos Caribeños y Kizomba Parejas",
+          "row": {
+            "Actividad normalizada": "Ritmos Caribeños y Kizomba Parejas",
+            "Profesor normalizado": "FABI",
+            "Clave tarifa": "RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI",
+            "Vigencia desde": "2025-03-01",
+            "Vigencia hasta": "2025-07-31",
+            "Importe candidato": "$ 20,000.00",
+            "Meses consecutivos": "5",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "28, 43, 59, 72, 85"
+          },
+          "rowText": "Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Profesor normalizado: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Vigencia desde: 2025-03-01 | Vigencia hasta: 2025-07-31 | Importe candidato: $ 20,000.00 | Meses consecutivos: 5 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 28, 43, 59, 72, 85"
+        }
+      ]
+    },
+    {
+      "classId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "className": "Grupo C. Sofi",
+      "enrollmentCount": 13,
+      "studentCount": 13,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "firstEndDate": null,
+      "lastEndDate": null,
+      "statusCounts": [
+        {
+          "key": "ACTIVE",
+          "count": 11
+        },
+        {
+          "key": "ENDED",
+          "count": 2
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "11f4fdd7-c12e-4d23-9556-d912040b3d54",
+          "studentId": "32a952d0-5c16-456e-be91-e928d6ca4eef",
+          "studentName": "BRITEZ MARIA ANGELICA",
+          "status": "ACTIVE",
+          "startDate": "2026-08-28",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "e197eaf2-6df7-49e1-9050-2432306bc6fd",
+          "studentId": "9967814e-bd85-4322-8516-09b903de0237",
+          "studentName": "CABRERA ACOSTA DEBORA",
+          "status": "ACTIVE",
+          "startDate": "2026-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "618dec37-fa62-4126-8f71-1800825d93f8",
+          "studentId": "022f2847-381c-4541-891f-0f38253235f5",
+          "studentName": "BARBIERI MABEL",
+          "status": "ACTIVE",
+          "startDate": "2026-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "879cd81d-7f71-4e72-a3da-4571a6821ee4",
+          "studentId": "d9d2c6a8-42e8-45d8-a549-6f553ae8a4c2",
+          "studentName": "MIÑOS SABRINA",
+          "status": "ACTIVE",
+          "startDate": "2025-09-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "7daa6195-adfa-4cd3-a21b-98e216551732",
+          "studentId": "1eb674f1-d0c8-4e43-9414-f322dac17aa3",
+          "studentName": "TOLOSA NOEMI",
+          "status": "ACTIVE",
+          "startDate": "2025-08-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "02ddd619-230c-4032-9b37-15360f07bfbc",
+          "studentId": "88f8e49f-6866-4aa4-8a6c-20a69ce1b7f4",
+          "studentName": "CANEPA SELENE AYELEN",
+          "status": "ACTIVE",
+          "startDate": "2025-06-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "29be8ba9-869d-4490-a99d-0261cf31383a",
+          "studentId": "0527d151-0fd0-48b5-ae9f-26d26cd19f3b",
+          "studentName": "GIMENEZ GABRIELA",
+          "status": "ENDED",
+          "startDate": "2025-04-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "07e76d09-099f-47b8-a47b-0f2a9085abda",
+          "studentId": "454a2da4-1337-4d63-bc8c-676b36c2098f",
+          "studentName": "GUERRA SILVANA",
+          "status": "ACTIVE",
+          "startDate": "2025-03-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "17f59a10-b6db-4166-b835-dfe08fcbcc4c",
+          "studentId": "997c0e8e-9152-449a-8ffb-9b68a7536349",
+          "studentName": "CABRERA CLAUDIA",
+          "status": "ENDED",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "6789125c-821e-4618-b76e-7f6f50e74af7",
+          "studentId": "f237f4bc-8093-431f-8598-ff503ef70187",
+          "studentName": "CABALLERO CLAUDIA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "e4d06c2e-d22a-4b63-b6d4-a82a24eb6f11",
+          "studentId": "824df025-def1-46c0-af0e-0477fd7a1719",
+          "studentName": "AQUINO FLAVIA",
+          "status": "ACTIVE",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "5a1b5302-ecb3-406d-9f68-06a1b67f119d",
+          "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+          "studentName": "SORAIRE NATALIA",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "4924a721-6a90-418c-9e18-9b22bce8fef3",
+          "studentId": "074b51e1-fa83-411b-a297-0971b3e4f074",
+          "studentName": "WIERNES MAGALI",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        }
+      ],
+      "diagnosis": "WORKBOOK_EVIDENCE_ONLY",
+      "diagnosisReason": "Hay coincidencias en el Excel histórico, pero no existe una asociación directa con una tarifa final.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [
+        {
+          "score": 0.4,
+          "matchedValue": "Grupo C. - A.Frank",
+          "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+          "className": "Grupo C. - A.Frank",
+          "activity": "Estilo Frank",
+          "teacher": "ANA",
+          "result": "OK",
+          "amount": "25000.00",
+          "validFrom": "2026-03-01",
+          "validTo": "2026-03-31",
+          "reason": null
+        },
+        {
+          "score": 0.4,
+          "matchedValue": "Grupo C. - A.Frank",
+          "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+          "className": "Grupo C. - A.Frank",
+          "activity": "Estilo Frank",
+          "teacher": "ANA",
+          "result": "OK",
+          "amount": "25000.00",
+          "validFrom": "2026-05-01",
+          "validTo": "2026-06-30",
+          "reason": null
+        }
+      ],
+      "readyAliasCandidates": [
+        {
+          "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
+          "className": "Grupo C. - A.Frank",
+          "score": 0.4,
+          "tariffCount": 1,
+          "tariffs": [
+            {
+              "amount": "25000.00",
+              "validFrom": "2026-03-01",
+              "validTo": "2026-06-30"
+            }
+          ]
+        }
+      ],
+      "workbookMatches": [
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 139,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "139",
+            "Período": "2026-05",
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Actividad original": "Coreográfico Femenino",
+            "Actividad normalizada": "Coreográfico Femenino",
+            "Actividad key": "COREOGRAFICO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "COREOGRAFICO FEMENINO | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "10.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000"
+          },
+          "rowText": "Fila origen: 139 | Período: 2026-05 | Año: 2026 | Mes: Mayo | Actividad original: Coreográfico Femenino | Actividad normalizada: Coreográfico Femenino | Actividad key: COREOGRAFICO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: COREOGRAFICO FEMENINO | SOFIA | Importe observado: $ 30,000.00 | Otros importes observados: 10.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 140,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "140",
+            "Período": "2026-05",
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Actividad original": "Estilo Femenino",
+            "Actividad normalizada": "Estilo Femenino",
+            "Actividad key": "ESTILO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 140 | Período: 2026-05 | Año: 2026 | Mes: Mayo | Actividad original: Estilo Femenino | Actividad normalizada: Estilo Femenino | Actividad key: ESTILO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Importe observado: $ 30,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 142,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "142",
+            "Período": "2026-05",
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Actividad original": "Infantil",
+            "Actividad normalizada": "Infantil",
+            "Actividad key": "INFANTIL",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "INFANTIL | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 142 | Período: 2026-05 | Año: 2026 | Mes: Mayo | Actividad original: Infantil | Actividad normalizada: Infantil | Actividad key: INFANTIL | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: INFANTIL | SOFIA | Importe observado: $ 30,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 143,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "143",
+            "Período": "2026-05",
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Actividad original": "Kids",
+            "Actividad normalizada": "Kids",
+            "Actividad key": "KIDS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "KIDS | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 143 | Período: 2026-05 | Año: 2026 | Mes: Mayo | Actividad original: Kids | Actividad normalizada: Kids | Actividad key: KIDS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: KIDS | SOFIA | Importe observado: $ 30,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 147,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "147",
+            "Período": "2026-05",
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Actividad original": "Teens",
+            "Actividad normalizada": "Teens",
+            "Actividad key": "TEENS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "TEENS | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "31.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $31.000"
+          },
+          "rowText": "Fila origen: 147 | Período: 2026-05 | Año: 2026 | Mes: Mayo | Actividad original: Teens | Actividad normalizada: Teens | Actividad key: TEENS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: TEENS | SOFIA | Importe observado: $ 30,000.00 | Otros importes observados: 31.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $31.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 150,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "150",
+            "Período": "2026-06",
+            "Año": "2026",
+            "Mes": "Junio",
+            "Actividad original": "Coreográfico Femenino",
+            "Actividad normalizada": "Coreográfico Femenino",
+            "Actividad key": "COREOGRAFICO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "COREOGRAFICO FEMENINO | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "10.000, 60.000, 61.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000, $60.000, $61.000"
+          },
+          "rowText": "Fila origen: 150 | Período: 2026-06 | Año: 2026 | Mes: Junio | Actividad original: Coreográfico Femenino | Actividad normalizada: Coreográfico Femenino | Actividad key: COREOGRAFICO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: COREOGRAFICO FEMENINO | SOFIA | Importe observado: $ 30,000.00 | Otros importes observados: 10.000, 60.000, 61.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000, $60.000, $61.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 151,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "151",
+            "Período": "2026-06",
+            "Año": "2026",
+            "Mes": "Junio",
+            "Actividad original": "Estilo Femenino",
+            "Actividad normalizada": "Estilo Femenino",
+            "Actividad key": "ESTILO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "60.000, 62.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $60.000, $62.000"
+          },
+          "rowText": "Fila origen: 151 | Período: 2026-06 | Año: 2026 | Mes: Junio | Actividad original: Estilo Femenino | Actividad normalizada: Estilo Femenino | Actividad key: ESTILO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Importe observado: $ 30,000.00 | Otros importes observados: 60.000, 62.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $60.000, $62.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 153,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "153",
+            "Período": "2026-06",
+            "Año": "2026",
+            "Mes": "Junio",
+            "Actividad original": "Infantil",
+            "Actividad normalizada": "Infantil",
+            "Actividad key": "INFANTIL",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "INFANTIL | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "31.000, 60.000, 61.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $31.000, $60.000, $61.000"
+          },
+          "rowText": "Fila origen: 153 | Período: 2026-06 | Año: 2026 | Mes: Junio | Actividad original: Infantil | Actividad normalizada: Infantil | Actividad key: INFANTIL | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: INFANTIL | SOFIA | Importe observado: $ 30,000.00 | Otros importes observados: 31.000, 60.000, 61.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $31.000, $60.000, $61.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 154,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "154",
+            "Período": "2026-06",
+            "Año": "2026",
+            "Mes": "Junio",
+            "Actividad original": "Kids",
+            "Actividad normalizada": "Kids",
+            "Actividad key": "KIDS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "KIDS | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "61.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $61.000"
+          },
+          "rowText": "Fila origen: 154 | Período: 2026-06 | Año: 2026 | Mes: Junio | Actividad original: Kids | Actividad normalizada: Kids | Actividad key: KIDS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: KIDS | SOFIA | Importe observado: $ 30,000.00 | Otros importes observados: 61.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $61.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 158,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "158",
+            "Período": "2026-06",
+            "Año": "2026",
+            "Mes": "Junio",
+            "Actividad original": "Teens",
+            "Actividad normalizada": "Teens",
+            "Actividad key": "TEENS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "TEENS | SOFIA",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "31.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $31.000"
+          },
+          "rowText": "Fila origen: 158 | Período: 2026-06 | Año: 2026 | Mes: Junio | Actividad original: Teens | Actividad normalizada: Teens | Actividad key: TEENS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: TEENS | SOFIA | Importe observado: $ 30,000.00 | Otros importes observados: 31.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $31.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 161,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "161",
+            "Período": "2026-07",
+            "Año": "2026",
+            "Mes": "Julio",
+            "Actividad original": "Coreográfico Femenino",
+            "Actividad normalizada": "Coreográfico Femenino",
+            "Actividad key": "COREOGRAFICO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "COREOGRAFICO FEMENINO | SOFIA",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "REVISAR_JULIO",
+            "Confianza": "BAJA",
+            "Observación original": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Fila origen: 161 | Período: 2026-07 | Año: 2026 | Mes: Julio | Actividad original: Coreográfico Femenino | Actividad normalizada: Coreográfico Femenino | Actividad key: COREOGRAFICO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: COREOGRAFICO FEMENINO | SOFIA | Importe observado: $ 15,000.00 | Estado precio: REVISAR_JULIO | Confianza: BAJA | Observación original: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 162,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "162",
+            "Período": "2026-07",
+            "Año": "2026",
+            "Mes": "Julio",
+            "Actividad original": "Estilo Femenino",
+            "Actividad normalizada": "Estilo Femenino",
+            "Actividad key": "ESTILO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "REVISAR_JULIO",
+            "Confianza": "BAJA",
+            "Observación original": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Fila origen: 162 | Período: 2026-07 | Año: 2026 | Mes: Julio | Actividad original: Estilo Femenino | Actividad normalizada: Estilo Femenino | Actividad key: ESTILO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Importe observado: $ 15,000.00 | Estado precio: REVISAR_JULIO | Confianza: BAJA | Observación original: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 163,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "163",
+            "Período": "2026-07",
+            "Año": "2026",
+            "Mes": "Julio",
+            "Actividad original": "Infantil",
+            "Actividad normalizada": "Infantil",
+            "Actividad key": "INFANTIL",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "INFANTIL | SOFIA",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "REVISAR_JULIO",
+            "Confianza": "BAJA",
+            "Observación original": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Fila origen: 163 | Período: 2026-07 | Año: 2026 | Mes: Julio | Actividad original: Infantil | Actividad normalizada: Infantil | Actividad key: INFANTIL | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: INFANTIL | SOFIA | Importe observado: $ 15,000.00 | Estado precio: REVISAR_JULIO | Confianza: BAJA | Observación original: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 164,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "164",
+            "Período": "2026-07",
+            "Año": "2026",
+            "Mes": "Julio",
+            "Actividad original": "Kids",
+            "Actividad normalizada": "Kids",
+            "Actividad key": "KIDS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "KIDS | SOFIA",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": "30.000",
+            "Estado precio": "REVISAR_JULIO",
+            "Confianza": "BAJA",
+            "Observación original": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial. Otros importes registrados: $30.000"
+          },
+          "rowText": "Fila origen: 164 | Período: 2026-07 | Año: 2026 | Mes: Julio | Actividad original: Kids | Actividad normalizada: Kids | Actividad key: KIDS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: KIDS | SOFIA | Importe observado: $ 15,000.00 | Otros importes observados: 30.000 | Estado precio: REVISAR_JULIO | Confianza: BAJA | Observación original: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial. Otros importes registrados: $30.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 167,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "167",
+            "Período": "2026-07",
+            "Año": "2026",
+            "Mes": "Julio",
+            "Actividad original": "Teens",
+            "Actividad normalizada": "Teens",
+            "Actividad key": "TEENS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "TEENS | SOFIA",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "REVISAR_JULIO",
+            "Confianza": "BAJA",
+            "Observación original": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Fila origen: 167 | Período: 2026-07 | Año: 2026 | Mes: Julio | Actividad original: Teens | Actividad normalizada: Teens | Actividad key: TEENS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: TEENS | SOFIA | Importe observado: $ 15,000.00 | Estado precio: REVISAR_JULIO | Confianza: BAJA | Observación original: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 170,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "170",
+            "Período": "2026-08",
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Actividad original": "Coreográfico Femenino",
+            "Actividad normalizada": "Coreográfico Femenino",
+            "Actividad key": "COREOGRAFICO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "COREOGRAFICO FEMENINO | SOFIA",
+            "Importe observado": "$ 40,000.00",
+            "Otros importes observados": "30.000, 55.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $30.000, $55.000"
+          },
+          "rowText": "Fila origen: 170 | Período: 2026-08 | Año: 2026 | Mes: Agosto | Actividad original: Coreográfico Femenino | Actividad normalizada: Coreográfico Femenino | Actividad key: COREOGRAFICO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: COREOGRAFICO FEMENINO | SOFIA | Importe observado: $ 40,000.00 | Otros importes observados: 30.000, 55.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $30.000, $55.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 171,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "171",
+            "Período": "2026-08",
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Actividad original": "Estilo Femenino",
+            "Actividad normalizada": "Estilo Femenino",
+            "Actividad key": "ESTILO FEMENINO",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Importe observado": "$ 40,000.00",
+            "Otros importes observados": "20.000, 30.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $20.000, $30.000"
+          },
+          "rowText": "Fila origen: 171 | Período: 2026-08 | Año: 2026 | Mes: Agosto | Actividad original: Estilo Femenino | Actividad normalizada: Estilo Femenino | Actividad key: ESTILO FEMENINO | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Importe observado: $ 40,000.00 | Otros importes observados: 20.000, 30.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $20.000, $30.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 172,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "172",
+            "Período": "2026-08",
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Actividad original": "Infantil",
+            "Actividad normalizada": "Infantil",
+            "Actividad key": "INFANTIL",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "INFANTIL | SOFIA",
+            "Importe observado": "$ 40,000.00",
+            "Otros importes observados": "15.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $15.000"
+          },
+          "rowText": "Fila origen: 172 | Período: 2026-08 | Año: 2026 | Mes: Agosto | Actividad original: Infantil | Actividad normalizada: Infantil | Actividad key: INFANTIL | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: INFANTIL | SOFIA | Importe observado: $ 40,000.00 | Otros importes observados: 15.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $15.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 173,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "173",
+            "Período": "2026-08",
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Actividad original": "Kids",
+            "Actividad normalizada": "Kids",
+            "Actividad key": "KIDS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "KIDS | SOFIA",
+            "Importe observado": "$ 40,000.00",
+            "Otros importes observados": "15.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $15.000"
+          },
+          "rowText": "Fila origen: 173 | Período: 2026-08 | Año: 2026 | Mes: Agosto | Actividad original: Kids | Actividad normalizada: Kids | Actividad key: KIDS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: KIDS | SOFIA | Importe observado: $ 40,000.00 | Otros importes observados: 15.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $15.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 177,
+          "score": 0.6,
+          "matchedColumn": "Profesor original",
+          "matchedValue": "SOFI",
+          "row": {
+            "Fila origen": "177",
+            "Período": "2026-08",
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Actividad original": "Teens",
+            "Actividad normalizada": "Teens",
+            "Actividad key": "TEENS",
+            "Profesor original": "SOFI",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "TEENS | SOFIA",
+            "Importe observado": "$ 40,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 177 | Período: 2026-08 | Año: 2026 | Mes: Agosto | Actividad original: Teens | Actividad normalizada: Teens | Actividad key: TEENS | Profesor original: SOFI | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: TEENS | SOFIA | Importe observado: $ 40,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 139,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Clase / actividad": "Coreográfico Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $10.000"
+          },
+          "rowText": "Año: 2026 | Mes: Mayo | Clase / actividad: Coreográfico Femenino | Profesor: SOFI | Importe registrado: $30,000 | Observación: Otros importes registrados: $10.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 140,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Clase / actividad": "Estilo Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": null
+          },
+          "rowText": "Año: 2026 | Mes: Mayo | Clase / actividad: Estilo Femenino | Profesor: SOFI | Importe registrado: $30,000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 142,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Clase / actividad": "Infantil",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": null
+          },
+          "rowText": "Año: 2026 | Mes: Mayo | Clase / actividad: Infantil | Profesor: SOFI | Importe registrado: $30,000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 143,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Clase / actividad": "Kids",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": null
+          },
+          "rowText": "Año: 2026 | Mes: Mayo | Clase / actividad: Kids | Profesor: SOFI | Importe registrado: $30,000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 147,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Mayo",
+            "Clase / actividad": "Teens",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $31.000"
+          },
+          "rowText": "Año: 2026 | Mes: Mayo | Clase / actividad: Teens | Profesor: SOFI | Importe registrado: $30,000 | Observación: Otros importes registrados: $31.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 150,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Junio",
+            "Clase / actividad": "Coreográfico Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $10.000, $60.000, $61.000"
+          },
+          "rowText": "Año: 2026 | Mes: Junio | Clase / actividad: Coreográfico Femenino | Profesor: SOFI | Importe registrado: $30,000 | Observación: Otros importes registrados: $10.000, $60.000, $61.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 151,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Junio",
+            "Clase / actividad": "Estilo Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $60.000, $62.000"
+          },
+          "rowText": "Año: 2026 | Mes: Junio | Clase / actividad: Estilo Femenino | Profesor: SOFI | Importe registrado: $30,000 | Observación: Otros importes registrados: $60.000, $62.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 153,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Junio",
+            "Clase / actividad": "Infantil",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $31.000, $60.000, $61.000"
+          },
+          "rowText": "Año: 2026 | Mes: Junio | Clase / actividad: Infantil | Profesor: SOFI | Importe registrado: $30,000 | Observación: Otros importes registrados: $31.000, $60.000, $61.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 154,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Junio",
+            "Clase / actividad": "Kids",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $61.000"
+          },
+          "rowText": "Año: 2026 | Mes: Junio | Clase / actividad: Kids | Profesor: SOFI | Importe registrado: $30,000 | Observación: Otros importes registrados: $61.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 158,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Junio",
+            "Clase / actividad": "Teens",
+            "Profesor": "SOFI",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $31.000"
+          },
+          "rowText": "Año: 2026 | Mes: Junio | Clase / actividad: Teens | Profesor: SOFI | Importe registrado: $30,000 | Observación: Otros importes registrados: $31.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 161,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Julio",
+            "Clase / actividad": "Coreográfico Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$15,000",
+            "Observación": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Año: 2026 | Mes: Julio | Clase / actividad: Coreográfico Femenino | Profesor: SOFI | Importe registrado: $15,000 | Observación: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 162,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Julio",
+            "Clase / actividad": "Estilo Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$15,000",
+            "Observación": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Año: 2026 | Mes: Julio | Clase / actividad: Estilo Femenino | Profesor: SOFI | Importe registrado: $15,000 | Observación: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 163,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Julio",
+            "Clase / actividad": "Infantil",
+            "Profesor": "SOFI",
+            "Importe registrado": "$15,000",
+            "Observación": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Año: 2026 | Mes: Julio | Clase / actividad: Infantil | Profesor: SOFI | Importe registrado: $15,000 | Observación: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 164,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Julio",
+            "Clase / actividad": "Kids",
+            "Profesor": "SOFI",
+            "Importe registrado": "$15,000",
+            "Observación": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial. Otros importes registrados: $30.000"
+          },
+          "rowText": "Año: 2026 | Mes: Julio | Clase / actividad: Kids | Profesor: SOFI | Importe registrado: $15,000 | Observación: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial. Otros importes registrados: $30.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 167,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Julio",
+            "Clase / actividad": "Teens",
+            "Profesor": "SOFI",
+            "Importe registrado": "$15,000",
+            "Observación": "Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+          },
+          "rowText": "Año: 2026 | Mes: Julio | Clase / actividad: Teens | Profesor: SOFI | Importe registrado: $15,000 | Observación: Valor dominante observado en julio; validar si correspondió a medio mes/condición especial."
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 170,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Clase / actividad": "Coreográfico Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$40,000",
+            "Observación": "Otros importes registrados: $30.000, $55.000"
+          },
+          "rowText": "Año: 2026 | Mes: Agosto | Clase / actividad: Coreográfico Femenino | Profesor: SOFI | Importe registrado: $40,000 | Observación: Otros importes registrados: $30.000, $55.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 171,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Clase / actividad": "Estilo Femenino",
+            "Profesor": "SOFI",
+            "Importe registrado": "$40,000",
+            "Observación": "Otros importes registrados: $20.000, $30.000"
+          },
+          "rowText": "Año: 2026 | Mes: Agosto | Clase / actividad: Estilo Femenino | Profesor: SOFI | Importe registrado: $40,000 | Observación: Otros importes registrados: $20.000, $30.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 172,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Clase / actividad": "Infantil",
+            "Profesor": "SOFI",
+            "Importe registrado": "$40,000",
+            "Observación": "Otros importes registrados: $15.000"
+          },
+          "rowText": "Año: 2026 | Mes: Agosto | Clase / actividad: Infantil | Profesor: SOFI | Importe registrado: $40,000 | Observación: Otros importes registrados: $15.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 173,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Clase / actividad": "Kids",
+            "Profesor": "SOFI",
+            "Importe registrado": "$40,000",
+            "Observación": "Otros importes registrados: $15.000"
+          },
+          "rowText": "Año: 2026 | Mes: Agosto | Clase / actividad: Kids | Profesor: SOFI | Importe registrado: $40,000 | Observación: Otros importes registrados: $15.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 177,
+          "score": 0.6,
+          "matchedColumn": "Profesor",
+          "matchedValue": "SOFI",
+          "row": {
+            "Año": "2026",
+            "Mes": "Agosto",
+            "Clase / actividad": "Teens",
+            "Profesor": "SOFI",
+            "Importe registrado": "$40,000",
+            "Observación": null
+          },
+          "rowText": "Año: 2026 | Mes: Agosto | Clase / actividad: Teens | Profesor: SOFI | Importe registrado: $40,000"
+        }
+      ]
+    },
+    {
+      "classId": "2d17175b-22b0-4565-9342-1e93ad221855",
+      "className": "Coreografico E.Masc-Bachata/Urban",
+      "enrollmentCount": 5,
+      "studentCount": 5,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-02-01",
+      "firstEndDate": null,
+      "lastEndDate": null,
+      "statusCounts": [
+        {
+          "key": "ENDED",
+          "count": 5
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "e7d8e429-e5a6-4ebc-9a7e-603b32646a2b",
+          "studentId": "a2baa8f1-d52f-4263-aeb2-647c3f2f8e6b",
+          "studentName": "GOMEZ FEDERICO ADRIAN",
+          "status": "ENDED",
+          "startDate": "2026-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "ee7ea00f-98aa-4621-aaf6-7fc1bd063bbd",
+          "studentId": "e3d42e74-cf95-499a-9ad2-35d0abf7e500",
+          "studentName": "LASPIUR JORGE",
+          "status": "ENDED",
+          "startDate": "2025-11-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "f16881e1-58a3-427d-a016-92d33e6d2b64",
+          "studentId": "a4030ecd-e658-4a4d-a015-e7d9302e6d58",
+          "studentName": "BENITEZ DANIEL",
+          "status": "ENDED",
+          "startDate": "2025-02-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "60dc32fd-7c42-4159-a749-0711f92932c7",
+          "studentId": "f2aae84b-e156-4d9d-81f3-d50a56e02255",
+          "studentName": "SORABELLA ARIEL",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        },
+        {
+          "enrollmentId": "0bf6b683-81b0-4c52-89b8-e8e73dcc45b7",
+          "studentId": "5f9946ba-3eea-444c-b8aa-664d7686fe6d",
+          "studentName": "ARMOA CRISTIAN",
+          "status": "ENDED",
+          "startDate": "2025-01-01",
+          "endDate": null
+        }
+      ],
+      "diagnosis": "WORKBOOK_EVIDENCE_ONLY",
+      "diagnosisReason": "Hay coincidencias en el Excel histórico, pero no existe una asociación directa con una tarifa final.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [
+        {
+          "score": 0.286,
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+          "className": "Coreográfico Bachata en Pareja",
+          "activity": "Coreográfico Bachata en Pareja",
+          "teacher": "KEVIN",
+          "result": "OK",
+          "amount": "20000.00",
+          "validFrom": "2025-05-01",
+          "validTo": "2025-05-31",
+          "reason": null
+        },
+        {
+          "score": 0.286,
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+          "className": "Coreográfico Bachata en Pareja",
+          "activity": "Coreográfico Bachata en Pareja",
+          "teacher": "KEVIN",
+          "result": "OK",
+          "amount": "10000.00",
+          "validFrom": "2025-06-01",
+          "validTo": "2025-06-30",
+          "reason": null
+        },
+        {
+          "score": 0.286,
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+          "className": "Coreográfico Bachata en Pareja",
+          "activity": "Coreográfico Bachata en Pareja",
+          "teacher": "KEVIN",
+          "result": "NOT_A_TARIFF",
+          "amount": "5000.00",
+          "validFrom": "2025-07-01",
+          "validTo": "2025-07-31",
+          "reason": "Condición especial definida por el profesor"
+        }
+      ],
+      "readyAliasCandidates": [
+        {
+          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
+          "className": "Coreográfico Bachata en Pareja",
+          "score": 0.286,
+          "tariffCount": 2,
+          "tariffs": [
+            {
+              "amount": "20000.00",
+              "validFrom": "2025-05-01",
+              "validTo": "2025-05-31"
+            },
+            {
+              "amount": "10000.00",
+              "validFrom": "2025-06-01",
+              "validTo": "2025-06-30"
+            }
+          ]
+        }
+      ],
+      "workbookMatches": [
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 51,
+          "score": 0.286,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Fila origen": "51",
+            "Período": "2025-05",
+            "Año": "2025",
+            "Mes": "Mayo",
+            "Actividad original": "Coreográfico Bachata en Pareja",
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Actividad key": "COREOGRAFICO BACHATA EN PAREJA",
+            "Profesor original": "KEVIN",
+            "Profesor normalizado": "KEVIN",
+            "Profesor key": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "10.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000"
+          },
+          "rowText": "Fila origen: 51 | Período: 2025-05 | Año: 2025 | Mes: Mayo | Actividad original: Coreográfico Bachata en Pareja | Actividad normalizada: Coreográfico Bachata en Pareja | Actividad key: COREOGRAFICO BACHATA EN PAREJA | Profesor original: KEVIN | Profesor normalizado: KEVIN | Profesor key: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Importe observado: $ 20,000.00 | Otros importes observados: 10.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 64,
+          "score": 0.286,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Fila origen": "64",
+            "Período": "2025-06",
+            "Año": "2025",
+            "Mes": "Junio",
+            "Actividad original": "Coreográfico Bachata en Pareja",
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Actividad key": "COREOGRAFICO BACHATA EN PAREJA",
+            "Profesor original": "KEVIN",
+            "Profesor normalizado": "KEVIN",
+            "Profesor key": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Importe observado": "$ 10,000.00",
+            "Otros importes observados": "20.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $20.000"
+          },
+          "rowText": "Fila origen: 64 | Período: 2025-06 | Año: 2025 | Mes: Junio | Actividad original: Coreográfico Bachata en Pareja | Actividad normalizada: Coreográfico Bachata en Pareja | Actividad key: COREOGRAFICO BACHATA EN PAREJA | Profesor original: KEVIN | Profesor normalizado: KEVIN | Profesor key: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Importe observado: $ 10,000.00 | Otros importes observados: 20.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $20.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 77,
+          "score": 0.286,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Fila origen": "77",
+            "Período": "2025-07",
+            "Año": "2025",
+            "Mes": "Julio",
+            "Actividad original": "Coreográfico Bachata en Pareja",
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Actividad key": "COREOGRAFICO BACHATA EN PAREJA",
+            "Profesor original": "KEVIN",
+            "Profesor normalizado": "KEVIN",
+            "Profesor key": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Importe observado": "$ 5,000.00",
+            "Otros importes observados": "10.000, 20.000",
+            "Estado precio": "REVISAR_PRECIO",
+            "Confianza": "BAJA",
+            "Observación original": "Hay varios importes distintos; no tomar como precio oficial sin validar. Otros importes registrados: $10.000, $20.000"
+          },
+          "rowText": "Fila origen: 77 | Período: 2025-07 | Año: 2025 | Mes: Julio | Actividad original: Coreográfico Bachata en Pareja | Actividad normalizada: Coreográfico Bachata en Pareja | Actividad key: COREOGRAFICO BACHATA EN PAREJA | Profesor original: KEVIN | Profesor normalizado: KEVIN | Profesor key: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Importe observado: $ 5,000.00 | Otros importes observados: 10.000, 20.000 | Estado precio: REVISAR_PRECIO | Confianza: BAJA | Observación original: Hay varios importes distintos; no tomar como precio oficial sin validar. Otros importes registrados: $10.000, $20.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 51,
+          "score": 0.286,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Año": "2025",
+            "Mes": "Mayo",
+            "Clase / actividad": "Coreográfico Bachata en Pareja",
+            "Profesor": "KEVIN",
+            "Importe registrado": "$20,000",
+            "Observación": "Otros importes registrados: $10.000"
+          },
+          "rowText": "Año: 2025 | Mes: Mayo | Clase / actividad: Coreográfico Bachata en Pareja | Profesor: KEVIN | Importe registrado: $20,000 | Observación: Otros importes registrados: $10.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 64,
+          "score": 0.286,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Año": "2025",
+            "Mes": "Junio",
+            "Clase / actividad": "Coreográfico Bachata en Pareja",
+            "Profesor": "KEVIN",
+            "Importe registrado": "$10,000",
+            "Observación": "Otros importes registrados: $20.000"
+          },
+          "rowText": "Año: 2025 | Mes: Junio | Clase / actividad: Coreográfico Bachata en Pareja | Profesor: KEVIN | Importe registrado: $10,000 | Observación: Otros importes registrados: $20.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 77,
+          "score": 0.286,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Año": "2025",
+            "Mes": "Julio",
+            "Clase / actividad": "Coreográfico Bachata en Pareja",
+            "Profesor": "KEVIN",
+            "Importe registrado": "$5,000",
+            "Observación": "Hay varios importes distintos; no tomar como precio oficial sin validar. Otros importes registrados: $10.000, $20.000"
+          },
+          "rowText": "Año: 2025 | Mes: Julio | Clase / actividad: Coreográfico Bachata en Pareja | Profesor: KEVIN | Importe registrado: $5,000 | Observación: Hay varios importes distintos; no tomar como precio oficial sin validar. Otros importes registrados: $10.000, $20.000"
+        },
+        {
+          "sheet": "Diccionario nombres",
+          "excelRow": 16,
+          "score": 0.286,
+          "matchedColumn": "Valor original",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Tipo": "ACTIVIDAD",
+            "Valor original": "Coreográfico Bachata en Pareja",
+            "Valor normalizado": "Coreográfico Bachata en Pareja",
+            "Confianza": "ALTA",
+            "Criterio": "Sin cambio; etiqueta conservada"
+          },
+          "rowText": "Tipo: ACTIVIDAD | Valor original: Coreográfico Bachata en Pareja | Valor normalizado: Coreográfico Bachata en Pareja | Confianza: ALTA | Criterio: Sin cambio; etiqueta conservada"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 15,
+          "score": 0.286,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Profesor normalizado": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Vigencia desde": "2025-05-01",
+            "Vigencia hasta": "2025-05-31",
+            "Importe candidato": "$ 20,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "51"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Bachata en Pareja | Profesor normalizado: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Vigencia desde: 2025-05-01 | Vigencia hasta: 2025-05-31 | Importe candidato: $ 20,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 51"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 16,
+          "score": 0.286,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Profesor normalizado": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Vigencia desde": "2025-06-01",
+            "Vigencia hasta": "2025-06-30",
+            "Importe candidato": "$ 10,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "64"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Bachata en Pareja | Profesor normalizado: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Vigencia desde: 2025-06-01 | Vigencia hasta: 2025-06-30 | Importe candidato: $ 10,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 64"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 17,
+          "score": 0.286,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Coreográfico Bachata en Pareja",
+          "row": {
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Profesor normalizado": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Vigencia desde": "2025-07-01",
+            "Vigencia hasta": "2025-07-31",
+            "Importe candidato": "$ 5,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "BAJA",
+            "Revisión": "REVISAR_PRECIO",
+            "Filas origen": "77"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Bachata en Pareja | Profesor normalizado: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Vigencia desde: 2025-07-01 | Vigencia hasta: 2025-07-31 | Importe candidato: $ 5,000.00 | Meses consecutivos: 1 | Confianza: BAJA | Revisión: REVISAR_PRECIO | Filas origen: 77"
+        }
+      ]
+    },
+    {
+      "classId": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+      "className": "arabashe",
+      "enrollmentCount": 2,
+      "studentCount": 2,
+      "firstStartDate": "2026-08-21",
+      "lastStartDate": "2026-08-21",
+      "firstEndDate": "2026-08-23",
+      "lastEndDate": "2026-08-23",
+      "statusCounts": [
+        {
+          "key": "ENDED",
+          "count": 2
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "c914adaf-c8ad-4bef-91e6-8228b41698b1",
+          "studentId": "8bed59f3-936a-4fdd-bf39-475c686481b7",
+          "studentName": "prueba alumno",
+          "status": "ENDED",
+          "startDate": "2026-08-21",
+          "endDate": "2026-08-23"
+        },
+        {
+          "enrollmentId": "a1cd8d8b-f092-4b40-9644-509c3e71b55a",
+          "studentId": "ddc77860-17e6-4310-a399-7ea7365f3ccb",
+          "studentName": "prueba2 alumno",
+          "status": "ENDED",
+          "startDate": "2026-08-21",
+          "endDate": "2026-08-23"
+        }
+      ],
+      "diagnosis": "NO_SOURCE_EVIDENCE",
+      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [],
+      "readyAliasCandidates": [],
+      "workbookMatches": []
+    },
+    {
+      "classId": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+      "className": "Inst.Sup.Coreografico -Tango /18 Meses",
+      "enrollmentCount": 1,
+      "studentCount": 1,
+      "firstStartDate": "2025-07-01",
+      "lastStartDate": "2025-07-01",
+      "firstEndDate": null,
+      "lastEndDate": null,
+      "statusCounts": [
+        {
+          "key": "ENDED",
+          "count": 1
+        }
+      ],
+      "students": [
+        {
+          "enrollmentId": "7d78ad9c-72c2-44fb-a3cd-1eff485b9a29",
+          "studentId": "6580c661-c4b4-4c27-9ac0-53c62e941754",
+          "studentName": "GLERIA PATRICIA",
+          "status": "ENDED",
+          "startDate": "2025-07-01",
+          "endDate": null
+        }
+      ],
+      "diagnosis": "POSSIBLE_ALIAS",
+      "diagnosisReason": "Hay otra actividad o clase con un nombre suficientemente similar como para revisar un posible mapping histórico.",
+      "exactAnalysisMatches": [],
+      "analysisAliasCandidates": [
+        {
+          "score": 0.6,
+          "matchedValue": "Tango",
+          "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+          "className": "Tango (Inter/Avanz)",
+          "activity": "Tango",
+          "teacher": "ROBERTO",
+          "result": "OK",
+          "amount": "15000.00",
+          "validFrom": "2025-02-01",
+          "validTo": "2025-02-28",
+          "reason": null
+        },
+        {
+          "score": 0.6,
+          "matchedValue": "Tango",
+          "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+          "className": "Tango (Inter/Avanz)",
+          "activity": "Tango",
+          "teacher": "ROBERTO",
+          "result": "OK",
+          "amount": "20000.00",
+          "validFrom": "2025-03-01",
+          "validTo": "2025-08-31",
+          "reason": null
+        },
+        {
+          "score": 0.6,
+          "matchedValue": "Tango",
+          "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
+          "className": "Tango (Inter/Avanz)",
+          "activity": "Tango",
+          "teacher": "ROBERTO",
+          "result": "OK",
+          "amount": "30000.00",
+          "validFrom": "2025-09-01",
+          "validTo": "2025-11-30",
+          "reason": null
+        }
+      ],
+      "readyAliasCandidates": [],
+      "workbookMatches": [
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 8,
+          "score": 0.6,
+          "matchedColumn": "Fila origen",
+          "matchedValue": "8",
+          "row": {
+            "Fila origen": "8",
+            "Período": "2025-02",
+            "Año": "2025",
+            "Mes": "Febrero",
+            "Actividad original": "Infantil",
+            "Actividad normalizada": "Infantil",
+            "Actividad key": "INFANTIL",
+            "Profesor original": "SOFIA",
+            "Profesor normalizado": "SOFIA",
+            "Profesor key": "SOFIA",
+            "Clave tarifa": "INFANTIL | SOFIA",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": "3.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $3.000"
+          },
+          "rowText": "Fila origen: 8 | Período: 2025-02 | Año: 2025 | Mes: Febrero | Actividad original: Infantil | Actividad normalizada: Infantil | Actividad key: INFANTIL | Profesor original: SOFIA | Profesor normalizado: SOFIA | Profesor key: SOFIA | Clave tarifa: INFANTIL | SOFIA | Importe observado: $ 15,000.00 | Otros importes observados: 3.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $3.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 16,
+          "score": 0.6,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "16",
+            "Período": "2025-02",
+            "Año": "2025",
+            "Mes": "Febrero",
+            "Actividad original": "Tango-Roberto.D",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": "10.500",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.500"
+          },
+          "rowText": "Fila origen: 16 | Período: 2025-02 | Año: 2025 | Mes: Febrero | Actividad original: Tango-Roberto.D | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 15,000.00 | Otros importes observados: 10.500 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.500"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 18,
+          "score": 0.6,
+          "matchedColumn": "Fila origen",
+          "matchedValue": "18",
+          "row": {
+            "Fila origen": "18",
+            "Período": "2025-02",
+            "Año": "2025",
+            "Mes": "Febrero",
+            "Actividad original": "Árabe Infantil",
+            "Actividad normalizada": "Árabe Infantil",
+            "Actividad key": "ARABE INFANTIL",
+            "Profesor original": "VIRGINIA",
+            "Profesor normalizado": "VIRGINIA",
+            "Profesor key": "VIRGINIA",
+            "Clave tarifa": "ARABE INFANTIL | VIRGINIA",
+            "Importe observado": "$ 15,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 18 | Período: 2025-02 | Año: 2025 | Mes: Febrero | Actividad original: Árabe Infantil | Actividad normalizada: Árabe Infantil | Actividad key: ARABE INFANTIL | Profesor original: VIRGINIA | Profesor normalizado: VIRGINIA | Profesor key: VIRGINIA | Clave tarifa: ARABE INFANTIL | VIRGINIA | Importe observado: $ 15,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 32,
+          "score": 0.6,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "32",
+            "Período": "2025-03",
+            "Año": "2025",
+            "Mes": "Marzo",
+            "Actividad original": "Tango-Roberto.D",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "5.000, 10.000, 15.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $5.000, $10.000, $15.000"
+          },
+          "rowText": "Fila origen: 32 | Período: 2025-03 | Año: 2025 | Mes: Marzo | Actividad original: Tango-Roberto.D | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 20,000.00 | Otros importes observados: 5.000, 10.000, 15.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $5.000, $10.000, $15.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 47,
+          "score": 0.6,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "47",
+            "Período": "2025-04",
+            "Año": "2025",
+            "Mes": "Abril",
+            "Actividad original": "Tango-Roberto.D",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 47 | Período: 2025-04 | Año: 2025 | Mes: Abril | Actividad original: Tango-Roberto.D | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 20,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 60,
+          "score": 0.6,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "60",
+            "Período": "2025-05",
+            "Año": "2025",
+            "Mes": "Mayo",
+            "Actividad original": "Tango-Roberto.D",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 60 | Período: 2025-05 | Año: 2025 | Mes: Mayo | Actividad original: Tango-Roberto.D | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 20,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 73,
+          "score": 0.6,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "73",
+            "Período": "2025-06",
+            "Año": "2025",
+            "Mes": "Junio",
+            "Actividad original": "Tango-Roberto.D",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 73 | Período: 2025-06 | Año: 2025 | Mes: Junio | Actividad original: Tango-Roberto.D | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 20,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 86,
+          "score": 0.6,
+          "matchedColumn": "Actividad normalizada",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "86",
+            "Período": "2025-07",
+            "Año": "2025",
+            "Mes": "Julio",
+            "Actividad original": "Tango-Roberto.D",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "5.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $5.000"
+          },
+          "rowText": "Fila origen: 86 | Período: 2025-07 | Año: 2025 | Mes: Julio | Actividad original: Tango-Roberto.D | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 20,000.00 | Otros importes observados: 5.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $5.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 93,
+          "score": 0.6,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "93",
+            "Período": "2025-08",
+            "Año": "2025",
+            "Mes": "Agosto",
+            "Actividad original": "Tango",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 20,000.00",
+            "Otros importes observados": "15.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $15.000"
+          },
+          "rowText": "Fila origen: 93 | Período: 2025-08 | Año: 2025 | Mes: Agosto | Actividad original: Tango | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 20,000.00 | Otros importes observados: 15.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $15.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 101,
+          "score": 0.6,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "101",
+            "Período": "2025-09",
+            "Año": "2025",
+            "Mes": "Septiembre",
+            "Actividad original": "Tango",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": "10.000, 15.000, 20.000",
+            "Estado precio": "CANDIDATO_CON_VARIANTES",
+            "Confianza": "MEDIA",
+            "Observación original": "Otros importes registrados: $10.000, $15.000, $20.000"
+          },
+          "rowText": "Fila origen: 101 | Período: 2025-09 | Año: 2025 | Mes: Septiembre | Actividad original: Tango | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 30,000.00 | Otros importes observados: 10.000, 15.000, 20.000 | Estado precio: CANDIDATO_CON_VARIANTES | Confianza: MEDIA | Observación original: Otros importes registrados: $10.000, $15.000, $20.000"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 108,
+          "score": 0.6,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "108",
+            "Período": "2025-10",
+            "Año": "2025",
+            "Mes": "Octubre",
+            "Actividad original": "Tango",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 108 | Período: 2025-10 | Año: 2025 | Mes: Octubre | Actividad original: Tango | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 30,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases normalizadas",
+          "excelRow": 113,
+          "score": 0.6,
+          "matchedColumn": "Actividad original",
+          "matchedValue": "Tango",
+          "row": {
+            "Fila origen": "113",
+            "Período": "2025-11",
+            "Año": "2025",
+            "Mes": "Noviembre",
+            "Actividad original": "Tango",
+            "Actividad normalizada": "Tango",
+            "Actividad key": "TANGO",
+            "Profesor original": "ROBERTO",
+            "Profesor normalizado": "ROBERTO",
+            "Profesor key": "ROBERTO",
+            "Clave tarifa": "TANGO | ROBERTO",
+            "Importe observado": "$ 30,000.00",
+            "Otros importes observados": null,
+            "Estado precio": "CANDIDATO",
+            "Confianza": "ALTA",
+            "Observación original": null
+          },
+          "rowText": "Fila origen: 113 | Período: 2025-11 | Año: 2025 | Mes: Noviembre | Actividad original: Tango | Actividad normalizada: Tango | Actividad key: TANGO | Profesor original: ROBERTO | Profesor normalizado: ROBERTO | Profesor key: ROBERTO | Clave tarifa: TANGO | ROBERTO | Importe observado: $ 30,000.00 | Estado precio: CANDIDATO | Confianza: ALTA"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 93,
+          "score": 0.6,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Tango",
+          "row": {
+            "Año": "2025",
+            "Mes": "Agosto",
+            "Clase / actividad": "Tango",
+            "Profesor": "ROBERTO",
+            "Importe registrado": "$20,000",
+            "Observación": "Otros importes registrados: $15.000"
+          },
+          "rowText": "Año: 2025 | Mes: Agosto | Clase / actividad: Tango | Profesor: ROBERTO | Importe registrado: $20,000 | Observación: Otros importes registrados: $15.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 101,
+          "score": 0.6,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Tango",
+          "row": {
+            "Año": "2025",
+            "Mes": "Septiembre",
+            "Clase / actividad": "Tango",
+            "Profesor": "ROBERTO",
+            "Importe registrado": "$30,000",
+            "Observación": "Otros importes registrados: $10.000, $15.000, $20.000"
+          },
+          "rowText": "Año: 2025 | Mes: Septiembre | Clase / actividad: Tango | Profesor: ROBERTO | Importe registrado: $30,000 | Observación: Otros importes registrados: $10.000, $15.000, $20.000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 108,
+          "score": 0.6,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Tango",
+          "row": {
+            "Año": "2025",
+            "Mes": "Octubre",
+            "Clase / actividad": "Tango",
+            "Profesor": "ROBERTO",
+            "Importe registrado": "$30,000",
+            "Observación": null
+          },
+          "rowText": "Año: 2025 | Mes: Octubre | Clase / actividad: Tango | Profesor: ROBERTO | Importe registrado: $30,000"
+        },
+        {
+          "sheet": "Clases por mes",
+          "excelRow": 113,
+          "score": 0.6,
+          "matchedColumn": "Clase / actividad",
+          "matchedValue": "Tango",
+          "row": {
+            "Año": "2025",
+            "Mes": "Noviembre",
+            "Clase / actividad": "Tango",
+            "Profesor": "ROBERTO",
+            "Importe registrado": "$30,000",
+            "Observación": null
+          },
+          "rowText": "Año: 2025 | Mes: Noviembre | Clase / actividad: Tango | Profesor: ROBERTO | Importe registrado: $30,000"
+        },
+        {
+          "sheet": "Diccionario nombres",
+          "excelRow": 10,
+          "score": 0.6,
+          "matchedColumn": "Valor normalizado",
+          "matchedValue": "Tango",
+          "row": {
+            "Tipo": "ACTIVIDAD",
+            "Valor original": "Tango-Roberto.D",
+            "Valor normalizado": "Tango",
+            "Confianza": "MEDIA",
+            "Criterio": "Posible alias histórico; mismo profesor ROBERTO y transición temporal contigua. Revisar antes de mapear a clase."
+          },
+          "rowText": "Tipo: ACTIVIDAD | Valor original: Tango-Roberto.D | Valor normalizado: Tango | Confianza: MEDIA | Criterio: Posible alias histórico; mismo profesor ROBERTO y transición temporal contigua. Revisar antes de mapear a clase."
+        },
+        {
+          "sheet": "Diccionario nombres",
+          "excelRow": 27,
+          "score": 0.6,
+          "matchedColumn": "Valor original",
+          "matchedValue": "Tango",
+          "row": {
+            "Tipo": "ACTIVIDAD",
+            "Valor original": "Tango",
+            "Valor normalizado": "Tango",
+            "Confianza": "ALTA",
+            "Criterio": "Sin cambio; etiqueta conservada"
+          },
+          "rowText": "Tipo: ACTIVIDAD | Valor original: Tango | Valor normalizado: Tango | Confianza: ALTA | Criterio: Sin cambio; etiqueta conservada"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 2,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Árabe Infantil",
+            "Profesor normalizado": "VIRGINIA",
+            "Clave tarifa": "ARABE INFANTIL | VIRGINIA",
+            "Vigencia desde": "2025-02-01",
+            "Vigencia hasta": "2025-02-28",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "ALTA",
+            "Revisión": "SIN_ALERTAS",
+            "Filas origen": "18"
+          },
+          "rowText": "Actividad normalizada: Árabe Infantil | Profesor normalizado: VIRGINIA | Clave tarifa: ARABE INFANTIL | VIRGINIA | Vigencia desde: 2025-02-01 | Vigencia hasta: 2025-02-28 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: ALTA | Revisión: SIN_ALERTAS | Filas origen: 18"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 4,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Árabe Infantil",
+            "Profesor normalizado": "VIRGINIA",
+            "Clave tarifa": "ARABE INFANTIL | VIRGINIA",
+            "Vigencia desde": "2026-08-01",
+            "Vigencia hasta": "2026-08-31",
+            "Importe candidato": "$ 40,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "ALTA",
+            "Revisión": "SIN_ALERTAS",
+            "Filas origen": "179"
+          },
+          "rowText": "Actividad normalizada: Árabe Infantil | Profesor normalizado: VIRGINIA | Clave tarifa: ARABE INFANTIL | VIRGINIA | Vigencia desde: 2026-08-01 | Vigencia hasta: 2026-08-31 | Importe candidato: $ 40,000.00 | Meses consecutivos: 1 | Confianza: ALTA | Revisión: SIN_ALERTAS | Filas origen: 179"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 5,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Bachata en Pareja",
+            "Profesor normalizado": "MAX",
+            "Clave tarifa": "BACHATA EN PAREJA | MAX",
+            "Vigencia desde": "2026-02-01",
+            "Vigencia hasta": "2026-02-28",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "120"
+          },
+          "rowText": "Actividad normalizada: Bachata en Pareja | Profesor normalizado: MAX | Clave tarifa: BACHATA EN PAREJA | MAX | Vigencia desde: 2026-02-01 | Vigencia hasta: 2026-02-28 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 120"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 7,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Bachata Pasos Sueltos",
+            "Profesor normalizado": "MAX",
+            "Clave tarifa": "BACHATA PASOS SUELTOS | MAX",
+            "Vigencia desde": "2026-02-01",
+            "Vigencia hasta": "2026-02-28",
+            "Importe candidato": "$ 30,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "ALTA",
+            "Revisión": "SIN_ALERTAS",
+            "Filas origen": "119"
+          },
+          "rowText": "Actividad normalizada: Bachata Pasos Sueltos | Profesor normalizado: MAX | Clave tarifa: BACHATA PASOS SUELTOS | MAX | Vigencia desde: 2026-02-01 | Vigencia hasta: 2026-02-28 | Importe candidato: $ 30,000.00 | Meses consecutivos: 1 | Confianza: ALTA | Revisión: SIN_ALERTAS | Filas origen: 119"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 8,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Bachata y Salsa Inicial",
+            "Profesor normalizado": "JOSELO",
+            "Clave tarifa": "BACHATA Y SALSA INICIAL | JOSELO",
+            "Vigencia desde": "2025-02-01",
+            "Vigencia hasta": "2025-02-28",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "ALTA",
+            "Revisión": "SIN_ALERTAS",
+            "Filas origen": "2"
+          },
+          "rowText": "Actividad normalizada: Bachata y Salsa Inicial | Profesor normalizado: JOSELO | Clave tarifa: BACHATA Y SALSA INICIAL | JOSELO | Vigencia desde: 2025-02-01 | Vigencia hasta: 2025-02-28 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: ALTA | Revisión: SIN_ALERTAS | Filas origen: 2"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 12,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Bachata y Salsa Inicial",
+            "Profesor normalizado": "JOSELO",
+            "Clave tarifa": "BACHATA Y SALSA INICIAL | JOSELO",
+            "Vigencia desde": "2026-07-01",
+            "Vigencia hasta": "2026-07-31",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "BAJA",
+            "Revisión": "REVISAR_JULIO",
+            "Filas origen": "160"
+          },
+          "rowText": "Actividad normalizada: Bachata y Salsa Inicial | Profesor normalizado: JOSELO | Clave tarifa: BACHATA Y SALSA INICIAL | JOSELO | Vigencia desde: 2026-07-01 | Vigencia hasta: 2026-07-31 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: BAJA | Revisión: REVISAR_JULIO | Filas origen: 160"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 13,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Bachata y Salsa Inicial",
+            "Profesor normalizado": "JOSELO",
+            "Clave tarifa": "BACHATA Y SALSA INICIAL | JOSELO",
+            "Vigencia desde": "2026-08-01",
+            "Vigencia hasta": "2026-08-31",
+            "Importe candidato": "$ 40,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "BAJA",
+            "Revisión": "REVISAR_PRECIO",
+            "Filas origen": "169"
+          },
+          "rowText": "Actividad normalizada: Bachata y Salsa Inicial | Profesor normalizado: JOSELO | Clave tarifa: BACHATA Y SALSA INICIAL | JOSELO | Vigencia desde: 2026-08-01 | Vigencia hasta: 2026-08-31 | Importe candidato: $ 40,000.00 | Meses consecutivos: 1 | Confianza: BAJA | Revisión: REVISAR_PRECIO | Filas origen: 169"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 15,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Profesor normalizado": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Vigencia desde": "2025-05-01",
+            "Vigencia hasta": "2025-05-31",
+            "Importe candidato": "$ 20,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "51"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Bachata en Pareja | Profesor normalizado: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Vigencia desde: 2025-05-01 | Vigencia hasta: 2025-05-31 | Importe candidato: $ 20,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 51"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 16,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Profesor normalizado": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Vigencia desde": "2025-06-01",
+            "Vigencia hasta": "2025-06-30",
+            "Importe candidato": "$ 10,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "64"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Bachata en Pareja | Profesor normalizado: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Vigencia desde: 2025-06-01 | Vigencia hasta: 2025-06-30 | Importe candidato: $ 10,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 64"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 17,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Coreográfico Bachata en Pareja",
+            "Profesor normalizado": "KEVIN",
+            "Clave tarifa": "COREOGRAFICO BACHATA EN PAREJA | KEVIN",
+            "Vigencia desde": "2025-07-01",
+            "Vigencia hasta": "2025-07-31",
+            "Importe candidato": "$ 5,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "BAJA",
+            "Revisión": "REVISAR_PRECIO",
+            "Filas origen": "77"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Bachata en Pareja | Profesor normalizado: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Vigencia desde: 2025-07-01 | Vigencia hasta: 2025-07-31 | Importe candidato: $ 5,000.00 | Meses consecutivos: 1 | Confianza: BAJA | Revisión: REVISAR_PRECIO | Filas origen: 77"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 20,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Coreográfico Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "COREOGRAFICO FEMENINO | SOFIA",
+            "Vigencia desde": "2025-09-01",
+            "Vigencia hasta": "2025-09-30",
+            "Importe candidato": "$ 21,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "96"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Femenino | Profesor normalizado: SOFIA | Clave tarifa: COREOGRAFICO FEMENINO | SOFIA | Vigencia desde: 2025-09-01 | Vigencia hasta: 2025-09-30 | Importe candidato: $ 21,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 96"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 23,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Coreográfico Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "COREOGRAFICO FEMENINO | SOFIA",
+            "Vigencia desde": "2026-07-01",
+            "Vigencia hasta": "2026-07-31",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "BAJA",
+            "Revisión": "REVISAR_JULIO",
+            "Filas origen": "161"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Femenino | Profesor normalizado: SOFIA | Clave tarifa: COREOGRAFICO FEMENINO | SOFIA | Vigencia desde: 2026-07-01 | Vigencia hasta: 2026-07-31 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: BAJA | Revisión: REVISAR_JULIO | Filas origen: 161"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 24,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Coreográfico Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "COREOGRAFICO FEMENINO | SOFIA",
+            "Vigencia desde": "2026-08-01",
+            "Vigencia hasta": "2026-08-31",
+            "Importe candidato": "$ 40,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "170"
+          },
+          "rowText": "Actividad normalizada: Coreográfico Femenino | Profesor normalizado: SOFIA | Clave tarifa: COREOGRAFICO FEMENINO | SOFIA | Vigencia desde: 2026-08-01 | Vigencia hasta: 2026-08-31 | Importe candidato: $ 40,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 170"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 25,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Estilo Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Vigencia desde": "2025-02-01",
+            "Vigencia hasta": "2025-02-28",
+            "Importe candidato": "$ 7,500.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "5"
+          },
+          "rowText": "Actividad normalizada: Estilo Femenino | Profesor normalizado: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Vigencia desde: 2025-02-01 | Vigencia hasta: 2025-02-28 | Importe candidato: $ 7,500.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 5"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 28,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Estilo Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Vigencia desde": "2025-11-01",
+            "Vigencia hasta": "2025-11-30",
+            "Importe candidato": "$ 25,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "110"
+          },
+          "rowText": "Actividad normalizada: Estilo Femenino | Profesor normalizado: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Vigencia desde: 2025-11-01 | Vigencia hasta: 2025-11-30 | Importe candidato: $ 25,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 110"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 29,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Estilo Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Vigencia desde": "2026-02-01",
+            "Vigencia hasta": "2026-02-28",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "122"
+          },
+          "rowText": "Actividad normalizada: Estilo Femenino | Profesor normalizado: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Vigencia desde: 2026-02-01 | Vigencia hasta: 2026-02-28 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 122"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 30,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Estilo Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Vigencia desde": "2026-03-01",
+            "Vigencia hasta": "2026-03-31",
+            "Importe candidato": "$ 30,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "129"
+          },
+          "rowText": "Actividad normalizada: Estilo Femenino | Profesor normalizado: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Vigencia desde: 2026-03-01 | Vigencia hasta: 2026-03-31 | Importe candidato: $ 30,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 129"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 32,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Estilo Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Vigencia desde": "2026-07-01",
+            "Vigencia hasta": "2026-07-31",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "BAJA",
+            "Revisión": "REVISAR_JULIO",
+            "Filas origen": "162"
+          },
+          "rowText": "Actividad normalizada: Estilo Femenino | Profesor normalizado: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Vigencia desde: 2026-07-01 | Vigencia hasta: 2026-07-31 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: BAJA | Revisión: REVISAR_JULIO | Filas origen: 162"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 33,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Estilo Femenino",
+            "Profesor normalizado": "SOFIA",
+            "Clave tarifa": "ESTILO FEMENINO | SOFIA",
+            "Vigencia desde": "2026-08-01",
+            "Vigencia hasta": "2026-08-31",
+            "Importe candidato": "$ 40,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "171"
+          },
+          "rowText": "Actividad normalizada: Estilo Femenino | Profesor normalizado: SOFIA | Clave tarifa: ESTILO FEMENINO | SOFIA | Vigencia desde: 2026-08-01 | Vigencia hasta: 2026-08-31 | Importe candidato: $ 40,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 171"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 34,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Estilo Frank",
+            "Profesor normalizado": "ANA",
+            "Clave tarifa": "ESTILO FRANK | ANA",
+            "Vigencia desde": "2026-03-01",
+            "Vigencia hasta": "2026-03-31",
+            "Importe candidato": "$ 25,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "ALTA",
+            "Revisión": "SIN_ALERTAS",
+            "Filas origen": "130"
+          },
+          "rowText": "Actividad normalizada: Estilo Frank | Profesor normalizado: ANA | Clave tarifa: ESTILO FRANK | ANA | Vigencia desde: 2026-03-01 | Vigencia hasta: 2026-03-31 | Importe candidato: $ 25,000.00 | Meses consecutivos: 1 | Confianza: ALTA | Revisión: SIN_ALERTAS | Filas origen: 130"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 36,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Fitdance + Axé",
+            "Profesor normalizado": "JOSELO",
+            "Clave tarifa": "FITDANCE AXE | JOSELO",
+            "Vigencia desde": "2025-02-01",
+            "Vigencia hasta": "2025-02-28",
+            "Importe candidato": "$ 7,500.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "6"
+          },
+          "rowText": "Actividad normalizada: Fitdance + Axé | Profesor normalizado: JOSELO | Clave tarifa: FITDANCE AXE | JOSELO | Vigencia desde: 2025-02-01 | Vigencia hasta: 2025-02-28 | Importe candidato: $ 7,500.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 6"
+        },
+        {
+          "sheet": "Tarifas candidatas",
+          "excelRow": 37,
+          "score": 0.6,
+          "matchedColumn": "Meses consecutivos",
+          "matchedValue": "1",
+          "row": {
+            "Actividad normalizada": "Infantil",
+            "Profesor normalizado": "SANTY",
+            "Clave tarifa": "INFANTIL | SANTY",
+            "Vigencia desde": "2025-02-01",
+            "Vigencia hasta": "2025-02-28",
+            "Importe candidato": "$ 15,000.00",
+            "Meses consecutivos": "1",
+            "Confianza": "MEDIA",
+            "Revisión": "CANDIDATO_CON_VARIANTES",
+            "Filas origen": "7"
+          },
+          "rowText": "Actividad normalizada: Infantil | Profesor normalizado: SANTY | Clave tarifa: INFANTIL | SANTY | Vigencia desde: 2025-02-01 | Vigencia hasta: 2025-02-28 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 7"
+        }
+      ]
+    }
+  ]
+}

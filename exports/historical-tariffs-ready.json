@@ -1,15 +1,16 @@
 {
-  "generatedAt": "2026-09-28T20:05:24.589Z",
+  "generatedAt": "2026-10-01T20:09:20.255Z",
   "source": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\historical-tariffs-analysis.json",
   "summary": {
     "sourceItems": 97,
     "validSourceItems": 80,
     "specialSourceItems": 17,
     "classCount": 24,
-    "tariffCount": 73,
+    "tariffCount": 93,
     "bridgedSpecialPeriods": 10,
     "unexplainedGaps": 0,
-    "conflictingOverlaps": 0
+    "conflictingOverlaps": 0,
+    "manualTariffPeriods": 25
   },
   "tariffs": [
     {
@@ -736,17 +737,109 @@
       "className": "Ladys Kizz",
       "amount": "20000.00",
       "validFrom": "2025-03-01",
-      "validTo": "2025-07-31",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-03-01",
           "validTo": "2025-07-31",
           "amount": "20000.00",
           "sourceRows": "25, 40, 56, 69, 82"
+        },
+        {
+          "validFrom": "2025-08-01",
+          "validTo": "2025-08-31",
+          "amount": "20000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó que Ladys Kizz utilizaba la misma cuota base general que las demás clases."
         }
       ],
       "bridgedSpecialPeriods": [],
       "name": "Histórica - Ladys Kizz - 2025 - $20.000"
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2025-09-01",
+          "validTo": "2025-11-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota base general de $30.000. Los importes menores eran descuentos particulares."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Ladys Kizz - 2025 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota base general de $30.000. Los importes menores eran descuentos particulares."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-01-01",
+          "validTo": "2026-06-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota base general de $30.000. Los descuentos aplicados por Fabi no modifican la tarifa."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Ladys Kizz - 2026 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota base general de $30.000. Los descuentos aplicados por Fabi no modifican la tarifa."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "amount": "15000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Ladys Kizz - 2026 - $15.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "amount": "40000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota base general de $40.000 desde agosto de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Ladys Kizz - 2026 - $40.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota base general de $40.000 desde agosto de 2026."
     },
     {
       "classId": "a12f5acf-4754-479a-853c-15926c2dac92",
@@ -935,17 +1028,109 @@
       "className": "S.C Adultos (+18 años)",
       "amount": "20000.00",
       "validFrom": "2025-03-01",
-      "validTo": "2025-04-30",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-03-01",
           "validTo": "2025-04-30",
           "amount": "20000.00",
           "sourceRows": "29, 44"
+        },
+        {
+          "validFrom": "2025-05-01",
+          "validTo": "2025-08-31",
+          "amount": "20000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
         }
       ],
       "bridgedSpecialPeriods": [],
       "name": "Histórica - S.C Adultos (+18 años) - 2025 - $20.000"
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2025-09-01",
+          "validTo": "2025-11-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Adultos (+18 años) - 2025 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-01-01",
+          "validTo": "2026-06-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Adultos (+18 años) - 2026 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "amount": "15000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Adultos (+18 años) - 2026 - $15.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "amount": "40000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Adultos (+18 años) - 2026 - $40.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
     },
     {
       "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
@@ -969,17 +1154,109 @@
       "className": "S.C Infantil (6-11 años)",
       "amount": "20000.00",
       "validFrom": "2025-03-01",
-      "validTo": "2025-04-30",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-03-01",
           "validTo": "2025-04-30",
           "amount": "20000.00",
           "sourceRows": "23, 38"
+        },
+        {
+          "validFrom": "2025-05-01",
+          "validTo": "2025-08-31",
+          "amount": "20000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
         }
       ],
       "bridgedSpecialPeriods": [],
       "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $20.000"
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2025-09-01",
+          "validTo": "2025-11-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Infantil (6-11 años) - 2025 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-01-01",
+          "validTo": "2026-06-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "amount": "15000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $15.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "amount": "40000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Infantil (6-11 años) - 2026 - $40.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
     },
     {
       "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
@@ -1003,17 +1280,109 @@
       "className": "S.C Juvenil (12-17 años)",
       "amount": "20000.00",
       "validFrom": "2025-03-01",
-      "validTo": "2025-04-30",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-03-01",
           "validTo": "2025-04-30",
           "amount": "20000.00",
           "sourceRows": "31, 46"
+        },
+        {
+          "validFrom": "2025-05-01",
+          "validTo": "2025-08-31",
+          "amount": "20000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
         }
       ],
       "bridgedSpecialPeriods": [],
       "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $20.000"
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2025-09-01",
+          "validTo": "2025-11-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Juvenil (12-17 años) - 2025 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-01-01",
+          "validTo": "2026-06-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "amount": "15000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $15.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "amount": "40000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - S.C Juvenil (12-17 años) - 2026 - $40.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
     },
     {
       "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
@@ -1037,17 +1406,109 @@
       "className": "Street Int/Avanzado",
       "amount": "20000.00",
       "validFrom": "2025-03-01",
-      "validTo": "2025-04-30",
+      "validTo": "2025-08-31",
       "sourcePeriods": [
         {
           "validFrom": "2025-03-01",
           "validTo": "2025-04-30",
           "amount": "20000.00",
           "sourceRows": "30, 45"
+        },
+        {
+          "validFrom": "2025-05-01",
+          "validTo": "2025-08-31",
+          "amount": "20000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
         }
       ],
       "bridgedSpecialPeriods": [],
       "name": "Histórica - Street Int/Avanzado - 2025 - $20.000"
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2025-09-01",
+          "validTo": "2025-11-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Street Int/Avanzado - 2025 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-01-01",
+          "validTo": "2026-06-30",
+          "amount": "30000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Street Int/Avanzado - 2026 - $30.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "amount": "15000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Street Int/Avanzado - 2026 - $15.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "sourcePeriods": [
+        {
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "amount": "40000.00",
+          "sourceRows": [],
+          "source": "PO_CONFIRMATION",
+          "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+        }
+      ],
+      "bridgedSpecialPeriods": [],
+      "name": "Histórica - Street Int/Avanzado - 2026 - $40.000",
+      "manual": true,
+      "manualReason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
     },
     {
       "classId": "cc392129-75e3-4205-b7fc-fafceb55b996",
@@ -1508,5 +1969,207 @@
     }
   ],
   "alerts": [],
-  "overlaps": []
+  "overlaps": [],
+  "manualTariffPeriods": [
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "20000.00",
+      "validFrom": "2025-05-01",
+      "validTo": "2025-08-31",
+      "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "71bc486f-8a3d-46bb-a102-838cfef0a1fc",
+      "className": "S.C Adultos (+18 años)",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "20000.00",
+      "validFrom": "2025-05-01",
+      "validTo": "2025-08-31",
+      "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "4b2663bf-5ab4-42e5-865c-2af4da2cf5ff",
+      "className": "S.C Infantil (6-11 años)",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "20000.00",
+      "validFrom": "2025-05-01",
+      "validTo": "2025-08-31",
+      "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "f8a32bf2-9e2a-48b5-9f2e-a8b9da860fb3",
+      "className": "S.C Juvenil (12-17 años)",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "20000.00",
+      "validFrom": "2025-05-01",
+      "validTo": "2025-08-31",
+      "reason": "PO confirmó cuota general de $20.000 entre mayo y agosto de 2025."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "reason": "PO confirmó cuota general de $30.000 entre septiembre y noviembre de 2025."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "reason": "PO confirmó cuota general de $30.000 entre enero y junio de 2026."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "dd4b0323-e82f-4b02-89c0-0f8e520033ed",
+      "className": "Street Int/Avanzado",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "reason": "PO confirmó cuota general de $40.000 desde agosto de 2026."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "20000.00",
+      "validFrom": "2025-08-01",
+      "validTo": "2025-08-31",
+      "reason": "PO confirmó que Ladys Kizz utilizaba la misma cuota base general que las demás clases."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "reason": "PO confirmó cuota base general de $30.000. Los importes menores eran descuentos particulares."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "reason": "PO confirmó cuota base general de $30.000. Los descuentos aplicados por Fabi no modifican la tarifa."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "reason": "PO confirmó cuota de $15.000 por medio mes/receso en julio de 2026."
+    },
+    {
+      "classId": "06f93e1a-5cc0-4741-8ad6-813745ea389d",
+      "className": "Ladys Kizz",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "reason": "PO confirmó cuota base general de $40.000 desde agosto de 2026."
+    }
+  ]
 }
