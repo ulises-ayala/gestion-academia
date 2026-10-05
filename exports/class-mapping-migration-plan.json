@@ -1,0 +1,368 @@
+{
+  "generatedAt": "2026-10-05T20:00:41.082Z",
+  "summary": {
+    "operationCount": 3,
+    "readyOperationCount": 2,
+    "blockedOperationCount": 1,
+    "safeEnrollmentMoves": 8,
+    "enrollmentConflicts": 5,
+    "formationSuspiciousStartDates": 12
+  },
+  "operations": [
+    {
+      "operation": "RENAME_CLASS",
+      "sourceName": "S&B Parejas",
+      "sourceClassId": "576c192b-8d45-47e9-bd94-df027445d793",
+      "targetName": "Salsa y Bachata en Pareja",
+      "enrollmentCount": 26,
+      "status": "READY",
+      "reason": "PO confirmó que S&B Parejas corresponde a Salsa y Bachata en Pareja."
+    },
+    {
+      "operation": "RENAME_CLASS",
+      "sourceName": "Hells",
+      "sourceClassId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+      "targetName": "Heels",
+      "enrollmentCount": 22,
+      "status": "READY",
+      "reason": "PO confirmó que Hells es un error de escritura y corresponde a Heels."
+    },
+    {
+      "operation": "MOVE_ENROLLMENTS",
+      "sourceName": "Grupo C. Sofi",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "targetName": "Clase femenino Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "sourceEnrollmentCount": 13,
+      "safeMoveCount": 8,
+      "conflictCount": 5,
+      "status": "REVIEW_CONFLICTS",
+      "reason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+    }
+  ],
+  "enrollmentMoves": [
+    {
+      "enrollmentId": "11f4fdd7-c12e-4d23-9556-d912040b3d54",
+      "studentId": "32a952d0-5c16-456e-be91-e928d6ca4eef",
+      "studentName": "BRITEZ MARIA ANGELICA",
+      "status": "ACTIVE",
+      "startDate": "2026-08-28",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    },
+    {
+      "enrollmentId": "618dec37-fa62-4126-8f71-1800825d93f8",
+      "studentId": "022f2847-381c-4541-891f-0f38253235f5",
+      "studentName": "BARBIERI MABEL",
+      "status": "ACTIVE",
+      "startDate": "2026-03-01",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    },
+    {
+      "enrollmentId": "7daa6195-adfa-4cd3-a21b-98e216551732",
+      "studentId": "1eb674f1-d0c8-4e43-9414-f322dac17aa3",
+      "studentName": "TOLOSA NOEMI",
+      "status": "ACTIVE",
+      "startDate": "2025-08-01",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    },
+    {
+      "enrollmentId": "02ddd619-230c-4032-9b37-15360f07bfbc",
+      "studentId": "88f8e49f-6866-4aa4-8a6c-20a69ce1b7f4",
+      "studentName": "CANEPA SELENE AYELEN",
+      "status": "ACTIVE",
+      "startDate": "2025-06-01",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    },
+    {
+      "enrollmentId": "29be8ba9-869d-4490-a99d-0261cf31383a",
+      "studentId": "0527d151-0fd0-48b5-ae9f-26d26cd19f3b",
+      "studentName": "GIMENEZ GABRIELA",
+      "status": "ENDED",
+      "startDate": "2025-04-01",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    },
+    {
+      "enrollmentId": "07e76d09-099f-47b8-a47b-0f2a9085abda",
+      "studentId": "454a2da4-1337-4d63-bc8c-676b36c2098f",
+      "studentName": "GUERRA SILVANA",
+      "status": "ACTIVE",
+      "startDate": "2025-03-01",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    },
+    {
+      "enrollmentId": "17f59a10-b6db-4166-b835-dfe08fcbcc4c",
+      "studentId": "997c0e8e-9152-449a-8ffb-9b68a7536349",
+      "studentName": "CABRERA CLAUDIA",
+      "status": "ENDED",
+      "startDate": "2025-02-01",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    },
+    {
+      "enrollmentId": "5a1b5302-ecb3-406d-9f68-06a1b67f119d",
+      "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+      "studentName": "SORAIRE NATALIA",
+      "status": "ACTIVE",
+      "startDate": "2025-01-01",
+      "endDate": null,
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "operation": "CHANGE_ENROLLMENT_CLASS"
+    }
+  ],
+  "conflicts": [
+    {
+      "type": "TARGET_ENROLLMENT_ALREADY_EXISTS",
+      "sourceEnrollmentId": "e197eaf2-6df7-49e1-9050-2432306bc6fd",
+      "studentId": "9967814e-bd85-4322-8516-09b903de0237",
+      "studentName": "CABRERA ACOSTA DEBORA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceStartDate": "2026-06-01",
+      "sourceEndDate": null,
+      "existingTargetEnrollments": [
+        {
+          "id": "9ff83e27-5c73-4691-b95c-1ac1b7607d32",
+          "status": "ACTIVE",
+          "startDate": "2026-06-01",
+          "endDate": null
+        }
+      ]
+    },
+    {
+      "type": "TARGET_ENROLLMENT_ALREADY_EXISTS",
+      "sourceEnrollmentId": "879cd81d-7f71-4e72-a3da-4571a6821ee4",
+      "studentId": "d9d2c6a8-42e8-45d8-a549-6f553ae8a4c2",
+      "studentName": "MIÑOS SABRINA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceStartDate": "2025-09-01",
+      "sourceEndDate": null,
+      "existingTargetEnrollments": [
+        {
+          "id": "216dc74c-968b-41bf-9cd6-92654246809b",
+          "status": "ACTIVE",
+          "startDate": "2025-09-01",
+          "endDate": null
+        }
+      ]
+    },
+    {
+      "type": "TARGET_ENROLLMENT_ALREADY_EXISTS",
+      "sourceEnrollmentId": "6789125c-821e-4618-b76e-7f6f50e74af7",
+      "studentId": "f237f4bc-8093-431f-8598-ff503ef70187",
+      "studentName": "CABALLERO CLAUDIA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceStartDate": "2025-02-01",
+      "sourceEndDate": null,
+      "existingTargetEnrollments": [
+        {
+          "id": "7136dc70-a312-4b27-b261-9f88b3c53c5f",
+          "status": "ENDED",
+          "startDate": "2025-02-01",
+          "endDate": null
+        }
+      ]
+    },
+    {
+      "type": "TARGET_ENROLLMENT_ALREADY_EXISTS",
+      "sourceEnrollmentId": "e4d06c2e-d22a-4b63-b6d4-a82a24eb6f11",
+      "studentId": "824df025-def1-46c0-af0e-0477fd7a1719",
+      "studentName": "AQUINO FLAVIA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceStartDate": "2025-02-01",
+      "sourceEndDate": null,
+      "existingTargetEnrollments": [
+        {
+          "id": "1bf86f68-66c1-452d-b3f0-29955bbf7fc6",
+          "status": "ENDED",
+          "startDate": "2025-02-01",
+          "endDate": null
+        }
+      ]
+    },
+    {
+      "type": "TARGET_ENROLLMENT_ALREADY_EXISTS",
+      "sourceEnrollmentId": "4924a721-6a90-418c-9e18-9b22bce8fef3",
+      "studentId": "074b51e1-fa83-411b-a297-0971b3e4f074",
+      "studentName": "WIERNES MAGALI",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceStartDate": "2025-01-01",
+      "sourceEndDate": null,
+      "existingTargetEnrollments": [
+        {
+          "id": "69ead856-f1f4-4ee4-ab2a-1de459df358a",
+          "status": "ACTIVE",
+          "startDate": "2025-01-01",
+          "endDate": null
+        }
+      ]
+    }
+  ],
+  "formationDateAudit": {
+    "classFound": true,
+    "classId": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+    "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+    "enrollmentCount": 16,
+    "suspiciousCount": 12,
+    "items": [
+      {
+        "enrollmentId": "26fd9e54-9a6a-4f07-85bd-2a7778561c78",
+        "studentId": "2d77e8b7-c2d6-472c-91b0-c3af17e916e7",
+        "studentName": "FLEITAS MARIA JOSE",
+        "currentStartDate": "2026-03-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "f31bec5c-f1cb-471f-9151-3670c1fd52dc",
+        "studentId": "e775ae54-82f6-431f-8b77-e66485f4d4d8",
+        "studentName": "FLORES GUADALUPE",
+        "currentStartDate": "2026-03-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "4209760c-fa9f-4ed9-a701-05ef616dbaf7",
+        "studentId": "61451526-5906-420c-9d49-ac14b3e7e1e7",
+        "studentName": "DELGADO MARIA CARLA",
+        "currentStartDate": "2026-02-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "52a50c78-df99-4cd3-88ad-6a6fefea748a",
+        "studentId": "ba9de018-4dcf-4c09-931c-4d569ebdbe1f",
+        "studentName": "GUARE MATTEO NAVILA",
+        "currentStartDate": "2026-01-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "a8ab5ac2-9879-4bcd-a5bb-d63726ea796a",
+        "studentId": "c9d07213-f8ad-40f2-b459-2be739cc05b7",
+        "studentName": "IRALA ALBA",
+        "currentStartDate": "2025-03-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "e252aec7-2d70-4164-b895-d9267304411e",
+        "studentId": "e0e12c86-9b1d-4fd0-914a-62fc37f00dd1",
+        "studentName": "OVIEDO MAGALI",
+        "currentStartDate": "2025-02-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "5f6d3dd5-1e91-40a4-91ce-b5d5cc52f42d",
+        "studentId": "a5f67efa-a60d-465c-996d-acc357010e3b",
+        "studentName": "BERNAL FATIMA",
+        "currentStartDate": "2025-02-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "aa4de275-e0ef-48ba-9fa3-ac09e7733d87",
+        "studentId": "fb345864-a1e9-4afe-bd89-f7afd399f849",
+        "studentName": "RAMIREZ AGUSTINA",
+        "currentStartDate": "2025-02-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "e58e1908-a9ac-4b7f-b7dc-9da5595de45a",
+        "studentId": "528f5372-4d0f-4864-92b0-93d8bd6d1a93",
+        "studentName": "LEGUIZAMON JOHANNA",
+        "currentStartDate": "2025-02-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "27e17064-1159-43eb-9715-5a0ba0daf55f",
+        "studentId": "997c0e8e-9152-449a-8ffb-9b68a7536349",
+        "studentName": "CABRERA CLAUDIA",
+        "currentStartDate": "2025-02-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "c91bf3aa-0c80-43c2-9526-99f3a45d3cb7",
+        "studentId": "4deb1a11-1f3b-47f4-940d-f6bdfbc54840",
+        "studentName": "SORAIRE NATALIA",
+        "currentStartDate": "2025-01-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      },
+      {
+        "enrollmentId": "8391b952-cff0-4051-af5d-727bf7a9305f",
+        "studentId": "97e34e29-16e6-4644-aa44-0f7c88dba8aa",
+        "studentName": "MEDINA PATRICIA",
+        "currentStartDate": "2025-01-01",
+        "confirmedEarliestStart": "2026-04-01",
+        "status": "ACTIVE",
+        "issue": "START_BEFORE_CONFIRMED_PROGRAM_START"
+      }
+    ]
+  }
+}

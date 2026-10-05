@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T20:25:34.852Z",
+  "generatedAt": "2026-10-04T23:17:10.350Z",
   "historicalCutoff": "2026-08-31",
   "source": {
     "enrollments": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\enrollments-current.json",
@@ -16,19 +16,19 @@
     "noTariffStudentCount": 76,
     "diagnosis": [
       {
-        "key": "NO_SOURCE_EVIDENCE",
-        "count": 4
+        "key": "CONFIRMED_MAPPING",
+        "count": 3
       },
       {
-        "key": "WORKBOOK_EVIDENCE_ONLY",
+        "key": "CONFIRMED_HISTORICAL_ACTIVITY",
         "count": 2
       },
       {
-        "key": "POSSIBLE_ALIAS",
-        "count": 1
+        "key": "CONFIRMED_SPECIAL_PROGRAM",
+        "count": 2
       },
       {
-        "key": "SPECIAL_PROGRAM_REVIEW",
+        "key": "TEST_CLASS",
         "count": 1
       }
     ]
@@ -263,12 +263,22 @@
           "endDate": null
         }
       ],
-      "diagnosis": "NO_SOURCE_EVIDENCE",
-      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "diagnosis": "CONFIRMED_MAPPING",
+      "diagnosisReason": "PO confirmó que S&B Parejas corresponde a Salsa y Bachata en Pareja.",
       "exactAnalysisMatches": [],
       "analysisAliasCandidates": [],
       "readyAliasCandidates": [],
-      "workbookMatches": []
+      "workbookMatches": [],
+      "confirmedMapping": {
+        "targetType": "SAME_ACTIVITY",
+        "historicalNames": [
+          "Salsa y Bachata en Pareja",
+          "Salsa Y Bachata En Pareja",
+          "Salsa Y Bachata En Pareja _Fabi"
+        ],
+        "reason": "PO confirmó que S&B Parejas corresponde a Salsa y Bachata en Pareja."
+      },
+      "confirmedMappingMatches": []
     },
     {
       "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
@@ -467,182 +477,25 @@
           "endDate": null
         }
       ],
-      "diagnosis": "NO_SOURCE_EVIDENCE",
-      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "diagnosis": "CONFIRMED_HISTORICAL_ACTIVITY",
+      "diagnosisReason": "PO confirmó que corresponde a la clase de Kizomba de Fabi y utilizaba la cuota base general de la academia.",
       "exactAnalysisMatches": [],
-      "analysisAliasCandidates": [
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Coreográfico Femenino",
-          "teacher": "SOFIA",
-          "result": "OK",
-          "amount": "15000.00",
-          "validFrom": "2025-02-01",
-          "validTo": "2025-02-28",
-          "reason": "La academia confirmó tarifa general de $15.000 para febrero de 2025. En marzo cambió a $20.000."
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Coreográfico Femenino",
-          "teacher": "SOFIA",
-          "result": "OK",
-          "amount": "20000.00",
-          "validFrom": "2025-04-01",
-          "validTo": "2025-08-31",
-          "reason": null
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Coreográfico Femenino",
-          "teacher": "SOFIA",
-          "result": "NOT_A_TARIFF",
-          "amount": "21000.00",
-          "validFrom": "2025-09-01",
-          "validTo": "2025-09-30",
-          "reason": "Importe particular o condición especial; no representa la tarifa general."
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Coreográfico Femenino",
-          "teacher": "SOFIA",
-          "result": "NOT_A_TARIFF",
-          "amount": "30000.00",
-          "validFrom": "2026-02-01",
-          "validTo": "2026-03-31",
-          "reason": "La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial."
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Coreográfico Femenino",
-          "teacher": "SOFIA",
-          "result": "OK",
-          "amount": "30000.00",
-          "validFrom": "2026-05-01",
-          "validTo": "2026-06-30",
-          "reason": null
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Coreográfico Femenino",
-          "teacher": "SOFIA",
-          "result": "NOT_A_TARIFF",
-          "amount": "15000.00",
-          "validFrom": "2026-07-01",
-          "validTo": "2026-07-31",
-          "reason": "Medio mes o condición especial"
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Coreográfico Femenino",
-          "teacher": "SOFIA",
-          "result": "OK",
-          "amount": "40000.00",
-          "validFrom": "2026-08-01",
-          "validTo": "2026-08-31",
-          "reason": "La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000."
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Estilo Femenino",
-          "teacher": "SOFIA",
-          "result": "NOT_A_TARIFF",
-          "amount": "7500.00",
-          "validFrom": "2025-02-01",
-          "validTo": "2025-02-28",
-          "reason": "La academia confirmó que la cuota general de febrero de 2025 era $15.000; $7.500 correspondía a una condición especial."
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Estilo Femenino",
-          "teacher": "SOFIA",
-          "result": "OK",
-          "amount": "20000.00",
-          "validFrom": "2025-03-01",
-          "validTo": "2025-08-31",
-          "reason": null
-        },
-        {
-          "score": 0.25,
-          "matchedValue": "Clase femenino Sofi",
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "activity": "Estilo Femenino",
-          "teacher": "SOFIA",
-          "result": "NOT_A_TARIFF",
-          "amount": "30000.00",
-          "validFrom": "2025-09-01",
-          "validTo": "2025-10-31",
-          "reason": "Importe particular o condición especial; no representa la tarifa general."
-        }
-      ],
-      "readyAliasCandidates": [
-        {
-          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
-          "className": "Clase femenino Sofi",
-          "score": 0.25,
-          "tariffCount": 6,
-          "tariffs": [
-            {
-              "amount": "15000.00",
-              "validFrom": "2025-02-01",
-              "validTo": "2025-02-28"
-            },
-            {
-              "amount": "20000.00",
-              "validFrom": "2025-03-01",
-              "validTo": "2025-09-30"
-            },
-            {
-              "amount": "30000.00",
-              "validFrom": "2025-10-01",
-              "validTo": "2025-10-31"
-            },
-            {
-              "amount": "25000.00",
-              "validFrom": "2025-11-01",
-              "validTo": "2026-02-28"
-            },
-            {
-              "amount": "30000.00",
-              "validFrom": "2026-03-01",
-              "validTo": "2026-07-31"
-            },
-            {
-              "amount": "40000.00",
-              "validFrom": "2026-08-01",
-              "validTo": "2026-08-31"
-            }
-          ]
-        }
-      ],
-      "workbookMatches": []
+      "analysisAliasCandidates": [],
+      "readyAliasCandidates": [],
+      "workbookMatches": [],
+      "confirmedMapping": {
+        "targetType": "HISTORICAL_ACTIVITY",
+        "historicalNames": [
+          "Kizomba",
+          "Clase Kizomba"
+        ],
+        "teacherNames": [
+          "FABI"
+        ],
+        "tariffPolicy": "GENERAL_ACADEMY_RATE",
+        "reason": "PO confirmó que corresponde a la clase de Kizomba de Fabi y utilizaba la cuota base general de la academia."
+      },
+      "confirmedMappingMatches": []
     },
     {
       "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
@@ -841,12 +694,20 @@
           "endDate": null
         }
       ],
-      "diagnosis": "NO_SOURCE_EVIDENCE",
-      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "diagnosis": "CONFIRMED_MAPPING",
+      "diagnosisReason": "PO confirmó que Hells es un error de escritura y corresponde a Heels.",
       "exactAnalysisMatches": [],
       "analysisAliasCandidates": [],
       "readyAliasCandidates": [],
-      "workbookMatches": []
+      "workbookMatches": [],
+      "confirmedMapping": {
+        "targetType": "SAME_ACTIVITY",
+        "historicalNames": [
+          "Heels"
+        ],
+        "reason": "PO confirmó que Hells es un error de escritura y corresponde a Heels."
+      },
+      "confirmedMappingMatches": []
     },
     {
       "classId": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
@@ -993,8 +854,8 @@
           "endDate": null
         }
       ],
-      "diagnosis": "SPECIAL_PROGRAM_REVIEW",
-      "diagnosisReason": "El nombre sugiere una formación/programa especial. Conviene revisar su esquema de cobro antes de crear una tarifa mensual estándar.",
+      "diagnosis": "CONFIRMED_SPECIAL_PROGRAM",
+      "diagnosisReason": "PO confirmó que la formación comenzó en abril de 2026, termina en diciembre de 2026 y tiene cuota base mensual de $90.000. Los valores $76.500, $72.000 y becas son condiciones particulares.",
       "exactAnalysisMatches": [],
       "analysisAliasCandidates": [
         {
@@ -1024,26 +885,7 @@
           "reason": null
         }
       ],
-      "readyAliasCandidates": [
-        {
-          "classId": "1a8e1c0e-1f96-4de2-a33d-c932e74f2314",
-          "className": "Ritmos latinos y caribeños",
-          "score": 0.375,
-          "tariffCount": 2,
-          "tariffs": [
-            {
-              "amount": "15000.00",
-              "validFrom": "2025-02-01",
-              "validTo": "2025-02-28"
-            },
-            {
-              "amount": "20000.00",
-              "validFrom": "2025-03-01",
-              "validTo": "2025-07-31"
-            }
-          ]
-        }
-      ],
+      "readyAliasCandidates": [],
       "workbookMatches": [
         {
           "sheet": "Clases normalizadas",
@@ -1352,7 +1194,19 @@
           },
           "rowText": "Actividad normalizada: Ritmos Caribeños y Kizomba Parejas | Profesor normalizado: FABI | Clave tarifa: RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI | Vigencia desde: 2025-03-01 | Vigencia hasta: 2025-07-31 | Importe candidato: $ 20,000.00 | Meses consecutivos: 5 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 28, 43, 59, 72, 85"
         }
-      ]
+      ],
+      "confirmedMapping": {
+        "targetType": "SPECIAL_PROGRAM",
+        "historicalNames": [
+          "Formacion Docente En Ritmos Caribeños Y Kizomba",
+          "Formación Docente En Ritmos Caribeños Y Kizomba"
+        ],
+        "validFrom": "2026-04-01",
+        "validTo": "2026-12-31",
+        "baseAmount": "90000.00",
+        "reason": "PO confirmó que la formación comenzó en abril de 2026, termina en diciembre de 2026 y tiene cuota base mensual de $90.000. Los valores $76.500, $72.000 y becas son condiciones particulares."
+      },
+      "confirmedMappingMatches": []
     },
     {
       "classId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
@@ -1479,52 +1333,11 @@
           "endDate": null
         }
       ],
-      "diagnosis": "WORKBOOK_EVIDENCE_ONLY",
-      "diagnosisReason": "Hay coincidencias en el Excel histórico, pero no existe una asociación directa con una tarifa final.",
+      "diagnosis": "CONFIRMED_MAPPING",
+      "diagnosisReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi.",
       "exactAnalysisMatches": [],
-      "analysisAliasCandidates": [
-        {
-          "score": 0.4,
-          "matchedValue": "Grupo C. - A.Frank",
-          "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
-          "className": "Grupo C. - A.Frank",
-          "activity": "Estilo Frank",
-          "teacher": "ANA",
-          "result": "OK",
-          "amount": "25000.00",
-          "validFrom": "2026-03-01",
-          "validTo": "2026-03-31",
-          "reason": null
-        },
-        {
-          "score": 0.4,
-          "matchedValue": "Grupo C. - A.Frank",
-          "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
-          "className": "Grupo C. - A.Frank",
-          "activity": "Estilo Frank",
-          "teacher": "ANA",
-          "result": "OK",
-          "amount": "25000.00",
-          "validFrom": "2026-05-01",
-          "validTo": "2026-06-30",
-          "reason": null
-        }
-      ],
-      "readyAliasCandidates": [
-        {
-          "classId": "e63b18a1-afc2-4fd1-aa80-dfce8909e30f",
-          "className": "Grupo C. - A.Frank",
-          "score": 0.4,
-          "tariffCount": 1,
-          "tariffs": [
-            {
-              "amount": "25000.00",
-              "validFrom": "2026-03-01",
-              "validTo": "2026-06-30"
-            }
-          ]
-        }
-      ],
+      "analysisAliasCandidates": [],
+      "readyAliasCandidates": [],
       "workbookMatches": [
         {
           "sheet": "Clases normalizadas",
@@ -2366,6 +2179,229 @@
           },
           "rowText": "Año: 2026 | Mes: Agosto | Clase / actividad: Teens | Profesor: SOFI | Importe registrado: $40,000"
         }
+      ],
+      "confirmedMapping": {
+        "targetType": "SAME_ACTIVITY",
+        "historicalNames": [
+          "Coreográfico Femenino",
+          "Coreografico Femenino",
+          "Estilo Femenino"
+        ],
+        "teacherNames": [
+          "SOFIA",
+          "SOFI"
+        ],
+        "reason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+      },
+      "confirmedMappingMatches": [
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "15000.00",
+          "validFrom": "2025-02-01",
+          "validTo": "2025-02-28",
+          "matchedHistoricalName": "Coreográfico Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "20000.00",
+          "validFrom": "2025-04-01",
+          "validTo": "2025-08-31",
+          "matchedHistoricalName": "Coreográfico Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "21000.00",
+          "validFrom": "2025-09-01",
+          "validTo": "2025-09-30",
+          "matchedHistoricalName": "Coreográfico Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "30000.00",
+          "validFrom": "2026-02-01",
+          "validTo": "2026-03-31",
+          "matchedHistoricalName": "Coreográfico Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "30000.00",
+          "validFrom": "2026-05-01",
+          "validTo": "2026-06-30",
+          "matchedHistoricalName": "Coreográfico Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "15000.00",
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "matchedHistoricalName": "Coreográfico Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Coreográfico Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "40000.00",
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "matchedHistoricalName": "Coreográfico Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "7500.00",
+          "validFrom": "2025-02-01",
+          "validTo": "2025-02-28",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "20000.00",
+          "validFrom": "2025-03-01",
+          "validTo": "2025-08-31",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "30000.00",
+          "validFrom": "2025-09-01",
+          "validTo": "2025-10-31",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "25000.00",
+          "validFrom": "2025-11-01",
+          "validTo": "2025-11-30",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "15000.00",
+          "validFrom": "2026-02-01",
+          "validTo": "2026-02-28",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "30000.00",
+          "validFrom": "2026-03-01",
+          "validTo": "2026-03-31",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "30000.00",
+          "validFrom": "2026-05-01",
+          "validTo": "2026-06-30",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "NOT_A_TARIFF",
+          "amount": "15000.00",
+          "validFrom": "2026-07-01",
+          "validTo": "2026-07-31",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        },
+        {
+          "classId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "className": "Clase femenino Sofi",
+          "activity": "Estilo Femenino",
+          "teacher": "SOFIA",
+          "result": "OK",
+          "amount": "40000.00",
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "matchedHistoricalName": "Estilo Femenino",
+          "mappingType": "SAME_ACTIVITY",
+          "mappingReason": "PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi."
+        }
       ]
     },
     {
@@ -2425,70 +2461,11 @@
           "endDate": null
         }
       ],
-      "diagnosis": "WORKBOOK_EVIDENCE_ONLY",
-      "diagnosisReason": "Hay coincidencias en el Excel histórico, pero no existe una asociación directa con una tarifa final.",
+      "diagnosis": "CONFIRMED_HISTORICAL_ACTIVITY",
+      "diagnosisReason": "PO confirmó que era una actividad independiente, utilizaba la cuota general y posteriormente pasó a llamarse Urban Flow.",
       "exactAnalysisMatches": [],
-      "analysisAliasCandidates": [
-        {
-          "score": 0.286,
-          "matchedValue": "Coreográfico Bachata en Pareja",
-          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
-          "className": "Coreográfico Bachata en Pareja",
-          "activity": "Coreográfico Bachata en Pareja",
-          "teacher": "KEVIN",
-          "result": "OK",
-          "amount": "20000.00",
-          "validFrom": "2025-05-01",
-          "validTo": "2025-05-31",
-          "reason": null
-        },
-        {
-          "score": 0.286,
-          "matchedValue": "Coreográfico Bachata en Pareja",
-          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
-          "className": "Coreográfico Bachata en Pareja",
-          "activity": "Coreográfico Bachata en Pareja",
-          "teacher": "KEVIN",
-          "result": "OK",
-          "amount": "10000.00",
-          "validFrom": "2025-06-01",
-          "validTo": "2025-06-30",
-          "reason": null
-        },
-        {
-          "score": 0.286,
-          "matchedValue": "Coreográfico Bachata en Pareja",
-          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
-          "className": "Coreográfico Bachata en Pareja",
-          "activity": "Coreográfico Bachata en Pareja",
-          "teacher": "KEVIN",
-          "result": "NOT_A_TARIFF",
-          "amount": "5000.00",
-          "validFrom": "2025-07-01",
-          "validTo": "2025-07-31",
-          "reason": "Condición especial definida por el profesor"
-        }
-      ],
-      "readyAliasCandidates": [
-        {
-          "classId": "28f1b214-f935-4bea-8a8c-a28789592bb0",
-          "className": "Coreográfico Bachata en Pareja",
-          "score": 0.286,
-          "tariffCount": 2,
-          "tariffs": [
-            {
-              "amount": "20000.00",
-              "validFrom": "2025-05-01",
-              "validTo": "2025-05-31"
-            },
-            {
-              "amount": "10000.00",
-              "validFrom": "2025-06-01",
-              "validTo": "2025-06-30"
-            }
-          ]
-        }
-      ],
+      "analysisAliasCandidates": [],
+      "readyAliasCandidates": [],
       "workbookMatches": [
         {
           "sheet": "Clases normalizadas",
@@ -2691,7 +2668,19 @@
           },
           "rowText": "Actividad normalizada: Coreográfico Bachata en Pareja | Profesor normalizado: KEVIN | Clave tarifa: COREOGRAFICO BACHATA EN PAREJA | KEVIN | Vigencia desde: 2025-07-01 | Vigencia hasta: 2025-07-31 | Importe candidato: $ 5,000.00 | Meses consecutivos: 1 | Confianza: BAJA | Revisión: REVISAR_PRECIO | Filas origen: 77"
         }
-      ]
+      ],
+      "confirmedMapping": {
+        "targetType": "HISTORICAL_ACTIVITY",
+        "historicalNames": [
+          "Coreografico E Masc Bachata Urban",
+          "Coreográfico E Masc Bachata Urban",
+          "Coreografico E.Masc-Bachata/Urban"
+        ],
+        "tariffPolicy": "GENERAL_ACADEMY_RATE",
+        "currentName": "Urban Flow",
+        "reason": "PO confirmó que era una actividad independiente, utilizaba la cuota general y posteriormente pasó a llamarse Urban Flow."
+      },
+      "confirmedMappingMatches": []
     },
     {
       "classId": "ff270dd4-aef0-4546-aeb7-24aa94093098",
@@ -2726,12 +2715,18 @@
           "endDate": "2026-08-23"
         }
       ],
-      "diagnosis": "NO_SOURCE_EVIDENCE",
-      "diagnosisReason": "No se encontró evidencia directa suficiente en las fuentes analizadas.",
+      "diagnosis": "TEST_CLASS",
+      "diagnosisReason": "Clase de prueba. No corresponde reconstruir tarifas históricas y será eliminada posteriormente.",
       "exactAnalysisMatches": [],
       "analysisAliasCandidates": [],
       "readyAliasCandidates": [],
-      "workbookMatches": []
+      "workbookMatches": [],
+      "confirmedMapping": {
+        "targetType": "TEST_CLASS",
+        "historicalNames": [],
+        "reason": "Clase de prueba. No corresponde reconstruir tarifas históricas y será eliminada posteriormente."
+      },
+      "confirmedMappingMatches": []
     },
     {
       "classId": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
@@ -2758,8 +2753,8 @@
           "endDate": null
         }
       ],
-      "diagnosis": "POSSIBLE_ALIAS",
-      "diagnosisReason": "Hay otra actividad o clase con un nombre suficientemente similar como para revisar un posible mapping histórico.",
+      "diagnosis": "CONFIRMED_SPECIAL_PROGRAM",
+      "diagnosisReason": "PO confirmó que era un programa diferente de Tango regular, con cuota mensual de $70.000 y actualmente está dado de baja.",
       "exactAnalysisMatches": [],
       "analysisAliasCandidates": [
         {
@@ -3650,7 +3645,19 @@
           },
           "rowText": "Actividad normalizada: Infantil | Profesor normalizado: SANTY | Clave tarifa: INFANTIL | SANTY | Vigencia desde: 2025-02-01 | Vigencia hasta: 2025-02-28 | Importe candidato: $ 15,000.00 | Meses consecutivos: 1 | Confianza: MEDIA | Revisión: CANDIDATO_CON_VARIANTES | Filas origen: 7"
         }
-      ]
+      ],
+      "confirmedMapping": {
+        "targetType": "SPECIAL_PROGRAM",
+        "historicalNames": [
+          "Inst Sup Coreografico Tango 18 Meses",
+          "Inst.Sup.Coreografico -Tango /18 Meses",
+          "Instituto Superior Coreografico Tango 18 Meses"
+        ],
+        "baseAmount": "70000.00",
+        "currentlyActive": false,
+        "reason": "PO confirmó que era un programa diferente de Tango regular, con cuota mensual de $70.000 y actualmente está dado de baja."
+      },
+      "confirmedMappingMatches": []
     }
   ]
 }

@@ -1,0 +1,166 @@
+{
+  "generatedAt": "2026-10-05T20:01:33.966Z",
+  "summary": {
+    "readyTariffs": 7,
+    "blockedClasses": 2,
+    "ignoredClasses": 4,
+    "internalOverlaps": 0,
+    "existingConflicts": 0
+  },
+  "generalRatePeriods": [
+    {
+      "validFrom": "2025-02-01",
+      "validTo": "2025-02-28",
+      "amount": "15000.00",
+      "evidence": "Tarifa general histórica reconstruida para febrero de 2025."
+    },
+    {
+      "validFrom": "2025-03-01",
+      "validTo": "2025-08-31",
+      "amount": "20000.00",
+      "evidence": "Cuota general de $20.000; mayo-agosto 2025 confirmados por PO."
+    },
+    {
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "amount": "30000.00",
+      "evidence": "Cuota general de $30.000 confirmada por PO."
+    },
+    {
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "amount": "30000.00",
+      "evidence": "Cuota general de $30.000 confirmada por PO."
+    },
+    {
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "amount": "15000.00",
+      "evidence": "PO confirmó media cuota/receso de julio 2026."
+    },
+    {
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "amount": "40000.00",
+      "evidence": "Cuota general de $40.000 confirmada desde agosto de 2026."
+    }
+  ],
+  "ready": [
+    {
+      "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "className": "Clase kizomba",
+      "name": "Histórica - Clase kizomba - 2025 - $15.000",
+      "amount": "15000.00",
+      "validFrom": "2025-02-01",
+      "validTo": "2025-02-28",
+      "source": "GENERAL_ACADEMY_RATE",
+      "reason": "Tarifa general histórica reconstruida para febrero de 2025."
+    },
+    {
+      "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "className": "Clase kizomba",
+      "name": "Histórica - Clase kizomba - 2025 - $20.000",
+      "amount": "20000.00",
+      "validFrom": "2025-03-01",
+      "validTo": "2025-08-31",
+      "source": "GENERAL_ACADEMY_RATE",
+      "reason": "Cuota general de $20.000; mayo-agosto 2025 confirmados por PO."
+    },
+    {
+      "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "className": "Clase kizomba",
+      "name": "Histórica - Clase kizomba - 2025 - $30.000",
+      "amount": "30000.00",
+      "validFrom": "2025-09-01",
+      "validTo": "2025-11-30",
+      "source": "GENERAL_ACADEMY_RATE",
+      "reason": "Cuota general de $30.000 confirmada por PO."
+    },
+    {
+      "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "className": "Clase kizomba",
+      "name": "Histórica - Clase kizomba - 2026 - $30.000",
+      "amount": "30000.00",
+      "validFrom": "2026-01-01",
+      "validTo": "2026-06-30",
+      "source": "GENERAL_ACADEMY_RATE",
+      "reason": "Cuota general de $30.000 confirmada por PO."
+    },
+    {
+      "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "className": "Clase kizomba",
+      "name": "Histórica - Clase kizomba - 2026 - $15.000",
+      "amount": "15000.00",
+      "validFrom": "2026-07-01",
+      "validTo": "2026-07-31",
+      "source": "GENERAL_ACADEMY_RATE",
+      "reason": "PO confirmó media cuota/receso de julio 2026."
+    },
+    {
+      "classId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "className": "Clase kizomba",
+      "name": "Histórica - Clase kizomba - 2026 - $40.000",
+      "amount": "40000.00",
+      "validFrom": "2026-08-01",
+      "validTo": "2026-08-31",
+      "source": "GENERAL_ACADEMY_RATE",
+      "reason": "Cuota general de $40.000 confirmada desde agosto de 2026."
+    },
+    {
+      "classId": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+      "className": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+      "name": "Histórica - Formacion Docente En Ritmos Caribeños Y Kizomba - 2026 - $90.000",
+      "amount": "90000.00",
+      "validFrom": "2026-04-01",
+      "validTo": "2026-12-31",
+      "source": "PO_CONFIRMED_SPECIAL_PROGRAM",
+      "reason": "PO confirmó cuota base mensual de $90.000 desde abril hasta diciembre de 2026. $76.500, $72.000 y becas son condiciones particulares."
+    }
+  ],
+  "blocked": [
+    {
+      "classId": "2d17175b-22b0-4565-9342-1e93ad221855",
+      "className": "Coreografico E.Masc-Bachata/Urban",
+      "issue": "MISSING_URBAN_FLOW_TRANSITION_DATE",
+      "knownRule": "Antes del cambio a Urban Flow utilizaba la cuota general de la academia.",
+      "required": "Confirmar hasta qué mes/año se aplicó la cuota general y desde qué mes comenzó Urban Flow con $20.000.",
+      "status": "BLOCKED"
+    },
+    {
+      "classId": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+      "className": "Inst.Sup.Coreografico -Tango /18 Meses",
+      "amount": "70000.00",
+      "issue": "MISSING_SPECIAL_PROGRAM_PERIOD",
+      "required": "Confirmar desde qué mes/año hasta qué mes/año se cobró la cuota de $70.000.",
+      "status": "BLOCKED"
+    }
+  ],
+  "ignored": [
+    {
+      "classId": "576c192b-8d45-47e9-bd94-df027445d793",
+      "className": "S&B Parejas",
+      "resolution": "KEEP_CLASS_REUSE_HISTORICAL_PATTERN",
+      "reason": "Se resuelve primero mediante mapping/renombre/movimiento de enrollments. No se genera tarifa en este builder."
+    },
+    {
+      "classId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+      "className": "Hells",
+      "resolution": "KEEP_CLASS_REUSE_HISTORICAL_PATTERN",
+      "reason": "Se resuelve primero mediante mapping/renombre/movimiento de enrollments. No se genera tarifa en este builder."
+    },
+    {
+      "classId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "className": "Grupo C. Sofi",
+      "resolution": "MOVE_ENROLLMENTS_TO_EXISTING_CLASS",
+      "reason": "Se resuelve primero mediante mapping/renombre/movimiento de enrollments. No se genera tarifa en este builder."
+    },
+    {
+      "classId": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+      "className": "arabashe",
+      "resolution": "IGNORE_TEST_CLASS",
+      "reason": "Clase de prueba que será eliminada."
+    }
+  ],
+  "internalOverlaps": [],
+  "existingConflicts": []
+}

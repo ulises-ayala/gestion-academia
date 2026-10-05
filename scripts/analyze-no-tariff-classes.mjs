@@ -56,9 +56,160 @@ const MAX_ALIAS_CANDIDATES = 10;
 
 const MAX_WORKBOOK_MATCHES = 40;
 
-const MIN_ALIAS_SCORE = 0.25;
+const MIN_ALIAS_SCORE = 0.45;
 
 const MIN_WORKBOOK_SCORE = 0.25;
+
+const CONFIRMED_CLASS_MAPPINGS = {
+  /*
+   * La clave siempre está normalizada con normalizeText().
+   *
+   * targetType:
+   *
+   * SAME_ACTIVITY
+   *   → Es la misma actividad, solo cambió el nombre.
+   *
+   * HISTORICAL_ACTIVITY
+   *   → Corresponde a una actividad histórica determinada,
+   *     pero queremos conservar la clase actual.
+   *
+   * SPECIAL_PROGRAM
+   *   → Tiene esquema tarifario propio.
+   *
+   * TEST_CLASS
+   *   → Clase de prueba que no debe participar de la
+   *     reconstrucción histórica.
+   */
+
+  'S B PAREJAS': {
+    targetType: 'SAME_ACTIVITY',
+
+    historicalNames: [
+      'Salsa y Bachata en Pareja',
+      'Salsa Y Bachata En Pareja',
+      'Salsa Y Bachata En Pareja _Fabi',
+    ],
+
+    reason:
+      'PO confirmó que S&B Parejas corresponde a Salsa y Bachata en Pareja.',
+  },
+
+  'CLASE KIZOMBA': {
+    targetType: 'HISTORICAL_ACTIVITY',
+
+    historicalNames: [
+      'Kizomba',
+      'Clase Kizomba',
+    ],
+
+    teacherNames: [
+      'FABI',
+    ],
+
+    tariffPolicy:
+      'GENERAL_ACADEMY_RATE',
+
+    reason:
+      'PO confirmó que corresponde a la clase de Kizomba de Fabi y utilizaba la cuota base general de la academia.',
+  },
+
+  'HELLS': {
+    targetType: 'SAME_ACTIVITY',
+
+    historicalNames: [
+      'Heels',
+    ],
+
+    reason:
+      'PO confirmó que Hells es un error de escritura y corresponde a Heels.',
+  },
+
+  'FORMACION DOCENTE EN RITMOS CARIBENOS Y KIZOMBA': {
+    targetType: 'SPECIAL_PROGRAM',
+
+    historicalNames: [
+      'Formacion Docente En Ritmos Caribeños Y Kizomba',
+      'Formación Docente En Ritmos Caribeños Y Kizomba',
+    ],
+
+    validFrom:
+      '2026-04-01',
+
+    validTo:
+      '2026-12-31',
+
+    baseAmount:
+      '90000.00',
+
+    reason:
+      'PO confirmó que la formación comenzó en abril de 2026, termina en diciembre de 2026 y tiene cuota base mensual de $90.000. Los valores $76.500, $72.000 y becas son condiciones particulares.',
+  },
+
+  'GRUPO C SOFI': {
+    targetType: 'SAME_ACTIVITY',
+
+    historicalNames: [
+      'Coreográfico Femenino',
+      'Coreografico Femenino',
+      'Estilo Femenino',
+    ],
+
+    teacherNames: [
+      'SOFIA',
+      'SOFI',
+    ],
+
+    reason:
+      'PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi.',
+  },
+
+  'COREOGRAFICO E MASC BACHATA URBAN': {
+    targetType: 'HISTORICAL_ACTIVITY',
+
+    historicalNames: [
+      'Coreografico E Masc Bachata Urban',
+      'Coreográfico E Masc Bachata Urban',
+      'Coreografico E.Masc-Bachata/Urban',
+    ],
+
+    tariffPolicy:
+      'GENERAL_ACADEMY_RATE',
+
+    currentName:
+      'Urban Flow',
+
+    reason:
+      'PO confirmó que era una actividad independiente, utilizaba la cuota general y posteriormente pasó a llamarse Urban Flow.',
+  },
+
+  'INST SUP COREOGRAFICO TANGO 18 MESES': {
+    targetType: 'SPECIAL_PROGRAM',
+
+    historicalNames: [
+      'Inst Sup Coreografico Tango 18 Meses',
+      'Inst.Sup.Coreografico -Tango /18 Meses',
+      'Instituto Superior Coreografico Tango 18 Meses',
+    ],
+
+    baseAmount:
+      '70000.00',
+
+    currentlyActive:
+      false,
+
+    reason:
+      'PO confirmó que era un programa diferente de Tango regular, con cuota mensual de $70.000 y actualmente está dado de baja.',
+  },
+
+  'ARABASHE': {
+    targetType: 'TEST_CLASS',
+
+    historicalNames: [],
+
+    reason:
+      'Clase de prueba. No corresponde reconstruir tarifas históricas y será eliminada posteriormente.',
+  },
+};
 
 /* =========================================================
  * NORMALIZACIÓN
@@ -72,6 +223,19 @@ function normalizeText(value) {
     .replace(/[^A-Z0-9]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function getConfirmedMapping(
+  className,
+) {
+  return (
+    CONFIRMED_CLASS_MAPPINGS[
+      normalizeText(
+        className,
+      )
+    ] ??
+    null
+  );
 }
 
 function tokenize(value) {
@@ -724,6 +888,136 @@ function findExactAnalysisMatches(
   );
 }
 
+function findConfirmedMappingMatches(
+  target,
+  analysisItems,
+) {
+  const mapping =
+    getConfirmedMapping(
+      target.className,
+    );
+
+  if (!mapping) {
+    return [];
+  }
+
+  if (
+    mapping.targetType ===
+    'TEST_CLASS'
+  ) {
+    return [];
+  }
+
+  const historicalNames =
+    mapping.historicalNames ??
+    [];
+
+  const teacherNames =
+    (
+      mapping.teacherNames ??
+      []
+    ).map(
+      normalizeText,
+    );
+
+  const matches = [];
+
+  for (
+    const item
+    of analysisItems
+  ) {
+    const candidateNames = [
+      item.activity,
+      item.className,
+    ]
+      .filter(Boolean);
+
+    const matchedHistoricalName =
+      historicalNames.find(
+        (historicalName) =>
+          candidateNames.some(
+            (candidateName) =>
+              normalizeText(
+                candidateName,
+              ) ===
+              normalizeText(
+                historicalName,
+              ),
+          ),
+      );
+
+    if (
+      !matchedHistoricalName
+    ) {
+      continue;
+    }
+
+    /*
+     * Si el mapping especifica profesor,
+     * exigimos que coincida cuando el registro
+     * histórico sí tiene profesor.
+     */
+    if (
+      teacherNames.length > 0 &&
+      item.teacher &&
+      !teacherNames.includes(
+        normalizeText(
+          item.teacher,
+        ),
+      )
+    ) {
+      continue;
+    }
+
+    matches.push({
+      classId:
+        item.classId ??
+        null,
+
+      className:
+        item.className ??
+        null,
+
+      activity:
+        item.activity ??
+        null,
+
+      teacher:
+        item.teacher ??
+        null,
+
+      result:
+        item.result ??
+        null,
+
+      amount:
+        normalizeAmount(
+          item.amount,
+        ),
+
+      validFrom:
+        normalizeDate(
+          item.validFrom,
+        ),
+
+      validTo:
+        normalizeDate(
+          item.validTo,
+        ),
+
+      matchedHistoricalName,
+
+      mappingType:
+        mapping.targetType,
+
+      mappingReason:
+        mapping.reason,
+    });
+  }
+
+  return matches;
+}
+
 function findAnalysisAliasCandidates(
   target,
   analysisItems,
@@ -1244,14 +1538,82 @@ function buildEnrollmentSummary(
 
 function classifyEvidence({
   target,
+  confirmedMapping,
+  confirmedMappingMatches,
   exactAnalysisMatches,
   analysisAliases,
   readyAliases,
   workbookMatches,
 }) {
   /*
-   * Esto no decide la regla de negocio.
-   * Solo ayuda a ordenar la revisión manual.
+   * 1. Clase de prueba.
+   */
+  if (
+    confirmedMapping?.targetType ===
+    'TEST_CLASS'
+  ) {
+    return {
+      diagnosis:
+        'TEST_CLASS',
+
+      reason:
+        confirmedMapping.reason,
+    };
+  }
+
+  /*
+   * 2. Mapping confirmado:
+   * misma actividad con otro nombre.
+   */
+  if (
+    confirmedMapping?.targetType ===
+    'SAME_ACTIVITY'
+  ) {
+    return {
+      diagnosis:
+        'CONFIRMED_MAPPING',
+
+      reason:
+        confirmedMapping.reason,
+    };
+  }
+
+  /*
+   * 3. Actividad histórica confirmada,
+   * pero necesita reconstrucción tarifaria.
+   */
+  if (
+    confirmedMapping?.targetType ===
+    'HISTORICAL_ACTIVITY'
+  ) {
+    return {
+      diagnosis:
+        'CONFIRMED_HISTORICAL_ACTIVITY',
+
+      reason:
+        confirmedMapping.reason,
+    };
+  }
+
+  /*
+   * 4. Programa especial con esquema propio.
+   */
+  if (
+    confirmedMapping?.targetType ===
+    'SPECIAL_PROGRAM'
+  ) {
+    return {
+      diagnosis:
+        'CONFIRMED_SPECIAL_PROGRAM',
+
+      reason:
+        confirmedMapping.reason,
+    };
+  }
+
+  /*
+   * A partir de acá queda la heurística anterior
+   * solamente para clases sin decisión del PO.
    */
 
   const exactResults =
@@ -1316,25 +1678,6 @@ function classifyEvidence({
     };
   }
 
-  const formationLike =
-    normalizeText(
-      target.className,
-    ).includes(
-      'FORMACION',
-    );
-
-  if (
-    formationLike
-  ) {
-    return {
-      diagnosis:
-        'SPECIAL_PROGRAM_REVIEW',
-
-      reason:
-        'El nombre sugiere una formación/programa especial. Conviene revisar su esquema de cobro antes de crear una tarifa mensual estándar.',
-    };
-  }
-
   if (
     workbookMatches.length >
     0
@@ -1372,6 +1715,17 @@ function analyzeTargetClass({
       target,
     );
 
+  const confirmedMapping =
+  getConfirmedMapping(
+    target.className,
+  );
+
+const confirmedMappingMatches =
+  findConfirmedMappingMatches(
+    target,
+    analysisItems,
+  );
+
   const exactAnalysisMatches =
     findExactAnalysisMatches(
       target,
@@ -1399,6 +1753,8 @@ function analyzeTargetClass({
   const classification =
     classifyEvidence({
       target,
+      confirmedMapping,
+      confirmedMappingMatches,
       exactAnalysisMatches,
       analysisAliases,
       readyAliases,
@@ -1471,6 +1827,14 @@ function analyzeTargetClass({
       readyAliases,
 
     workbookMatches,
+    confirmedMapping:
+      confirmedMapping
+        ? {
+            ...confirmedMapping,
+          }
+        : null,
+
+    confirmedMappingMatches,
   };
 }
 
@@ -1598,6 +1962,20 @@ async function main() {
     );
   }
 
+const actionableAnalyses =
+  analyses.filter(
+    (item) =>
+      item.diagnosis !==
+      'TEST_CLASS',
+  );
+
+const testClassAnalyses =
+  analyses.filter(
+    (item) =>
+      item.diagnosis ===
+      'TEST_CLASS',
+  );
+
   /* =======================================================
    * CONSOLA
    * ======================================================= */
@@ -1621,6 +1999,14 @@ async function main() {
       (item) =>
         item.diagnosis,
     );
+
+  console.log(
+    `⚠️ Clases reales pendientes: ${actionableAnalyses.length}`,
+  );
+
+  console.log(
+    `🧪 Clases de prueba ignoradas: ${testClassAnalyses.length}`,
+  );
 
   console.log('');
   console.log(
@@ -1664,6 +2050,42 @@ async function main() {
     console.log(
       `Diagnóstico: ${item.diagnosis}`,
     );
+    if (
+      item.confirmedMapping
+    ) {
+      console.log(
+        `Mapping confirmado: ${item.confirmedMapping.targetType}`,
+      );
+
+      if (
+        item.confirmedMapping.historicalNames?.length >
+        0
+      ) {
+        console.log(
+          `Actividad/es histórica/s: ${item.confirmedMapping.historicalNames.join(' | ')}`,
+        );
+      }
+
+      if (
+        item.confirmedMapping.tariffPolicy
+      ) {
+        console.log(
+          `Política tarifaria: ${item.confirmedMapping.tariffPolicy}`,
+        );
+      }
+
+      if (
+        item.confirmedMapping.baseAmount
+      ) {
+        console.log(
+          `Tarifa base confirmada: $${item.confirmedMapping.baseAmount}`,
+        );
+      }
+
+      console.log(
+        `Matches confirmados encontrados: ${item.confirmedMappingMatches.length}`,
+      );
+    }
 
     console.log(
       `Coincidencias exactas analysis: ${item.exactAnalysisMatches.length}`,
@@ -1774,6 +2196,11 @@ async function main() {
 
       diagnosis:
         diagnosisSummary,
+        actionableClassCount:
+          actionableAnalyses.length,
+
+        testClassCount:
+          testClassAnalyses.length,
     },
 
     classes:
@@ -1839,6 +2266,30 @@ async function main() {
 
         'Matches Excel':
           item.workbookMatches.length,
+
+        'Mapping confirmado':
+          item.confirmedMapping?.targetType ??
+          '',
+
+        'Nombre/s histórico/s confirmado/s':
+          item.confirmedMapping?.historicalNames
+            ?.join(' | ') ??
+          '',
+
+        'Política tarifaria':
+          item.confirmedMapping?.tariffPolicy ??
+          '',
+
+        'Tarifa base confirmada':
+          item.confirmedMapping?.baseAmount ??
+          '',
+
+        'Motivo mapping':
+          item.confirmedMapping?.reason ??
+          '',
+
+        'Matches mapping':
+          item.confirmedMappingMatches.length,
       }),
     );
 
@@ -2162,6 +2613,124 @@ async function main() {
       metadataRows,
     ),
     'Metadata',
+  );
+
+  const confirmedMappingRows =
+    analyses.flatMap(
+      (item) => {
+        if (
+          !item.confirmedMapping
+        ) {
+          return [];
+        }
+
+        if (
+          item.confirmedMappingMatches.length ===
+          0
+        ) {
+          return [
+            {
+              'Clase actual':
+                item.className,
+
+              'Class ID':
+                item.classId,
+
+              'Tipo mapping':
+                item.confirmedMapping.targetType,
+
+              'Nombre histórico confirmado':
+                item.confirmedMapping.historicalNames
+                  ?.join(' | ') ??
+                '',
+
+              Profesor:
+                item.confirmedMapping.teacherNames
+                  ?.join(' | ') ??
+                '',
+
+              'Tarifa base':
+                item.confirmedMapping.baseAmount ??
+                '',
+
+              'Política tarifaria':
+                item.confirmedMapping.tariffPolicy ??
+                '',
+
+              'Actividad encontrada':
+                '',
+
+              'Resultado analysis':
+                '',
+
+              Importe:
+                '',
+
+              Desde:
+                '',
+
+              Hasta:
+                '',
+
+              Motivo:
+                item.confirmedMapping.reason,
+            },
+          ];
+        }
+
+        return item.confirmedMappingMatches.map(
+          (match) => ({
+            'Clase actual':
+              item.className,
+
+            'Class ID':
+              item.classId,
+
+            'Tipo mapping':
+              item.confirmedMapping.targetType,
+
+            'Nombre histórico confirmado':
+              match.matchedHistoricalName,
+
+            Profesor:
+              match.teacher,
+
+            'Tarifa base':
+              item.confirmedMapping.baseAmount ??
+              '',
+
+            'Política tarifaria':
+              item.confirmedMapping.tariffPolicy ??
+              '',
+
+            'Actividad encontrada':
+              match.activity,
+
+            'Resultado analysis':
+              match.result,
+
+            Importe:
+              match.amount,
+
+            Desde:
+              match.validFrom,
+
+            Hasta:
+              match.validTo,
+
+            Motivo:
+              item.confirmedMapping.reason,
+          }),
+        );
+      },
+    );
+
+  utils.book_append_sheet(
+    workbook,
+    utils.json_to_sheet(
+      confirmedMappingRows,
+    ),
+    'Mappings confirmados',
   );
 
   writeFile(

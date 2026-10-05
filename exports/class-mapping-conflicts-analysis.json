@@ -1,0 +1,318 @@
+{
+  "generatedAt": "2026-10-05T20:10:35.388Z",
+  "sourceClass": "Grupo C. Sofi",
+  "targetClass": "Clase femenino Sofi",
+  "summary": {
+    "conflictStudents": 5,
+    "comparisonCount": 5,
+    "classifications": [
+      {
+        "key": "EXACT_DUPLICATE",
+        "count": 3
+      },
+      {
+        "key": "DUPLICATE_STATUS_CONFLICT",
+        "count": 2
+      }
+    ],
+    "recommendedActions": [
+      {
+        "key": "KEEP_TARGET_REMOVE_SOURCE",
+        "count": 3
+      },
+      {
+        "key": "REVIEW_STATUS_BEFORE_MERGE",
+        "count": 2
+      }
+    ]
+  },
+  "analyses": [
+    {
+      "studentId": "9967814e-bd85-4322-8516-09b903de0237",
+      "studentName": "CABRERA ACOSTA DEBORA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollment": {
+        "id": "e197eaf2-6df7-49e1-9050-2432306bc6fd",
+        "status": "ACTIVE",
+        "startDate": "2026-06-01",
+        "endDate": null
+      },
+      "targetEnrollmentCount": 1,
+      "comparisons": [
+        {
+          "targetEnrollmentId": "9ff83e27-5c73-4691-b95c-1ac1b7607d32",
+          "targetStatus": "ACTIVE",
+          "targetStartDate": "2026-06-01",
+          "targetEndDate": null,
+          "sameStart": true,
+          "sameEnd": true,
+          "sameStatus": true,
+          "overlap": true,
+          "startDifferenceDays": 0,
+          "classification": "EXACT_DUPLICATE",
+          "recommendedAction": "KEEP_TARGET_REMOVE_SOURCE",
+          "confidence": "HIGH",
+          "reason": "Los enrollments tienen exactamente el mismo rango de fechas y el mismo estado. El PO confirmó que ambas clases representan la misma actividad."
+        }
+      ]
+    },
+    {
+      "studentId": "d9d2c6a8-42e8-45d8-a549-6f553ae8a4c2",
+      "studentName": "MIÑOS SABRINA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollment": {
+        "id": "879cd81d-7f71-4e72-a3da-4571a6821ee4",
+        "status": "ACTIVE",
+        "startDate": "2025-09-01",
+        "endDate": null
+      },
+      "targetEnrollmentCount": 1,
+      "comparisons": [
+        {
+          "targetEnrollmentId": "216dc74c-968b-41bf-9cd6-92654246809b",
+          "targetStatus": "ACTIVE",
+          "targetStartDate": "2025-09-01",
+          "targetEndDate": null,
+          "sameStart": true,
+          "sameEnd": true,
+          "sameStatus": true,
+          "overlap": true,
+          "startDifferenceDays": 0,
+          "classification": "EXACT_DUPLICATE",
+          "recommendedAction": "KEEP_TARGET_REMOVE_SOURCE",
+          "confidence": "HIGH",
+          "reason": "Los enrollments tienen exactamente el mismo rango de fechas y el mismo estado. El PO confirmó que ambas clases representan la misma actividad."
+        }
+      ]
+    },
+    {
+      "studentId": "f237f4bc-8093-431f-8598-ff503ef70187",
+      "studentName": "CABALLERO CLAUDIA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollment": {
+        "id": "6789125c-821e-4618-b76e-7f6f50e74af7",
+        "status": "ACTIVE",
+        "startDate": "2025-02-01",
+        "endDate": null
+      },
+      "targetEnrollmentCount": 1,
+      "comparisons": [
+        {
+          "targetEnrollmentId": "7136dc70-a312-4b27-b261-9f88b3c53c5f",
+          "targetStatus": "ENDED",
+          "targetStartDate": "2025-02-01",
+          "targetEndDate": null,
+          "sameStart": true,
+          "sameEnd": true,
+          "sameStatus": false,
+          "overlap": true,
+          "startDifferenceDays": 0,
+          "classification": "DUPLICATE_STATUS_CONFLICT",
+          "recommendedAction": "REVIEW_STATUS_BEFORE_MERGE",
+          "confidence": "HIGH",
+          "reason": "Los enrollments representan el mismo período y la misma actividad, pero tienen estados diferentes. Debe decidirse qué estado conservar antes de eliminar el duplicado."
+        }
+      ]
+    },
+    {
+      "studentId": "824df025-def1-46c0-af0e-0477fd7a1719",
+      "studentName": "AQUINO FLAVIA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollment": {
+        "id": "e4d06c2e-d22a-4b63-b6d4-a82a24eb6f11",
+        "status": "ACTIVE",
+        "startDate": "2025-02-01",
+        "endDate": null
+      },
+      "targetEnrollmentCount": 1,
+      "comparisons": [
+        {
+          "targetEnrollmentId": "1bf86f68-66c1-452d-b3f0-29955bbf7fc6",
+          "targetStatus": "ENDED",
+          "targetStartDate": "2025-02-01",
+          "targetEndDate": null,
+          "sameStart": true,
+          "sameEnd": true,
+          "sameStatus": false,
+          "overlap": true,
+          "startDifferenceDays": 0,
+          "classification": "DUPLICATE_STATUS_CONFLICT",
+          "recommendedAction": "REVIEW_STATUS_BEFORE_MERGE",
+          "confidence": "HIGH",
+          "reason": "Los enrollments representan el mismo período y la misma actividad, pero tienen estados diferentes. Debe decidirse qué estado conservar antes de eliminar el duplicado."
+        }
+      ]
+    },
+    {
+      "studentId": "074b51e1-fa83-411b-a297-0971b3e4f074",
+      "studentName": "WIERNES MAGALI",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollment": {
+        "id": "4924a721-6a90-418c-9e18-9b22bce8fef3",
+        "status": "ACTIVE",
+        "startDate": "2025-01-01",
+        "endDate": null
+      },
+      "targetEnrollmentCount": 1,
+      "comparisons": [
+        {
+          "targetEnrollmentId": "69ead856-f1f4-4ee4-ab2a-1de459df358a",
+          "targetStatus": "ACTIVE",
+          "targetStartDate": "2025-01-01",
+          "targetEndDate": null,
+          "sameStart": true,
+          "sameEnd": true,
+          "sameStatus": true,
+          "overlap": true,
+          "startDifferenceDays": 0,
+          "classification": "EXACT_DUPLICATE",
+          "recommendedAction": "KEEP_TARGET_REMOVE_SOURCE",
+          "confidence": "HIGH",
+          "reason": "Los enrollments tienen exactamente el mismo rango de fechas y el mismo estado. El PO confirmó que ambas clases representan la misma actividad."
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "studentId": "9967814e-bd85-4322-8516-09b903de0237",
+      "studentName": "CABRERA ACOSTA DEBORA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollmentId": "e197eaf2-6df7-49e1-9050-2432306bc6fd",
+      "sourceStatus": "ACTIVE",
+      "sourceStartDate": "2026-06-01",
+      "sourceEndDate": null,
+      "targetEnrollmentId": "9ff83e27-5c73-4691-b95c-1ac1b7607d32",
+      "targetStatus": "ACTIVE",
+      "targetStartDate": "2026-06-01",
+      "targetEndDate": null,
+      "sameStart": true,
+      "sameEnd": true,
+      "sameStatus": true,
+      "overlap": true,
+      "startDifferenceDays": 0,
+      "classification": "EXACT_DUPLICATE",
+      "recommendedAction": "KEEP_TARGET_REMOVE_SOURCE",
+      "confidence": "HIGH",
+      "reason": "Los enrollments tienen exactamente el mismo rango de fechas y el mismo estado. El PO confirmó que ambas clases representan la misma actividad."
+    },
+    {
+      "studentId": "d9d2c6a8-42e8-45d8-a549-6f553ae8a4c2",
+      "studentName": "MIÑOS SABRINA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollmentId": "879cd81d-7f71-4e72-a3da-4571a6821ee4",
+      "sourceStatus": "ACTIVE",
+      "sourceStartDate": "2025-09-01",
+      "sourceEndDate": null,
+      "targetEnrollmentId": "216dc74c-968b-41bf-9cd6-92654246809b",
+      "targetStatus": "ACTIVE",
+      "targetStartDate": "2025-09-01",
+      "targetEndDate": null,
+      "sameStart": true,
+      "sameEnd": true,
+      "sameStatus": true,
+      "overlap": true,
+      "startDifferenceDays": 0,
+      "classification": "EXACT_DUPLICATE",
+      "recommendedAction": "KEEP_TARGET_REMOVE_SOURCE",
+      "confidence": "HIGH",
+      "reason": "Los enrollments tienen exactamente el mismo rango de fechas y el mismo estado. El PO confirmó que ambas clases representan la misma actividad."
+    },
+    {
+      "studentId": "f237f4bc-8093-431f-8598-ff503ef70187",
+      "studentName": "CABALLERO CLAUDIA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollmentId": "6789125c-821e-4618-b76e-7f6f50e74af7",
+      "sourceStatus": "ACTIVE",
+      "sourceStartDate": "2025-02-01",
+      "sourceEndDate": null,
+      "targetEnrollmentId": "7136dc70-a312-4b27-b261-9f88b3c53c5f",
+      "targetStatus": "ENDED",
+      "targetStartDate": "2025-02-01",
+      "targetEndDate": null,
+      "sameStart": true,
+      "sameEnd": true,
+      "sameStatus": false,
+      "overlap": true,
+      "startDifferenceDays": 0,
+      "classification": "DUPLICATE_STATUS_CONFLICT",
+      "recommendedAction": "REVIEW_STATUS_BEFORE_MERGE",
+      "confidence": "HIGH",
+      "reason": "Los enrollments representan el mismo período y la misma actividad, pero tienen estados diferentes. Debe decidirse qué estado conservar antes de eliminar el duplicado."
+    },
+    {
+      "studentId": "824df025-def1-46c0-af0e-0477fd7a1719",
+      "studentName": "AQUINO FLAVIA",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollmentId": "e4d06c2e-d22a-4b63-b6d4-a82a24eb6f11",
+      "sourceStatus": "ACTIVE",
+      "sourceStartDate": "2025-02-01",
+      "sourceEndDate": null,
+      "targetEnrollmentId": "1bf86f68-66c1-452d-b3f0-29955bbf7fc6",
+      "targetStatus": "ENDED",
+      "targetStartDate": "2025-02-01",
+      "targetEndDate": null,
+      "sameStart": true,
+      "sameEnd": true,
+      "sameStatus": false,
+      "overlap": true,
+      "startDifferenceDays": 0,
+      "classification": "DUPLICATE_STATUS_CONFLICT",
+      "recommendedAction": "REVIEW_STATUS_BEFORE_MERGE",
+      "confidence": "HIGH",
+      "reason": "Los enrollments representan el mismo período y la misma actividad, pero tienen estados diferentes. Debe decidirse qué estado conservar antes de eliminar el duplicado."
+    },
+    {
+      "studentId": "074b51e1-fa83-411b-a297-0971b3e4f074",
+      "studentName": "WIERNES MAGALI",
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "targetClassId": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+      "targetClassName": "Clase femenino Sofi",
+      "sourceEnrollmentId": "4924a721-6a90-418c-9e18-9b22bce8fef3",
+      "sourceStatus": "ACTIVE",
+      "sourceStartDate": "2025-01-01",
+      "sourceEndDate": null,
+      "targetEnrollmentId": "69ead856-f1f4-4ee4-ab2a-1de459df358a",
+      "targetStatus": "ACTIVE",
+      "targetStartDate": "2025-01-01",
+      "targetEndDate": null,
+      "sameStart": true,
+      "sameEnd": true,
+      "sameStatus": true,
+      "overlap": true,
+      "startDifferenceDays": 0,
+      "classification": "EXACT_DUPLICATE",
+      "recommendedAction": "KEEP_TARGET_REMOVE_SOURCE",
+      "confidence": "HIGH",
+      "reason": "Los enrollments tienen exactamente el mismo rango de fechas y el mismo estado. El PO confirmó que ambas clases representan la misma actividad."
+    }
+  ]
+}

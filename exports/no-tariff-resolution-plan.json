@@ -1,0 +1,444 @@
+{
+  "generatedAt": "2026-10-05T00:23:54.661Z",
+  "source": "C:\\Users\\Administrador\\Documents\\Trabajo\\Gestion-academia\\gestion-academia\\exports\\no-tariff-classes-analysis.json",
+  "summary": {
+    "analyzedClasses": 8,
+    "actionableClasses": 7,
+    "ignoredTestClasses": 1,
+    "manualReviewClasses": 1,
+    "resolutions": [
+      {
+        "key": "KEEP_CLASS_REUSE_HISTORICAL_PATTERN",
+        "count": 2
+      },
+      {
+        "key": "BUILD_GENERAL_RATE_TARIFFS",
+        "count": 2
+      },
+      {
+        "key": "BUILD_SPECIAL_PROGRAM_TARIFF",
+        "count": 1
+      },
+      {
+        "key": "MOVE_ENROLLMENTS_TO_EXISTING_CLASS",
+        "count": 1
+      },
+      {
+        "key": "IGNORE_TEST_CLASS",
+        "count": 1
+      },
+      {
+        "key": "SPECIAL_PROGRAM_PERIOD_MISSING",
+        "count": 1
+      }
+    ]
+  },
+  "plans": [
+    {
+      "sourceClassId": "576c192b-8d45-47e9-bd94-df027445d793",
+      "sourceClassName": "S&B Parejas",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "576c192b-8d45-47e9-bd94-df027445d793",
+        "name": "S&B Parejas",
+        "status": "ACTIVE"
+      },
+      "enrollmentCount": 26,
+      "studentCount": 26,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "diagnosis": "CONFIRMED_MAPPING",
+      "mappingType": "SAME_ACTIVITY",
+      "historicalNames": [
+        "Salsa y Bachata en Pareja",
+        "Salsa Y Bachata En Pareja",
+        "Salsa Y Bachata En Pareja _Fabi"
+      ],
+      "tariffPolicy": null,
+      "confirmedBaseAmount": null,
+      "confirmedValidFrom": null,
+      "confirmedValidTo": null,
+      "targetCandidates": [
+        {
+          "id": "576c192b-8d45-47e9-bd94-df027445d793",
+          "name": "S&B Parejas",
+          "status": "ACTIVE"
+        }
+      ],
+      "resolution": "KEEP_CLASS_REUSE_HISTORICAL_PATTERN",
+      "resolutionReason": "El PO confirmó equivalencia histórica, pero no existe otra AcademyClass distinta a la cual mover enrollments.",
+      "requiresManualReview": false,
+      "targetClass": {
+        "id": "576c192b-8d45-47e9-bd94-df027445d793",
+        "name": "S&B Parejas",
+        "status": "ACTIVE"
+      },
+      "specialTariff": null,
+      "sourceTariffCount": 0,
+      "targetTariffCount": 0,
+      "targetTariffs": []
+    },
+    {
+      "sourceClassId": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+      "sourceClassName": "Clase kizomba",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+        "name": "Clase kizomba",
+        "status": "ACTIVE"
+      },
+      "enrollmentCount": 22,
+      "studentCount": 22,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "diagnosis": "CONFIRMED_HISTORICAL_ACTIVITY",
+      "mappingType": "HISTORICAL_ACTIVITY",
+      "historicalNames": [
+        "Kizomba",
+        "Clase Kizomba"
+      ],
+      "tariffPolicy": "GENERAL_ACADEMY_RATE",
+      "confirmedBaseAmount": null,
+      "confirmedValidFrom": null,
+      "confirmedValidTo": null,
+      "targetCandidates": [
+        {
+          "id": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+          "name": "Clase kizomba",
+          "status": "ACTIVE"
+        }
+      ],
+      "resolution": "BUILD_GENERAL_RATE_TARIFFS",
+      "resolutionReason": "PO confirmó que corresponde a la clase de Kizomba de Fabi y utilizaba la cuota base general de la academia.",
+      "requiresManualReview": false,
+      "targetClass": {
+        "id": "b9c792eb-ea2e-47f5-b436-f6cfe5c5ac26",
+        "name": "Clase kizomba",
+        "status": "ACTIVE"
+      },
+      "specialTariff": null,
+      "sourceTariffCount": 0,
+      "targetTariffCount": 0,
+      "targetTariffs": []
+    },
+    {
+      "sourceClassId": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+      "sourceClassName": "Hells",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+        "name": "Hells",
+        "status": "ACTIVE"
+      },
+      "enrollmentCount": 22,
+      "studentCount": 22,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "diagnosis": "CONFIRMED_MAPPING",
+      "mappingType": "SAME_ACTIVITY",
+      "historicalNames": [
+        "Heels"
+      ],
+      "tariffPolicy": null,
+      "confirmedBaseAmount": null,
+      "confirmedValidFrom": null,
+      "confirmedValidTo": null,
+      "targetCandidates": [
+        {
+          "id": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+          "name": "Hells",
+          "status": "ACTIVE"
+        }
+      ],
+      "resolution": "KEEP_CLASS_REUSE_HISTORICAL_PATTERN",
+      "resolutionReason": "El PO confirmó equivalencia histórica, pero no existe otra AcademyClass distinta a la cual mover enrollments.",
+      "requiresManualReview": false,
+      "targetClass": {
+        "id": "0dd78cf5-7a17-455c-9a70-1175a12d327d",
+        "name": "Hells",
+        "status": "ACTIVE"
+      },
+      "specialTariff": null,
+      "sourceTariffCount": 0,
+      "targetTariffCount": 0,
+      "targetTariffs": []
+    },
+    {
+      "sourceClassId": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+      "sourceClassName": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+        "name": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+        "status": "ACTIVE"
+      },
+      "enrollmentCount": 16,
+      "studentCount": 16,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "diagnosis": "CONFIRMED_SPECIAL_PROGRAM",
+      "mappingType": "SPECIAL_PROGRAM",
+      "historicalNames": [
+        "Formacion Docente En Ritmos Caribeños Y Kizomba",
+        "Formación Docente En Ritmos Caribeños Y Kizomba"
+      ],
+      "tariffPolicy": null,
+      "confirmedBaseAmount": "90000.00",
+      "confirmedValidFrom": "2026-04-01",
+      "confirmedValidTo": "2026-12-31",
+      "targetCandidates": [
+        {
+          "id": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+          "name": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+          "status": "ACTIVE"
+        }
+      ],
+      "resolution": "BUILD_SPECIAL_PROGRAM_TARIFF",
+      "resolutionReason": "PO confirmó que la formación comenzó en abril de 2026, termina en diciembre de 2026 y tiene cuota base mensual de $90.000. Los valores $76.500, $72.000 y becas son condiciones particulares.",
+      "requiresManualReview": false,
+      "targetClass": {
+        "id": "50f07573-4f58-4314-a0aa-e2e2d0feae71",
+        "name": "Formacion Docente En Ritmos Caribeños Y Kizomba",
+        "status": "ACTIVE"
+      },
+      "specialTariff": {
+        "amount": "90000.00",
+        "validFrom": "2026-04-01",
+        "validTo": "2026-12-31"
+      },
+      "sourceTariffCount": 0,
+      "targetTariffCount": 0,
+      "targetTariffs": []
+    },
+    {
+      "sourceClassId": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+      "sourceClassName": "Grupo C. Sofi",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+        "name": "Grupo C. Sofi",
+        "status": "ACTIVE"
+      },
+      "enrollmentCount": 13,
+      "studentCount": 13,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-08-28",
+      "diagnosis": "CONFIRMED_MAPPING",
+      "mappingType": "SAME_ACTIVITY",
+      "historicalNames": [
+        "Coreográfico Femenino",
+        "Coreografico Femenino",
+        "Estilo Femenino"
+      ],
+      "tariffPolicy": null,
+      "confirmedBaseAmount": null,
+      "confirmedValidFrom": null,
+      "confirmedValidTo": null,
+      "targetCandidates": [
+        {
+          "id": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+          "name": "Clase femenino Sofi",
+          "status": "ACTIVE"
+        },
+        {
+          "id": "ac972b45-74ce-49f8-be10-3a6f0151da82",
+          "name": "Grupo C. Sofi",
+          "status": "ACTIVE"
+        }
+      ],
+      "resolution": "MOVE_ENROLLMENTS_TO_EXISTING_CLASS",
+      "resolutionReason": "El PO confirmó que es la misma actividad y existe otra AcademyClass equivalente en la BDD.",
+      "requiresManualReview": false,
+      "targetClass": {
+        "id": "d0762bb4-c6ef-45d4-8414-5ae0f158831f",
+        "name": "Clase femenino Sofi",
+        "status": "ACTIVE"
+      },
+      "specialTariff": null,
+      "sourceTariffCount": 0,
+      "targetTariffCount": 6,
+      "targetTariffs": [
+        {
+          "id": "6f75e684-b414-4851-b628-d06b7a0d7492",
+          "name": "Histórica - Clase femenino Sofi - 2026 - $40.000",
+          "amount": "40000.00",
+          "validFrom": "2026-08-01",
+          "validTo": "2026-08-31",
+          "status": "INACTIVE"
+        },
+        {
+          "id": "18ca852e-066f-4f53-9463-9543bd7bff6c",
+          "name": "Histórica - Clase femenino Sofi - 2026 - $30.000",
+          "amount": "30000.00",
+          "validFrom": "2026-03-01",
+          "validTo": "2026-07-31",
+          "status": "INACTIVE"
+        },
+        {
+          "id": "c637f5c3-8007-4f2c-b43b-7522c9fba43b",
+          "name": "Histórica - Clase femenino Sofi - 2025 - $25.000",
+          "amount": "25000.00",
+          "validFrom": "2025-11-01",
+          "validTo": "2026-02-28",
+          "status": "INACTIVE"
+        },
+        {
+          "id": "ae72f4d3-99d2-4ee2-bffd-07f7517e1dde",
+          "name": "Histórica - Clase femenino Sofi - 2025 - $30.000",
+          "amount": "30000.00",
+          "validFrom": "2025-10-01",
+          "validTo": "2025-10-31",
+          "status": "INACTIVE"
+        },
+        {
+          "id": "bb2fa800-9be7-4383-8484-562843342740",
+          "name": "Histórica - Clase femenino Sofi - 2025 - $20.000",
+          "amount": "20000.00",
+          "validFrom": "2025-03-01",
+          "validTo": "2025-09-30",
+          "status": "INACTIVE"
+        },
+        {
+          "id": "5ff5584b-dd90-4a81-90b6-117e1f17a52a",
+          "name": "Histórica - Clase femenino Sofi - 2025 - $15.000",
+          "amount": "15000.00",
+          "validFrom": "2025-02-01",
+          "validTo": "2025-02-28",
+          "status": "INACTIVE"
+        }
+      ]
+    },
+    {
+      "sourceClassId": "2d17175b-22b0-4565-9342-1e93ad221855",
+      "sourceClassName": "Coreografico E.Masc-Bachata/Urban",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "2d17175b-22b0-4565-9342-1e93ad221855",
+        "name": "Coreografico E.Masc-Bachata/Urban",
+        "status": "INACTIVE"
+      },
+      "enrollmentCount": 5,
+      "studentCount": 5,
+      "firstStartDate": "2025-01-01",
+      "lastStartDate": "2026-02-01",
+      "diagnosis": "CONFIRMED_HISTORICAL_ACTIVITY",
+      "mappingType": "HISTORICAL_ACTIVITY",
+      "historicalNames": [
+        "Coreografico E Masc Bachata Urban",
+        "Coreográfico E Masc Bachata Urban",
+        "Coreografico E.Masc-Bachata/Urban"
+      ],
+      "tariffPolicy": "GENERAL_ACADEMY_RATE",
+      "confirmedBaseAmount": null,
+      "confirmedValidFrom": null,
+      "confirmedValidTo": null,
+      "targetCandidates": [
+        {
+          "id": "2d17175b-22b0-4565-9342-1e93ad221855",
+          "name": "Coreografico E.Masc-Bachata/Urban",
+          "status": "INACTIVE"
+        }
+      ],
+      "resolution": "BUILD_GENERAL_RATE_TARIFFS",
+      "resolutionReason": "PO confirmó que era una actividad independiente, utilizaba la cuota general y posteriormente pasó a llamarse Urban Flow.",
+      "requiresManualReview": false,
+      "targetClass": {
+        "id": "2d17175b-22b0-4565-9342-1e93ad221855",
+        "name": "Coreografico E.Masc-Bachata/Urban",
+        "status": "INACTIVE"
+      },
+      "specialTariff": null,
+      "sourceTariffCount": 0,
+      "targetTariffCount": 0,
+      "targetTariffs": []
+    },
+    {
+      "sourceClassId": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+      "sourceClassName": "arabashe",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+        "name": "arabashe",
+        "status": "INACTIVE"
+      },
+      "enrollmentCount": 2,
+      "studentCount": 2,
+      "firstStartDate": "2026-08-21",
+      "lastStartDate": "2026-08-21",
+      "diagnosis": "TEST_CLASS",
+      "mappingType": "TEST_CLASS",
+      "historicalNames": [],
+      "tariffPolicy": null,
+      "confirmedBaseAmount": null,
+      "confirmedValidFrom": null,
+      "confirmedValidTo": null,
+      "targetCandidates": [
+        {
+          "id": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+          "name": "arabashe",
+          "status": "INACTIVE"
+        }
+      ],
+      "resolution": "IGNORE_TEST_CLASS",
+      "resolutionReason": "Clase de prueba. No corresponde reconstruir tarifas históricas y será eliminada posteriormente.",
+      "requiresManualReview": false,
+      "targetClass": {
+        "id": "ff270dd4-aef0-4546-aeb7-24aa94093098",
+        "name": "arabashe",
+        "status": "INACTIVE"
+      },
+      "specialTariff": null,
+      "sourceTariffCount": 0,
+      "targetTariffCount": 0,
+      "targetTariffs": []
+    },
+    {
+      "sourceClassId": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+      "sourceClassName": "Inst.Sup.Coreografico -Tango /18 Meses",
+      "sourceClassFound": true,
+      "sourceClass": {
+        "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+        "name": "Inst.Sup.Coreografico -Tango /18 Meses",
+        "status": "ACTIVE"
+      },
+      "enrollmentCount": 1,
+      "studentCount": 1,
+      "firstStartDate": "2025-07-01",
+      "lastStartDate": "2025-07-01",
+      "diagnosis": "CONFIRMED_SPECIAL_PROGRAM",
+      "mappingType": "SPECIAL_PROGRAM",
+      "historicalNames": [
+        "Inst Sup Coreografico Tango 18 Meses",
+        "Inst.Sup.Coreografico -Tango /18 Meses",
+        "Instituto Superior Coreografico Tango 18 Meses"
+      ],
+      "tariffPolicy": null,
+      "confirmedBaseAmount": "70000.00",
+      "confirmedValidFrom": null,
+      "confirmedValidTo": null,
+      "targetCandidates": [
+        {
+          "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+          "name": "Inst.Sup.Coreografico -Tango /18 Meses",
+          "status": "ACTIVE"
+        }
+      ],
+      "resolution": "SPECIAL_PROGRAM_PERIOD_MISSING",
+      "resolutionReason": "La tarifa base está confirmada, pero falta definir completamente el período de vigencia.",
+      "requiresManualReview": true,
+      "targetClass": {
+        "id": "7b64e0e6-a347-4734-b2fa-b752fbe92cfb",
+        "name": "Inst.Sup.Coreografico -Tango /18 Meses",
+        "status": "ACTIVE"
+      },
+      "specialTariff": {
+        "amount": "70000.00",
+        "validFrom": null,
+        "validTo": null
+      },
+      "sourceTariffCount": 0,
+      "targetTariffCount": 0,
+      "targetTariffs": []
+    }
+  ]
+}
