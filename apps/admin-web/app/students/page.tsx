@@ -6,6 +6,7 @@ import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { calculateAge, formatDate } from '../../lib/dates';
 import { studentStatusFromSearch } from '../../lib/contextual-filters';
+import { StudentsNavigation } from '../../components/students-navigation';
 
 type StatusFilter = '' | StudentStatusDto;
 const pageSize = 25;
@@ -58,15 +59,11 @@ export default function StudentsPage() {
             {result.total === 1 ? '' : 's'}.
           </p>
         </div>
-        <div className="follow-up-actions">
-          <Link className="button secondary" href="/students/follow-up">
-            Seguimiento
-          </Link>
-          <Link className="button" href="/students/new">
-            Nuevo alumno
-          </Link>
-        </div>
+        <Link className="button" href="/students/new">
+          Nuevo alumno
+        </Link>
       </div>
+      <StudentsNavigation active="all" />
       <section className="card">
         {status && (
           <div className="context-filter">

@@ -39,10 +39,12 @@ export class PrismaStudentFollowUpReader {
         classes: { id: string; name: string }[];
       }[]
     >(Prisma.sql`
-      ${followUpCte()}, eligible AS (
+      ${followUpCte()}, baseline AS (
         SELECT * FROM cases WHERE "consecutiveAbsences" >= ${FOLLOW_UP_MIN_ABSENCES}
+      ), candidates AS (
+        SELECT * FROM cases WHERE "consecutiveAbsences" >= ${query.minAbsences}
       ), filtered AS (
-        SELECT * FROM eligible WHERE "consecutiveAbsences" >= ${query.minAbsences}
+        SELECT * FROM candidates WHERE TRUE
         ${query.classId ? Prisma.sql`AND "classId" = ${query.classId}::uuid` : Prisma.empty}
         AND ((${nameMatch}) ${digits ? Prisma.sql`OR strpos("studentDni", ${digits}) > 0` : Prisma.empty})
       ), page_items AS (
@@ -52,10 +54,10 @@ export class PrismaStudentFollowUpReader {
       )
       SELECT (SELECT COUNT(*) FROM filtered) AS total,
         (SELECT COUNT(DISTINCT "studentId") FROM filtered) AS students,
-        (SELECT COUNT(*) FROM eligible) AS "globalTotal",
+        (SELECT COUNT(*) FROM baseline) AS "globalTotal",
         COALESCE((SELECT jsonb_agg(p) FROM page_items p), '[]'::jsonb) AS items,
         COALESCE((SELECT jsonb_agg(c ORDER BY c.name, c.id) FROM (
-          SELECT DISTINCT "classId" AS id, "className" AS name FROM eligible
+          SELECT DISTINCT "classId" AS id, "className" AS name FROM candidates
         ) c), '[]'::jsonb) AS classes
     `);
     return {

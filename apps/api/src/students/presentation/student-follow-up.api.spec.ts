@@ -116,8 +116,9 @@ describe('Student follow-up HTTP and permissions', () => {
     }
   });
   it.each([
-    'minAbsences=2',
+    'minAbsences=0',
     'minAbsences=4.5',
+    'minAbsences=abc',
     'page=0',
     'pageSize=101',
     'classId=bad',
@@ -125,6 +126,13 @@ describe('Student follow-up HTTP and permissions', () => {
   ])('validates %s', async (query) => {
     expect((await fetch(`${url}/students/follow-up?${query}`)).status).toBe(400);
     expect(list).not.toHaveBeenCalled();
+  });
+  it.each([
+    ['1', 1],
+    ['6', 6],
+  ])('accepts minAbsences=%s', async (value, expected) => {
+    expect((await fetch(`${url}/students/follow-up?minAbsences=${value}`)).status).toBe(200);
+    expect(list).toHaveBeenCalledWith({ q: '', minAbsences: expected, page: 1, pageSize: 25 });
   });
   it('routes per-student follow-up distinctly from student detail', async () => {
     expect(
