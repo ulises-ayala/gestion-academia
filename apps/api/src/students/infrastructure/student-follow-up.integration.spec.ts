@@ -107,7 +107,7 @@ describe.runIf(enabled)('Student follow-up PostgreSQL read model and enrollment 
     const secondPage = await reader.list({ ...query, q: owner.dni, pageSize: 1, page: 2 });
     expect(secondPage.items[0]?.consecutiveAbsences).toBe(3);
     expect((await reader.list({ ...query, q: owner.dni, minAbsences: 4 })).total).toBe(1);
-    expect((await reader.list({ ...query, q: owner.dni, minAbsences: 5 })).total).toBe(0);
+    expect((await reader.list({ ...query, q: owner.dni, minAbsences: 6 })).total).toBe(0);
     expect(
       (await reader.list({ ...query, q: `Ana Pérez ${token}`, classId: first.classId })).total,
     ).toBe(1);
@@ -116,6 +116,11 @@ describe.runIf(enabled)('Student follow-up PostgreSQL read model and enrollment 
     expect(empty.total).toBe(0);
     expect(empty.globalTotal).toBeGreaterThan(0);
     expect((await reader.list({ ...query, q: owner.dni, page: 100 })).items).toEqual([]);
+  });
+  it('accepts a threshold of 1 without changing the default 3+ follow-up rule', async () => {
+    const item = await enrollment(['ABSENT']);
+    expect((await reader.list({ ...query, classId: item.classId })).total).toBe(0);
+    expect((await reader.list({ ...query, classId: item.classId, minAbsences: 1 })).total).toBe(1);
   });
   it('ends atomically with reason, actor and unchanged attendance/student; exits follow-up', async () => {
     const item = await enrollment(['ABSENT', 'ABSENT', 'ABSENT']);

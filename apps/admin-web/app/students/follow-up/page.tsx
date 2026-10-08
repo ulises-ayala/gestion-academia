@@ -6,25 +6,38 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useAuth } from '../../../components/auth-provider';
 import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';
 import { FollowUpEmpty, FollowUpTable } from '../../../components/student-follow-up';
+import { StudentsNavigation } from '../../../components/students-navigation';
 import { apiRequest } from '../../../lib/api-client';
+import {
+  defaultFollowUpFilters,
+  followUpSearch,
+  parseMinimumAbsences,
+  readFollowUpSearch,
+} from '../../../lib/student-follow-up-filters';
 
 export default function StudentFollowUpPage() {
   const { can } = useAuth();
+  const initialSearch =
+    typeof window === 'undefined'
+      ? { filters: defaultFollowUpFilters, page: 1 }
+      : readFollowUpSearch(window.location.search);
   const [result, setResult] = useState<StudentFollowUpResponseDto | null>(null);
-  const [draft, setDraft] = useState({ q: '', classId: '', minAbsences: '3' });
-  const [filters, setFilters] = useState(draft);
-  const [page, setPage] = useState(1);
+  const [draft, setDraft] = useState(initialSearch.filters);
+  const [filters, setFilters] = useState(initialSearch.filters);
+  const [page, setPage] = useState(initialSearch.page);
   const [refresh, setRefresh] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [notice, setNotice] = useState('');
+  const [minimumError, setMinimumError] = useState('');
   const [target, setTarget] = useState<StudentFollowUpItemDto | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     let current = true;
     setLoading(true);
     setError(false);
-    const query = new URLSearchParams({ ...filters, page: String(page) });
+    const query = followUpSearch(filters, page);
+    window.history.replaceState(null, '', `/students/follow-up?${query}`);
     void apiRequest<StudentFollowUpResponseDto>(`/students/follow-up?${query}`)
       .then((data) => {
         if (!current) return;
@@ -46,6 +59,11 @@ export default function StudentFollowUpPage() {
   }, [filters, page, refresh]);
   function apply(event: FormEvent) {
     event.preventDefault();
+    if (!parseMinimumAbsences(draft.minAbsences)) {
+      setMinimumError('Ingresá un número entero igual o mayor que 1.');
+      return;
+    }
+    setMinimumError('');
     setPage(1);
     setFilters({ ...draft, q: draft.q.trim() });
   }
@@ -60,10 +78,8 @@ export default function StudentFollowUpPage() {
           </h1>
           <p className="subtitle">Alumnos con ausencias consecutivas que conviene revisar.</p>
         </div>
-        <Link className="button secondary" href="/students">
-          Volver a alumnos
-        </Link>
       </div>
+      <StudentsNavigation active="follow-up" />
       {notice && <p role="status">{notice}</p>}
       <section className="card follow-up-stack">
         <form className="follow-up-filters" onSubmit={apply}>
@@ -91,25 +107,36 @@ export default function StudentFollowUpPage() {
             </select>
           </label>
           <label>
-            Ausencias consecutivas
-            <select
+            Ausencias consecutivas mínimas
+            <input
+              aria-describedby={minimumError ? 'minimum-absences-error' : undefined}
+              aria-invalid={Boolean(minimumError)}
+              inputMode="numeric"
+              min="1"
+              step="1"
+              type="number"
               value={draft.minAbsences}
-              onChange={(e) => setDraft({ ...draft, minAbsences: e.target.value })}
-            >
-              <option value="3">3 o más</option>
-              <option value="4">4 o más</option>
-              <option value="5">5 o más</option>
-            </select>
+              onChange={(e) => {
+                setDraft({ ...draft, minAbsences: e.target.value });
+                setMinimumError('');
+              }}
+            />
           </label>
+          {minimumError && (
+            <p id="minimum-absences-error" className="error" role="alert">
+              {minimumError}
+            </p>
+          )}
           <button>Aplicar filtros</button>
           <button
             type="button"
             className="secondary"
             onClick={() => {
-              const cleared = { q: '', classId: '', minAbsences: '3' };
+              const cleared = defaultFollowUpFilters;
               setDraft(cleared);
               setFilters(cleared);
               setPage(1);
+              setMinimumError('');
             }}
           >
             Limpiar

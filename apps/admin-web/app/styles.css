@@ -2371,6 +2371,42 @@ dd {
   gap: 0.75rem;
   align-items: center;
 }
+.students-navigation {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-hover);
+}
+.students-navigation-link {
+  display: grid;
+  flex: 1 1 15rem;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.students-navigation-link strong {
+  color: var(--text);
+}
+.students-navigation-link span {
+  font-size: 0.82rem;
+}
+.students-navigation-link:hover,
+.students-navigation-link:focus-visible {
+  background: var(--surface);
+}
+.students-navigation-link.active {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--brand);
+}
+.students-navigation-link.active strong {
+  color: var(--brand);
+}
 .follow-up-filters {
   display: flex;
   flex-wrap: wrap;
@@ -2403,6 +2439,9 @@ dialog.enrollment-end-dialog:not([open]) {
   display: none;
 }
 @media (max-width: 640px) {
+  .students-navigation {
+    flex-direction: column;
+  }
   .follow-up-filters > *,
   .follow-up-actions button {
     width: 100%;
