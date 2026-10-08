@@ -1,4 +1,14 @@
-import type { EnrollmentDto, EnrollmentStatusDto } from '@academy/contracts';
+import type {
+  EnrollmentDto,
+  EnrollmentStatusDto,
+  EnrollmentEndReasonDto,
+} from '@academy/contracts';
+
+export type EnrollmentEndData = Readonly<{
+  endDate: Date;
+  endReason: EnrollmentEndReasonDto;
+  endNote: string | null;
+}>;
 
 export const ENROLLMENT_REPOSITORY = Symbol('ENROLLMENT_REPOSITORY');
 export type EnrollmentQuery = Readonly<{
@@ -15,7 +25,7 @@ export interface EnrollmentRepository {
     query: EnrollmentQuery,
   ): Promise<{ items: EnrollmentDto[]; total: number; page: number; pageSize: number }>;
   create(input: { studentId: string; classId: string; startDate: Date }): Promise<EnrollmentDto>;
-  end(id: string, endDate: Date, actorId?: string): Promise<EnrollmentDto>;
+  end(id: string, data: EnrollmentEndData, actorId?: string): Promise<EnrollmentDto>;
   hasActiveForStudent(studentId: string): Promise<boolean>;
   hasActiveForClass(classId: string): Promise<boolean>;
 }

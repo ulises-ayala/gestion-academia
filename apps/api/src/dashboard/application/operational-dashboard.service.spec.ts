@@ -22,7 +22,9 @@ const prismaMock = () => ({
               overdueCharges: 2n,
             },
           ]
-        : [],
+        : sql.strings.join(' ').includes('COUNT(DISTINCT "studentId")')
+          ? [{ students: 2n }]
+          : [],
     ),
   ),
   student: { count: vi.fn().mockResolvedValue(12) },
@@ -66,7 +68,8 @@ describe('OperationalDashboardService', () => {
     });
     expect(result.audit).toBeUndefined();
     expect(prisma.auditLog.findMany).not.toHaveBeenCalled();
-    expect(prisma.$queryRaw).toHaveBeenCalledOnce();
+    expect(result.followUp).toEqual({ students: 2 });
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(2);
     expect(prisma.payment.aggregate).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({ status: 'CONFIRMED' }),
@@ -81,7 +84,7 @@ describe('OperationalDashboardService', () => {
 
     expect(result.audit).toEqual({ items: [] });
     expect(result.financial?.monthlyConfirmed).toHaveLength(6);
-    expect(prisma.$queryRaw).toHaveBeenCalledTimes(2);
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(3);
     const financialQuery = prisma.$queryRaw.mock.calls
       .map(([query]) => query as { strings: readonly string[] })
       .find((query) => query.strings.join(' ').includes('FROM payments'))!;

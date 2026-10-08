@@ -322,6 +322,13 @@ export type UpdateClassDto = Readonly<
 >;
 
 export type EnrollmentStatusDto = 'ACTIVE' | 'ENDED';
+export type EnrollmentEndReasonDto =
+  | 'NO_LONGER_ATTENDING'
+  | 'SCHEDULE_CHANGE'
+  | 'DISCIPLINE_CHANGE'
+  | 'PERSONAL_REASONS'
+  | 'NON_PAYMENT'
+  | 'OTHER';
 export type EnrollmentStudentDto = Readonly<
   Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName' | 'phone' | 'status'>
 >;
@@ -331,6 +338,8 @@ export type EnrollmentDto = Readonly<{
   classId: string;
   startDate: string;
   endDate: string | null;
+  endReason: EnrollmentEndReasonDto | null;
+  endNote: string | null;
   status: EnrollmentStatusDto;
   student: EnrollmentStudentDto;
   academicClass: ClassDto;
@@ -342,7 +351,31 @@ export type CreateEnrollmentDto = Readonly<{
   classId: string;
   startDate: string;
 }>;
-export type EndEnrollmentDto = Readonly<{ endDate: string }>;
+export type EndEnrollmentDto = Readonly<{
+  endDate: string;
+  endReason: EnrollmentEndReasonDto;
+  endNote?: string | null;
+}>;
+export type StudentFollowUpItemDto = Readonly<{
+  studentId: string;
+  studentName: string;
+  studentDni: string;
+  enrollmentId: string;
+  startDate: string;
+  classId: string;
+  className: string;
+  teacherName: string;
+  consecutiveAbsences: number;
+  lastPresentAt: string | null;
+  lastAttendanceRecordAt: string | null;
+  lastAttendanceStatus: AttendanceStatusDto | null;
+}>;
+export type StudentFollowUpResponseDto = PageDto<StudentFollowUpItemDto> &
+  Readonly<{
+    students: number;
+    globalTotal: number;
+    classes: readonly Readonly<{ id: string; name: string }>[];
+  }>;
 export type EnrollmentListDto = PageDto<EnrollmentDto>;
 export type EnrollmentAvailabilityDto = Readonly<{
   classId: string;
@@ -761,6 +794,7 @@ export type OperationalDashboardDto = Readonly<{
   generatedAt: string;
   businessDate: string;
   students?: Readonly<{ active: number }>;
+  followUp?: Readonly<{ students: number }>;
   classes?: Readonly<{
     active: number;
     scheduledToday: number;

@@ -5,6 +5,7 @@ import type { PublicAuthUser } from '../../auth/application/auth.repository';
 import { hasPermissions } from '../../auth/domain/permissions';
 import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from './business-day';
+import { followUpCountQuery } from '../../students/infrastructure/student-follow-up-query';
 import {
   buildFinancialSummary,
   confirmedPaymentMonthsAt,
@@ -35,6 +36,10 @@ export class OperationalDashboardService {
     );
 
     await Promise.all([
+      hasPermissions(user, ['students:manage']) &&
+        this.prisma.$queryRaw<{ students: bigint }[]>(followUpCountQuery()).then((rows) => {
+          result.followUp = { students: Number(rows[0]?.students ?? 0) };
+        }),
       hasPermissions(user, ['students:manage']) &&
         this.prisma.student.count({ where: { status: 'ACTIVE' } }).then((active) => {
           result.students = { active };

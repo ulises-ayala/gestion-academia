@@ -110,6 +110,12 @@ erDiagram
 
 ## Asistencias de alumnos v1
 
+### Seguimiento de continuidad v1
+
+El read model deriva la racha actual por `Enrollment` activa recorriendo `StudentAttendance.attendanceDate` desde la más reciente: cuenta `ABSENT` hasta el primer estado diferente. `JUSTIFIED` corta igual que `PRESENT`; no se infiere asistencia desde horarios. `lastPresentAt` es el último registro presente de esa inscripción, o null. Sin registros la racha es cero. El umbral operativo es 3 y no implica baja, sanción ni deuda. La lista representa casos por inscripción; el dashboard cuenta alumnos distintos.
+
+`Enrollment` incorpora `endReason: EnrollmentEndReason?` y `endNote: String?` (máximo 500 caracteres), conservando `endDate`. El enum admite `NO_LONGER_ATTENDING`, `SCHEDULE_CHANGE`, `DISCIPLINE_CHANGE`, `PERSONAL_REASONS`, `NON_PAYMENT`, `OTHER`. Nuevas finalizaciones requieren motivo; `OTHER` exige nota. El historial legacy conserva null y se presenta como «Sin motivo registrado». Finalizar se serializa por fila y audita actor, alumno/clase, fecha, motivo y nota atómicamente, sin desactivar al alumno ni afectar otras actividades o historia financiera. Morosidad es una elección administrativa, no un automatismo.
+
 - `StudentAttendance` pertenece a una `Enrollment`, no directamente a alumno, clase u horario.
 - Existe como máximo una asistencia por inscripción y fecha mediante la unicidad `enrollmentId + attendanceDate`.
 - Los estados admitidos son `PRESENT`, `ABSENT` y `JUSTIFIED`.

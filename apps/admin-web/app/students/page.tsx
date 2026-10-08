@@ -58,9 +58,14 @@ export default function StudentsPage() {
             {result.total === 1 ? '' : 's'}.
           </p>
         </div>
-        <Link className="button" href="/students/new">
-          Nuevo alumno
-        </Link>
+        <div className="follow-up-actions">
+          <Link className="button secondary" href="/students/follow-up">
+            Seguimiento
+          </Link>
+          <Link className="button" href="/students/new">
+            Nuevo alumno
+          </Link>
+        </div>
       </div>
       <section className="card">
         {status && (
