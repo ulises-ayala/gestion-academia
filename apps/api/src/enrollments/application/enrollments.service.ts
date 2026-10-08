@@ -1,7 +1,7 @@
 import type { CreateEnrollmentDto, EndEnrollmentDto } from '@academy/contracts';
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../shared/domain/domain-error';
-import { parseEnrollmentDate, validateEndDate } from '../domain/enrollment';
+import { parseEnrollmentDate, validateEndDate, validateEndReason } from '../domain/enrollment';
 import {
   ENROLLMENT_REPOSITORY,
   type EnrollmentQuery,
@@ -32,7 +32,10 @@ export class EnrollmentsService {
       throw new DomainError('ENROLLMENT_ALREADY_ENDED', 'La inscripción ya está finalizada');
     return this.repository.end(
       id,
-      validateEndDate(new Date(`${enrollment.startDate}T00:00:00.000Z`), input.endDate),
+      {
+        endDate: validateEndDate(new Date(`${enrollment.startDate}T00:00:00.000Z`), input.endDate),
+        ...validateEndReason(input.endReason, input.endNote),
+      },
       actorId,
     );
   }

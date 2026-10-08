@@ -4,6 +4,8 @@ import { StudentsService } from './application/students.service';
 import { STUDENT_REPOSITORY } from './application/student.repository';
 import { PrismaStudentRepository } from './infrastructure/prisma-student.repository';
 import { StudentsController } from './presentation/students.controller';
+import { StudentFollowUpController } from './presentation/student-follow-up.controller';
+import { PrismaStudentFollowUpReader } from './infrastructure/prisma-student-follow-up.reader';
 import { EnrollmentsModule } from '../enrollments/enrollments.module';
 import { STUDENT_ONBOARDING_TRANSACTION } from './application/student-onboarding.transaction';
 import { StudentOnboardingService } from './application/student-onboarding.service';
@@ -11,8 +13,9 @@ import { PrismaStudentOnboardingTransaction } from './infrastructure/prisma-stud
 
 @Module({
   imports: [DatabaseModule, EnrollmentsModule],
-  controllers: [StudentsController],
+  controllers: [StudentFollowUpController, StudentsController],
   providers: [
+    PrismaStudentFollowUpReader,
     StudentsService,
     StudentOnboardingService,
     PrismaStudentOnboardingTransaction,

@@ -225,12 +225,23 @@ model AcademyClass {
   @@map("classes")
 }
 
+enum EnrollmentEndReason {
+  NO_LONGER_ATTENDING
+  SCHEDULE_CHANGE
+  DISCIPLINE_CHANGE
+  PERSONAL_REASONS
+  NON_PAYMENT
+  OTHER
+}
+
 model Enrollment {
   id                String                       @id @default(uuid()) @db.Uuid
   studentId         String                       @map("student_id") @db.Uuid
   classId           String                       @map("class_id") @db.Uuid
   startDate         DateTime                     @map("start_date") @db.Date
   endDate           DateTime?                    @map("end_date") @db.Date
+  endReason         EnrollmentEndReason?         @map("end_reason")
+  endNote           String?                      @map("end_note") @db.VarChar(500)
   status            EnrollmentStatus             @default(ACTIVE)
   createdAt         DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)

@@ -9,11 +9,15 @@ import type {
   PaymentListDto,
   PaymentSummaryDto,
   StudentDto,
+  StudentFollowUpItemDto,
 } from '@academy/contracts';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { StudentForm } from '../../../components/student-form';
+import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';
+import { FollowUpIndicator } from '../../../components/student-follow-up';
+import { enrollmentEndLabel } from '../../../lib/enrollment-end';
 import { useAuth } from '../../../components/auth-provider';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { businessToday, calculateAge, formatDate } from '../../../lib/dates';
@@ -433,7 +437,7 @@ export default function StudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [endTarget, setEndTarget] = useState<EnrollmentDto | null>(null);
-  const [endDate, setEndDate] = useState('');
+  const [followUp, setFollowUp] = useState<readonly StudentFollowUpItemDto[]>([]);
   const [statusConfirmation, setStatusConfirmation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -450,6 +454,7 @@ export default function StudentDetailPage() {
         apiRequest<PaymentListDto>(`/payments?studentId=${id}&pageSize=10`),
         apiRequest<AttendanceListDto>(`/attendances?studentId=${id}&limit=10`),
         apiRequest<PaymentSummaryDto>(`/payments/summary?studentId=${id}`),
+        apiRequest<readonly StudentFollowUpItemDto[]>(`/students/${id}/follow-up`),
       ]);
       const errors: Record<string, string> = {};
       if (requests[0].status === 'fulfilled') setEnrollments(requests[0].value.items);
@@ -462,6 +467,11 @@ export default function StudentDetailPage() {
       else errors.attendances = 'No se pudo cargar la asistencia.';
       if (requests[4].status === 'fulfilled') setPaymentTotal(requests[4].value.confirmedTotal);
       else errors.payments = 'No se pudieron cargar los pagos.';
+      if (requests[5].status === 'fulfilled') setFollowUp(requests[5].value);
+      else {
+        setFollowUp([]);
+        errors.followUp = 'No se pudo cargar el seguimiento.';
+      }
       setSectionErrors(errors);
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cargar el alumno');
@@ -473,16 +483,15 @@ export default function StudentDetailPage() {
     void load();
   }, [load]);
   useEffect(() => {
-    if (!endTarget && !statusConfirmation) return;
+    if (!statusConfirmation) return;
     const close = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && !submitting) {
-        setEndTarget(null);
         setStatusConfirmation(false);
       }
     };
     window.addEventListener('keydown', close);
     return () => window.removeEventListener('keydown', close);
-  }, [endTarget, statusConfirmation, submitting]);
+  }, [statusConfirmation, submitting]);
 
   const today = businessToday();
   const active = enrollments.filter((item) => item.status === 'ACTIVE');
@@ -512,27 +521,8 @@ export default function StudentDetailPage() {
       setSubmitting(false);
     }
   }
-  async function endEnrollment() {
-    if (!endTarget || !endDate || submitting) return;
-    setSubmitting(true);
-    try {
-      await apiRequest(`/enrollments/${endTarget.id}/end`, {
-        method: 'POST',
-        body: JSON.stringify({ endDate }),
-      });
-      setEndTarget(null);
-      await load();
-    } catch (error) {
-      setMessage(
-        error instanceof ApiClientError ? error.message : 'No se pudo finalizar la inscripción',
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }
   const openEnd = (item: EnrollmentDto) => {
     setEndTarget(item);
-    setEndDate(today);
   };
 
   if (loading)
@@ -641,6 +631,7 @@ export default function StudentDetailPage() {
 
       <section className="card">
         <h2>Clases actuales</h2>
+        {sectionErrors.followUp && <p role="alert">{sectionErrors.followUp}</p>}
         {sectionErrors.enrollments ? (
           <p className="message">{sectionErrors.enrollments}</p>
         ) : active.length === 0 ? (
@@ -668,6 +659,9 @@ export default function StudentDetailPage() {
                   ))}
                 </ul>
                 <p>Desde {formatDate(item.startDate)}</p>
+                <FollowUpIndicator
+                  item={followUp.find((follow) => follow.enrollmentId === item.id)}
+                />
                 {can('enrollments:manage') && (
                   <button className="secondary" onClick={() => openEnd(item)}>
                     Finalizar inscripción
@@ -868,6 +862,8 @@ export default function StudentDetailPage() {
                   <th>Clase</th>
                   <th>Inicio</th>
                   <th>Finalización</th>
+                  <th>Motivo de finalización</th>
+                  <th>Observación</th>
                   <th>Estado</th>
                 </tr>
               </thead>
@@ -877,6 +873,10 @@ export default function StudentDetailPage() {
                     <td data-label="Clase">{item.academicClass.name}</td>
                     <td data-label="Inicio">{formatDate(item.startDate)}</td>
                     <td data-label="Finalización">{formatDate(item.endDate)}</td>
+                    <td data-label="Motivo de finalización">
+                      {enrollmentEndLabel(item.endReason)}
+                    </td>
+                    <td data-label="Observación">{item.endNote || '—'}</td>
                     <td data-label="Estado">
                       <span className="status inactive">Finalizada</span>
                     </td>
@@ -926,41 +926,19 @@ export default function StudentDetailPage() {
         </dl>
       </section>
       {endTarget && (
-        <div className="modal-backdrop">
-          <section
-            aria-labelledby="end-title"
-            aria-modal="true"
-            className="modal card"
-            role="dialog"
-          >
-            <h2 id="end-title">Finalizar inscripción</h2>
-            <p>
-              ¿Querés finalizar la inscripción de {student.firstName} {student.lastName} en{' '}
-              <strong>{endTarget.academicClass.name}</strong>?
-            </p>
-            <label>
-              Fecha de finalización
-              <input
-                type="date"
-                value={endDate}
-                onChange={(event) => setEndDate(event.target.value)}
-              />
-            </label>
-            <p className="modal-note neutral">La inscripción quedará conservada en el historial.</p>
-            <div className="modal-actions">
-              <button
-                className="secondary"
-                disabled={submitting}
-                onClick={() => setEndTarget(null)}
-              >
-                Cancelar
-              </button>
-              <button disabled={!endDate || submitting} onClick={() => void endEnrollment()}>
-                {submitting ? 'Finalizando…' : 'Finalizar inscripción'}
-              </button>
-            </div>
-          </section>
-        </div>
+        <EndEnrollmentModal
+          target={{
+            enrollmentId: endTarget.id,
+            startDate: endTarget.startDate,
+            className: endTarget.academicClass.name,
+            studentName: `${student.firstName} ${student.lastName}`,
+          }}
+          onClose={() => setEndTarget(null)}
+          onEnded={() => {
+            setEndTarget(null);
+            void load().then(() => setMessage('Inscripción finalizada.'));
+          }}
+        />
       )}
       {statusConfirmation && (
         <div className="modal-backdrop">
