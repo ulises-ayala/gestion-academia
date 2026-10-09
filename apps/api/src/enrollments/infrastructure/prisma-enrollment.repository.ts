@@ -3,7 +3,12 @@ import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
-import type { EnrollmentQuery, EnrollmentRepository } from '../application/enrollment.repository';
+import type {
+  EnrollmentQuery,
+  EnrollmentRepository,
+  EnrollmentEndData,
+} from '../application/enrollment.repository';
+import { validateEndDate, validateEndReason } from '../domain/enrollment';
 import { findEnrollmentScheduleConflict } from '../domain/enrollment-schedule-conflict';
 
 const include = {
@@ -33,6 +38,8 @@ const map = (item: Included): EnrollmentDto => ({
   classId: item.classId,
   startDate: isoDate(item.startDate),
   endDate: item.endDate ? isoDate(item.endDate) : null,
+  endReason: item.endReason,
+  endNote: item.endNote,
   status: item.status,
   student: item.student,
   academicClass: {
@@ -199,12 +206,18 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
       'No se pudo confirmar la inscripción. Intentá nuevamente.',
     );
   }
-  async end(id: string, endDate: Date, actorId?: string) {
+  async end(id: string, data: EnrollmentEndData, actorId?: string) {
     return this.prisma.$transaction(async (tx) => {
-      const before = await tx.enrollment.findUniqueOrThrow({ where: { id } });
+      await tx.$queryRaw`SELECT id FROM enrollments WHERE id = ${id}::uuid FOR UPDATE`;
+      const before = await tx.enrollment.findUnique({ where: { id } });
+      if (!before) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada.');
+      if (before.status !== 'ACTIVE')
+        throw new DomainError('ENROLLMENT_ALREADY_ENDED', 'La inscripción ya está finalizada.');
+      const endDate = validateEndDate(before.startDate, isoDate(data.endDate));
+      const reason = validateEndReason(data.endReason, data.endNote);
       const updated = await tx.enrollment.update({
         where: { id },
-        data: { status: 'ENDED', endDate },
+        data: { status: 'ENDED', endDate, ...reason },
         include,
       });
       if (actorId)
@@ -217,10 +230,20 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
             before: {
               status: before.status,
               endDate: before.endDate?.toISOString().slice(0, 10) ?? null,
+              endReason: before.endReason,
+              endNote: before.endNote,
             },
             after: {
               status: updated.status,
               endDate: updated.endDate?.toISOString().slice(0, 10) ?? null,
+              endReason: updated.endReason,
+              endNote: updated.endNote,
+            },
+            metadata: {
+              studentId: before.studentId,
+              studentName: `${updated.student.firstName} ${updated.student.lastName}`,
+              classId: before.classId,
+              className: updated.class.name,
             },
           },
         });

@@ -107,6 +107,16 @@ El comando comprueba el protocolo y extrae de `DATABASE_URL` el nombre real de l
 
 ## API de alumnos
 
+### Seguimiento de alumnos v1
+
+`/students/follow-up` vive dentro de Alumnos y muestra inscripciones activas con 3 o más ausencias consecutivas **registradas**. `PRESENT` o `JUSTIFIED` corta la racha; un día sin registro no agrega ausencias. El dashboard cuenta alumnos únicos, mientras el detalle muestra una fila por actividad/inscripción. No se persisten indicadores ni se realizan bajas automáticas.
+
+- `GET /api/v1/students/follow-up?q=&classId=&minAbsences=3&page=1&pageSize=25`: búsqueda por nombre, apellido, nombre completo o DNI normalizado; umbrales 3/4/5; paginación server-side. Requiere `students:manage`.
+- `GET /api/v1/students/:id/follow-up`: resúmenes derivados de las inscripciones activas de la ficha 360, incluyendo las que no requieren atención.
+- Finalizar requiere `enrollments:manage`, fecha y `endReason`; `endNote` es opcional (hasta 500 caracteres), salvo `OTHER`, que exige observación. Se conservan alumno, asistencias, cuotas y pagos. Los motivos históricos desconocidos permanecen nulos.
+
+La migración `20261006120000_student_follow_up` agrega únicamente el enum y los campos nullable de finalización. Aplicar con `npm run db:deploy`; nunca resetear la base.
+
 - `GET /api/v1/students?q=&status=&page=1&pageSize=25`: buscar, filtrar y paginar.
 - `POST /api/v1/students`: crear.
 - `POST /api/v1/students/onboarding`: crear un alumno y, opcionalmente, sus inscripciones, cuotas iniciales y un único pago.
@@ -227,7 +237,7 @@ El Blueprint usa los planes gratuitos para minimizar costo. Los web services gra
 - `GET /api/v1/enrollments?studentId=&classId=&status=`: listar y filtrar.
 - `POST /api/v1/enrollments`: crear con `studentId`, `classId` y `startDate`.
 - `GET /api/v1/enrollments/:id`: obtener detalle.
-- `POST /api/v1/enrollments/:id/end`: finalizar con `endDate` sin borrar historia.
+- `POST /api/v1/enrollments/:id/end`: finalizar con `endDate`, `endReason` y `endNote` opcional sin borrar historia.
 
 ## API de tarifas y cuotas
 

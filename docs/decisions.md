@@ -291,3 +291,8 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 142. **Cobros, no ingresos:** los totales usan exclusivamente `Payment.status = CONFIRMED` y `paidAt`; la apertura por medio suma `PaymentTender`, por lo que un pago mixto se divide sin duplicar su importe. No se presentan ganancia, rentabilidad ni resultado económico.
 143. **Deuda central y Caja corregida:** deuda y vencimiento reutilizan `studentDueAmount`, allocations confirmadas, mora y saldo derivado. Caja parte de los snapshots de cierre y aplica movimientos y correcciones append-only según el read model vigente; los turnos abiertos se informan aparte.
 144. **Exportación autorizada:** CSV se genera en API bajo `reports:operational`, respeta filtros, usa UTF-8, encabezados humanos, fechas inequívocas y decimal strings. Consultar o exportar no genera auditoría porque es una lectura.
+
+## Seguimiento de alumnos v1
+
+145. **Seguimiento derivado por inscripción:** la racha actual cuenta únicamente registros `ABSENT` desde el más reciente; cualquier otro estado, incluido `JUSTIFIED`, la corta. Una consulta agrupada sobre inscripciones activas evita N+1 y no infiere clases ocurridas desde horarios. No se persisten indicadores. El dashboard cuenta alumnos únicos; el listado muestra casos por inscripción.
+146. **Finalización con historia:** las nuevas finalizaciones requieren motivo y `OTHER` exige observación. La migración añade sólo campos nullable, sin inventar motivos legacy. Un bloqueo de fila y revalidación dentro de la transacción garantizan una sola finalización y auditoría. No se desactiva al alumno, no se crea otra inscripción y no se altera historia financiera.
