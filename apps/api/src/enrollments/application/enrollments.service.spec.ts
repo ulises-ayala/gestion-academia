@@ -1,7 +1,11 @@
 import type { EnrollmentDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import { DomainError } from '../../shared/domain/domain-error';
-import type { EnrollmentQuery, EnrollmentRepository } from './enrollment.repository';
+import type {
+  EnrollmentQuery,
+  EnrollmentRepository,
+  EnrollmentEndData,
+} from './enrollment.repository';
 import { EnrollmentsService } from './enrollments.service';
 
 const studentId = crypto.randomUUID();
@@ -12,6 +16,8 @@ const dto = (overrides: Partial<EnrollmentDto> = {}): EnrollmentDto => ({
   classId,
   startDate: '2026-08-20',
   endDate: null,
+  endReason: null,
+  endNote: null,
   status: 'ACTIVE',
   student: {
     id: studentId,
@@ -83,12 +89,14 @@ class MemoryEnrollments implements EnrollmentRepository {
     this.items.push(item);
     return item;
   }
-  async end(id: string, endDate: Date) {
+  async end(id: string, data: EnrollmentEndData) {
     const current = this.items.find((x) => x.id === id)!;
     const ended = {
       ...current,
       status: 'ENDED' as const,
-      endDate: endDate.toISOString().slice(0, 10),
+      endDate: data.endDate.toISOString().slice(0, 10),
+      endReason: data.endReason,
+      endNote: data.endNote,
     };
     this.items[this.items.indexOf(current)] = ended;
     return ended;
@@ -130,7 +138,7 @@ describe('EnrollmentsService', () => {
     await expect(
       service.create({ studentId, classId, startDate: '2026-02-01' }),
     ).rejects.toMatchObject({ code: 'ENROLLMENT_ALREADY_ACTIVE' });
-    await service.end(first.id, { endDate: '2026-05-01' });
+    await service.end(first.id, { endDate: '2026-05-01', endReason: 'PERSONAL_REASONS' });
     await expect(
       service.create({ studentId, classId, startDate: '2026-08-01' }),
     ).resolves.toMatchObject({ status: 'ACTIVE' });
@@ -139,11 +147,15 @@ describe('EnrollmentsService', () => {
     const repo = new MemoryEnrollments();
     const service = new EnrollmentsService(repo);
     const item = await service.create({ studentId, classId, startDate: '2026-01-01' });
-    await expect(service.end(item.id, { endDate: '2026-05-01' })).resolves.toMatchObject({
+    await expect(
+      service.end(item.id, { endDate: '2026-05-01', endReason: 'PERSONAL_REASONS' }),
+    ).resolves.toMatchObject({
       status: 'ENDED',
       endDate: '2026-05-01',
     });
-    await expect(service.end(item.id, { endDate: '2026-06-01' })).rejects.toMatchObject({
+    await expect(
+      service.end(item.id, { endDate: '2026-06-01', endReason: 'PERSONAL_REASONS' }),
+    ).rejects.toMatchObject({
       code: 'ENROLLMENT_ALREADY_ENDED',
     });
   });
@@ -151,7 +163,9 @@ describe('EnrollmentsService', () => {
     const repo = new MemoryEnrollments();
     const service = new EnrollmentsService(repo);
     const item = await service.create({ studentId, classId, startDate: '2026-08-20' });
-    await expect(service.end(item.id, { endDate: '2026-08-19' })).rejects.toMatchObject({
+    await expect(
+      service.end(item.id, { endDate: '2026-08-19', endReason: 'PERSONAL_REASONS' }),
+    ).rejects.toMatchObject({
       code: 'END_DATE_BEFORE_START_DATE',
     });
   });

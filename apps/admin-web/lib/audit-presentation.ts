@@ -1,4 +1,5 @@
 import type { AuditLogDto } from '@academy/contracts';
+import { enrollmentEndLabels } from './enrollment-end';
 
 export const auditEntityOptions = [
   ['', 'Todas'],
@@ -35,6 +36,8 @@ export const auditActionOptions = [
 const entityLabels = Object.fromEntries(auditEntityOptions);
 const actionLabels = Object.fromEntries(auditActionOptions);
 const fieldLabels: Record<string, string> = {
+  endReason: 'Motivo de finalización',
+  endNote: 'Observación de finalización',
   firstName: 'Nombre',
   lastName: 'Apellido',
   phone: 'Teléfono',
@@ -66,6 +69,7 @@ const fieldLabels: Record<string, string> = {
   passwordChanged: 'Contraseña modificada',
 };
 const valueLabels: Record<string, string> = {
+  ...enrollmentEndLabels,
   CONFIRMED: 'Confirmado',
   VOID: 'Anulado',
   ACTIVE: 'Activo',

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { AdminShell } from '../components/admin-shell';
 import { ConfirmedPaymentsChart } from '../components/confirmed-payments-chart';
+import { FollowUpDashboardLink } from '../components/student-follow-up';
 import { useAuth } from '../components/auth-provider';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { dashboardContextLinks, dashboardQuickActions } from '../lib/contextual-filters';
@@ -73,7 +74,10 @@ function Dashboard() {
         <button onClick={() => void load()}>Reintentar</button>
       </section>
     );
-  const urgent = (data.billing?.overdueCharges ?? 0) + (data.leads?.overdueFollowUps ?? 0);
+  const urgent =
+    (data.billing?.overdueCharges ?? 0) +
+    (data.leads?.overdueFollowUps ?? 0) +
+    (data.followUp?.students ?? 0);
   return (
     <div className="dashboard-page">
       <header className="dashboard-heading">
@@ -139,6 +143,9 @@ function Dashboard() {
           <p className="dashboard-empty">No hay alertas operativas urgentes.</p>
         ) : (
           <div className="attention-list">
+            {data.followUp && can('students:manage') && (
+              <FollowUpDashboardLink students={data.followUp.students} />
+            )}
             {data.billing && data.billing.overdueCharges > 0 && (
               <Link href={dashboardContextLinks.overdueCharges}>
                 <strong>{data.billing.overdueCharges}</strong>
@@ -273,6 +280,9 @@ function Dashboard() {
               <p className="dashboard-empty">No hay alertas operativas urgentes.</p>
             ) : (
               <div className="attention-list">
+                {data.followUp && can('students:manage') && (
+                  <FollowUpDashboardLink students={data.followUp.students} />
+                )}
                 {data.billing && data.billing.overdueCharges > 0 && (
                   <Link href={dashboardContextLinks.overdueCharges}>
                     <strong>{data.billing.overdueCharges}</strong>

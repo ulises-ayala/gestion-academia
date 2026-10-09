@@ -3,7 +3,7 @@ import type {
   EndEnrollmentDto,
   EnrollmentStatusDto,
 } from '@academy/contracts';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { parsePage, parseUuid } from '../../shared/presentation/request-validation';
 import { EnrollmentsService } from '../application/enrollments.service';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
@@ -13,7 +13,7 @@ import type { PublicAuthUser } from '../../auth/application/auth.repository';
 @Controller('enrollments')
 @Permissions('enrollments:manage')
 export class EnrollmentsController {
-  constructor(private readonly service: EnrollmentsService) {}
+  constructor(@Inject(EnrollmentsService) private readonly service: EnrollmentsService) {}
   @Get() list(
     @Query('studentId') studentId?: string,
     @Query('classId') classId?: string,

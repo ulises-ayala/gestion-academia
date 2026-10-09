@@ -1,4 +1,37 @@
 import { DomainError } from '../../shared/domain/domain-error';
+import type { EnrollmentEndReasonDto } from '@academy/contracts';
+
+const endReasons: readonly EnrollmentEndReasonDto[] = [
+  'NO_LONGER_ATTENDING',
+  'SCHEDULE_CHANGE',
+  'DISCIPLINE_CHANGE',
+  'PERSONAL_REASONS',
+  'NON_PAYMENT',
+  'OTHER',
+];
+
+export function validateEndReason(
+  reason: unknown,
+  note: unknown,
+): {
+  endReason: EnrollmentEndReasonDto;
+  endNote: string | null;
+} {
+  if (typeof reason !== 'string' || !endReasons.includes(reason as EnrollmentEndReasonDto))
+    throw new DomainError(
+      'ENROLLMENT_END_REASON_REQUIRED',
+      'Seleccioná un motivo de finalización.',
+    );
+  if (note != null && (typeof note !== 'string' || note.trim().length > 500))
+    throw new DomainError(
+      'INVALID_ENROLLMENT_END_NOTE',
+      'La observación debe tener hasta 500 caracteres.',
+    );
+  const endNote = typeof note === 'string' ? note.trim() || null : null;
+  if (reason === 'OTHER' && !endNote)
+    throw new DomainError('ENROLLMENT_END_NOTE_REQUIRED', 'Contanos brevemente el motivo.');
+  return { endReason: reason as EnrollmentEndReasonDto, endNote };
+}
 
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 
