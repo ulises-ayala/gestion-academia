@@ -3,7 +3,7 @@ import path from 'node:path';
 import { loadEnvFile } from 'node:process';
 import xlsx from 'xlsx';
 
-loadEnvFile('***REMOVED***');
+loadEnvFile('.env');
 
 const { readFile, utils } = xlsx;
 
@@ -11,11 +11,11 @@ const { readFile, utils } = xlsx;
  * CONFIGURACIÓN
  * ========================================================= */
 
-const API_BASE_URL = process***REMOVED***.API_BASE_URL ?? 'http://localhost:3001/api/v1';
+const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:3001/api/v1';
 
-const ADMIN_USERNAME = process***REMOVED***.IMPORT_ADMIN_USERNAME;
+const ADMIN_USERNAME = process.env.IMPORT_ADMIN_USERNAME;
 
-const ADMIN_PASSWORD = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process.env.IMPORT_ADMIN_PASSWORD;
 
 /*
  * Cambiá el nombre solamente si tu archivo local
@@ -793,7 +793,7 @@ function findEnrollmentForActivity(activity, candidateEnrollments) {
 
 async function login() {
   if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
-    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en ***REMOVED***');
+    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en .env');
   }
 
   const response = await fetch(`${API_BASE_URL}/auth/login`, {

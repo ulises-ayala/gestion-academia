@@ -48,7 +48,7 @@ const mapTariff = (item: {
   updatedAt: item.updatedAt.toISOString(),
 });
 const currentBusinessDate = () =>
-  businessDayAt(new Date(), process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires').dateValue;
+  businessDayAt(new Date(), process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires').dateValue;
 const mapCharge = (item: IncludedCharge, today: Date): MonthlyChargeDto => {
   const paidAmount = item.allocations.reduce(
     (sum, allocation) => sum.plus(allocation.amount),

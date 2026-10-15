@@ -110,7 +110,7 @@
 
 ## Decisiones de datos de desarrollo
 
-66. **Seed local explícito y protegido:** los datos ficticios se cargan únicamente mediante `npm run db:seed`. El comando exige `***REMOVED***`, rechaza CI y limita `DATABASE_URL` a PostgreSQL local con base `academy`; no forma parte de builds, migraciones ni despliegues.
+66. **Seed local explícito y protegido:** los datos ficticios se cargan únicamente mediante `npm run db:seed`. El comando exige `.env`, rechaza CI y limita `DATABASE_URL` a PostgreSQL local con base `academy`; no forma parte de builds, migraciones ni despliegues.
 
 67. **Identidades reservadas e idempotencia:** las entidades del dataset usan identificadores UUID reservados o claves naturales únicas y se actualizan mediante `upsert`. El seed no vacía tablas ni borra registros manuales, y puede repetirse sin duplicar el conjunto administrado.
 
@@ -140,7 +140,7 @@
 
 77. **Seeds separados por entorno:** `npm run db:seed` conserva sus restricciones de desarrollo local y base `academy`; `npm run db:seed:staging` es un comando distinto, manual y exclusivo de `academy_staging`. Ningún seed forma parte del deploy y producción real no admite seeds.
 
-78. **Confirmación y destino verificado:** staging exige `NODE_ENV=production`, `***REMOVED***true`, `***REMOVED***academy_staging`, `***REMOVED***SEED_ACADEMY_STAGING`, contraseña obligatoria y que el nombre extraído de una URL PostgreSQL sea exactamente `academy_staging`. Estas condiciones conjuntas evitan interpretar `NODE_ENV=production` como autorización suficiente.
+78. **Confirmación y destino verificado:** staging exige `NODE_ENV=production`, `ALLOW_STAGING_SEED=true`, `STAGING_SEED_TARGET=academy_staging`, `STAGING_SEED_CONFIRM=SEED_ACADEMY_STAGING`, contraseña obligatoria y que el nombre extraído de una URL PostgreSQL sea exactamente `academy_staging`. Estas condiciones conjuntas evitan interpretar `NODE_ENV=production` como autorización suficiente.
 
 79. **Dataset compartido y aislado:** desarrollo y staging aplican el mismo escenario ficticio, fechas y entidades reservadas mediante una única implementación transaccional e idempotente. El seed sólo actualiza identidades propias, no vacía tablas y no borra ni modifica datos manuales ajenos.
 

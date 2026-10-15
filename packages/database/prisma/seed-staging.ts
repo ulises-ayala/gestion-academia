@@ -5,7 +5,7 @@ import { assertStagingSeedEnvironment } from './seed/safety';
 const prisma = new PrismaClient();
 
 const main = async () => {
-  const password = assertStagingSeedEnvironment(process***REMOVED***);
+  const password = assertStagingSeedEnvironment(process.env);
   const summary = await applySeedData(prisma, { mode: 'staging', password });
   console.log('Seed ficticio de staging aplicado y verificado.');
   console.table(summary);

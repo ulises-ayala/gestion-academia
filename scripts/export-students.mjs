@@ -2,10 +2,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { loadEnvFile } from 'node:process';
 
-loadEnvFile('***REMOVED***');
-const API_URL = process***REMOVED***.API_URL ?? 'http://localhost:3001/api/v1';
-const username = process***REMOVED***.IMPORT_ADMIN_USERNAME;
-const password = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
+loadEnvFile('.env');
+const API_URL = process.env.API_URL ?? 'http://localhost:3001/api/v1';
+const username = process.env.IMPORT_ADMIN_USERNAME;
+const password = process.env.IMPORT_ADMIN_PASSWORD;
 
 if (!username || !password) {
   console.error(

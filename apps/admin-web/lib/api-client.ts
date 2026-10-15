@@ -1,6 +1,6 @@
 import type { ApiErrorDto } from '@academy/contracts';
 
-const apiUrl = process***REMOVED***.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 
 export class ApiClientError extends Error {
   constructor(

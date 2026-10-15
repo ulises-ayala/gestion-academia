@@ -130,7 +130,7 @@ export class PaymentsController {
       throw new DomainError('VALIDATION_ERROR', 'La fecha no es válida', { field });
     const day = businessDayAt(
       new Date(`${value}T12:00:00.000Z`),
-      process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+      process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
     );
     if (day.date !== value)
       throw new DomainError('VALIDATION_ERROR', 'La fecha no es válida', { field });

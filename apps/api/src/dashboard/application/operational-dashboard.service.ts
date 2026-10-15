@@ -25,14 +25,14 @@ export class OperationalDashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async get(user: PublicAuthUser, now: Date): Promise<OperationalDashboardDto> {
-    const day = businessDayAt(now, process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires');
+    const day = businessDayAt(now, process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires');
     const result: Record<string, unknown> = {
       generatedAt: now.toISOString(),
       businessDate: day.date,
     };
     const financialRange = confirmedPaymentMonthsAt(
       now,
-      process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+      process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
     );
 
     await Promise.all([
@@ -141,8 +141,8 @@ export class OperationalDashboardService {
           .$queryRaw<ConfirmedPaymentMonthRow[]>(
             Prisma.sql`
             SELECT
-              EXTRACT(YEAR FROM paid_at AT TIME ZONE ${process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires'})::int AS year,
-              EXTRACT(MONTH FROM paid_at AT TIME ZONE ${process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires'})::int AS month,
+              EXTRACT(YEAR FROM paid_at AT TIME ZONE ${process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires'})::int AS year,
+              EXTRACT(MONTH FROM paid_at AT TIME ZONE ${process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires'})::int AS month,
               SUM(amount) AS amount
             FROM payments
             WHERE status = 'CONFIRMED'

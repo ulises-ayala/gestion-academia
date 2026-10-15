@@ -54,7 +54,7 @@ export class AuthService {
     user: NonNullable<Awaited<ReturnType<AuthRepository['findUserByUsername']>>>,
   ): Promise<AuthResult> {
     const token = randomBytes(32).toString('base64url');
-    const hours = Number.parseInt(process***REMOVED***.AUTH_SESSION_HOURS ?? '12', 10);
+    const hours = Number.parseInt(process.env.AUTH_SESSION_HOURS ?? '12', 10);
     const expiresAt = new Date(
       Date.now() + (Number.isFinite(hours) && hours > 0 ? hours : 12) * 60 * 60 * 1000,
     );

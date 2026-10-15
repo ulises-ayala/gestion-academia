@@ -5,10 +5,10 @@ import { assertDevelopmentSeedEnvironment } from './seed/safety';
 const prisma = new PrismaClient();
 
 const main = async () => {
-  assertDevelopmentSeedEnvironment(process***REMOVED***);
+  assertDevelopmentSeedEnvironment(process.env);
   const summary = await applySeedData(prisma, {
     mode: 'development',
-    password: process***REMOVED***.DEV_SEED_PASSWORD ?? 'AcademiaDev2026!',
+    password: process.env.DEV_SEED_PASSWORD ?? 'AcademiaDev2026!',
   });
   console.log('Seed de desarrollo aplicado y verificado.');
   console.table(summary);

@@ -102,7 +102,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             });
             const today = businessDayAt(
               new Date(),
-              process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+              process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
             ).dateValue;
             for (const charge of lockedCharges) {
               if (

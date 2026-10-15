@@ -8,7 +8,7 @@ import {
 import { StudentOnboardingService } from '../application/student-onboarding.service';
 import { PrismaStudentOnboardingTransaction } from './prisma-student-onboarding.transaction';
 
-const enabled = Boolean(process***REMOVED***.DATABASE_URL);
+const enabled = Boolean(process.env.DATABASE_URL);
 describe.runIf(enabled)(
   'Student onboarding atomicity and concurrency',
   () => {
