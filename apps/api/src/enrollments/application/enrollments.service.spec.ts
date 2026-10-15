@@ -101,6 +101,33 @@ class MemoryEnrollments implements EnrollmentRepository {
     this.items[this.items.indexOf(current)] = ended;
     return ended;
   }
+  async createHistorical(input: {
+    studentId: string;
+    classId: string;
+    startDate: Date;
+    endDate: Date | null;
+  }): Promise<EnrollmentDto> {
+    const item = dto({
+      studentId: input.studentId,
+      classId: input.classId,
+      startDate: input.startDate.toISOString().slice(0, 10),
+      endDate: input.endDate?.toISOString().slice(0, 10) ?? null,
+      status: 'ENDED',
+    });
+    this.items.push(item);
+    return item;
+  }
+  async updateStartDate(id: string, startDate: Date): Promise<EnrollmentDto> {
+    const current = this.items.find((item) => item.id === id);
+    if (!current) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada');
+    const updated = {
+      ...current,
+      startDate: startDate.toISOString().slice(0, 10),
+      updatedAt: new Date().toISOString(),
+    };
+    this.items[this.items.indexOf(current)] = updated;
+    return updated;
+  }
   async hasActiveForStudent(id: string) {
     return this.items.some((x) => x.studentId === id && x.status === 'ACTIVE');
   }
@@ -188,6 +215,49 @@ describe('EnrollmentsService', () => {
     });
     await expect(service.assertClassCanDeactivate(classId)).rejects.toMatchObject({
       code: 'CLASS_HAS_ACTIVE_ENROLLMENTS',
+    });
+  });
+  it('crea una inscripción histórica finalizada', async () => {
+    const repo = new MemoryEnrollments();
+    const service = new EnrollmentsService(repo);
+    await expect(
+      service.createHistorical({
+        studentId,
+        classId,
+        startDate: '2025-02-01',
+        endDate: '2025-08-31',
+      }),
+    ).resolves.toMatchObject({
+      studentId,
+      classId,
+      startDate: '2025-02-01',
+      endDate: '2025-08-31',
+      status: 'ENDED',
+      endReason: null,
+      endNote: null,
+    });
+  });
+  it('actualiza la fecha de inicio sin perder el motivo de finalización', async () => {
+    const repo = new MemoryEnrollments();
+    const service = new EnrollmentsService(repo);
+    const item = await service.create({ studentId, classId, startDate: '2026-08-20' });
+    await expect(service.updateStartDate(item.id, '2026-08-01')).resolves.toMatchObject({
+      startDate: '2026-08-01',
+      endReason: null,
+      endNote: null,
+    });
+  });
+  it('rechaza mover el inicio después de la finalización', async () => {
+    const repo = new MemoryEnrollments();
+    const service = new EnrollmentsService(repo);
+    const item = await service.createHistorical({
+      studentId,
+      classId,
+      startDate: '2025-02-01',
+      endDate: '2025-08-31',
+    });
+    await expect(service.updateStartDate(item.id, '2025-09-01')).rejects.toMatchObject({
+      code: 'INVALID_ENROLLMENT_DATE',
     });
   });
 });

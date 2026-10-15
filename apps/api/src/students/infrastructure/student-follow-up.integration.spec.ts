@@ -1,6 +1,10 @@
 import { PrismaClient, type AttendanceStatus } from '@academy/database';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  integrationTestTimeoutMs,
+  prismaTransactionOptions,
+} from '../../database/prisma-transaction-options';
 import { PrismaEnrollmentRepository } from '../../enrollments/infrastructure/prisma-enrollment.repository';
 import { EnrollmentsService } from '../../enrollments/application/enrollments.service';
 import { PrismaStudentFollowUpReader } from './prisma-student-follow-up.reader';
@@ -12,7 +16,7 @@ const enabled = Boolean(
     /(?:academy_ci|follow_up_test)(?:\?|$)/.test(process***REMOVED***.DATABASE_URL),
 );
 describe.runIf(enabled)('Student follow-up PostgreSQL read model and enrollment end', () => {
-  const db = new PrismaClient();
+  const db = new PrismaClient({ transactionOptions: prismaTransactionOptions });
   const reader = new PrismaStudentFollowUpReader(db as PrismaService);
   const repository = new PrismaEnrollmentRepository(db as PrismaService);
   const service = new EnrollmentsService(repository);
@@ -208,4 +212,4 @@ describe.runIf(enabled)('Student follow-up PostgreSQL read model and enrollment 
       endReason: null,
     });
   });
-});
+}, integrationTestTimeoutMs);

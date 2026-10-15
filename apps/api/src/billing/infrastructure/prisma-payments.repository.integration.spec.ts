@@ -1,13 +1,17 @@
 import { Prisma, PrismaClient } from '@academy/database';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  integrationTestTimeoutMs,
+  prismaTransactionOptions,
+} from '../../database/prisma-transaction-options';
 import { ReceivablesService } from '../application/receivables.service';
 import { PrismaBillingRepository } from './prisma-billing.repository';
 import { PrismaPaymentsRepository } from './prisma-payments.repository';
 
 const enabled = Boolean(process***REMOVED***.DATABASE_URL);
 describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ transactionOptions: prismaTransactionOptions });
   const repository = new PrismaPaymentsRepository(prisma as PrismaService);
   const billing = new PrismaBillingRepository(prisma as PrismaService);
   const receivables = new ReceivablesService(prisma as PrismaService);
@@ -63,6 +67,7 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       });
       const tariff = await tx.tariff.create({
         data: {
+          classId: academicClass.id,
           name: `Tarifa pagos ${token}`,
           amount: '40000.00',
           validFrom: new Date('2026-08-01T00:00:00.000Z'),
@@ -501,4 +506,4 @@ describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
       await cleanupFixture(fixture);
     }
   });
-});
+}, integrationTestTimeoutMs);

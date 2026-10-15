@@ -10,6 +10,7 @@ export type ChargeQuery = Readonly<{
 export type EnrollmentForCharge = Readonly<{
   id: string;
   studentId: string;
+  classId: string;
   status: 'ACTIVE' | 'ENDED';
 }>;
 
@@ -22,6 +23,7 @@ export interface BillingRepository {
     data: Omit<TariffDto, 'id' | 'createdAt' | 'updatedAt'>,
     actorId?: string,
   ): Promise<TariffDto>;
+  deleteTariff(id: string): Promise<void>;
   findEnrollment(id: string): Promise<EnrollmentForCharge | null>;
   createCharge(data: {
     studentId: string;

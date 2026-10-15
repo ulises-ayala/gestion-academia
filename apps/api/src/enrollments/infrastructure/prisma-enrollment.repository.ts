@@ -206,6 +206,48 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
       'No se pudo confirmar la inscripción. Intentá nuevamente.',
     );
   }
+  async createHistorical(input: {
+    studentId: string;
+    classId: string;
+    startDate: Date;
+    endDate: Date | null;
+  }): Promise<EnrollmentDto> {
+    const student = await this.prisma.student.findUnique({
+      where: { id: input.studentId },
+      select: { id: true },
+    });
+    if (!student) throw new DomainError('STUDENT_NOT_FOUND', 'Alumno no encontrado');
+    const academicClass = await this.prisma.academyClass.findUnique({
+      where: { id: input.classId },
+      select: { id: true },
+    });
+    if (!academicClass) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
+    const existing = await this.prisma.enrollment.findFirst({
+      where: {
+        studentId: input.studentId,
+        classId: input.classId,
+        startDate: input.startDate,
+        status: 'ENDED',
+      },
+      include,
+    });
+    if (existing) return map(existing);
+    return map(
+      await this.prisma.enrollment.create({
+        data: { ...input, status: 'ENDED' },
+        include,
+      }),
+    );
+  }
+  async updateStartDate(id: string, startDate: Date): Promise<EnrollmentDto> {
+    return map(
+      await this.prisma.enrollment.update({
+        where: { id },
+        data: { startDate },
+        include,
+      }),
+    );
+  }
   async end(id: string, data: EnrollmentEndData, actorId?: string) {
     return this.prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT id FROM enrollments WHERE id = ${id}::uuid FOR UPDATE`;

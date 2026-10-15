@@ -1,12 +1,16 @@
 import { PrismaClient } from '@academy/database';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  integrationTestTimeoutMs,
+  prismaTransactionOptions,
+} from '../../database/prisma-transaction-options';
 import { StudentOnboardingService } from '../application/student-onboarding.service';
 import { PrismaStudentOnboardingTransaction } from './prisma-student-onboarding.transaction';
 
 const enabled = Boolean(process***REMOVED***.DATABASE_URL);
 describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ transactionOptions: prismaTransactionOptions });
   const service = new StudentOnboardingService(
     new PrismaStudentOnboardingTransaction(prisma as PrismaService),
   );
@@ -40,13 +44,24 @@ describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
           capacity: 1,
         },
       });
-      const tariff = await tx.tariff.create({
+      const availableTariff = await tx.tariff.create({
         data: {
-          name: `Tarifa ${token}`,
+          classId: availableClass.id,
+          name: `Tarifa disponible ${token}`,
           amount: '40000.00',
           validFrom: new Date('2026-08-01T00:00:00Z'),
         },
       });
+
+      const fullTariff = await tx.tariff.create({
+        data: {
+          classId: fullClass.id,
+          name: `Tarifa completa ${token}`,
+          amount: '40000.00',
+          validFrom: new Date('2026-08-01T00:00:00Z'),
+        },
+      });
+
       const filler = await tx.student.create({
         data: {
           dni: `7${token.replaceAll('-', '').slice(0, 31)}`,
@@ -62,7 +77,7 @@ describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
           startDate: new Date('2026-08-01T00:00:00Z'),
         },
       });
-      return { token, teacher, danceType, availableClass, fullClass, tariff, filler };
+      return { token, teacher, danceType, availableClass, fullClass, availableTariff, fullTariff, filler };
     });
   };
 
@@ -77,8 +92,24 @@ describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
       await tx.student.deleteMany({
         where: { OR: [{ id: data.filler.id }, { lastName: data.token }] },
       });
-      await tx.academyClass.deleteMany({ where: { id: { in: classIds } } });
-      await tx.tariff.delete({ where: { id: data.tariff.id } });
+      await tx.tariff.deleteMany({
+        where: {
+          id: {
+            in: [
+              data.availableTariff.id,
+              data.fullTariff.id,
+            ],
+          },
+        },
+      });
+
+      await tx.academyClass.deleteMany({
+        where: {
+          id: {
+            in: classIds,
+          },
+        },
+      });
       await tx.danceType.delete({ where: { id: data.danceType.id } });
       await tx.teacher.delete({ where: { id: data.teacher.id } });
     });
@@ -98,7 +129,13 @@ describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
       firstName: 'Alta',
       lastName: data.token,
     },
-    enrollments: classIds.map((classId) => ({ classId, tariffId: data.tariff.id })),
+    enrollments: classIds.map((classId) => ({
+      classId,
+      tariffId:
+        classId === data.availableClass.id
+          ? data.availableTariff.id
+          : data.fullTariff.id,
+    })),
     period: '2026-08',
     dueDate: '2026-08-10',
   });
@@ -190,4 +227,4 @@ describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
       await cleanup(data);
     }
   });
-});
+}, integrationTestTimeoutMs);

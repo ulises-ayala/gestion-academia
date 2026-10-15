@@ -28,6 +28,7 @@ type IncludedCharge = Prisma.MonthlyChargeGetPayload<{ include: typeof chargeInc
 const isoDate = (date: Date) => date.toISOString().slice(0, 10);
 const mapTariff = (item: {
   id: string;
+  classId: string;
   name: string;
   amount: Prisma.Decimal;
   validFrom: Date;
@@ -37,6 +38,7 @@ const mapTariff = (item: {
   updatedAt: Date;
 }): TariffDto => ({
   id: item.id,
+  classId: item.classId,
   name: item.name,
   amount: item.amount.toFixed(2),
   validFrom: isoDate(item.validFrom),
@@ -189,10 +191,39 @@ export class PrismaBillingRepository implements BillingRepository {
       return mapTariff(updated);
     });
   }
+  async deleteTariff(id: string) {
+  try {
+    await this.prisma.tariff.delete({
+      where: { id },
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2003'
+    ) {
+      throw new DomainError(
+        'TARIFF_IN_USE',
+        'No se puede eliminar una tarifa que ya tiene cuotas asociadas',
+      );
+    }
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2025'
+    ) {
+      throw new DomainError(
+        'TARIFF_NOT_FOUND',
+        'Tarifa no encontrada',
+      );
+    }
+
+    throw error;
+  }
+}
   findEnrollment(id: string) {
     return this.prisma.enrollment.findUnique({
       where: { id },
-      select: { id: true, studentId: true, status: true },
+      select: { id: true, studentId: true, status: true, classId: true },
     });
   }
   async createCharge(data: {
