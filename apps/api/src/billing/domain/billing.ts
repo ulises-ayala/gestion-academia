@@ -48,35 +48,19 @@ export const validateTariff = (input: {
   const classId = input.classId?.trim();
 
   if (!classId) {
-    throw new DomainError(
-      'VALIDATION_ERROR',
-      'La clase es obligatoria',
-      { field: 'classId' },
-    );
+    throw new DomainError('VALIDATION_ERROR', 'La clase es obligatoria', { field: 'classId' });
   }
 
   const name = input.name?.trim();
 
   if (!name || name.length > 120)
-    throw new DomainError(
-      'VALIDATION_ERROR',
-      'El nombre es obligatorio y admite 120 caracteres',
-      { field: 'name' },
-    );
+    throw new DomainError('VALIDATION_ERROR', 'El nombre es obligatorio y admite 120 caracteres', {
+      field: 'name',
+    });
 
-  const validFrom =
-    parseBillingDate(
-      input.validFrom,
-      'validFrom',
-    );
+  const validFrom = parseBillingDate(input.validFrom, 'validFrom');
 
-  const validTo =
-    input.validTo
-      ? parseBillingDate(
-          input.validTo,
-          'validTo',
-        )
-      : null;
+  const validTo = input.validTo ? parseBillingDate(input.validTo, 'validTo') : null;
 
   if (validTo && validTo < validFrom)
     throw new DomainError(
@@ -88,15 +72,10 @@ export const validateTariff = (input: {
   return {
     classId,
     name,
-    amount:
-      normalizeMoney(
-        input.amount,
-      ),
+    amount: normalizeMoney(input.amount),
     validFrom,
     validTo,
-    status:
-      input.status ??
-      ('ACTIVE' as const),
+    status: input.status ?? ('ACTIVE' as const),
   };
 };
 

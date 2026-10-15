@@ -3,37 +3,21 @@ import path from 'node:path';
 
 import xlsx from 'xlsx';
 
-const {
-  readFile,
-  utils,
-  writeFile,
-} = xlsx;
+const { readFile, utils, writeFile } = xlsx;
 
 /* =========================================================
  * CONFIG
  * ========================================================= */
 
-const INPUT_FILE = path.resolve(
-  './scripts/data/Historial_Carmesi_2025_2026_NORMALIZADO.xlsx',
-);
+const INPUT_FILE = path.resolve('./scripts/data/Historial_Carmesi_2025_2026_NORMALIZADO.xlsx');
 
-const CLASSES_FILE = path.resolve(
-  './exports/classes-current.json',
-);
+const CLASSES_FILE = path.resolve('./exports/classes-current.json');
 
-const OUTPUT_DIR = path.resolve(
-  './exports',
-);
+const OUTPUT_DIR = path.resolve('./exports');
 
-const OUTPUT_JSON = path.join(
-  OUTPUT_DIR,
-  'historical-tariffs-analysis.json',
-);
+const OUTPUT_JSON = path.join(OUTPUT_DIR, 'historical-tariffs-analysis.json');
 
-const OUTPUT_XLSX = path.join(
-  OUTPUT_DIR,
-  'historical-tariffs-analysis.xlsx',
-);
+const OUTPUT_XLSX = path.join(OUTPUT_DIR, 'historical-tariffs-analysis.xlsx');
 
 /* =========================================================
  * NORMALIZACIÓN
@@ -42,35 +26,22 @@ const OUTPUT_XLSX = path.join(
 function normalizeText(value) {
   return String(value ?? '')
     .normalize('NFD')
-    .replace(
-      /[\u0300-\u036f]/g,
-      '',
-    )
+    .replace(/[\u0300-\u036f]/g, '')
     .toUpperCase()
-    .replace(
-      /[^A-Z0-9]+/g,
-      ' ',
-    )
-    .replace(
-      /\s+/g,
-      ' ',
-    )
+    .replace(/[^A-Z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
 function normalizeTeacher(value) {
-  const normalized =
-    normalizeText(value);
+  const normalized = normalizeText(value);
 
   const aliases = {
     SOFI: 'SOFIA',
     VIRGI: 'VIRGINIA',
   };
 
-  return (
-    aliases[normalized] ??
-    normalized
-  );
+  return aliases[normalized] ?? normalized;
 }
 
 /* =========================================================
@@ -154,98 +125,88 @@ const PRICE_DECISIONS = {
   },
 
   'BACHATA Y SALSA INICIAL | JOSELO | 2025-10': {
-  decision: 'NOT_A_TARIFF',
-  reason: 'La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial.',
-},
+    decision: 'NOT_A_TARIFF',
+    reason:
+      'La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial.',
+  },
 
-'ESTILO FEMENINO | SOFIA | 2025-09': {
-  decision: 'NOT_A_TARIFF',
-  reason: 'Importe particular o condición especial; no representa la tarifa general.',
-},
+  'ESTILO FEMENINO | SOFIA | 2025-09': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Importe particular o condición especial; no representa la tarifa general.',
+  },
 
-'COREOGRAFICO FEMENINO | SOFIA | 2025-09': {
-  decision: 'NOT_A_TARIFF',
-  reason: 'Importe particular o condición especial; no representa la tarifa general.',
-},
+  'COREOGRAFICO FEMENINO | SOFIA | 2025-09': {
+    decision: 'NOT_A_TARIFF',
+    reason: 'Importe particular o condición especial; no representa la tarifa general.',
+  },
 
-'ESTILO FEMENINO | SOFIA | 2026-02': {
-  decision: 'NOT_A_TARIFF',
-  reason: 'La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial.',
-},
+  'ESTILO FEMENINO | SOFIA | 2026-02': {
+    decision: 'NOT_A_TARIFF',
+    reason:
+      'La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial.',
+  },
 
-'COREOGRAFICO FEMENINO | SOFIA | 2026-02': {
-  decision: 'NOT_A_TARIFF',
-  reason: 'La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial.',
-},
+  'COREOGRAFICO FEMENINO | SOFIA | 2026-02': {
+    decision: 'NOT_A_TARIFF',
+    reason:
+      'La academia confirmó cuota general de $30.000 entre enero y abril de 2026; $15.000 fue un importe especial.',
+  },
 
-'SALSA INICIAL SIESTA | JAVI | 2025-10': {
-  decision: 'NOT_A_TARIFF',
-  reason: 'La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial.',
-},
+  'SALSA INICIAL SIESTA | JAVI | 2025-10': {
+    decision: 'NOT_A_TARIFF',
+    reason:
+      'La academia confirmó tarifa general de $30.000 entre septiembre y noviembre de 2025; $25.000 fue un importe especial.',
+  },
 
-/*
- * Sofi - febrero 2025.
- *
- * Estilo Femenino $7.500:
- * condición especial, no tarifa general.
- */
-'ESTILO FEMENINO | SOFIA | 2025-02': {
-  decision: 'NOT_A_TARIFF',
-  reason: 'La academia confirmó que la cuota general de febrero de 2025 era $15.000; $7.500 correspondía a una condición especial.',
-},
+  /*
+   * Sofi - febrero 2025.
+   *
+   * Estilo Femenino $7.500:
+   * condición especial, no tarifa general.
+   */
+  'ESTILO FEMENINO | SOFIA | 2025-02': {
+    decision: 'NOT_A_TARIFF',
+    reason:
+      'La academia confirmó que la cuota general de febrero de 2025 era $15.000; $7.500 correspondía a una condición especial.',
+  },
 
-/*
- * Coreográfico Femenino:
- * $15.000 sí fue la tarifa general de febrero,
- * pero NO debe extenderse a marzo.
- */
-'COREOGRAFICO FEMENINO | SOFIA | 2025-02': {
-  decision: 'CONFIRMED',
-  amount: '15000.00',
-  validTo: '2025-02-28',
-  reason: 'La academia confirmó tarifa general de $15.000 para febrero de 2025. En marzo cambió a $20.000.',
-},
-
+  /*
+   * Coreográfico Femenino:
+   * $15.000 sí fue la tarifa general de febrero,
+   * pero NO debe extenderse a marzo.
+   */
+  'COREOGRAFICO FEMENINO | SOFIA | 2025-02': {
+    decision: 'CONFIRMED',
+    amount: '15000.00',
+    validTo: '2025-02-28',
+    reason:
+      'La academia confirmó tarifa general de $15.000 para febrero de 2025. En marzo cambió a $20.000.',
+  },
 };
 const CLASS_NAME_MAP = {
-  'BACHATA Y SALSA INICIAL':
-    'Bachata y Salsa Inicial',
+  'BACHATA Y SALSA INICIAL': 'Bachata y Salsa Inicial',
 
-  'LADYS KIZZ':
-    'Ladys Kizz',
+  'LADYS KIZZ': 'Ladys Kizz',
 
-  'LADYS TRAINING':
-    'Clase LT - A.Frank',
+  'LADYS TRAINING': 'Clase LT - A.Frank',
 
-  'STREET COREOGRAFICO ADULTO':
-    'S.C Adultos (+18 años)',
+  'STREET COREOGRAFICO ADULTO': 'S.C Adultos (+18 años)',
 
-  'STREET COREOGRAFICO AVANZADO INTERMEDIO':
-    'Street Int/Avanzado',
+  'STREET COREOGRAFICO AVANZADO INTERMEDIO': 'Street Int/Avanzado',
 
-  'STREET COREOGRAFICO JUVENIL':
-    'S.C Juvenil (12-17 años)',
+  'STREET COREOGRAFICO JUVENIL': 'S.C Juvenil (12-17 años)',
 
-  'TANGO AVANZADO INTERMEDIO':
-    'Tango (Inter/Avanz)',
+  'TANGO AVANZADO INTERMEDIO': 'Tango (Inter/Avanz)',
 
-  'ARABE INFANTIL':
-    'Árabe infantil',
+  'ARABE INFANTIL': 'Árabe infantil',
 
-  'MAMBO EN PAREJA':
-    'Mambo en parejas',
+  'MAMBO EN PAREJA': 'Mambo en parejas',
 
-  'TEENS':
-    'Teens (8 a 12 años)',
+  TEENS: 'Teens (8 a 12 años)',
 
-  'ZUMBA':
-    'Zumba - Profe Joselo',
+  ZUMBA: 'Zumba - Profe Joselo',
 
-  'KIDS':
-    'Kids 4-5 años',
-
-    
-
+  KIDS: 'Kids 4-5 años',
 };
 
 /*
@@ -260,47 +221,38 @@ const CLASS_ACTIVITY_TEACHER_MAP = {
   /*
    * Sofía
    */
-  'ESTILO FEMENINO | SOFIA':
-    'Clase femenino Sofi',
+  'ESTILO FEMENINO | SOFIA': 'Clase femenino Sofi',
 
-  'COREOGRAFICO FEMENINO | SOFIA':
-    'Clase femenino Sofi',
+  'COREOGRAFICO FEMENINO | SOFIA': 'Clase femenino Sofi',
 
   /*
    * Infantil
    */
-  'INFANTIL | SOFIA':
-    'Infantil (6 a 7 años)',
+  'INFANTIL | SOFIA': 'Infantil (6 a 7 años)',
 
   /*
    * Ana Frank
    */
-  'ESTILO FRANK | ANA':
-    'Grupo C. - A.Frank',
+  'ESTILO FRANK | ANA': 'Grupo C. - A.Frank',
 
   /*
    * Tango
    */
-  'TANGO | ROBERTO':
-    'Tango (Inter/Avanz)',
+  'TANGO | ROBERTO': 'Tango (Inter/Avanz)',
 
   /*
    * Ritmos / Kizomba
    */
-  'RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI':
-    'Ritmos latinos y caribeños',
+  'RITMOS CARIBENOS Y KIZOMBA PAREJAS | FABI': 'Ritmos latinos y caribeños',
 
   /*
    * Siesta
    */
-  'SALSA INICIAL SIESTA | JAVI':
-    'Bachata y Salsa Inicial',
+  'SALSA INICIAL SIESTA | JAVI': 'Bachata y Salsa Inicial',
 
-  'BACHATA INICIAL SIESTA | JAVI':
-    'Bachata y Salsa Inicial',
-    
-    'INFANTIL | SANTY':
-    'S.C Infantil (6-11 años)',
+  'BACHATA INICIAL SIESTA | JAVI': 'Bachata y Salsa Inicial',
+
+  'INFANTIL | SANTY': 'S.C Infantil (6-11 años)',
 };
 
 /* =========================================================
@@ -308,12 +260,7 @@ const CLASS_ACTIVITY_TEACHER_MAP = {
  * ========================================================= */
 
 async function readJson(file) {
-  return JSON.parse(
-    await fs.readFile(
-      file,
-      'utf8',
-    ),
-  );
+  return JSON.parse(await fs.readFile(file, 'utf8'));
 }
 
 function excelDateToIso(value) {
@@ -321,53 +268,29 @@ function excelDateToIso(value) {
     return null;
   }
 
-  if (
-    value instanceof Date &&
-    !Number.isNaN(
-      value.getTime(),
-    )
-  ) {
-    return value
-      .toISOString()
-      .slice(0, 10);
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
   }
 
   /*
    * xlsx puede devolver fechas como strings.
    */
-  const stringValue =
-    String(value).trim();
+  const stringValue = String(value).trim();
 
-  if (
-    /^\d{4}-\d{2}-\d{2}/.test(
-      stringValue,
-    )
-  ) {
-    return stringValue.slice(
-      0,
-      10,
-    );
+  if (/^\d{4}-\d{2}-\d{2}/.test(stringValue)) {
+    return stringValue.slice(0, 10);
   }
 
   /*
    * También puede devolver serial de Excel.
    */
-  if (
-    typeof value === 'number'
-  ) {
-    const parsed =
-      xlsx.SSF.parse_date_code(
-        value,
-      );
+  if (typeof value === 'number') {
+    const parsed = xlsx.SSF.parse_date_code(value);
 
     if (parsed) {
-      return [
-        parsed.y,
-        String(parsed.m)
-          .padStart(2, '0'),
-        String(parsed.d)
-          .padStart(2, '0'),
-      ].join('-');
+      return [parsed.y, String(parsed.m).padStart(2, '0'), String(parsed.d).padStart(2, '0')].join(
+        '-',
+      );
     }
   }
 
@@ -375,20 +298,13 @@ function excelDateToIso(value) {
 }
 
 function decimal(value) {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ''
-  ) {
+  if (value === null || value === undefined || value === '') {
     return null;
   }
 
-  const number =
-    Number(value);
+  const number = Number(value);
 
-  if (
-    !Number.isFinite(number)
-  ) {
+  if (!Number.isFinite(number)) {
     return null;
   }
 
@@ -403,80 +319,47 @@ function decimal(value) {
  * ========================================================= */
 
 function tokens(value) {
-  return new Set(
-    normalizeText(value)
-      .split(' ')
-      .filter(Boolean),
-  );
+  return new Set(normalizeText(value).split(' ').filter(Boolean));
 }
 
 function similarity(a, b) {
-  const left =
-    tokens(a);
+  const left = tokens(a);
 
-  const right =
-    tokens(b);
+  const right = tokens(b);
 
-  if (
-    left.size === 0 ||
-    right.size === 0
-  ) {
+  if (left.size === 0 || right.size === 0) {
     return 0;
   }
 
   let intersection = 0;
 
-  for (
-    const token
-    of left
-  ) {
-    if (
-      right.has(token)
-    ) {
+  for (const token of left) {
+    if (right.has(token)) {
       intersection++;
     }
   }
 
-  const union =
-    new Set([
-      ...left,
-      ...right,
-    ]).size;
+  const union = new Set([...left, ...right]).size;
 
   return intersection / union;
 }
 
-function tariffDecisionKey(
-  activity,
-  teacher,
-  validFrom,
-) {
+function tariffDecisionKey(activity, teacher, validFrom) {
   if (!validFrom) {
     return null;
   }
 
-  const period =
-    validFrom.slice(0, 7);
+  const period = validFrom.slice(0, 7);
 
-  return [
-    normalizeText(activity),
-    normalizeTeacher(teacher),
-    period,
-  ].join(' | ');
+  return [normalizeText(activity), normalizeTeacher(teacher), period].join(' | ');
 }
 
-function resolvePriceDecision({
-  activity,
-  teacher,
-  validFrom,
-  amount,
-}) {
+function resolvePriceDecision({ activity, teacher, validFrom, amount }) {
   if (!validFrom) {
     return null;
   }
 
-  const period =
-    validFrom.slice(0, 7);
+  const period = validFrom.slice(0, 7);
 
   /*
    * REGLA GENERAL CONFIRMADA POR LA ACADEMIA:
@@ -486,114 +369,57 @@ function resolvePriceDecision({
     return {
       decision: 'CONFIRMED',
       amount: '40000.00',
-      reason:
-        'La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.',
+      reason: 'La academia confirmó que desde agosto de 2026 la cuota normal pasó a $40.000.',
     };
   }
 
   /*
    * Para el resto, buscamos las decisiones específicas.
    */
-  const decisionKey =
-    tariffDecisionKey(
-      activity,
-      teacher,
-      validFrom,
-    );
+  const decisionKey = tariffDecisionKey(activity, teacher, validFrom);
 
-  return (
-    PRICE_DECISIONS[
-      decisionKey
-    ] ?? null
-  );
+  return PRICE_DECISIONS[decisionKey] ?? null;
 }
 
-function suggestClasses(
-  activity,
-  classes,
-  limit = 3,
-) {
+function suggestClasses(activity, classes, limit = 3) {
   return classes
-    .map(
-      (academicClass) => ({
-        id:
-          academicClass.id,
+    .map((academicClass) => ({
+      id: academicClass.id,
 
-        name:
-          academicClass.name,
+      name: academicClass.name,
 
-        status:
-          academicClass.status,
+      status: academicClass.status,
 
-        score:
-          similarity(
-            activity,
-            academicClass.name,
-          ),
-      }),
-    )
-    .filter(
-      (candidate) =>
-        candidate.score > 0,
-    )
-    .sort(
-      (a, b) =>
-        b.score - a.score,
-    )
-    .slice(
-      0,
-      limit,
-    );
+      score: similarity(activity, academicClass.name),
+    }))
+    .filter((candidate) => candidate.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
 }
 
 /* =========================================================
  * RESOLUCIÓN DE CLASE
  * ========================================================= */
 
-function buildClassIndexes(
-  classes,
-) {
-  const byId =
-    new Map();
+function buildClassIndexes(classes) {
+  const byId = new Map();
 
-  const byName =
-    new Map();
+  const byName = new Map();
 
-  for (
-    const academicClass
-    of classes
-  ) {
-    if (
-      !academicClass.id ||
-      !academicClass.name
-    ) {
+  for (const academicClass of classes) {
+    if (!academicClass.id || !academicClass.name) {
       continue;
     }
 
-    byId.set(
-      academicClass.id,
-      academicClass,
-    );
+    byId.set(academicClass.id, academicClass);
 
-    const key =
-      normalizeText(
-        academicClass.name,
-      );
+    const key = normalizeText(academicClass.name);
 
-    if (
-      !byName.has(key)
-    ) {
-      byName.set(
-        key,
-        [],
-      );
+    if (!byName.has(key)) {
+      byName.set(key, []);
     }
 
-    byName
-      .get(key)
-      .push(
-        academicClass,
-      );
+    byName.get(key).push(academicClass);
   }
 
   return {
@@ -602,54 +428,30 @@ function buildClassIndexes(
   };
 }
 
-function resolveClass({
-  activity,
-  teacher,
-  classes,
-  byName,
-}) {
-  const activityKey =
-    normalizeText(activity);
+function resolveClass({ activity, teacher, classes, byName }) {
+  const activityKey = normalizeText(activity);
 
-  const teacherKey =
-    normalizeTeacher(teacher);
+  const teacherKey = normalizeTeacher(teacher);
 
   /*
    * 1. Mapping explícito por actividad + profesor.
    */
-  const activityTeacherKey =
-    `${activityKey} | ${teacherKey}`;
+  const activityTeacherKey = `${activityKey} | ${teacherKey}`;
 
-  const explicitByTeacher =
-    CLASS_ACTIVITY_TEACHER_MAP[
-      activityTeacherKey
-    ];
+  const explicitByTeacher = CLASS_ACTIVITY_TEACHER_MAP[activityTeacherKey];
 
-  if (
-    explicitByTeacher
-  ) {
-    const matches =
-      byName.get(
-        normalizeText(
-          explicitByTeacher,
-        ),
-      ) ?? [];
+  if (explicitByTeacher) {
+    const matches = byName.get(normalizeText(explicitByTeacher)) ?? [];
 
-    if (
-      matches.length === 1
-    ) {
+    if (matches.length === 1) {
       return {
-        academicClass:
-          matches[0],
+        academicClass: matches[0],
 
-        matchType:
-          'MANUAL_ACTIVITY_TEACHER',
+        matchType: 'MANUAL_ACTIVITY_TEACHER',
 
-        confidence:
-          'HIGH',
+        confidence: 'HIGH',
 
-        suggestions:
-          [],
+        suggestions: [],
       };
     }
   }
@@ -657,68 +459,40 @@ function resolveClass({
   /*
    * 2. Mapping explícito solo por actividad.
    */
-  const mappedName =
-    CLASS_NAME_MAP[
-      activityKey
-    ];
+  const mappedName = CLASS_NAME_MAP[activityKey];
 
-  if (
-    mappedName
-  ) {
-    const matches =
-      byName.get(
-        normalizeText(
-          mappedName,
-        ),
-      ) ?? [];
+  if (mappedName) {
+    const matches = byName.get(normalizeText(mappedName)) ?? [];
 
-    if (
-      matches.length === 1
-    ) {
+    if (matches.length === 1) {
       return {
-        academicClass:
-          matches[0],
+        academicClass: matches[0],
 
-        matchType:
-          'MANUAL_ACTIVITY',
+        matchType: 'MANUAL_ACTIVITY',
 
-        confidence:
-          'HIGH',
+        confidence: 'HIGH',
 
-        suggestions:
-          [],
+        suggestions: [],
       };
     }
 
-    if (
-      matches.length > 1
-    ) {
+    if (matches.length > 1) {
       return {
-        academicClass:
-          null,
+        academicClass: null,
 
-        matchType:
-          'AMBIGUOUS_MANUAL_MATCH',
+        matchType: 'AMBIGUOUS_MANUAL_MATCH',
 
-        confidence:
-          'LOW',
+        confidence: 'LOW',
 
-        suggestions:
-          matches.map(
-            (item) => ({
-              id:
-                item.id,
+        suggestions: matches.map((item) => ({
+          id: item.id,
 
-              name:
-                item.name,
+          name: item.name,
 
-              status:
-                item.status,
+          status: item.status,
 
-              score:
-                1,
-            }),
-          ),
+          score: 1,
+        })),
       };
     }
   }
@@ -726,58 +500,37 @@ function resolveClass({
   /*
    * 3. Coincidencia exacta normalizada.
    */
-  const exact =
-    byName.get(
-      activityKey,
-    ) ?? [];
+  const exact = byName.get(activityKey) ?? [];
 
-  if (
-    exact.length === 1
-  ) {
+  if (exact.length === 1) {
     return {
-      academicClass:
-        exact[0],
+      academicClass: exact[0],
 
-      matchType:
-        'EXACT_NAME',
+      matchType: 'EXACT_NAME',
 
-      confidence:
-        'HIGH',
+      confidence: 'HIGH',
 
-      suggestions:
-        [],
+      suggestions: [],
     };
   }
 
-  if (
-    exact.length > 1
-  ) {
+  if (exact.length > 1) {
     return {
-      academicClass:
-        null,
+      academicClass: null,
 
-      matchType:
-        'AMBIGUOUS_EXACT_NAME',
+      matchType: 'AMBIGUOUS_EXACT_NAME',
 
-      confidence:
-        'LOW',
+      confidence: 'LOW',
 
-      suggestions:
-        exact.map(
-          (item) => ({
-            id:
-              item.id,
+      suggestions: exact.map((item) => ({
+        id: item.id,
 
-            name:
-              item.name,
+        name: item.name,
 
-            status:
-              item.status,
+        status: item.status,
 
-            score:
-              1,
-          }),
-        ),
+        score: 1,
+      })),
     };
   }
 
@@ -786,20 +539,13 @@ function resolveClass({
    * Solamente mostramos sugerencias.
    */
   return {
-    academicClass:
-      null,
+    academicClass: null,
 
-    matchType:
-      'NO_MATCH',
+    matchType: 'NO_MATCH',
 
-    confidence:
-      'LOW',
+    confidence: 'LOW',
 
-    suggestions:
-      suggestClasses(
-        activity,
-        classes,
-      ),
+    suggestions: suggestClasses(activity, classes),
   };
 }
 
@@ -807,46 +553,24 @@ function resolveClass({
  * ESTADO DE REVISIÓN DE TARIFA
  * ========================================================= */
 
-function classifyTariff({
-  sourceConfidence,
-  sourceReview,
-  academicClass,
-}) {
-  const confidence =
-    normalizeText(
-      sourceConfidence,
-    );
+function classifyTariff({ sourceConfidence, sourceReview, academicClass }) {
+  const confidence = normalizeText(sourceConfidence);
 
-  const review =
-    normalizeText(
-      sourceReview,
-    );
+  const review = normalizeText(sourceReview);
 
-  const classMissing =
-    !academicClass;
+  const classMissing = !academicClass;
 
-  const priceNeedsReview =
-    confidence === 'BAJA' ||
-    review.includes(
-      'REVISAR',
-    );
+  const priceNeedsReview = confidence === 'BAJA' || review.includes('REVISAR');
 
-  if (
-    classMissing &&
-    priceNeedsReview
-  ) {
+  if (classMissing && priceNeedsReview) {
     return 'REVIEW_CLASS_AND_PRICE';
   }
 
-  if (
-    classMissing
-  ) {
+  if (classMissing) {
     return 'REVIEW_CLASS';
   }
 
-  if (
-    priceNeedsReview
-  ) {
+  if (priceNeedsReview) {
     return 'REVIEW_PRICE';
   }
 
@@ -859,196 +583,114 @@ function classifyTariff({
 
 async function main() {
   console.log('');
-  console.log(
-    '📥 Leyendo historial normalizado...',
-  );
+  console.log('📥 Leyendo historial normalizado...');
 
-  console.log(
-    `📄 ${INPUT_FILE}`,
-  );
+  console.log(`📄 ${INPUT_FILE}`);
 
-  const workbook =
-    readFile(
-      INPUT_FILE,
-      {
-        cellDates: true,
-      },
-    );
+  const workbook = readFile(INPUT_FILE, {
+    cellDates: true,
+  });
 
-  const sheet =
-    workbook.Sheets[
-      'Tarifas candidatas'
-    ];
+  const sheet = workbook.Sheets['Tarifas candidatas'];
 
   if (!sheet) {
-    throw new Error(
-      'No existe la hoja "Tarifas candidatas".',
-    );
+    throw new Error('No existe la hoja "Tarifas candidatas".');
   }
 
-  const rows =
-    utils.sheet_to_json(
-      sheet,
-      {
-        defval: null,
-        raw: true,
-      },
-    );
+  const rows = utils.sheet_to_json(sheet, {
+    defval: null,
+    raw: true,
+  });
 
-  console.log(
-    `💰 Períodos tarifarios candidatos: ${rows.length}`,
-  );
+  console.log(`💰 Períodos tarifarios candidatos: ${rows.length}`);
 
   console.log('');
-  console.log(
-    '📥 Leyendo catálogo de clases...',
-  );
+  console.log('📥 Leyendo catálogo de clases...');
 
-  const classes =
-    await readJson(
-      CLASSES_FILE,
-    );
+  const classes = await readJson(CLASSES_FILE);
 
-  console.log(
-    `💃 Clases disponibles: ${classes.length}`,
-  );
+  console.log(`💃 Clases disponibles: ${classes.length}`);
 
-  const {
-    byName,
-  } =
-    buildClassIndexes(
-      classes,
-    );
+  const { byName } = buildClassIndexes(classes);
 
   const analysis = [];
 
-  for (
-    const row
-    of rows
-  ) {
-    const activity =
-      row[
-        'Actividad normalizada'
-      ];
+  for (const row of rows) {
+    const activity = row['Actividad normalizada'];
 
-    const teacher =
-      row[
-        'Profesor normalizado'
-      ];
+    const teacher = row['Profesor normalizado'];
 
-      const validFrom =
-        excelDateToIso(
-          row['Vigencia desde'],
-        );
+    const validFrom = excelDateToIso(row['Vigencia desde']);
 
-      const sourceValidTo =
-        excelDateToIso(
-          row['Vigencia hasta'],
-        );
+    const sourceValidTo = excelDateToIso(row['Vigencia hasta']);
 
-    const candidateAmount =
-      decimal(
-        row['Importe candidato'],
-      );
+    const candidateAmount = decimal(row['Importe candidato']);
 
-    const priceDecision =
-      resolvePriceDecision({
-        activity,
-        teacher,
-        validFrom,
-        amount: candidateAmount,
-      });
+    const priceDecision = resolvePriceDecision({
+      activity,
+      teacher,
+      validFrom,
+      amount: candidateAmount,
+    });
 
-    const validTo =
-      priceDecision?.validTo ??
-      sourceValidTo;
+    const validTo = priceDecision?.validTo ?? sourceValidTo;
 
-    const classMatch =
-      resolveClass({
-        activity,
-        teacher,
-        classes,
-        byName,
-      });
+    const classMatch = resolveClass({
+      activity,
+      teacher,
+      classes,
+      byName,
+    });
 
-    const academicClass =
-      classMatch.academicClass;
+    const academicClass = classMatch.academicClass;
 
-    const sourceConfidence =
-      row.Confianza;
+    const sourceConfidence = row.Confianza;
 
-    const sourceReview =
-      row['Revisión'];
+    const sourceReview = row['Revisión'];
 
-    const result =
-      classifyTariff({
-        sourceConfidence,
-        sourceReview,
-        academicClass,
-      });
+    const result = classifyTariff({
+      sourceConfidence,
+      sourceReview,
+      academicClass,
+    });
 
     analysis.push({
       activity,
       teacher,
 
-      classId:
-        academicClass?.id ??
-        null,
+      classId: academicClass?.id ?? null,
 
-      className:
-        academicClass?.name ??
-        null,
+      className: academicClass?.name ?? null,
 
-      classStatus:
-        academicClass?.status ??
-        null,
+      classStatus: academicClass?.status ?? null,
 
-      classMatchType:
-        classMatch.matchType,
+      classMatchType: classMatch.matchType,
 
-      classMatchConfidence:
-        classMatch.confidence,
+      classMatchConfidence: classMatch.confidence,
 
-validFrom,
+      validFrom,
 
-validTo,
+      validTo,
 
-amount:
-  priceDecision?.amount ??
-  candidateAmount,
+      amount: priceDecision?.amount ?? candidateAmount,
 
-priceDecision:
-  priceDecision?.decision ??
-  null,
+      priceDecision: priceDecision?.decision ?? null,
 
-priceDecisionReason:
-  priceDecision?.reason ??
-  null,
+      priceDecisionReason: priceDecision?.reason ?? null,
 
-result:
-  priceDecision?.decision ===
-  'NOT_A_TARIFF'
-    ? 'NOT_A_TARIFF'
-    : priceDecision?.decision ===
-        'CONFIRMED' &&
-      academicClass
-      ? 'OK'
-      : result,
+      result:
+        priceDecision?.decision === 'NOT_A_TARIFF'
+          ? 'NOT_A_TARIFF'
+          : priceDecision?.decision === 'CONFIRMED' && academicClass
+            ? 'OK'
+            : result,
 
-      months:
-        Number(
-          row[
-            'Meses consecutivos'
-          ] ?? 0,
-        ),
+      months: Number(row['Meses consecutivos'] ?? 0),
 
       sourceConfidence,
       sourceReview,
-      sourceRows:
-        row['Filas origen'] ??
-        null,
-      suggestions:
-        classMatch.suggestions,
+      sourceRows: row['Filas origen'] ?? null,
+      suggestions: classMatch.suggestions,
     });
   }
 
@@ -1056,91 +698,48 @@ result:
    * CONTADORES
    * ======================================================= */
 
-  const counts =
-    analysis.reduce(
-      (acc, item) => {
-        acc[item.result] =
-          (
-            acc[
-              item.result
-            ] ?? 0
-          ) + 1;
+  const counts = analysis.reduce((acc, item) => {
+    acc[item.result] = (acc[item.result] ?? 0) + 1;
 
-        return acc;
-      },
-      {},
-    );
+    return acc;
+  }, {});
 
   console.log('');
-  console.log(
-    '📊 RESULTADO DEL ANÁLISIS',
-  );
+  console.log('📊 RESULTADO DEL ANÁLISIS');
 
-  console.log(
-    `✅ OK: ${
-      counts.OK ?? 0
-    }`,
-  );
+  console.log(`✅ OK: ${counts.OK ?? 0}`);
 
-  console.log(
-    `💲 Revisar precio: ${
-      counts.REVIEW_PRICE ??
-      0
-    }`,
-  );
+  console.log(`💲 Revisar precio: ${counts.REVIEW_PRICE ?? 0}`);
 
-  console.log(
-    `💃 Revisar clase: ${
-      counts.REVIEW_CLASS ??
-      0
-    }`,
-  );
+  console.log(`💃 Revisar clase: ${counts.REVIEW_CLASS ?? 0}`);
 
-  console.log(
-    `⚠️ Revisar clase y precio: ${
-      counts.REVIEW_CLASS_AND_PRICE ??
-      0
-    }`,
-  );
-  console.log(
-    `🚫 No son tarifa: ${
-      counts.NOT_A_TARIFF ?? 0
-    }`,
-  );
+  console.log(`⚠️ Revisar clase y precio: ${counts.REVIEW_CLASS_AND_PRICE ?? 0}`);
+  console.log(`🚫 No son tarifa: ${counts.NOT_A_TARIFF ?? 0}`);
   /* =======================================================
    * JSON
    * ======================================================= */
 
-  await fs.mkdir(
-    OUTPUT_DIR,
-    {
-      recursive: true,
-    },
-  );
+  await fs.mkdir(OUTPUT_DIR, {
+    recursive: true,
+  });
 
   await fs.writeFile(
     OUTPUT_JSON,
     JSON.stringify(
       {
-        generatedAt:
-          new Date()
-            .toISOString(),
+        generatedAt: new Date().toISOString(),
 
-        source:
-          INPUT_FILE,
+        source: INPUT_FILE,
 
-        classesSource:
-          CLASSES_FILE,
+        classesSource: CLASSES_FILE,
 
         summary: {
-          total:
-            analysis.length,
+          total: analysis.length,
 
           ...counts,
         },
 
-        items:
-          analysis,
+        items: analysis,
       },
       null,
       2,
@@ -1152,138 +751,76 @@ result:
    * XLSX
    * ======================================================= */
 
-  const workbookOut =
-    utils.book_new();
+  const workbookOut = utils.book_new();
 
-  const reportRows =
-    analysis.map(
-      (item) => ({
-        Resultado:
-          item.result,
+  const reportRows = analysis.map((item) => ({
+    Resultado: item.result,
 
-        Actividad:
-          item.activity,
+    Actividad: item.activity,
 
-        Profesor:
-          item.teacher,
+    Profesor: item.teacher,
 
-        'Clase Carmesí':
-          item.className,
+    'Clase Carmesí': item.className,
 
-        'Class ID':
-          item.classId,
+    'Class ID': item.classId,
 
-        'Estado clase':
-          item.classStatus,
+    'Estado clase': item.classStatus,
 
-        'Tipo match':
-          item.classMatchType,
+    'Tipo match': item.classMatchType,
 
-        'Confianza match':
-          item.classMatchConfidence,
+    'Confianza match': item.classMatchConfidence,
 
-        'Vigencia desde':
-          item.validFrom,
+    'Vigencia desde': item.validFrom,
 
-        'Vigencia hasta':
-          item.validTo,
+    'Vigencia hasta': item.validTo,
 
-        'Importe candidato':
-          item.amount,
+    'Importe candidato': item.amount,
 
-        'Meses consecutivos':
-          item.months,
+    'Meses consecutivos': item.months,
 
-        'Confianza precio':
-          item.sourceConfidence,
+    'Confianza precio': item.sourceConfidence,
 
-        'Revisión precio':
-          item.sourceReview,
+    'Revisión precio': item.sourceReview,
 
-        'Filas origen':
-          item.sourceRows,
+    'Filas origen': item.sourceRows,
 
-        'Sugerencia 1':
-          item.suggestions[0]
-            ?.name ??
-          null,
+    'Sugerencia 1': item.suggestions[0]?.name ?? null,
 
-        'Sugerencia 2':
-          item.suggestions[1]
-            ?.name ??
-          null,
+    'Sugerencia 2': item.suggestions[1]?.name ?? null,
 
-        'Sugerencia 3':
-          item.suggestions[2]
-            ?.name ??
-          null,
-      }),
-    );
+    'Sugerencia 3': item.suggestions[2]?.name ?? null,
+  }));
 
-  utils.book_append_sheet(
-    workbookOut,
-    utils.json_to_sheet(
-      reportRows,
-    ),
-    'Analisis',
-  );
+  utils.book_append_sheet(workbookOut, utils.json_to_sheet(reportRows), 'Analisis');
 
   utils.book_append_sheet(
     workbookOut,
     utils.json_to_sheet(
       analysis
         .filter(
-          (item) =>
-            item.result ===
-              'REVIEW_CLASS' ||
-            item.result ===
-              'REVIEW_CLASS_AND_PRICE',
+          (item) => item.result === 'REVIEW_CLASS' || item.result === 'REVIEW_CLASS_AND_PRICE',
         )
-        .map(
-          (item) => ({
-            Actividad:
-              item.activity,
+        .map((item) => ({
+          Actividad: item.activity,
 
-            Profesor:
-              item.teacher,
+          Profesor: item.teacher,
 
-            'Importe candidato':
-              item.amount,
+          'Importe candidato': item.amount,
 
-            'Vigencia desde':
-              item.validFrom,
+          'Vigencia desde': item.validFrom,
 
-            'Sugerencia 1':
-              item.suggestions[0]
-                ?.name ??
-              null,
+          'Sugerencia 1': item.suggestions[0]?.name ?? null,
 
-            'Score 1':
-              item.suggestions[0]
-                ?.score ??
-              null,
+          'Score 1': item.suggestions[0]?.score ?? null,
 
-            'Sugerencia 2':
-              item.suggestions[1]
-                ?.name ??
-              null,
+          'Sugerencia 2': item.suggestions[1]?.name ?? null,
 
-            'Score 2':
-              item.suggestions[1]
-                ?.score ??
-              null,
+          'Score 2': item.suggestions[1]?.score ?? null,
 
-            'Sugerencia 3':
-              item.suggestions[2]
-                ?.name ??
-              null,
+          'Sugerencia 3': item.suggestions[2]?.name ?? null,
 
-            'Score 3':
-              item.suggestions[2]
-                ?.score ??
-              null,
-          }),
-        ),
+          'Score 3': item.suggestions[2]?.score ?? null,
+        })),
     ),
     'Revisar clases',
   );
@@ -1293,42 +830,27 @@ result:
     utils.json_to_sheet(
       analysis
         .filter(
-          (item) =>
-            item.result ===
-              'REVIEW_PRICE' ||
-            item.result ===
-              'REVIEW_CLASS_AND_PRICE',
+          (item) => item.result === 'REVIEW_PRICE' || item.result === 'REVIEW_CLASS_AND_PRICE',
         )
-        .map(
-          (item) => ({
-            Actividad:
-              item.activity,
+        .map((item) => ({
+          Actividad: item.activity,
 
-            Profesor:
-              item.teacher,
+          Profesor: item.teacher,
 
-            Clase:
-              item.className,
+          Clase: item.className,
 
-            'Vigencia desde':
-              item.validFrom,
+          'Vigencia desde': item.validFrom,
 
-            'Vigencia hasta':
-              item.validTo,
+          'Vigencia hasta': item.validTo,
 
-            Importe:
-              item.amount,
+          Importe: item.amount,
 
-            Confianza:
-              item.sourceConfidence,
+          Confianza: item.sourceConfidence,
 
-            Revisión:
-              item.sourceReview,
+          Revisión: item.sourceReview,
 
-            'Filas origen':
-              item.sourceRows,
-          }),
-        ),
+          'Filas origen': item.sourceRows,
+        })),
     ),
     'Revisar precios',
   );
@@ -1337,69 +859,47 @@ result:
     workbookOut,
     utils.json_to_sheet([
       {
-        Métrica:
-          'Total',
+        Métrica: 'Total',
 
-        Cantidad:
-          analysis.length,
+        Cantidad: analysis.length,
       },
 
       {
-        Métrica:
-          'OK',
+        Métrica: 'OK',
 
-        Cantidad:
-          counts.OK ?? 0,
+        Cantidad: counts.OK ?? 0,
       },
 
       {
-        Métrica:
-          'Revisar precio',
+        Métrica: 'Revisar precio',
 
-        Cantidad:
-          counts.REVIEW_PRICE ??
-          0,
+        Cantidad: counts.REVIEW_PRICE ?? 0,
       },
 
       {
-        Métrica:
-          'Revisar clase',
+        Métrica: 'Revisar clase',
 
-        Cantidad:
-          counts.REVIEW_CLASS ??
-          0,
+        Cantidad: counts.REVIEW_CLASS ?? 0,
       },
 
       {
-        Métrica:
-          'Revisar clase y precio',
+        Métrica: 'Revisar clase y precio',
 
-        Cantidad:
-          counts.REVIEW_CLASS_AND_PRICE ??
-          0,
+        Cantidad: counts.REVIEW_CLASS_AND_PRICE ?? 0,
       },
     ]),
     'Resumen',
   );
 
-  writeFile(
-    workbookOut,
-    OUTPUT_XLSX,
-  );
+  writeFile(workbookOut, OUTPUT_XLSX);
 
   console.log('');
-  console.log(
-    `📄 JSON: ${OUTPUT_JSON}`,
-  );
+  console.log(`📄 JSON: ${OUTPUT_JSON}`);
 
-  console.log(
-    `📊 Excel: ${OUTPUT_XLSX}`,
-  );
+  console.log(`📊 Excel: ${OUTPUT_XLSX}`);
 
   console.log('');
-  console.log(
-    'ℹ️ Este script NO modifica la base de datos.',
-  );
+  console.log('ℹ️ Este script NO modifica la base de datos.');
 }
 
 await main();

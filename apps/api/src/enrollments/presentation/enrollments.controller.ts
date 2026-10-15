@@ -40,14 +40,8 @@ export class EnrollmentsController {
     });
   }
   @Patch(':id')
-  updateStartDate(
-    @Param('id') id: string,
-    @Body() body: { startDate: string },
-  ) {
-    return this.service.updateStartDate(
-      parseUuid(id),
-      body.startDate,
-    );
+  updateStartDate(@Param('id') id: string, @Body() body: { startDate: string }) {
+    return this.service.updateStartDate(parseUuid(id), body.startDate);
   }
 
   @Post('historical')

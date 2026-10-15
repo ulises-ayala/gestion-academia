@@ -8,24 +8,15 @@ loadEnvFile('***REMOVED***');
  * CONFIG
  * ========================================================= */
 
-const API_BASE_URL =
-  process***REMOVED***.API_BASE_URL ??
-  'http://localhost:3001/api/v1';
+const API_BASE_URL = process***REMOVED***.API_BASE_URL ?? 'http://localhost:3001/api/v1';
 
-const ADMIN_USERNAME =
-  process***REMOVED***.IMPORT_ADMIN_USERNAME;
+const ADMIN_USERNAME = process***REMOVED***.IMPORT_ADMIN_USERNAME;
 
-const ADMIN_PASSWORD =
-  process***REMOVED***.IMPORT_ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
 
-const OUTPUT_DIR = path.resolve(
-  './exports',
-);
+const OUTPUT_DIR = path.resolve('./exports');
 
-const OUTPUT_FILE = path.join(
-  OUTPUT_DIR,
-  'classes-current.json',
-);
+const OUTPUT_FILE = path.join(OUTPUT_DIR, 'classes-current.json');
 
 const PAGE_SIZE = 100;
 
@@ -34,102 +25,60 @@ const PAGE_SIZE = 100;
  * ========================================================= */
 
 async function login() {
-  if (
-    !ADMIN_USERNAME ||
-    !ADMIN_PASSWORD
-  ) {
-    throw new Error(
-      'Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en ***REMOVED***',
-    );
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en ***REMOVED***');
   }
 
-  const response =
-    await fetch(
-      `${API_BASE_URL}/auth/login`,
-      {
-        method: 'POST',
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
 
-        headers: {
-          'Content-Type':
-            'application/json',
-        },
+    headers: {
+      'Content-Type': 'application/json',
+    },
 
-        body:
-          JSON.stringify({
-            username:
-              ADMIN_USERNAME,
+    body: JSON.stringify({
+      username: ADMIN_USERNAME,
 
-            password:
-              ADMIN_PASSWORD,
-          }),
-      },
-    );
+      password: ADMIN_PASSWORD,
+    }),
+  });
 
   if (!response.ok) {
-    const body =
-      await response.text();
+    const body = await response.text();
 
-    throw new Error(
-      `Login falló (${response.status}): ${body}`,
-    );
+    throw new Error(`Login falló (${response.status}): ${body}`);
   }
 
-  const setCookie =
-    response.headers.get(
-      'set-cookie',
-    );
+  const setCookie = response.headers.get('set-cookie');
 
   if (!setCookie) {
-    throw new Error(
-      'La API no devolvió cookie de sesión.',
-    );
+    throw new Error('La API no devolvió cookie de sesión.');
   }
 
-  return setCookie
-    .split(';')[0];
+  return setCookie.split(';')[0];
 }
 
 /* =========================================================
  * FETCH
  * ========================================================= */
 
-async function fetchClassesPage(
-  page,
-  sessionCookie,
-) {
-  const url =
-    new URL(
-      `${API_BASE_URL}/classes`,
-    );
+async function fetchClassesPage(page, sessionCookie) {
+  const url = new URL(`${API_BASE_URL}/classes`);
 
-  url.searchParams.set(
-    'page',
-    String(page),
-  );
+  url.searchParams.set('page', String(page));
 
-  url.searchParams.set(
-    'pageSize',
-    String(PAGE_SIZE),
-  );
+  url.searchParams.set('pageSize', String(PAGE_SIZE));
 
-  const response =
-    await fetch(
-      url,
-      {
-        headers: {
-          Cookie:
-            sessionCookie,
-        },
-      },
-    );
+  const response = await fetch(url, {
+    headers: {
+      Cookie: sessionCookie,
+    },
+  });
 
   if (!response.ok) {
-    const body =
-      await response.text();
+    const body = await response.text();
 
-    throw new Error(
-      `Error obteniendo clases (${response.status}): ${body}`,
-    );
+    throw new Error(`Error obteniendo clases (${response.status}): ${body}`);
   }
 
   return response.json();
@@ -139,115 +88,74 @@ async function fetchClassesPage(
  * NORMALIZACIÓN
  * ========================================================= */
 
-function normalizeClass(
-  item,
-) {
+function normalizeClass(item) {
   return {
-    id:
-      item.id,
+    id: item.id,
 
-    name:
-      item.name,
+    name: item.name,
 
-    level:
-      item.level ??
-      null,
+    level: item.level ?? null,
 
-    capacity:
-      item.capacity ??
-      null,
+    capacity: item.capacity ?? null,
 
-    status:
-      item.status ??
-      null,
+    status: item.status ?? null,
 
-    danceType:
-      item.danceType
-        ? {
-            id:
-              item.danceType.id,
+    danceType: item.danceType
+      ? {
+          id: item.danceType.id,
 
-            name:
-              item.danceType.name,
-          }
-        : null,
+          name: item.danceType.name,
+        }
+      : null,
 
-    teacher:
-      item.teacher
-        ? {
-            id:
-              item.teacher.id,
+    teacher: item.teacher
+      ? {
+          id: item.teacher.id,
 
-            firstName:
-              item.teacher.firstName,
+          firstName: item.teacher.firstName,
 
-            lastName:
-              item.teacher.lastName,
+          lastName: item.teacher.lastName,
 
-            fullName:
-              [
-                item.teacher.lastName,
-                item.teacher.firstName,
-              ]
-                .filter(Boolean)
-                .join(' ')
-                .trim(),
-          }
-        : null,
+          fullName: [item.teacher.lastName, item.teacher.firstName]
+            .filter(Boolean)
+            .join(' ')
+            .trim(),
+        }
+      : null,
 
-    schedules:
-      Array.isArray(
-        item.schedules,
-      )
-        ? item.schedules.map(
-            (schedule) => ({
-              id:
-                schedule.id,
+    schedules: Array.isArray(item.schedules)
+      ? item.schedules.map((schedule) => ({
+          id: schedule.id,
 
-              dayOfWeek:
-                schedule.dayOfWeek,
+          dayOfWeek: schedule.dayOfWeek,
 
-              startTime:
-                schedule.startTime,
+          startTime: schedule.startTime,
 
-              endTime:
-                schedule.endTime,
+          endTime: schedule.endTime,
 
-              room:
-                schedule.room
+          room: schedule.room
+            ? {
+                id: schedule.room.id,
+
+                name: schedule.room.name,
+
+                branch: schedule.room.branch
                   ? {
-                      id:
-                        schedule.room.id,
+                      id: schedule.room.branch.id,
 
-                      name:
-                        schedule.room.name,
-
-                      branch:
-                        schedule.room.branch
-                          ? {
-                              id:
-                                schedule.room.branch.id,
-
-                              name:
-                                schedule.room.branch.name,
-                            }
-                          : null,
+                      name: schedule.room.branch.name,
                     }
                   : null,
-            }),
-          )
-        : [],
+              }
+            : null,
+        }))
+      : [],
 
-    createdAt:
-      item.createdAt ??
-      null,
+    createdAt: item.createdAt ?? null,
 
-    updatedAt:
-      item.updatedAt ??
-      null,
+    updatedAt: item.updatedAt ?? null,
 
-    raw:
-      item,
+    raw: item,
   };
 }
 
@@ -258,34 +166,22 @@ function normalizeClass(
 async function main() {
   try {
     console.log('');
-    console.log(
-      '🔐 Iniciando sesión...',
-    );
+    console.log('🔐 Iniciando sesión...');
 
-    const sessionCookie =
-      await login();
+    const sessionCookie = await login();
 
-    console.log(
-      '✅ Sesión iniciada.',
-    );
+    console.log('✅ Sesión iniciada.');
 
     console.log('');
-    console.log(
-      '📥 Exportando clases...',
-    );
+    console.log('📥 Exportando clases...');
 
-    const allClasses =
-      [];
+    const allClasses = [];
 
     let page = 1;
     let total = null;
 
     while (true) {
-      const response =
-        await fetchClassesPage(
-          page,
-          sessionCookie,
-        );
+      const response = await fetchClassesPage(page, sessionCookie);
 
       /*
        * Soportamos dos formatos comunes:
@@ -299,47 +195,25 @@ async function main() {
        *
        * o directamente [...]
        */
-      const items =
-        Array.isArray(response)
-          ? response
-          : response.items ?? [];
+      const items = Array.isArray(response) ? response : (response.items ?? []);
 
-      if (
-        !Array.isArray(items)
-      ) {
-        throw new Error(
-          'La respuesta de /classes no contiene un array de clases.',
-        );
+      if (!Array.isArray(items)) {
+        throw new Error('La respuesta de /classes no contiene un array de clases.');
       }
 
-      if (
-        total === null &&
-        !Array.isArray(response)
-      ) {
-        total =
-          Number(
-            response.total ??
-            0,
-          );
+      if (total === null && !Array.isArray(response)) {
+        total = Number(response.total ?? 0);
       }
 
-      allClasses.push(
-        ...items.map(
-          normalizeClass,
-        ),
-      );
+      allClasses.push(...items.map(normalizeClass));
 
-      console.log(
-        `   Página ${page}: ${items.length} clases`,
-      );
+      console.log(`   Página ${page}: ${items.length} clases`);
 
       /*
        * Si la API devolvió array directo,
        * asumimos una sola página.
        */
-      if (
-        Array.isArray(response)
-      ) {
+      if (Array.isArray(response)) {
         break;
       }
 
@@ -347,19 +221,14 @@ async function main() {
        * Si no vino nada más,
        * terminamos.
        */
-      if (
-        items.length === 0
-      ) {
+      if (items.length === 0) {
         break;
       }
 
       /*
        * Si ya alcanzamos total.
        */
-      if (
-        total !== null &&
-        allClasses.length >= total
-      ) {
+      if (total !== null && allClasses.length >= total) {
         break;
       }
 
@@ -367,9 +236,7 @@ async function main() {
        * Si vino menos que PAGE_SIZE,
        * también terminamos.
        */
-      if (
-        items.length < PAGE_SIZE
-      ) {
+      if (items.length < PAGE_SIZE) {
         break;
       }
 
@@ -380,82 +247,37 @@ async function main() {
      * Evitamos duplicados por id,
      * por seguridad.
      */
-    const uniqueById =
-      new Map();
+    const uniqueById = new Map();
 
-    for (
-      const academicClass
-      of allClasses
-    ) {
-      if (
-        !academicClass.id
-      ) {
+    for (const academicClass of allClasses) {
+      if (!academicClass.id) {
         continue;
       }
 
-      uniqueById.set(
-        academicClass.id,
-        academicClass,
-      );
+      uniqueById.set(academicClass.id, academicClass);
     }
 
-    const classes =
-      [
-        ...uniqueById.values(),
-      ].sort(
-        (a, b) =>
-          String(
-            a.name ?? '',
-          ).localeCompare(
-            String(
-              b.name ?? '',
-            ),
-            'es',
-          ),
-      );
-
-    await fs.mkdir(
-      OUTPUT_DIR,
-      {
-        recursive:
-          true,
-      },
+    const classes = [...uniqueById.values()].sort((a, b) =>
+      String(a.name ?? '').localeCompare(String(b.name ?? ''), 'es'),
     );
 
-    await fs.writeFile(
-      OUTPUT_FILE,
-      JSON.stringify(
-        classes,
-        null,
-        2,
-      ),
-      'utf8',
-    );
+    await fs.mkdir(OUTPUT_DIR, {
+      recursive: true,
+    });
+
+    await fs.writeFile(OUTPUT_FILE, JSON.stringify(classes, null, 2), 'utf8');
 
     console.log('');
-    console.log(
-      '📊 EXPORTACIÓN COMPLETA',
-    );
+    console.log('📊 EXPORTACIÓN COMPLETA');
 
-    console.log(
-      `💃 Clases exportadas: ${classes.length}`,
-    );
+    console.log(`💃 Clases exportadas: ${classes.length}`);
 
-    console.log(
-      `📄 Archivo: ${OUTPUT_FILE}`,
-    );
-  } catch (
-    error
-  ) {
+    console.log(`📄 Archivo: ${OUTPUT_FILE}`);
+  } catch (error) {
     console.error('');
-    console.error(
-      '❌ Error exportando clases:',
-    );
+    console.error('❌ Error exportando clases:');
 
-    console.error(
-      error.stack ??
-        error.message,
-    );
+    console.error(error.stack ?? error.message);
 
     process.exit(1);
   }

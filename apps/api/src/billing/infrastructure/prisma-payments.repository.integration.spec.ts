@@ -10,500 +10,504 @@ import { PrismaBillingRepository } from './prisma-billing.repository';
 import { PrismaPaymentsRepository } from './prisma-payments.repository';
 
 const enabled = Boolean(process***REMOVED***.DATABASE_URL);
-describe.runIf(enabled)('PrismaPaymentsRepository concurrency', () => {
-  const prisma = new PrismaClient({ transactionOptions: prismaTransactionOptions });
-  const repository = new PrismaPaymentsRepository(prisma as PrismaService);
-  const billing = new PrismaBillingRepository(prisma as PrismaService);
-  const receivables = new ReceivablesService(prisma as PrismaService);
+describe.runIf(enabled)(
+  'PrismaPaymentsRepository concurrency',
+  () => {
+    const prisma = new PrismaClient({ transactionOptions: prismaTransactionOptions });
+    const repository = new PrismaPaymentsRepository(prisma as PrismaService);
+    const billing = new PrismaBillingRepository(prisma as PrismaService);
+    const receivables = new ReceivablesService(prisma as PrismaService);
 
-  const createFixture = async () => {
-    const token = crypto.randomUUID();
-    const numericToken = [...token]
-      .map((character) => character.charCodeAt(0) % 10)
-      .join('')
-      .slice(0, 32);
-    return prisma.$transaction(async (tx) => {
-      const actor = await tx.adminUser.create({
-        data: {
-          username: `payments-test-${token}`,
-          passwordHash: 'integration-test-not-a-real-password',
-          role: 'MANAGER',
-          status: 'ACTIVE',
-        },
-      });
-      const cashShift = await tx.cashShift.create({ data: { userId: actor.id } });
-      const student = await tx.student.create({
-        data: {
-          dni: numericToken,
-          firstName: `Pago-${token}`,
-          lastName: 'Prueba',
-          joinedAt: new Date('2026-08-01T00:00:00.000Z'),
-        },
-      });
-      const teacher = await tx.teacher.create({
-        data: {
-          dni: `9${numericToken.slice(0, 31)}`,
-          firstName: 'Docente',
-          lastName: 'Prueba',
-        },
-      });
-      const danceType = await tx.danceType.create({
-        data: { name: `Danza ${token}`, normalizedName: `payments-test-${token}` },
-      });
-      const academicClass = await tx.academyClass.create({
-        data: {
-          name: `Clase pagos ${token}`,
-          danceTypeId: danceType.id,
-          teacherId: teacher.id,
-          capacity: 10,
-        },
-      });
-      const enrollment = await tx.enrollment.create({
-        data: {
-          studentId: student.id,
-          classId: academicClass.id,
-          startDate: new Date('2026-08-01T00:00:00.000Z'),
-        },
-      });
-      const tariff = await tx.tariff.create({
-        data: {
-          classId: academicClass.id,
-          name: `Tarifa pagos ${token}`,
-          amount: '40000.00',
-          validFrom: new Date('2026-08-01T00:00:00.000Z'),
-        },
-      });
-      const charge = await tx.monthlyCharge.create({
-        data: {
-          studentId: student.id,
-          enrollmentId: enrollment.id,
-          tariffId: tariff.id,
-          period: new Date('2026-08-01T00:00:00.000Z'),
-          baseAmount: '40000.00',
-          discountAmount: '0.00',
-          finalAmount: '40000.00',
-          dueDate: new Date('2026-08-10T00:00:00.000Z'),
-        },
-      });
-      const secondCharge = await tx.monthlyCharge.create({
-        data: {
-          studentId: student.id,
-          enrollmentId: enrollment.id,
-          tariffId: tariff.id,
-          period: new Date('2026-09-01T00:00:00.000Z'),
-          baseAmount: '40000.00',
-          discountAmount: '0.00',
-          finalAmount: '40000.00',
-          dueDate: new Date('2026-09-10T00:00:00.000Z'),
-        },
-      });
-      return {
-        actor,
-        cashShift,
-        student,
-        teacher,
-        danceType,
-        academicClass,
-        enrollment,
-        tariff,
-        charge,
-        secondCharge,
-      };
-    });
-  };
-
-  const cleanupFixture = async (fixture: Awaited<ReturnType<typeof createFixture>>) => {
-    await prisma.$transaction(async (tx) => {
-      await tx.auditLog.deleteMany({ where: { actorUserId: fixture.actor.id } });
-      const paymentIds = (
-        await tx.payment.findMany({
-          where: {
-            allocations: {
-              some: { monthlyChargeId: { in: [fixture.charge.id, fixture.secondCharge.id] } },
-            },
+    const createFixture = async () => {
+      const token = crypto.randomUUID();
+      const numericToken = [...token]
+        .map((character) => character.charCodeAt(0) % 10)
+        .join('')
+        .slice(0, 32);
+      return prisma.$transaction(async (tx) => {
+        const actor = await tx.adminUser.create({
+          data: {
+            username: `payments-test-${token}`,
+            passwordHash: 'integration-test-not-a-real-password',
+            role: 'MANAGER',
+            status: 'ACTIVE',
           },
-          select: { id: true },
-        })
-      ).map(({ id }) => id);
-      if (paymentIds.length) {
-        await tx.cashMovement.deleteMany({ where: { sourcePaymentId: { in: paymentIds } } });
-        await tx.paymentTender.deleteMany({ where: { paymentId: { in: paymentIds } } });
-        await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
-        await tx.payment.deleteMany({ where: { id: { in: paymentIds } } });
-      }
-      await tx.monthlyChargeAdjustment.deleteMany({
-        where: { monthlyChargeId: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+        });
+        const cashShift = await tx.cashShift.create({ data: { userId: actor.id } });
+        const student = await tx.student.create({
+          data: {
+            dni: numericToken,
+            firstName: `Pago-${token}`,
+            lastName: 'Prueba',
+            joinedAt: new Date('2026-08-01T00:00:00.000Z'),
+          },
+        });
+        const teacher = await tx.teacher.create({
+          data: {
+            dni: `9${numericToken.slice(0, 31)}`,
+            firstName: 'Docente',
+            lastName: 'Prueba',
+          },
+        });
+        const danceType = await tx.danceType.create({
+          data: { name: `Danza ${token}`, normalizedName: `payments-test-${token}` },
+        });
+        const academicClass = await tx.academyClass.create({
+          data: {
+            name: `Clase pagos ${token}`,
+            danceTypeId: danceType.id,
+            teacherId: teacher.id,
+            capacity: 10,
+          },
+        });
+        const enrollment = await tx.enrollment.create({
+          data: {
+            studentId: student.id,
+            classId: academicClass.id,
+            startDate: new Date('2026-08-01T00:00:00.000Z'),
+          },
+        });
+        const tariff = await tx.tariff.create({
+          data: {
+            classId: academicClass.id,
+            name: `Tarifa pagos ${token}`,
+            amount: '40000.00',
+            validFrom: new Date('2026-08-01T00:00:00.000Z'),
+          },
+        });
+        const charge = await tx.monthlyCharge.create({
+          data: {
+            studentId: student.id,
+            enrollmentId: enrollment.id,
+            tariffId: tariff.id,
+            period: new Date('2026-08-01T00:00:00.000Z'),
+            baseAmount: '40000.00',
+            discountAmount: '0.00',
+            finalAmount: '40000.00',
+            dueDate: new Date('2026-08-10T00:00:00.000Z'),
+          },
+        });
+        const secondCharge = await tx.monthlyCharge.create({
+          data: {
+            studentId: student.id,
+            enrollmentId: enrollment.id,
+            tariffId: tariff.id,
+            period: new Date('2026-09-01T00:00:00.000Z'),
+            baseAmount: '40000.00',
+            discountAmount: '0.00',
+            finalAmount: '40000.00',
+            dueDate: new Date('2026-09-10T00:00:00.000Z'),
+          },
+        });
+        return {
+          actor,
+          cashShift,
+          student,
+          teacher,
+          danceType,
+          academicClass,
+          enrollment,
+          tariff,
+          charge,
+          secondCharge,
+        };
       });
-      await tx.monthlyCharge.deleteMany({
-        where: { id: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+    };
+
+    const cleanupFixture = async (fixture: Awaited<ReturnType<typeof createFixture>>) => {
+      await prisma.$transaction(async (tx) => {
+        await tx.auditLog.deleteMany({ where: { actorUserId: fixture.actor.id } });
+        const paymentIds = (
+          await tx.payment.findMany({
+            where: {
+              allocations: {
+                some: { monthlyChargeId: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+              },
+            },
+            select: { id: true },
+          })
+        ).map(({ id }) => id);
+        if (paymentIds.length) {
+          await tx.cashMovement.deleteMany({ where: { sourcePaymentId: { in: paymentIds } } });
+          await tx.paymentTender.deleteMany({ where: { paymentId: { in: paymentIds } } });
+          await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
+          await tx.payment.deleteMany({ where: { id: { in: paymentIds } } });
+        }
+        await tx.monthlyChargeAdjustment.deleteMany({
+          where: { monthlyChargeId: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+        });
+        await tx.monthlyCharge.deleteMany({
+          where: { id: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+        });
+        await tx.tariff.delete({ where: { id: fixture.tariff.id } });
+        await tx.enrollment.delete({ where: { id: fixture.enrollment.id } });
+        await tx.academyClass.delete({ where: { id: fixture.academicClass.id } });
+        await tx.danceType.delete({ where: { id: fixture.danceType.id } });
+        await tx.teacher.delete({ where: { id: fixture.teacher.id } });
+        await tx.student.delete({ where: { id: fixture.student.id } });
+        await tx.cashShiftClosingLine.deleteMany({ where: { cashShiftId: fixture.cashShift.id } });
+        await tx.cashReconciliationCorrection.deleteMany({
+          where: { cashShiftId: fixture.cashShift.id },
+        });
+        await tx.cashShift.deleteMany({ where: { id: fixture.cashShift.id } });
+        await tx.adminUser.delete({ where: { id: fixture.actor.id } });
       });
-      await tx.tariff.delete({ where: { id: fixture.tariff.id } });
-      await tx.enrollment.delete({ where: { id: fixture.enrollment.id } });
-      await tx.academyClass.delete({ where: { id: fixture.academicClass.id } });
-      await tx.danceType.delete({ where: { id: fixture.danceType.id } });
-      await tx.teacher.delete({ where: { id: fixture.teacher.id } });
-      await tx.student.delete({ where: { id: fixture.student.id } });
-      await tx.cashShiftClosingLine.deleteMany({ where: { cashShiftId: fixture.cashShift.id } });
-      await tx.cashReconciliationCorrection.deleteMany({
-        where: { cashShiftId: fixture.cashShift.id },
-      });
-      await tx.cashShift.deleteMany({ where: { id: fixture.cashShift.id } });
-      await tx.adminUser.delete({ where: { id: fixture.actor.id } });
+    };
+
+    beforeAll(() => prisma.$connect());
+    afterAll(() => prisma.$disconnect());
+    beforeEach(() => {
+      // Agosto vencido y septiembre aún vigente, sin depender del día de ejecución.
+      // Sólo se simula Date: los timers de Prisma y los reintentos siguen funcionando.
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-08-31T15:00:00.000Z'));
     });
-  };
+    afterEach(() => vi.useRealTimers());
 
-  beforeAll(() => prisma.$connect());
-  afterAll(() => prisma.$disconnect());
-  beforeEach(() => {
-    // Agosto vencido y septiembre aún vigente, sin depender del día de ejecución.
-    // Sólo se simula Date: los timers de Prisma y los reintentos siguen funcionando.
-    vi.useFakeTimers({ toFake: ['Date'] });
-    vi.setSystemTime(new Date('2026-08-31T15:00:00.000Z'));
-  });
-  afterEach(() => vi.useRealTimers());
+    it('rechaza un Payment sin turno abierto sin persistirlo', async () => {
+      const fixture = await createFixture();
+      try {
+        await prisma.cashShift.delete({ where: { id: fixture.cashShift.id } });
+        await expect(
+          repository.create(
+            fixture.student.id,
+            [{ method: 'CASH', amount: '10000.00' }],
+            fixture.actor.id,
+          ),
+        ).rejects.toMatchObject({ code: 'CASH_SHIFT_REQUIRED' });
+        expect(await prisma.payment.count({ where: { studentId: fixture.student.id } })).toBe(0);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
 
-  it('rechaza un Payment sin turno abierto sin persistirlo', async () => {
-    const fixture = await createFixture();
-    try {
-      await prisma.cashShift.delete({ where: { id: fixture.cashShift.id } });
-      await expect(
-        repository.create(
+    it('confirma una sola vez cuando dos cajas cobran la misma cuota', async () => {
+      const fixture = await createFixture();
+      try {
+        const results = await Promise.allSettled([
+          repository.create(
+            fixture.student.id,
+            [{ method: 'CASH', amount: '80000.00' }],
+            fixture.actor.id,
+          ),
+          repository.create(
+            fixture.student.id,
+            [{ method: 'CARD', amount: '80000.00' }],
+            fixture.actor.id,
+          ),
+        ]);
+        expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+        expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
+        expect(results.find((result) => result.status === 'rejected')).toMatchObject({
+          reason: { code: 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE' },
+        });
+        expect(
+          await prisma.payment.count({
+            where: {
+              status: 'CONFIRMED',
+              allocations: { some: { monthlyChargeId: fixture.charge.id } },
+            },
+          }),
+        ).toBe(1);
+        expect(
+          await prisma.monthlyCharge.findUnique({
+            where: { id: fixture.charge.id },
+            select: { status: true },
+          }),
+        ).toEqual({ status: 'PAID' });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('recalcula PARTIAL y PENDING al anular pagos sin borrar el historial', async () => {
+      const fixture = await createFixture();
+      try {
+        const first = await repository.create(
           fixture.student.id,
           [{ method: 'CASH', amount: '10000.00' }],
           fixture.actor.id,
-        ),
-      ).rejects.toMatchObject({ code: 'CASH_SHIFT_REQUIRED' });
-      expect(await prisma.payment.count({ where: { studentId: fixture.student.id } })).toBe(0);
-    } finally {
-      await cleanupFixture(fixture);
-    }
-  });
-
-  it('confirma una sola vez cuando dos cajas cobran la misma cuota', async () => {
-    const fixture = await createFixture();
-    try {
-      const results = await Promise.allSettled([
-        repository.create(
-          fixture.student.id,
-          [{ method: 'CASH', amount: '80000.00' }],
-          fixture.actor.id,
-        ),
-        repository.create(
-          fixture.student.id,
-          [{ method: 'CARD', amount: '80000.00' }],
-          fixture.actor.id,
-        ),
-      ]);
-      expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
-      expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
-      expect(results.find((result) => result.status === 'rejected')).toMatchObject({
-        reason: { code: 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE' },
-      });
-      expect(
-        await prisma.payment.count({
-          where: {
-            status: 'CONFIRMED',
-            allocations: { some: { monthlyChargeId: fixture.charge.id } },
-          },
-        }),
-      ).toBe(1);
-      expect(
-        await prisma.monthlyCharge.findUnique({
-          where: { id: fixture.charge.id },
-          select: { status: true },
-        }),
-      ).toEqual({ status: 'PAID' });
-    } finally {
-      await cleanupFixture(fixture);
-    }
-  });
-
-  it('recalcula PARTIAL y PENDING al anular pagos sin borrar el historial', async () => {
-    const fixture = await createFixture();
-    try {
-      const first = await repository.create(
-        fixture.student.id,
-        [{ method: 'CASH', amount: '10000.00' }],
-        fixture.actor.id,
-      );
-      await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
-        status: 'PARTIAL',
-        paidAmount: '10000.00',
-        outstandingAmount: '31000.00',
-        overdue: true,
-      });
-      await expect(
-        receivables.list({
-          scope: 'pending',
-          q: fixture.student.dni,
-          sort: 'oldest',
-          page: 1,
-          pageSize: 100,
-        }),
-      ).resolves.toMatchObject({
-        items: expect.arrayContaining([
-          expect.objectContaining({
-            student: expect.objectContaining({ id: fixture.student.id }),
-            openChargeCount: 2,
-            outstandingAmount: '71000.00',
-          }),
-        ]),
-      });
-      const second = await repository.create(
-        fixture.student.id,
-        [{ method: 'MERCADO_PAGO', amount: '31000.00' }],
-        fixture.actor.id,
-      );
-      await prisma.$transaction([
-        prisma.cashShiftClosingLine.createMany({
-          data: [
-            {
-              cashShiftId: fixture.cashShift.id,
-              method: 'CASH',
-              expectedAmount: '10000',
-              declaredAmount: '10000',
-              differenceAmount: '0',
-            },
-            {
-              cashShiftId: fixture.cashShift.id,
-              method: 'MERCADO_PAGO',
-              expectedAmount: '31000',
-              declaredAmount: '31000',
-              differenceAmount: '0',
-            },
-            {
-              cashShiftId: fixture.cashShift.id,
-              method: 'CARD',
-              expectedAmount: '0',
-              declaredAmount: '0',
-              differenceAmount: '0',
-            },
-          ],
-        }),
-        prisma.cashShift.update({
-          where: { id: fixture.cashShift.id },
-          data: { status: 'CLOSED', closedAt: new Date(), closedByUserId: fixture.actor.id },
-        }),
-      ]);
-      expect(
-        (await prisma.monthlyCharge.findUnique({ where: { id: fixture.charge.id } }))?.status,
-      ).toBe('PAID');
-      const voided = await repository.void(
-        second.id,
-        fixture.actor.id,
-        'Pago registrado por error',
-      );
-      expect(voided).toMatchObject({ status: 'VOID', tenders: [{ method: 'MERCADO_PAGO' }] });
-      expect(
-        await prisma.cashMovement.count({
-          where: { sourcePaymentId: second.id, type: 'COLLECTION' },
-        }),
-      ).toBe(1);
-      expect(
-        await prisma.cashMovement.count({
-          where: { sourcePaymentId: second.id, type: 'REVERSAL' },
-        }),
-      ).toBe(1);
-      expect(
-        await prisma.cashShiftClosingLine.findUnique({
-          where: {
-            cashShiftId_method: { cashShiftId: fixture.cashShift.id, method: 'MERCADO_PAGO' },
-          },
-          select: { expectedAmount: true },
-        }),
-      ).toEqual({ expectedAmount: new Prisma.Decimal('31000') });
-      expect(
-        (await prisma.monthlyCharge.findUnique({ where: { id: fixture.charge.id } }))?.status,
-      ).toBe('PARTIAL');
-      await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
-        paidAmount: '10000.00',
-        outstandingAmount: '31000.00',
-      });
-      await repository.void(first.id, fixture.actor.id, 'Segundo ajuste');
-      expect(
-        await prisma.payment.findUnique({ where: { id: first.id }, select: { status: true } }),
-      ).toEqual({ status: 'VOID' });
-      expect(
-        await prisma.monthlyCharge.findUnique({
-          where: { id: fixture.charge.id },
-          select: { status: true },
-        }),
-      ).toEqual({ status: 'PENDING' });
-      await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
-        paidAmount: '0.00',
-        outstandingAmount: '41000.00',
-      });
-      expect(
-        await prisma.paymentAllocation.count({
-          where: { monthlyChargeId: fixture.charge.id },
-        }),
-      ).toBe(2);
-      expect(
-        await prisma.paymentTender.count({ where: { paymentId: { in: [first.id, second.id] } } }),
-      ).toBe(2);
-    } finally {
-      await cleanupFixture(fixture);
-    }
-  });
-
-  it('imputa oldest-first y derrama el remanente a la siguiente cuota', async () => {
-    const fixture = await createFixture();
-    try {
-      const payment = await repository.create(
-        fixture.student.id,
-        [
-          { method: 'CASH', amount: '30000.00' },
-          { method: 'MERCADO_PAGO', amount: '20000.00' },
-        ],
-        fixture.actor.id,
-      );
-      expect(payment.amount).toBe('50000.00');
-      expect(payment.tenders).toHaveLength(2);
-      expect(
-        await prisma.cashMovement.findMany({
-          where: { sourcePaymentId: payment.id, type: 'COLLECTION' },
-          orderBy: { method: 'asc' },
-          select: { method: true, amount: true },
-        }),
-      ).toEqual([
-        { method: 'CASH', amount: new Prisma.Decimal('30000') },
-        { method: 'MERCADO_PAGO', amount: new Prisma.Decimal('20000') },
-      ]);
-      expect(
-        payment.allocations.map(({ monthlyChargeId, amount }) => ({ monthlyChargeId, amount })),
-      ).toEqual([
-        { monthlyChargeId: fixture.charge.id, amount: '41000.00' },
-        { monthlyChargeId: fixture.secondCharge.id, amount: '9000.00' },
-      ]);
-      expect(
-        await prisma.monthlyCharge.findMany({
-          where: { id: { in: [fixture.charge.id, fixture.secondCharge.id] } },
-          orderBy: { dueDate: 'asc' },
-          select: { status: true },
-        }),
-      ).toEqual([{ status: 'PAID' }, { status: 'PARTIAL' }]);
-    } finally {
-      await cleanupFixture(fixture);
-    }
-  });
-
-  it('filtra cuentas e historial global sobre saldos y tenders reales', async () => {
-    const fixture = await createFixture();
-    try {
-      const mixed = await repository.create(
-        fixture.student.id,
-        [
-          { method: 'CASH', amount: '6000.00' },
-          { method: 'MERCADO_PAGO', amount: '4000.00' },
-        ],
-        fixture.actor.id,
-      );
-      await expect(
-        receivables.list({
-          scope: 'partial',
-          q: fixture.student.dni,
-          sort: 'oldest',
-          page: 1,
-          pageSize: 25,
-        }),
-      ).resolves.toMatchObject({
-        summary: {
-          totalStudents: 1,
-          totalCharges: 1,
-          partialCharges: 1,
-          totalPaid: '10000.00',
-          totalOutstanding: '31000.00',
-        },
-        items: [
-          expect.objectContaining({
-            student: expect.objectContaining({ id: fixture.student.id }),
-            paidAmount: '10000.00',
-            outstandingAmount: '31000.00',
-          }),
-        ],
-      });
-      await expect(
-        receivables.list({
-          scope: 'overdue',
-          q: fixture.student.dni,
-          sort: 'oldest',
-          page: 1,
-          pageSize: 25,
-        }),
-      ).resolves.toMatchObject({
-        summary: { totalCharges: 1, overdueCharges: 1, totalOutstanding: '31000.00' },
-      });
-      await expect(
-        receivables.list({
-          scope: 'unpaid',
-          q: fixture.student.dni,
-          sort: 'oldest',
-          page: 1,
-          pageSize: 25,
-        }),
-      ).resolves.toMatchObject({
-        summary: { totalCharges: 1, totalPaid: '0.00', totalOutstanding: '40000.00' },
-      });
-      for (const q of [
-        `${fixture.student.firstName} ${fixture.student.lastName}`,
-        fixture.student.dni,
-      ]) {
+        );
+        await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
+          status: 'PARTIAL',
+          paidAmount: '10000.00',
+          outstandingAmount: '31000.00',
+          overdue: true,
+        });
         await expect(
-          receivables.list({ scope: 'pending', q, sort: 'highest-debt', page: 1, pageSize: 1 }),
-        ).resolves.toMatchObject({ total: 1, items: [{ student: { id: fixture.student.id } }] });
-      }
-      for (const paymentMethod of ['CASH', 'MERCADO_PAGO'] as const) {
-        await expect(
-          repository.findPage({
+          receivables.list({
+            scope: 'pending',
             q: fixture.student.dni,
-            paymentMethod,
+            sort: 'oldest',
+            page: 1,
+            pageSize: 100,
+          }),
+        ).resolves.toMatchObject({
+          items: expect.arrayContaining([
+            expect.objectContaining({
+              student: expect.objectContaining({ id: fixture.student.id }),
+              openChargeCount: 2,
+              outstandingAmount: '71000.00',
+            }),
+          ]),
+        });
+        const second = await repository.create(
+          fixture.student.id,
+          [{ method: 'MERCADO_PAGO', amount: '31000.00' }],
+          fixture.actor.id,
+        );
+        await prisma.$transaction([
+          prisma.cashShiftClosingLine.createMany({
+            data: [
+              {
+                cashShiftId: fixture.cashShift.id,
+                method: 'CASH',
+                expectedAmount: '10000',
+                declaredAmount: '10000',
+                differenceAmount: '0',
+              },
+              {
+                cashShiftId: fixture.cashShift.id,
+                method: 'MERCADO_PAGO',
+                expectedAmount: '31000',
+                declaredAmount: '31000',
+                differenceAmount: '0',
+              },
+              {
+                cashShiftId: fixture.cashShift.id,
+                method: 'CARD',
+                expectedAmount: '0',
+                declaredAmount: '0',
+                differenceAmount: '0',
+              },
+            ],
+          }),
+          prisma.cashShift.update({
+            where: { id: fixture.cashShift.id },
+            data: { status: 'CLOSED', closedAt: new Date(), closedByUserId: fixture.actor.id },
+          }),
+        ]);
+        expect(
+          (await prisma.monthlyCharge.findUnique({ where: { id: fixture.charge.id } }))?.status,
+        ).toBe('PAID');
+        const voided = await repository.void(
+          second.id,
+          fixture.actor.id,
+          'Pago registrado por error',
+        );
+        expect(voided).toMatchObject({ status: 'VOID', tenders: [{ method: 'MERCADO_PAGO' }] });
+        expect(
+          await prisma.cashMovement.count({
+            where: { sourcePaymentId: second.id, type: 'COLLECTION' },
+          }),
+        ).toBe(1);
+        expect(
+          await prisma.cashMovement.count({
+            where: { sourcePaymentId: second.id, type: 'REVERSAL' },
+          }),
+        ).toBe(1);
+        expect(
+          await prisma.cashShiftClosingLine.findUnique({
+            where: {
+              cashShiftId_method: { cashShiftId: fixture.cashShift.id, method: 'MERCADO_PAGO' },
+            },
+            select: { expectedAmount: true },
+          }),
+        ).toEqual({ expectedAmount: new Prisma.Decimal('31000') });
+        expect(
+          (await prisma.monthlyCharge.findUnique({ where: { id: fixture.charge.id } }))?.status,
+        ).toBe('PARTIAL');
+        await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
+          paidAmount: '10000.00',
+          outstandingAmount: '31000.00',
+        });
+        await repository.void(first.id, fixture.actor.id, 'Segundo ajuste');
+        expect(
+          await prisma.payment.findUnique({ where: { id: first.id }, select: { status: true } }),
+        ).toEqual({ status: 'VOID' });
+        expect(
+          await prisma.monthlyCharge.findUnique({
+            where: { id: fixture.charge.id },
+            select: { status: true },
+          }),
+        ).toEqual({ status: 'PENDING' });
+        await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
+          paidAmount: '0.00',
+          outstandingAmount: '41000.00',
+        });
+        expect(
+          await prisma.paymentAllocation.count({
+            where: { monthlyChargeId: fixture.charge.id },
+          }),
+        ).toBe(2);
+        expect(
+          await prisma.paymentTender.count({ where: { paymentId: { in: [first.id, second.id] } } }),
+        ).toBe(2);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('imputa oldest-first y derrama el remanente a la siguiente cuota', async () => {
+      const fixture = await createFixture();
+      try {
+        const payment = await repository.create(
+          fixture.student.id,
+          [
+            { method: 'CASH', amount: '30000.00' },
+            { method: 'MERCADO_PAGO', amount: '20000.00' },
+          ],
+          fixture.actor.id,
+        );
+        expect(payment.amount).toBe('50000.00');
+        expect(payment.tenders).toHaveLength(2);
+        expect(
+          await prisma.cashMovement.findMany({
+            where: { sourcePaymentId: payment.id, type: 'COLLECTION' },
+            orderBy: { method: 'asc' },
+            select: { method: true, amount: true },
+          }),
+        ).toEqual([
+          { method: 'CASH', amount: new Prisma.Decimal('30000') },
+          { method: 'MERCADO_PAGO', amount: new Prisma.Decimal('20000') },
+        ]);
+        expect(
+          payment.allocations.map(({ monthlyChargeId, amount }) => ({ monthlyChargeId, amount })),
+        ).toEqual([
+          { monthlyChargeId: fixture.charge.id, amount: '41000.00' },
+          { monthlyChargeId: fixture.secondCharge.id, amount: '9000.00' },
+        ]);
+        expect(
+          await prisma.monthlyCharge.findMany({
+            where: { id: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+            orderBy: { dueDate: 'asc' },
+            select: { status: true },
+          }),
+        ).toEqual([{ status: 'PAID' }, { status: 'PARTIAL' }]);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('filtra cuentas e historial global sobre saldos y tenders reales', async () => {
+      const fixture = await createFixture();
+      try {
+        const mixed = await repository.create(
+          fixture.student.id,
+          [
+            { method: 'CASH', amount: '6000.00' },
+            { method: 'MERCADO_PAGO', amount: '4000.00' },
+          ],
+          fixture.actor.id,
+        );
+        await expect(
+          receivables.list({
+            scope: 'partial',
+            q: fixture.student.dni,
+            sort: 'oldest',
             page: 1,
             pageSize: 25,
           }),
         ).resolves.toMatchObject({
-          items: [expect.objectContaining({ id: mixed.id, tenders: expect.arrayContaining([]) })],
+          summary: {
+            totalStudents: 1,
+            totalCharges: 1,
+            partialCharges: 1,
+            totalPaid: '10000.00',
+            totalOutstanding: '31000.00',
+          },
+          items: [
+            expect.objectContaining({
+              student: expect.objectContaining({ id: fixture.student.id }),
+              paidAmount: '10000.00',
+              outstandingAmount: '31000.00',
+            }),
+          ],
         });
+        await expect(
+          receivables.list({
+            scope: 'overdue',
+            q: fixture.student.dni,
+            sort: 'oldest',
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({
+          summary: { totalCharges: 1, overdueCharges: 1, totalOutstanding: '31000.00' },
+        });
+        await expect(
+          receivables.list({
+            scope: 'unpaid',
+            q: fixture.student.dni,
+            sort: 'oldest',
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({
+          summary: { totalCharges: 1, totalPaid: '0.00', totalOutstanding: '40000.00' },
+        });
+        for (const q of [
+          `${fixture.student.firstName} ${fixture.student.lastName}`,
+          fixture.student.dni,
+        ]) {
+          await expect(
+            receivables.list({ scope: 'pending', q, sort: 'highest-debt', page: 1, pageSize: 1 }),
+          ).resolves.toMatchObject({ total: 1, items: [{ student: { id: fixture.student.id } }] });
+        }
+        for (const paymentMethod of ['CASH', 'MERCADO_PAGO'] as const) {
+          await expect(
+            repository.findPage({
+              q: fixture.student.dni,
+              paymentMethod,
+              page: 1,
+              pageSize: 25,
+            }),
+          ).resolves.toMatchObject({
+            items: [expect.objectContaining({ id: mixed.id, tenders: expect.arrayContaining([]) })],
+          });
+        }
+        await expect(
+          repository.findPage({
+            q: `Pago ${fixture.student.dni}`,
+            status: 'CONFIRMED',
+            from: new Date(new Date(mixed.paidAt).getTime() - 1_000),
+            toExclusive: new Date(new Date(mixed.paidAt).getTime() + 1_000),
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({ items: [expect.objectContaining({ id: mixed.id })] });
+        await repository.void(mixed.id, fixture.actor.id, 'Validación de filtros');
+        await expect(
+          repository.findPage({ q: fixture.student.dni, status: 'VOID', page: 1, pageSize: 25 }),
+        ).resolves.toMatchObject({ items: [expect.objectContaining({ id: mixed.id })] });
+        await expect(
+          receivables.list({
+            scope: 'pending',
+            q: fixture.student.dni,
+            sort: 'name',
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({
+          summary: { totalCharges: 2, totalPaid: '0.00', totalOutstanding: '81000.00' },
+        });
+        await prisma.monthlyCharge.update({
+          where: { id: fixture.charge.id },
+          data: { status: 'VOID' },
+        });
+        await expect(
+          receivables.list({
+            scope: 'pending',
+            q: fixture.student.dni,
+            sort: 'oldest',
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({ summary: { totalCharges: 1, totalOutstanding: '40000.00' } });
+      } finally {
+        await cleanupFixture(fixture);
       }
-      await expect(
-        repository.findPage({
-          q: `Pago ${fixture.student.dni}`,
-          status: 'CONFIRMED',
-          from: new Date(new Date(mixed.paidAt).getTime() - 1_000),
-          toExclusive: new Date(new Date(mixed.paidAt).getTime() + 1_000),
-          page: 1,
-          pageSize: 25,
-        }),
-      ).resolves.toMatchObject({ items: [expect.objectContaining({ id: mixed.id })] });
-      await repository.void(mixed.id, fixture.actor.id, 'Validación de filtros');
-      await expect(
-        repository.findPage({ q: fixture.student.dni, status: 'VOID', page: 1, pageSize: 25 }),
-      ).resolves.toMatchObject({ items: [expect.objectContaining({ id: mixed.id })] });
-      await expect(
-        receivables.list({
-          scope: 'pending',
-          q: fixture.student.dni,
-          sort: 'name',
-          page: 1,
-          pageSize: 25,
-        }),
-      ).resolves.toMatchObject({
-        summary: { totalCharges: 2, totalPaid: '0.00', totalOutstanding: '81000.00' },
-      });
-      await prisma.monthlyCharge.update({
-        where: { id: fixture.charge.id },
-        data: { status: 'VOID' },
-      });
-      await expect(
-        receivables.list({
-          scope: 'pending',
-          q: fixture.student.dni,
-          sort: 'oldest',
-          page: 1,
-          pageSize: 25,
-        }),
-      ).resolves.toMatchObject({ summary: { totalCharges: 1, totalOutstanding: '40000.00' } });
-    } finally {
-      await cleanupFixture(fixture);
-    }
-  });
-}, integrationTestTimeoutMs);
+    });
+  },
+  integrationTestTimeoutMs,
+);

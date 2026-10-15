@@ -12,9 +12,7 @@ const password = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
  */
 async function login() {
   if (!username || !password) {
-    throw new Error(
-      'Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en el ***REMOVED***',
-    );
+    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en el ***REMOVED***');
   }
 
   console.log('🔐 Iniciando sesión...');
@@ -33,17 +31,13 @@ async function login() {
   if (!response.ok) {
     const error = await response.text();
 
-    throw new Error(
-      `No se pudo iniciar sesión (${response.status}): ${error}`,
-    );
+    throw new Error(`No se pudo iniciar sesión (${response.status}): ${error}`);
   }
 
   const setCookie = response.headers.get('set-cookie');
 
   if (!setCookie) {
-    throw new Error(
-      'La API inició sesión pero no devolvió la cookie academy_session.',
-    );
+    throw new Error('La API inició sesión pero no devolvió la cookie academy_session.');
   }
 
   // Nos quedamos únicamente con:
@@ -58,9 +52,7 @@ async function login() {
 /**
  * Leer Excel
  */
-const workbook = XLSX.readFile(
-  './scripts/data/ReporteListaDeSocios.xlsx',
-);
+const workbook = XLSX.readFile('./scripts/data/ReporteListaDeSocios.xlsx');
 
 const sheetName = workbook.SheetNames[0];
 const sheet = workbook.Sheets[sheetName];
@@ -105,9 +97,7 @@ const studentsMap = new Map();
 let currentDni = null;
 
 for (const row of cleanRows) {
-  const dni = row['DNI/ID']
-    ? String(row['DNI/ID']).trim()
-    : null;
+  const dni = row['DNI/ID'] ? String(row['DNI/ID']).trim() : null;
 
   /**
    * Nueva persona
@@ -120,26 +110,14 @@ for (const row of cleanRows) {
         fullName: row.Nombre?.trim() || '',
         documentNumber: dni,
 
-        phone: row['Teléfono']
-          ? String(row['Teléfono']).trim()
-          : undefined,
+        phone: row['Teléfono'] ? String(row['Teléfono']).trim() : undefined,
 
-        email:
-          row.Mail && row.Mail !== 'Sin dato'
-            ? String(row.Mail).trim()
-            : undefined,
+        email: row.Mail && row.Mail !== 'Sin dato' ? String(row.Mail).trim() : undefined,
 
         birthDate:
-          row['Fecha nacim.'] &&
-          row['Fecha nacim.'] !== '-'
-            ? row['Fecha nacim.']
-            : undefined,
+          row['Fecha nacim.'] && row['Fecha nacim.'] !== '-' ? row['Fecha nacim.'] : undefined,
 
-        address:
-          row.Domicilio &&
-          row.Domicilio !== 'Sin dato'
-            ? row.Domicilio.trim()
-            : undefined,
+        address: row.Domicilio && row.Domicilio !== 'Sin dato' ? row.Domicilio.trim() : undefined,
 
         activities: [],
       });
@@ -152,9 +130,7 @@ for (const row of cleanRows) {
   if (currentDni && row.Actividad) {
     const student = studentsMap.get(currentDni);
 
-    student.activities.push(
-      String(row.Actividad).trim(),
-    );
+    student.activities.push(String(row.Actividad).trim());
   }
 }
 
@@ -175,7 +151,7 @@ function splitFullName(fullName) {
     lastName: parts[0],
     firstName: parts.slice(1).join(' '),
   };
-};
+}
 
 function normalizeDate(value) {
   if (!value) return undefined;
@@ -187,7 +163,7 @@ function normalizeDate(value) {
   }
 
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-};
+}
 
 for (const student of students) {
   const { firstName, lastName } = splitFullName(student.fullName);
@@ -200,7 +176,7 @@ for (const student of students) {
     phone: student.phone ?? null,
     email: student.email ?? null,
     address: student.address ?? null,
-    };
+  };
 
   // SOLO si ejecutaste con --dry-run
   if (DRY_RUN) {
@@ -210,9 +186,7 @@ for (const student of students) {
   }
 
   // Si NO es dry-run, tiene que llegar acá
-  console.log(
-    `📤 Importando ${payload.firstName} ${payload.lastName}...`,
-  );
+  console.log(`📤 Importando ${payload.firstName} ${payload.lastName}...`);
 
   try {
     const response = await fetch(`${API_URL}/students`, {
@@ -227,30 +201,21 @@ for (const student of students) {
     if (!response.ok) {
       const error = await response.text();
 
-      console.error(
-        `❌ Error importando ${payload.firstName} ${payload.lastName}:`,
-        error,
-      );
+      console.error(`❌ Error importando ${payload.firstName} ${payload.lastName}:`, error);
 
       failed++;
       continue;
     }
 
-    console.log(
-      `✅ ${payload.firstName} ${payload.lastName}`,
-    );
+    console.log(`✅ ${payload.firstName} ${payload.lastName}`);
 
     imported++;
   } catch (error) {
-    console.error(
-      `❌ Error inesperado con ${payload.firstName} ${payload.lastName}:`,
-      error,
-    );
+    console.error(`❌ Error inesperado con ${payload.firstName} ${payload.lastName}:`, error);
 
     failed++;
   }
 }
-
 
 /**
  * Resumen

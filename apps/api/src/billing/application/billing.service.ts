@@ -35,31 +35,27 @@ export class BillingService {
     );
   }
 
-async deleteTariff(id: string) {
-  const tariff =
-    await this.repository.findTariff(id);
+  async deleteTariff(id: string) {
+    const tariff = await this.repository.findTariff(id);
 
-  if (!tariff) {
-    throw new DomainError(
-      'TARIFF_NOT_FOUND',
-      'Tarifa no encontrada',
-    );
+    if (!tariff) {
+      throw new DomainError('TARIFF_NOT_FOUND', 'Tarifa no encontrada');
+    }
+
+    if (tariff.status === 'ACTIVE') {
+      throw new DomainError(
+        'TARIFF_MUST_BE_INACTIVE',
+        'Primero debés desactivar la tarifa antes de eliminarla',
+      );
+    }
+
+    await this.repository.deleteTariff(id);
+
+    return {
+      id,
+      deleted: true,
+    };
   }
-
-  if (tariff.status === 'ACTIVE') {
-    throw new DomainError(
-      'TARIFF_MUST_BE_INACTIVE',
-      'Primero debés desactivar la tarifa antes de eliminarla',
-    );
-  }
-
-  await this.repository.deleteTariff(id);
-
-  return {
-    id,
-    deleted: true,
-  };
-}
 
   async createCharge(input: CreateMonthlyChargeDto) {
     const { period, dueDate } = validateChargeDates(input.period, input.dueDate);
@@ -82,7 +78,7 @@ async deleteTariff(id: string) {
         'TARIFF_CLASS_MISMATCH',
         'La tarifa no corresponde a la clase de esta inscripción',
       );
-    };
+    }
     if (period < tariff.validFrom || (tariff.validTo && period > tariff.validTo))
       throw new DomainError(
         'TARIFF_NOT_VALID_FOR_PERIOD',
