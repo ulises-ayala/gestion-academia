@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://academy_ci:academy_ci@localhost:5432/academy_ci?schema=public
+      DIRECT_URL: postgresql://academy_ci:academy_ci@localhost:5432/academy_ci?schema=public
 
     services:
       postgres:
