@@ -11,40 +11,23 @@ const { utils, writeFile } = xlsx;
  * CONFIGURACIÓN
  * ========================================================= */
 
-const API_BASE_URL =
-  process***REMOVED***.API_BASE_URL ??
-  'http://localhost:3001/api/v1';
+const API_BASE_URL = process***REMOVED***.API_BASE_URL ?? 'http://localhost:3001/api/v1';
 
-const ADMIN_USERNAME =
-  process***REMOVED***.IMPORT_ADMIN_USERNAME;
+const ADMIN_USERNAME = process***REMOVED***.IMPORT_ADMIN_USERNAME;
 
-const ADMIN_PASSWORD =
-  process***REMOVED***.IMPORT_ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
 
-const ENROLLMENTS_FILE = path.resolve(
-  './exports/enrollments-current.json',
-);
+const ENROLLMENTS_FILE = path.resolve('./exports/enrollments-current.json');
 
-const HISTORICAL_TARIFFS_FILE = path.resolve(
-  './exports/historical-tariffs-ready.json',
-);
+const HISTORICAL_TARIFFS_FILE = path.resolve('./exports/historical-tariffs-ready.json');
 
-const OUTPUT_DIR = path.resolve(
-  './exports',
-);
+const OUTPUT_DIR = path.resolve('./exports');
 
-const OUTPUT_JSON = path.join(
-  OUTPUT_DIR,
-  'tariff-coverage-gaps-analysis.json',
-);
+const OUTPUT_JSON = path.join(OUTPUT_DIR, 'tariff-coverage-gaps-analysis.json');
 
-const OUTPUT_XLSX = path.join(
-  OUTPUT_DIR,
-  'tariff-coverage-gaps-analysis.xlsx',
-);
+const OUTPUT_XLSX = path.join(OUTPUT_DIR, 'tariff-coverage-gaps-analysis.xlsx');
 
-const HISTORICAL_CUTOFF =
-  '2026-08-31';
+const HISTORICAL_CUTOFF = '2026-08-31';
 
 /*
  * Clases que queremos estudiar especialmente.
@@ -76,97 +59,59 @@ function parseIsoDate(value) {
     return null;
   }
 
-  const date =
-    new Date(
-      `${String(value).slice(0, 10)}T00:00:00.000Z`,
-    );
+  const date = new Date(`${String(value).slice(0, 10)}T00:00:00.000Z`);
 
-  return Number.isNaN(date.getTime())
-    ? null
-    : date;
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function isoDate(date) {
-  return date
-    .toISOString()
-    .slice(0, 10);
+  return date.toISOString().slice(0, 10);
 }
 
 function firstDayOfMonth(value) {
-  const date =
-    parseIsoDate(value);
+  const date = parseIsoDate(value);
 
   if (!date) {
     return null;
   }
 
-  return new Date(
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      1,
-    ),
-  );
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
 }
 
 function lastDayOfMonth(value) {
-  const date =
-    parseIsoDate(value);
+  const date = parseIsoDate(value);
 
   if (!date) {
     return null;
   }
 
-  return new Date(
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth() + 1,
-      0,
-    ),
-  );
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0));
 }
 
 function nextMonth(date) {
-  return new Date(
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth() + 1,
-      1,
-    ),
-  );
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1));
 }
 
 function monthKey(value) {
-  return String(value)
-    .slice(0, 7);
+  return String(value).slice(0, 7);
 }
 
 function normalizeAmount(value) {
-  const number =
-    Number(value);
+  const number = Number(value);
 
-  return Number.isFinite(number)
-    ? number.toFixed(2)
-    : null;
+  return Number.isFinite(number) ? number.toFixed(2) : null;
 }
 
 function studentName(enrollment) {
-  const first =
-    enrollment.student?.firstName ?? '';
+  const first = enrollment.student?.firstName ?? '';
 
-  const last =
-    enrollment.student?.lastName ?? '';
+  const last = enrollment.student?.lastName ?? '';
 
-  return `${last} ${first}`
-    .trim();
+  return `${last} ${first}`.trim();
 }
 
 function className(enrollment) {
-  return (
-    enrollment.academicClass?.name ??
-    enrollment.className ??
-    ''
-  );
+  return enrollment.academicClass?.name ?? enrollment.className ?? '';
 }
 
 /* =========================================================
@@ -174,20 +119,13 @@ function className(enrollment) {
  * ========================================================= */
 
 async function readJson(file) {
-  const raw =
-    await fs.readFile(
-      file,
-      'utf8',
-    );
+  const raw = await fs.readFile(file, 'utf8');
 
   return JSON.parse(raw);
 }
 
 async function readEnrollments() {
-  const parsed =
-    await readJson(
-      ENROLLMENTS_FILE,
-    );
+  const parsed = await readJson(ENROLLMENTS_FILE);
 
   if (Array.isArray(parsed)) {
     return parsed;
@@ -201,17 +139,12 @@ async function readEnrollments() {
     return parsed.enrollments;
   }
 
-  throw new Error(
-    'No pude encontrar el array de enrollments en enrollments-current.json',
-  );
+  throw new Error('No pude encontrar el array de enrollments en enrollments-current.json');
 }
 
 async function readHistoricalReadyTariffs() {
   try {
-    const parsed =
-      await readJson(
-        HISTORICAL_TARIFFS_FILE,
-      );
+    const parsed = await readJson(HISTORICAL_TARIFFS_FILE);
 
     if (Array.isArray(parsed)) {
       return parsed;
@@ -227,15 +160,9 @@ async function readHistoricalReadyTariffs() {
 
     return [];
   } catch (error) {
-    console.warn(
-      '⚠️ No se pudo leer historical-tariffs-ready.json',
-    );
+    console.warn('⚠️ No se pudo leer historical-tariffs-ready.json');
 
-    console.warn(
-      error instanceof Error
-        ? error.message
-        : String(error),
-    );
+    console.warn(error instanceof Error ? error.message : String(error));
 
     return [];
   }
@@ -246,83 +173,50 @@ async function readHistoricalReadyTariffs() {
  * ========================================================= */
 
 async function login() {
-  if (
-    !ADMIN_USERNAME ||
-    !ADMIN_PASSWORD
-  ) {
-    throw new Error(
-      'Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en ***REMOVED***',
-    );
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en ***REMOVED***');
   }
 
-  const response =
-    await fetch(
-      `${API_BASE_URL}/auth/login`,
-      {
-        method: 'POST',
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
 
-        headers: {
-          'Content-Type':
-            'application/json',
-        },
+    headers: {
+      'Content-Type': 'application/json',
+    },
 
-        body:
-          JSON.stringify({
-            username:
-              ADMIN_USERNAME,
+    body: JSON.stringify({
+      username: ADMIN_USERNAME,
 
-            password:
-              ADMIN_PASSWORD,
-          }),
-      },
-    );
+      password: ADMIN_PASSWORD,
+    }),
+  });
 
   if (!response.ok) {
-    const body =
-      await response.text();
+    const body = await response.text();
 
-    throw new Error(
-      `Login falló (${response.status}): ${body}`,
-    );
+    throw new Error(`Login falló (${response.status}): ${body}`);
   }
 
-  const setCookie =
-    response.headers.get(
-      'set-cookie',
-    );
+  const setCookie = response.headers.get('set-cookie');
 
   if (!setCookie) {
-    throw new Error(
-      'La API no devolvió cookie de sesión.',
-    );
+    throw new Error('La API no devolvió cookie de sesión.');
   }
 
-  return setCookie
-    .split(';')[0];
+  return setCookie.split(';')[0];
 }
 
-async function apiJson(
-  url,
-  sessionCookie,
-) {
-  const response =
-    await fetch(
-      `${API_BASE_URL}${url}`,
-      {
-        headers: {
-          Cookie:
-            sessionCookie,
-        },
-      },
-    );
+async function apiJson(url, sessionCookie) {
+  const response = await fetch(`${API_BASE_URL}${url}`, {
+    headers: {
+      Cookie: sessionCookie,
+    },
+  });
 
   if (!response.ok) {
-    const body =
-      await response.text();
+    const body = await response.text();
 
-    throw new Error(
-      `GET ${url} → ${response.status}: ${body}`,
-    );
+    throw new Error(`GET ${url} → ${response.status}: ${body}`);
   }
 
   return response.json();
@@ -333,8 +227,7 @@ async function apiJson(
  * ========================================================= */
 
 function indexTariffsByClass(tariffs) {
-  const map =
-    new Map();
+  const map = new Map();
 
   for (const tariff of tariffs) {
     if (!tariff.classId) {
@@ -342,51 +235,29 @@ function indexTariffsByClass(tariffs) {
     }
 
     if (!map.has(tariff.classId)) {
-      map.set(
-        tariff.classId,
-        [],
-      );
+      map.set(tariff.classId, []);
     }
 
-    map
-      .get(tariff.classId)
-      .push({
-        ...tariff,
+    map.get(tariff.classId).push({
+      ...tariff,
 
-        amount:
-          normalizeAmount(
-            tariff.amount,
-          ),
+      amount: normalizeAmount(tariff.amount),
 
-        validFromDate:
-          parseIsoDate(
-            tariff.validFrom,
-          ),
+      validFromDate: parseIsoDate(tariff.validFrom),
 
-        validToDate:
-          tariff.validTo
-            ? parseIsoDate(
-                tariff.validTo,
-              )
-            : null,
-      });
+      validToDate: tariff.validTo ? parseIsoDate(tariff.validTo) : null,
+    });
   }
 
   for (const items of map.values()) {
-    items.sort(
-      (a, b) =>
-        a.validFrom.localeCompare(
-          b.validFrom,
-        ),
-    );
+    items.sort((a, b) => a.validFrom.localeCompare(b.validFrom));
   }
 
   return map;
 }
 
 function indexEnrollmentsByClass(enrollments) {
-  const map =
-    new Map();
+  const map = new Map();
 
   for (const enrollment of enrollments) {
     if (!enrollment.classId) {
@@ -394,15 +265,10 @@ function indexEnrollmentsByClass(enrollments) {
     }
 
     if (!map.has(enrollment.classId)) {
-      map.set(
-        enrollment.classId,
-        [],
-      );
+      map.set(enrollment.classId, []);
     }
 
-    map
-      .get(enrollment.classId)
-      .push(enrollment);
+    map.get(enrollment.classId).push(enrollment);
   }
 
   return map;
@@ -413,45 +279,27 @@ function indexEnrollmentsByClass(enrollments) {
  * ========================================================= */
 
 function tariffMonths(tariffs) {
-  const months =
-    new Set();
+  const months = new Set();
 
   for (const tariff of tariffs) {
-    const start =
-      firstDayOfMonth(
-        tariff.validFrom,
-      );
+    const start = firstDayOfMonth(tariff.validFrom);
 
     if (!start) {
       continue;
     }
 
-    const end =
-      tariff.validTo
-        ? lastDayOfMonth(
-            tariff.validTo,
-          )
-        : lastDayOfMonth(
-            HISTORICAL_CUTOFF,
-          );
+    const end = tariff.validTo ? lastDayOfMonth(tariff.validTo) : lastDayOfMonth(HISTORICAL_CUTOFF);
 
     if (!end) {
       continue;
     }
 
-    let cursor =
-      new Date(start);
+    let cursor = new Date(start);
 
-    while (
-      cursor <= end
-    ) {
-      months.add(
-        isoDate(cursor)
-          .slice(0, 7),
-      );
+    while (cursor <= end) {
+      months.add(isoDate(cursor).slice(0, 7));
 
-      cursor =
-        nextMonth(cursor);
+      cursor = nextMonth(cursor);
     }
   }
 
@@ -459,10 +307,7 @@ function tariffMonths(tariffs) {
 }
 
 function enrollmentMonths(enrollment) {
-  const start =
-    firstDayOfMonth(
-      enrollment.startDate,
-    );
+  const start = firstDayOfMonth(enrollment.startDate);
 
   if (!start) {
     return [];
@@ -476,11 +321,7 @@ function enrollmentMonths(enrollment) {
    * Esto NO implica asumir que la inscripción realmente
    * duró hasta el cutoff.
    */
-  const end =
-    lastDayOfMonth(
-      enrollment.endDate ??
-      HISTORICAL_CUTOFF,
-    );
+  const end = lastDayOfMonth(enrollment.endDate ?? HISTORICAL_CUTOFF);
 
   if (!end) {
     return [];
@@ -488,21 +329,12 @@ function enrollmentMonths(enrollment) {
 
   const months = [];
 
-  let cursor =
-    new Date(start);
+  let cursor = new Date(start);
 
-  while (
-    cursor <= end &&
-    isoDate(cursor) <=
-      HISTORICAL_CUTOFF
-  ) {
-    months.push(
-      isoDate(cursor)
-        .slice(0, 7),
-    );
+  while (cursor <= end && isoDate(cursor) <= HISTORICAL_CUTOFF) {
+    months.push(isoDate(cursor).slice(0, 7));
 
-    cursor =
-      nextMonth(cursor);
+    cursor = nextMonth(cursor);
   }
 
   return months;
@@ -512,158 +344,76 @@ function enrollmentMonths(enrollment) {
  * ANÁLISIS POR CLASE
  * ========================================================= */
 
-function analyzeClassCoverage({
-  classId,
-  className,
-  enrollments,
-  tariffs,
-}) {
-  const coveredMonths =
-    tariffMonths(
-      tariffs,
-    );
+function analyzeClassCoverage({ classId, className, enrollments, tariffs }) {
+  const coveredMonths = tariffMonths(tariffs);
 
-  const enrollmentMonthMap =
-    new Map();
+  const enrollmentMonthMap = new Map();
 
   for (const enrollment of enrollments) {
-    for (
-      const month
-      of enrollmentMonths(
-        enrollment,
-      )
-    ) {
+    for (const month of enrollmentMonths(enrollment)) {
       if (!enrollmentMonthMap.has(month)) {
-        enrollmentMonthMap.set(
-          month,
-          [],
-        );
+        enrollmentMonthMap.set(month, []);
       }
 
-      enrollmentMonthMap
-        .get(month)
-        .push(enrollment);
+      enrollmentMonthMap.get(month).push(enrollment);
     }
   }
 
-  const monthsWithEnrollments =
-    [...enrollmentMonthMap.keys()]
-      .sort();
+  const monthsWithEnrollments = [...enrollmentMonthMap.keys()].sort();
 
-  const uncoveredMonths =
-    monthsWithEnrollments.filter(
-      (month) =>
-        !coveredMonths.has(
-          month,
-        ),
-    );
+  const uncoveredMonths = monthsWithEnrollments.filter((month) => !coveredMonths.has(month));
 
-  const coveredEnrollmentMonths =
-    monthsWithEnrollments.filter(
-      (month) =>
-        coveredMonths.has(
-          month,
-        ),
-    );
+  const coveredEnrollmentMonths = monthsWithEnrollments.filter((month) => coveredMonths.has(month));
 
-  const firstEnrollmentMonth =
-    monthsWithEnrollments[0] ??
-    null;
+  const firstEnrollmentMonth = monthsWithEnrollments[0] ?? null;
 
-  const lastEnrollmentMonth =
-    monthsWithEnrollments[
-      monthsWithEnrollments.length - 1
-    ] ?? null;
+  const lastEnrollmentMonth = monthsWithEnrollments[monthsWithEnrollments.length - 1] ?? null;
 
-  const firstTariffMonth =
-    tariffs.length > 0
-      ? monthKey(
-          tariffs[0].validFrom,
-        )
-      : null;
+  const firstTariffMonth = tariffs.length > 0 ? monthKey(tariffs[0].validFrom) : null;
 
   const lastTariffMonth =
     tariffs.length > 0
-      ? [...tariffs]
-          .map(
-            (item) =>
-              monthKey(
-                item.validTo ??
-                HISTORICAL_CUTOFF,
-              ),
-          )
+      ? ([...tariffs]
+          .map((item) => monthKey(item.validTo ?? HISTORICAL_CUTOFF))
           .sort()
-          .at(-1) ?? null
+          .at(-1) ?? null)
       : null;
 
-  const uncoveredDetails =
-    uncoveredMonths.map(
-      (month) => {
-        const monthEnrollments =
-          enrollmentMonthMap.get(
-            month,
-          ) ?? [];
+  const uncoveredDetails = uncoveredMonths.map((month) => {
+    const monthEnrollments = enrollmentMonthMap.get(month) ?? [];
 
-        return {
-          month,
+    return {
+      month,
 
-          enrollmentCount:
-            monthEnrollments.length,
+      enrollmentCount: monthEnrollments.length,
 
-          studentCount:
-            new Set(
-              monthEnrollments.map(
-                (item) =>
-                  item.studentId,
-              ),
-            ).size,
+      studentCount: new Set(monthEnrollments.map((item) => item.studentId)).size,
 
-          enrollments:
-            monthEnrollments.map(
-              (item) => ({
-                enrollmentId:
-                  item.id,
+      enrollments: monthEnrollments.map((item) => ({
+        enrollmentId: item.id,
 
-                studentId:
-                  item.studentId,
+        studentId: item.studentId,
 
-                studentName:
-                  studentName(
-                    item,
-                  ),
+        studentName: studentName(item),
 
-                startDate:
-                  item.startDate,
+        startDate: item.startDate,
 
-                endDate:
-                  item.endDate ??
-                  null,
+        endDate: item.endDate ?? null,
 
-                status:
-                  item.status,
-              }),
-            ),
-        };
-      },
-    );
+        status: item.status,
+      })),
+    };
+  });
 
   return {
     classId,
     className,
 
-    enrollmentCount:
-      enrollments.length,
+    enrollmentCount: enrollments.length,
 
-    studentCount:
-      new Set(
-        enrollments.map(
-          (item) =>
-            item.studentId,
-        ),
-      ).size,
+    studentCount: new Set(enrollments.map((item) => item.studentId)).size,
 
-    tariffCount:
-      tariffs.length,
+    tariffCount: tariffs.length,
 
     firstEnrollmentMonth,
     lastEnrollmentMonth,
@@ -671,45 +421,31 @@ function analyzeClassCoverage({
     firstTariffMonth,
     lastTariffMonth,
 
-    coveredMonthCount:
-      coveredEnrollmentMonths.length,
+    coveredMonthCount: coveredEnrollmentMonths.length,
 
-    uncoveredMonthCount:
-      uncoveredMonths.length,
+    uncoveredMonthCount: uncoveredMonths.length,
 
-    coveredMonths:
-      [...coveredMonths]
-        .sort(),
+    coveredMonths: [...coveredMonths].sort(),
 
-    enrollmentMonths:
-      monthsWithEnrollments,
+    enrollmentMonths: monthsWithEnrollments,
 
     uncoveredMonths,
 
     uncoveredDetails,
 
-    tariffs:
-      tariffs.map(
-        (tariff) => ({
-          id:
-            tariff.id,
+    tariffs: tariffs.map((tariff) => ({
+      id: tariff.id,
 
-          name:
-            tariff.name,
+      name: tariff.name,
 
-          amount:
-            tariff.amount,
+      amount: tariff.amount,
 
-          validFrom:
-            tariff.validFrom,
+      validFrom: tariff.validFrom,
 
-          validTo:
-            tariff.validTo,
+      validTo: tariff.validTo,
 
-          status:
-            tariff.status,
-        }),
-      ),
+      status: tariff.status,
+    })),
   };
 }
 
@@ -717,80 +453,48 @@ function analyzeClassCoverage({
  * COMPARACIÓN API vs READY JSON
  * ========================================================= */
 
-function buildReadyTariffIndex(
-  readyTariffs,
-) {
-  const map =
-    new Map();
+function buildReadyTariffIndex(readyTariffs) {
+  const map = new Map();
 
   for (const tariff of readyTariffs) {
-    const key =
-      [
-        tariff.classId,
-        normalizeAmount(
-          tariff.amount,
-        ),
-        tariff.validFrom,
-        tariff.validTo ??
-          '',
-      ].join('|');
+    const key = [
+      tariff.classId,
+      normalizeAmount(tariff.amount),
+      tariff.validFrom,
+      tariff.validTo ?? '',
+    ].join('|');
 
-    map.set(
-      key,
-      tariff,
-    );
+    map.set(key, tariff);
   }
 
   return map;
 }
 
-function buildApiTariffIndex(
-  tariffs,
-) {
-  const map =
-    new Map();
+function buildApiTariffIndex(tariffs) {
+  const map = new Map();
 
   for (const tariff of tariffs) {
-    const key =
-      [
-        tariff.classId,
-        normalizeAmount(
-          tariff.amount,
-        ),
-        tariff.validFrom,
-        tariff.validTo ??
-          '',
-      ].join('|');
+    const key = [
+      tariff.classId,
+      normalizeAmount(tariff.amount),
+      tariff.validFrom,
+      tariff.validTo ?? '',
+    ].join('|');
 
-    map.set(
-      key,
-      tariff,
-    );
+    map.set(key, tariff);
   }
 
   return map;
 }
 
-function compareTariffSources({
-  apiTariffs,
-  readyTariffs,
-}) {
-  const apiIndex =
-    buildApiTariffIndex(
-      apiTariffs,
-    );
+function compareTariffSources({ apiTariffs, readyTariffs }) {
+  const apiIndex = buildApiTariffIndex(apiTariffs);
 
-  const readyIndex =
-    buildReadyTariffIndex(
-      readyTariffs,
-    );
+  const readyIndex = buildReadyTariffIndex(readyTariffs);
 
   const missingInApi = [];
 
-  for (
-    const [key, tariff]
-    of readyIndex
-  ) {
+  for (const [key, tariff] of readyIndex) {
     if (!apiIndex.has(key)) {
       missingInApi.push({
         key,
@@ -801,10 +505,7 @@ function compareTariffSources({
 
   const extraInApi = [];
 
-  for (
-    const [key, tariff]
-    of apiIndex
-  ) {
+  for (const [key, tariff] of apiIndex) {
     if (!readyIndex.has(key)) {
       extraInApi.push({
         key,
@@ -825,241 +526,141 @@ function compareTariffSources({
 
 async function main() {
   console.log('');
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
-  console.log(
-    ' ANÁLISIS DE COBERTURA DE TARIFAS',
-  );
+  console.log(' ANÁLISIS DE COBERTURA DE TARIFAS');
 
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
   console.log('');
 
-  console.log(
-    `📄 Enrollments: ${ENROLLMENTS_FILE}`,
-  );
+  console.log(`📄 Enrollments: ${ENROLLMENTS_FILE}`);
 
-  console.log(
-    `📄 Tarifas ready: ${HISTORICAL_TARIFFS_FILE}`,
-  );
+  console.log(`📄 Tarifas ready: ${HISTORICAL_TARIFFS_FILE}`);
 
-  console.log(
-    `📅 Corte histórico: ${HISTORICAL_CUTOFF}`,
-  );
+  console.log(`📅 Corte histórico: ${HISTORICAL_CUTOFF}`);
 
   /* -------------------------------------------------------
    * 1. Archivos
    * ------------------------------------------------------- */
 
-  const enrollments =
-    await readEnrollments();
+  const enrollments = await readEnrollments();
 
-  const readyTariffs =
-    await readHistoricalReadyTariffs();
+  const readyTariffs = await readHistoricalReadyTariffs();
 
-  console.log(
-    `🎓 Enrollments: ${enrollments.length}`,
-  );
+  console.log(`🎓 Enrollments: ${enrollments.length}`);
 
-  console.log(
-    `📦 Tarifas ready: ${readyTariffs.length}`,
-  );
+  console.log(`📦 Tarifas ready: ${readyTariffs.length}`);
 
   /* -------------------------------------------------------
    * 2. API
    * ------------------------------------------------------- */
 
   console.log('');
-  console.log(
-    '🔐 Iniciando sesión...',
-  );
+  console.log('🔐 Iniciando sesión...');
 
-  const sessionCookie =
-    await login();
+  const sessionCookie = await login();
 
-  console.log(
-    '✅ Sesión iniciada.',
-  );
+  console.log('✅ Sesión iniciada.');
 
-  const apiTariffs =
-    await apiJson(
-      '/tariffs',
-      sessionCookie,
-    );
+  const apiTariffs = await apiJson('/tariffs', sessionCookie);
 
   if (!Array.isArray(apiTariffs)) {
-    throw new Error(
-      'GET /tariffs no devolvió un array.',
-    );
+    throw new Error('GET /tariffs no devolvió un array.');
   }
 
-  console.log(
-    `💰 Tarifas en BDD: ${apiTariffs.length}`,
-  );
+  console.log(`💰 Tarifas en BDD: ${apiTariffs.length}`);
 
-  const classesResponse =
-    await apiJson(
-      '/classes?page=1&pageSize=100',
-      sessionCookie,
-    );
+  const classesResponse = await apiJson('/classes?page=1&pageSize=100', sessionCookie);
 
-  const classes =
-    Array.isArray(classesResponse)
-      ? classesResponse
-      : classesResponse.items ?? [];
+  const classes = Array.isArray(classesResponse) ? classesResponse : (classesResponse.items ?? []);
 
-  console.log(
-    `💃 Clases en API: ${classes.length}`,
-  );
+  console.log(`💃 Clases en API: ${classes.length}`);
 
   /* -------------------------------------------------------
    * 3. Comparar ready vs BDD
    * ------------------------------------------------------- */
 
-  const sourceComparison =
-    compareTariffSources({
-      apiTariffs,
-      readyTariffs,
-    });
+  const sourceComparison = compareTariffSources({
+    apiTariffs,
+    readyTariffs,
+  });
 
   console.log('');
-  console.log(
-    '--- COMPARACIÓN READY vs BDD ---',
-  );
+  console.log('--- COMPARACIÓN READY vs BDD ---');
 
-  console.log(
-    `Faltantes en BDD: ${sourceComparison.missingInApi.length}`,
-  );
+  console.log(`Faltantes en BDD: ${sourceComparison.missingInApi.length}`);
 
-  console.log(
-    `Extras en BDD: ${sourceComparison.extraInApi.length}`,
-  );
+  console.log(`Extras en BDD: ${sourceComparison.extraInApi.length}`);
 
   /* -------------------------------------------------------
    * 4. Índices
    * ------------------------------------------------------- */
 
-  const tariffsByClass =
-    indexTariffsByClass(
-      apiTariffs,
-    );
+  const tariffsByClass = indexTariffsByClass(apiTariffs);
 
-  const enrollmentsByClass =
-    indexEnrollmentsByClass(
-      enrollments,
-    );
+  const enrollmentsByClass = indexEnrollmentsByClass(enrollments);
 
   /* -------------------------------------------------------
    * 5. Resolver clases objetivo
    * ------------------------------------------------------- */
 
-  const targetClasses =
-    classes.filter(
-      (item) =>
-        TARGET_CLASS_NAMES.has(
-          item.name,
-        ),
-    );
+  const targetClasses = classes.filter((item) => TARGET_CLASS_NAMES.has(item.name));
 
   console.log('');
-  console.log(
-    `🎯 Clases objetivo encontradas: ${targetClasses.length}`,
-  );
+  console.log(`🎯 Clases objetivo encontradas: ${targetClasses.length}`);
 
   for (const item of targetClasses) {
-    console.log(
-      `- ${item.name}`,
-    );
+    console.log(`- ${item.name}`);
   }
 
   /* -------------------------------------------------------
    * 6. Analizar cobertura
    * ------------------------------------------------------- */
 
-  const analyses =
-    targetClasses.map(
-      (academicClass) =>
-        analyzeClassCoverage({
-          classId:
-            academicClass.id,
+  const analyses = targetClasses.map((academicClass) =>
+    analyzeClassCoverage({
+      classId: academicClass.id,
 
-          className:
-            academicClass.name,
+      className: academicClass.name,
 
-          enrollments:
-            enrollmentsByClass.get(
-              academicClass.id,
-            ) ?? [],
+      enrollments: enrollmentsByClass.get(academicClass.id) ?? [],
 
-          tariffs:
-            tariffsByClass.get(
-              academicClass.id,
-            ) ?? [],
-        }),
-    );
+      tariffs: tariffsByClass.get(academicClass.id) ?? [],
+    }),
+  );
 
   /* -------------------------------------------------------
    * 7. Consola
    * ------------------------------------------------------- */
 
   console.log('');
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
-  console.log(
-    ' RESULTADO POR CLASE',
-  );
+  console.log(' RESULTADO POR CLASE');
 
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
   for (const analysis of analyses) {
     console.log('');
-    console.log(
-      `--- ${analysis.className} ---`,
-    );
+    console.log(`--- ${analysis.className} ---`);
 
-    console.log(
-      `Tarifas: ${analysis.tariffCount}`,
-    );
+    console.log(`Tarifas: ${analysis.tariffCount}`);
 
-    console.log(
-      `Enrollments: ${analysis.enrollmentCount}`,
-    );
+    console.log(`Enrollments: ${analysis.enrollmentCount}`);
 
-    console.log(
-      `Primer enrollment: ${analysis.firstEnrollmentMonth ?? '-'}`,
-    );
+    console.log(`Primer enrollment: ${analysis.firstEnrollmentMonth ?? '-'}`);
 
-    console.log(
-      `Último enrollment: ${analysis.lastEnrollmentMonth ?? '-'}`,
-    );
+    console.log(`Último enrollment: ${analysis.lastEnrollmentMonth ?? '-'}`);
 
-    console.log(
-      `Primera tarifa: ${analysis.firstTariffMonth ?? '-'}`,
-    );
+    console.log(`Primera tarifa: ${analysis.firstTariffMonth ?? '-'}`);
 
-    console.log(
-      `Última tarifa: ${analysis.lastTariffMonth ?? '-'}`,
-    );
+    console.log(`Última tarifa: ${analysis.lastTariffMonth ?? '-'}`);
 
-    console.log(
-      `Meses con enrollment sin tarifa: ${analysis.uncoveredMonthCount}`,
-    );
+    console.log(`Meses con enrollment sin tarifa: ${analysis.uncoveredMonthCount}`);
 
-    if (
-      analysis.uncoveredMonths.length >
-      0
-    ) {
-      console.log(
-        `Huecos: ${analysis.uncoveredMonths.join(', ')}`,
-      );
+    if (analysis.uncoveredMonths.length > 0) {
+      console.log(`Huecos: ${analysis.uncoveredMonths.join(', ')}`);
     }
   }
 
@@ -1067,412 +668,232 @@ async function main() {
    * 8. JSON
    * ------------------------------------------------------- */
 
-  await fs.mkdir(
-    OUTPUT_DIR,
-    {
-      recursive:
-        true,
-    },
-  );
+  await fs.mkdir(OUTPUT_DIR, {
+    recursive: true,
+  });
 
   const output = {
-    generatedAt:
-      new Date()
-        .toISOString(),
+    generatedAt: new Date().toISOString(),
 
-    historicalCutoff:
-      HISTORICAL_CUTOFF,
+    historicalCutoff: HISTORICAL_CUTOFF,
 
     source: {
-      enrollments:
-        ENROLLMENTS_FILE,
+      enrollments: ENROLLMENTS_FILE,
 
-      historicalTariffsReady:
-        HISTORICAL_TARIFFS_FILE,
+      historicalTariffsReady: HISTORICAL_TARIFFS_FILE,
 
-      tariffsApi:
-        '/tariffs',
+      tariffsApi: '/tariffs',
     },
 
     summary: {
-      enrollmentCount:
-        enrollments.length,
+      enrollmentCount: enrollments.length,
 
-      readyTariffCount:
-        readyTariffs.length,
+      readyTariffCount: readyTariffs.length,
 
-      apiTariffCount:
-        apiTariffs.length,
+      apiTariffCount: apiTariffs.length,
 
-      targetClassCount:
-        analyses.length,
+      targetClassCount: analyses.length,
 
-      missingInApi:
-        sourceComparison.missingInApi.length,
+      missingInApi: sourceComparison.missingInApi.length,
 
-      extraInApi:
-        sourceComparison.extraInApi.length,
+      extraInApi: sourceComparison.extraInApi.length,
 
-      totalUncoveredMonths:
-        analyses.reduce(
-          (sum, item) =>
-            sum +
-            item.uncoveredMonthCount,
-          0,
-        ),
+      totalUncoveredMonths: analyses.reduce((sum, item) => sum + item.uncoveredMonthCount, 0),
     },
 
     sourceComparison,
 
-    classes:
-      analyses,
+    classes: analyses,
   };
 
-  await fs.writeFile(
-    OUTPUT_JSON,
-    JSON.stringify(
-      output,
-      null,
-      2,
-    ),
-    'utf8',
-  );
+  await fs.writeFile(OUTPUT_JSON, JSON.stringify(output, null, 2), 'utf8');
 
   /* -------------------------------------------------------
    * 9. XLSX
    * ------------------------------------------------------- */
 
-  const workbook =
-    utils.book_new();
+  const workbook = utils.book_new();
 
-  const summaryRows =
-    analyses.map(
-      (item) => ({
-        Clase:
-          item.className,
+  const summaryRows = analyses.map((item) => ({
+    Clase: item.className,
 
-        'Class ID':
-          item.classId,
+    'Class ID': item.classId,
 
-        Tarifas:
-          item.tariffCount,
+    Tarifas: item.tariffCount,
 
-        Enrollments:
-          item.enrollmentCount,
+    Enrollments: item.enrollmentCount,
 
-        Alumnos:
-          item.studentCount,
+    Alumnos: item.studentCount,
 
-        'Primer enrollment':
-          item.firstEnrollmentMonth,
+    'Primer enrollment': item.firstEnrollmentMonth,
 
-        'Último enrollment':
-          item.lastEnrollmentMonth,
+    'Último enrollment': item.lastEnrollmentMonth,
 
-        'Primera tarifa':
-          item.firstTariffMonth,
+    'Primera tarifa': item.firstTariffMonth,
 
-        'Última tarifa':
-          item.lastTariffMonth,
+    'Última tarifa': item.lastTariffMonth,
 
-        'Meses cubiertos':
-          item.coveredMonthCount,
+    'Meses cubiertos': item.coveredMonthCount,
 
-        'Meses sin tarifa':
-          item.uncoveredMonthCount,
+    'Meses sin tarifa': item.uncoveredMonthCount,
 
-        'Meses faltantes':
-          item.uncoveredMonths.join(
-            ' | ',
-          ),
-      }),
-    );
+    'Meses faltantes': item.uncoveredMonths.join(' | '),
+  }));
 
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      summaryRows,
-    ),
-    'Resumen cobertura',
+  utils.book_append_sheet(workbook, utils.json_to_sheet(summaryRows), 'Resumen cobertura');
+
+  const tariffRows = analyses.flatMap((item) =>
+    item.tariffs.map((tariff) => ({
+      Clase: item.className,
+
+      'Class ID': item.classId,
+
+      'Tariff ID': tariff.id,
+
+      Tarifa: tariff.name,
+
+      Importe: tariff.amount,
+
+      Desde: tariff.validFrom,
+
+      Hasta: tariff.validTo,
+
+      Estado: tariff.status,
+    })),
   );
 
-  const tariffRows =
-    analyses.flatMap(
-      (item) =>
-        item.tariffs.map(
-          (tariff) => ({
-            Clase:
-              item.className,
+  utils.book_append_sheet(workbook, utils.json_to_sheet(tariffRows), 'Tarifas actuales');
 
-            'Class ID':
-              item.classId,
+  const gapRows = analyses.flatMap((item) =>
+    item.uncoveredDetails.map((gap) => ({
+      Clase: item.className,
 
-            'Tariff ID':
-              tariff.id,
+      'Class ID': item.classId,
 
-            Tarifa:
-              tariff.name,
+      Mes: gap.month,
 
-            Importe:
-              tariff.amount,
+      Enrollments: gap.enrollmentCount,
 
-            Desde:
-              tariff.validFrom,
-
-            Hasta:
-              tariff.validTo,
-
-            Estado:
-              tariff.status,
-          }),
-        ),
-    );
-
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      tariffRows,
-    ),
-    'Tarifas actuales',
+      Alumnos: gap.studentCount,
+    })),
   );
 
-  const gapRows =
-    analyses.flatMap(
-      (item) =>
-        item.uncoveredDetails.map(
-          (gap) => ({
-            Clase:
-              item.className,
+  utils.book_append_sheet(workbook, utils.json_to_sheet(gapRows), 'Huecos por mes');
 
-            'Class ID':
-              item.classId,
+  const gapDetailRows = analyses.flatMap((item) =>
+    item.uncoveredDetails.flatMap((gap) =>
+      gap.enrollments.map((enrollment) => ({
+        Clase: item.className,
 
-            Mes:
-              gap.month,
+        'Class ID': item.classId,
 
-            Enrollments:
-              gap.enrollmentCount,
+        Mes: gap.month,
 
-            Alumnos:
-              gap.studentCount,
-          }),
-        ),
-    );
+        Alumno: enrollment.studentName,
 
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      gapRows,
+        'Student ID': enrollment.studentId,
+
+        'Enrollment ID': enrollment.enrollmentId,
+
+        Estado: enrollment.status,
+
+        Inicio: enrollment.startDate,
+
+        Fin: enrollment.endDate,
+      })),
     ),
-    'Huecos por mes',
   );
 
-  const gapDetailRows =
-    analyses.flatMap(
-      (item) =>
-        item.uncoveredDetails.flatMap(
-          (gap) =>
-            gap.enrollments.map(
-              (enrollment) => ({
-                Clase:
-                  item.className,
+  utils.book_append_sheet(workbook, utils.json_to_sheet(gapDetailRows), 'Detalle huecos');
 
-                'Class ID':
-                  item.classId,
+  const missingReadyRows = sourceComparison.missingInApi.map((item) => ({
+    'Class ID': item.classId,
 
-                Mes:
-                  gap.month,
+    Tarifa: item.name,
 
-                Alumno:
-                  enrollment.studentName,
+    Importe: item.amount,
 
-                'Student ID':
-                  enrollment.studentId,
+    Desde: item.validFrom,
 
-                'Enrollment ID':
-                  enrollment.enrollmentId,
+    Hasta: item.validTo,
+  }));
 
-                Estado:
-                  enrollment.status,
+  utils.book_append_sheet(workbook, utils.json_to_sheet(missingReadyRows), 'Ready faltantes BDD');
 
-                Inicio:
-                  enrollment.startDate,
+  const extraApiRows = sourceComparison.extraInApi.map((item) => ({
+    'Class ID': item.classId,
 
-                Fin:
-                  enrollment.endDate,
-              }),
-            ),
-        ),
-    );
+    Tarifa: item.name,
 
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      gapDetailRows,
-    ),
-    'Detalle huecos',
-  );
+    Importe: item.amount,
 
-  const missingReadyRows =
-    sourceComparison.missingInApi.map(
-      (item) => ({
-        'Class ID':
-          item.classId,
+    Desde: item.validFrom,
 
-        Tarifa:
-          item.name,
+    Hasta: item.validTo,
 
-        Importe:
-          item.amount,
+    Estado: item.status,
+  }));
 
-        Desde:
-          item.validFrom,
-
-        Hasta:
-          item.validTo,
-      }),
-    );
-
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      missingReadyRows,
-    ),
-    'Ready faltantes BDD',
-  );
-
-  const extraApiRows =
-    sourceComparison.extraInApi.map(
-      (item) => ({
-        'Class ID':
-          item.classId,
-
-        Tarifa:
-          item.name,
-
-        Importe:
-          item.amount,
-
-        Desde:
-          item.validFrom,
-
-        Hasta:
-          item.validTo,
-
-        Estado:
-          item.status,
-      }),
-    );
-
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      extraApiRows,
-    ),
-    'Extras BDD',
-  );
+  utils.book_append_sheet(workbook, utils.json_to_sheet(extraApiRows), 'Extras BDD');
 
   const globalSummaryRows = [
     {
-      Métrica:
-        'Enrollments',
+      Métrica: 'Enrollments',
 
-      Valor:
-        enrollments.length,
+      Valor: enrollments.length,
     },
     {
-      Métrica:
-        'Tarifas ready',
+      Métrica: 'Tarifas ready',
 
-      Valor:
-        readyTariffs.length,
+      Valor: readyTariffs.length,
     },
     {
-      Métrica:
-        'Tarifas BDD',
+      Métrica: 'Tarifas BDD',
 
-      Valor:
-        apiTariffs.length,
+      Valor: apiTariffs.length,
     },
     {
-      Métrica:
-        'Clases objetivo',
+      Métrica: 'Clases objetivo',
 
-      Valor:
-        analyses.length,
+      Valor: analyses.length,
     },
     {
-      Métrica:
-        'Ready faltantes en BDD',
+      Métrica: 'Ready faltantes en BDD',
 
-      Valor:
-        sourceComparison.missingInApi.length,
+      Valor: sourceComparison.missingInApi.length,
     },
     {
-      Métrica:
-        'Extras en BDD',
+      Métrica: 'Extras en BDD',
 
-      Valor:
-        sourceComparison.extraInApi.length,
+      Valor: sourceComparison.extraInApi.length,
     },
     {
-      Métrica:
-        'Meses sin cobertura',
+      Métrica: 'Meses sin cobertura',
 
-      Valor:
-        analyses.reduce(
-          (sum, item) =>
-            sum +
-            item.uncoveredMonthCount,
-          0,
-        ),
+      Valor: analyses.reduce((sum, item) => sum + item.uncoveredMonthCount, 0),
     },
   ];
 
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      globalSummaryRows,
-    ),
-    'Resumen',
-  );
+  utils.book_append_sheet(workbook, utils.json_to_sheet(globalSummaryRows), 'Resumen');
 
-  writeFile(
-    workbook,
-    OUTPUT_XLSX,
-  );
+  writeFile(workbook, OUTPUT_XLSX);
 
   console.log('');
-  console.log(
-    `📝 JSON: ${OUTPUT_JSON}`,
-  );
+  console.log(`📝 JSON: ${OUTPUT_JSON}`);
 
-  console.log(
-    `📊 Excel: ${OUTPUT_XLSX}`,
-  );
+  console.log(`📊 Excel: ${OUTPUT_XLSX}`);
 
   console.log('');
-  console.log(
-    '✅ Análisis finalizado. No se modificó la BDD.',
-  );
+  console.log('✅ Análisis finalizado. No se modificó la BDD.');
 
   console.log('');
 }
 
-main().catch(
-  (error) => {
-    console.error('');
-    console.error(
-      '❌ ERROR:',
-    );
+main().catch((error) => {
+  console.error('');
+  console.error('❌ ERROR:');
 
-    console.error(
-      error instanceof Error
-        ? error.message
-        : error,
-    );
+  console.error(error instanceof Error ? error.message : error);
 
-    process.exitCode =
-      1;
-  },
-);
+  process.exitCode = 1;
+});

@@ -17,21 +17,14 @@ export default function TariffsPage() {
   const [form, setForm] = useState(emptyForm);
   const [message, setMessage] = useState('');
   const load = useCallback(async () => setItems(await apiRequest<TariffDto[]>('/tariffs')), []);
-  const loadClasses =
-  useCallback(async () => {
-    const response =
-      await apiRequest<ClassListDto>(
-        '/classes?status=ACTIVE&page=1&pageSize=100',
-      );
+  const loadClasses = useCallback(async () => {
+    const response = await apiRequest<ClassListDto>('/classes?status=ACTIVE&page=1&pageSize=100');
 
     setClasses(response.items);
   }, []);
 
   useEffect(() => {
-    void Promise.all([
-      load(),
-      loadClasses(),
-    ]);
+    void Promise.all([load(), loadClasses()]);
   }, [load, loadClasses]);
 
   async function submit(event: FormEvent) {
@@ -64,38 +57,31 @@ export default function TariffsPage() {
   }
 
   async function remove(item: TariffDto) {
-  const confirmed = confirm(
-    `¿Eliminar definitivamente la tarifa "${item.name}"?\n\nEsta acción no se puede deshacer.`,
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  setMessage('');
-
-  try {
-    await apiRequest(
-      `/tariffs/${item.id}/permanent`,
-      {
-        method: 'DELETE',
-      },
+    const confirmed = confirm(
+      `¿Eliminar definitivamente la tarifa "${item.name}"?\n\nEsta acción no se puede deshacer.`,
     );
 
-    if (editing?.id === item.id) {
-      setEditing(null);
-      setForm(emptyForm);
+    if (!confirmed) {
+      return;
     }
 
-    await load();
-  } catch (error) {
-    setMessage(
-      error instanceof ApiClientError
-        ? error.message
-        : 'No se pudo eliminar la tarifa',
-    );
+    setMessage('');
+
+    try {
+      await apiRequest(`/tariffs/${item.id}/permanent`, {
+        method: 'DELETE',
+      });
+
+      if (editing?.id === item.id) {
+        setEditing(null);
+        setForm(emptyForm);
+      }
+
+      await load();
+    } catch (error) {
+      setMessage(error instanceof ApiClientError ? error.message : 'No se pudo eliminar la tarifa');
+    }
   }
-}
 
   return (
     <>
@@ -111,7 +97,7 @@ export default function TariffsPage() {
           <h2>{editing ? 'Editar tarifa' : 'Nueva tarifa'}</h2>
           <form className="catalog-form tariff-form" onSubmit={submit}>
             <label>
-                Clase
+              Clase
               <select
                 required
                 value={form.classId}
@@ -122,15 +108,10 @@ export default function TariffsPage() {
                   })
                 }
               >
-                <option value="">
-                  Seleccionar clase
-                </option>
+                <option value="">Seleccionar clase</option>
 
                 {classes.map((academicClass) => (
-                  <option
-                    key={academicClass.id}
-                    value={academicClass.id}
-                  >
+                  <option key={academicClass.id} value={academicClass.id}>
                     {academicClass.name}
                   </option>
                 ))}
@@ -207,10 +188,8 @@ export default function TariffsPage() {
               {items.map((item) => (
                 <tr key={item.id}>
                   <td data-label="Clase">
-                    {classes.find(
-                      (academicClass) =>
-                        academicClass.id === item.classId,
-                    )?.name ?? 'Clase no encontrada'}
+                    {classes.find((academicClass) => academicClass.id === item.classId)?.name ??
+                      'Clase no encontrada'}
                   </td>
                   <td data-label="Nombre">{item.name}</td>
                   <td data-label="Monto">{money(item.amount)}</td>
@@ -243,13 +222,10 @@ export default function TariffsPage() {
                         {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
                       </button>
                       {item.status === 'INACTIVE' && (
-                      <button
-                        className="secondary"
-                        onClick={() => void remove(item)}
-                      >
-                        Eliminar
-                      </button>
-                    )}
+                        <button className="secondary" onClick={() => void remove(item)}>
+                          Eliminar
+                        </button>
+                      )}
                     </PermissionGate>
                   </td>
                 </tr>

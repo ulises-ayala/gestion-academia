@@ -20,9 +20,7 @@ async function request(url, options = {}) {
   if (!response.ok) {
     const body = await response.text();
 
-    throw new Error(
-      `${response.status} ${response.statusText}: ${body}`,
-    );
+    throw new Error(`${response.status} ${response.statusText}: ${body}`);
   }
 
   return response.json();
@@ -45,9 +43,7 @@ async function login() {
   if (!response.ok) {
     const body = await response.text();
 
-    throw new Error(
-      `${response.status} ${response.statusText}: ${body}`,
-    );
+    throw new Error(`${response.status} ${response.statusText}: ${body}`);
   }
 
   const data = await response.json();
@@ -58,9 +54,7 @@ async function login() {
   const setCookie = response.headers.get('set-cookie');
 
   if (!setCookie) {
-    throw new Error(
-      'El login fue exitoso, pero no se recibió ninguna cookie de sesión.',
-    );
+    throw new Error('El login fue exitoso, pero no se recibió ninguna cookie de sesión.');
   }
 
   const sessionCookie = setCookie.split(';')[0];
@@ -91,19 +85,12 @@ async function getAllStudents(sessionCookie) {
     if (!response.ok) {
       const body = await response.text();
 
-      throw new Error(
-        `${response.status} ${response.statusText}: ${body}`,
-      );
+      throw new Error(`${response.status} ${response.statusText}: ${body}`);
     }
 
     const data = await response.json();
 
-    const items = Array.isArray(data)
-      ? data
-      : data.items ??
-        data.data ??
-        data.results ??
-        [];
+    const items = Array.isArray(data) ? data : (data.items ?? data.data ?? data.results ?? []);
 
     console.log(`   ${items.length} alumnos obtenidos.`);
 
@@ -127,54 +114,27 @@ function normalizeStudent(student) {
   return {
     id: student.id ?? null,
 
-    dni:
-      student.dni ??
-      student.documentNumber ??
-      null,
+    dni: student.dni ?? student.documentNumber ?? null,
 
-    firstName:
-      student.firstName ??
-      '',
+    firstName: student.firstName ?? '',
 
-    lastName:
-      student.lastName ??
-      '',
+    lastName: student.lastName ?? '',
 
-    fullName: [
-      student.lastName,
-      student.firstName,
-    ]
-      .filter(Boolean)
-      .join(' ')
-      .trim(),
+    fullName: [student.lastName, student.firstName].filter(Boolean).join(' ').trim(),
 
-    phone:
-      student.phone ??
-      null,
+    phone: student.phone ?? null,
 
-    email:
-      student.email ??
-      null,
+    email: student.email ?? null,
 
-    birthDate:
-      student.birthDate ??
-      null,
+    birthDate: student.birthDate ?? null,
 
-    address:
-      student.address ??
-      null,
+    address: student.address ?? null,
 
-    status:
-      student.status ??
-      null,
+    status: student.status ?? null,
 
-    createdAt:
-      student.createdAt ??
-      null,
+    createdAt: student.createdAt ?? null,
 
-    updatedAt:
-      student.updatedAt ??
-      null,
+    updatedAt: student.updatedAt ?? null,
   };
 }
 
@@ -182,16 +142,9 @@ async function saveJson(students) {
   const outputDir = path.resolve('./exports');
   await fs.mkdir(outputDir, { recursive: true });
 
-  const outputPath = path.join(
-    outputDir,
-    'students-current.json',
-  );
+  const outputPath = path.join(outputDir, 'students-current.json');
 
-  await fs.writeFile(
-    outputPath,
-    JSON.stringify(students, null, 2),
-    'utf8',
-  );
+  await fs.writeFile(outputPath, JSON.stringify(students, null, 2), 'utf8');
 
   return outputPath;
 }
@@ -207,13 +160,9 @@ async function main() {
     console.log('');
     console.log(`👥 Alumnos encontrados: ${students.length}`);
 
-    const active = students.filter(
-      (student) => student.status === 'ACTIVE',
-    );
+    const active = students.filter((student) => student.status === 'ACTIVE');
 
-    const inactive = students.filter(
-      (student) => student.status === 'INACTIVE',
-    );
+    const inactive = students.filter((student) => student.status === 'INACTIVE');
 
     console.log(`✅ Activos: ${active.length}`);
     console.log(`⛔ Inactivos: ${inactive.length}`);

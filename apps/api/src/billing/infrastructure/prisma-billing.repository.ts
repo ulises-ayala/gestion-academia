@@ -192,34 +192,25 @@ export class PrismaBillingRepository implements BillingRepository {
     });
   }
   async deleteTariff(id: string) {
-  try {
-    await this.prisma.tariff.delete({
-      where: { id },
-    });
-  } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2003'
-    ) {
-      throw new DomainError(
-        'TARIFF_IN_USE',
-        'No se puede eliminar una tarifa que ya tiene cuotas asociadas',
-      );
-    }
+    try {
+      await this.prisma.tariff.delete({
+        where: { id },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
+        throw new DomainError(
+          'TARIFF_IN_USE',
+          'No se puede eliminar una tarifa que ya tiene cuotas asociadas',
+        );
+      }
 
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025'
-    ) {
-      throw new DomainError(
-        'TARIFF_NOT_FOUND',
-        'Tarifa no encontrada',
-      );
-    }
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        throw new DomainError('TARIFF_NOT_FOUND', 'Tarifa no encontrada');
+      }
 
-    throw error;
+      throw error;
+    }
   }
-}
   findEnrollment(id: string) {
     return this.prisma.enrollment.findUnique({
       where: { id },

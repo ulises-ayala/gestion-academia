@@ -40,19 +40,14 @@ class MemoryBillingRepository implements BillingRepository {
   }
 
   async deleteTariff(id: string) {
-  const index = this.tariffs.findIndex(
-    (item) => item.id === id,
-  );
+    const index = this.tariffs.findIndex((item) => item.id === id);
 
-  if (index === -1) {
-    throw new DomainError(
-      'TARIFF_NOT_FOUND',
-      'Tarifa no encontrada',
-    );
+    if (index === -1) {
+      throw new DomainError('TARIFF_NOT_FOUND', 'Tarifa no encontrada');
+    }
+
+    this.tariffs.splice(index, 1);
   }
-
-  this.tariffs.splice(index, 1);
-}
   async findEnrollment(id: string) {
     return this.enrollments.get(id) ?? null;
   }
@@ -174,7 +169,12 @@ describe('BillingService', () => {
       }),
     ).rejects.toMatchObject({ code: 'TARIFF_INACTIVE' });
     await service.updateTariff(tariff.id, { status: 'ACTIVE' });
-    repository.enrollments.set(enrollmentId, { id: enrollmentId, studentId, classId, status: 'ENDED' });
+    repository.enrollments.set(enrollmentId, {
+      id: enrollmentId,
+      studentId,
+      classId,
+      status: 'ENDED',
+    });
     await expect(
       service.createCharge({
         enrollmentId,
@@ -229,7 +229,12 @@ describe('BillingService', () => {
       dueDate: '2026-08-05',
     });
     await service.updateTariff(tariff.id, { status: 'INACTIVE' });
-    repository.enrollments.set(enrollmentId, { id: enrollmentId, studentId, classId, status: 'ENDED' });
+    repository.enrollments.set(enrollmentId, {
+      id: enrollmentId,
+      studentId,
+      classId,
+      status: 'ENDED',
+    });
     await expect(service.getCharge(charge.id)).resolves.toMatchObject({ id: charge.id });
   });
 });

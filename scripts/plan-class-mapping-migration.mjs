@@ -6,46 +6,27 @@ import xlsx from 'xlsx';
 
 loadEnvFile('***REMOVED***');
 
-const {
-  utils,
-  writeFile,
-} = xlsx;
+const { utils, writeFile } = xlsx;
 
 /* =========================================================
  * CONFIG
  * ========================================================= */
 
-const API_BASE_URL =
-  process***REMOVED***.API_BASE_URL ??
-  'http://localhost:3001/api/v1';
+const API_BASE_URL = process***REMOVED***.API_BASE_URL ?? 'http://localhost:3001/api/v1';
 
-const ADMIN_USERNAME =
-  process***REMOVED***.IMPORT_ADMIN_USERNAME;
+const ADMIN_USERNAME = process***REMOVED***.IMPORT_ADMIN_USERNAME;
 
-const ADMIN_PASSWORD =
-  process***REMOVED***.IMPORT_ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
 
-const ENROLLMENTS_FILE = path.resolve(
-  './exports/enrollments-current.json',
-);
+const ENROLLMENTS_FILE = path.resolve('./exports/enrollments-current.json');
 
-const RESOLUTION_PLAN_FILE = path.resolve(
-  './exports/no-tariff-resolution-plan.json',
-);
+const RESOLUTION_PLAN_FILE = path.resolve('./exports/no-tariff-resolution-plan.json');
 
-const OUTPUT_DIR = path.resolve(
-  './exports',
-);
+const OUTPUT_DIR = path.resolve('./exports');
 
-const OUTPUT_JSON = path.join(
-  OUTPUT_DIR,
-  'class-mapping-migration-plan.json',
-);
+const OUTPUT_JSON = path.join(OUTPUT_DIR, 'class-mapping-migration-plan.json');
 
-const OUTPUT_XLSX = path.join(
-  OUTPUT_DIR,
-  'class-mapping-migration-plan.xlsx',
-);
+const OUTPUT_XLSX = path.join(OUTPUT_DIR, 'class-mapping-migration-plan.xlsx');
 
 /*
  * Operaciones estructurales confirmadas.
@@ -55,53 +36,39 @@ const OUTPUT_XLSX = path.join(
  */
 const CLASS_MAPPING_RULES = [
   {
-    sourceName:
-      'S&B Parejas',
+    sourceName: 'S&B Parejas',
 
-    operation:
-      'RENAME_CLASS',
+    operation: 'RENAME_CLASS',
 
-    targetName:
-      'Salsa y Bachata en Pareja',
+    targetName: 'Salsa y Bachata en Pareja',
 
-    reason:
-      'PO confirmó que S&B Parejas corresponde a Salsa y Bachata en Pareja.',
+    reason: 'PO confirmó que S&B Parejas corresponde a Salsa y Bachata en Pareja.',
   },
 
   {
-    sourceName:
-      'Hells',
+    sourceName: 'Hells',
 
-    operation:
-      'RENAME_CLASS',
+    operation: 'RENAME_CLASS',
 
-    targetName:
-      'Heels',
+    targetName: 'Heels',
 
-    reason:
-      'PO confirmó que Hells es un error de escritura y corresponde a Heels.',
+    reason: 'PO confirmó que Hells es un error de escritura y corresponde a Heels.',
   },
 
   {
-    sourceName:
-      'Grupo C. Sofi',
+    sourceName: 'Grupo C. Sofi',
 
-    operation:
-      'MOVE_ENROLLMENTS',
+    operation: 'MOVE_ENROLLMENTS',
 
-    targetName:
-      'Clase femenino Sofi',
+    targetName: 'Clase femenino Sofi',
 
-    reason:
-      'PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi.',
+    reason: 'PO confirmó que Grupo C. Sofi corresponde al Coreográfico Femenino de Sofi.',
   },
 ];
 
-const FORMATION_CLASS_NAME =
-  'Formacion Docente En Ritmos Caribeños Y Kizomba';
+const FORMATION_CLASS_NAME = 'Formacion Docente En Ritmos Caribeños Y Kizomba';
 
-const FORMATION_REAL_START =
-  '2026-04-01';
+const FORMATION_REAL_START = '2026-04-01';
 
 /* =========================================================
  * HELPERS
@@ -122,71 +89,42 @@ function normalizeDate(value) {
     return null;
   }
 
-  return String(value)
-    .slice(0, 10);
+  return String(value).slice(0, 10);
 }
 
 function studentName(enrollment) {
-  if (
-    enrollment.student?.firstName ||
-    enrollment.student?.lastName
-  ) {
-    return [
-      enrollment.student?.lastName,
-      enrollment.student?.firstName,
-    ]
+  if (enrollment.student?.firstName || enrollment.student?.lastName) {
+    return [enrollment.student?.lastName, enrollment.student?.firstName]
       .filter(Boolean)
       .join(' ')
       .trim();
   }
 
-  return (
-    enrollment.studentName ??
-    ''
-  );
+  return enrollment.studentName ?? '';
 }
 
 async function readJson(file) {
-  const raw =
-    await fs.readFile(
-      file,
-      'utf8',
-    );
+  const raw = await fs.readFile(file, 'utf8');
 
   return JSON.parse(raw);
 }
 
 async function readEnrollments() {
-  const parsed =
-    await readJson(
-      ENROLLMENTS_FILE,
-    );
+  const parsed = await readJson(ENROLLMENTS_FILE);
 
-  if (
-    Array.isArray(parsed)
-  ) {
+  if (Array.isArray(parsed)) {
     return parsed;
   }
 
-  if (
-    Array.isArray(
-      parsed.items,
-    )
-  ) {
+  if (Array.isArray(parsed.items)) {
     return parsed.items;
   }
 
-  if (
-    Array.isArray(
-      parsed.enrollments,
-    )
-  ) {
+  if (Array.isArray(parsed.enrollments)) {
     return parsed.enrollments;
   }
 
-  throw new Error(
-    'No pude encontrar el array de enrollments.',
-  );
+  throw new Error('No pude encontrar el array de enrollments.');
 }
 
 /* =========================================================
@@ -194,117 +132,69 @@ async function readEnrollments() {
  * ========================================================= */
 
 async function login() {
-  if (
-    !ADMIN_USERNAME ||
-    !ADMIN_PASSWORD
-  ) {
-    throw new Error(
-      'Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en ***REMOVED***',
-    );
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en ***REMOVED***');
   }
 
-  const response =
-    await fetch(
-      `${API_BASE_URL}/auth/login`,
-      {
-        method:
-          'POST',
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
 
-        headers: {
-          'Content-Type':
-            'application/json',
-        },
+    headers: {
+      'Content-Type': 'application/json',
+    },
 
-        body:
-          JSON.stringify({
-            username:
-              ADMIN_USERNAME,
+    body: JSON.stringify({
+      username: ADMIN_USERNAME,
 
-            password:
-              ADMIN_PASSWORD,
-          }),
-      },
-    );
+      password: ADMIN_PASSWORD,
+    }),
+  });
 
   if (!response.ok) {
-    const body =
-      await response.text();
+    const body = await response.text();
 
-    throw new Error(
-      `Login falló (${response.status}): ${body}`,
-    );
+    throw new Error(`Login falló (${response.status}): ${body}`);
   }
 
-  const setCookie =
-    response.headers.get(
-      'set-cookie',
-    );
+  const setCookie = response.headers.get('set-cookie');
 
   if (!setCookie) {
-    throw new Error(
-      'La API no devolvió cookie de sesión.',
-    );
+    throw new Error('La API no devolvió cookie de sesión.');
   }
 
-  return setCookie
-    .split(';')[0];
+  return setCookie.split(';')[0];
 }
 
-async function apiJson(
-  url,
-  sessionCookie,
-) {
-  const response =
-    await fetch(
-      `${API_BASE_URL}${url}`,
-      {
-        headers: {
-          Cookie:
-            sessionCookie,
-        },
-      },
-    );
+async function apiJson(url, sessionCookie) {
+  const response = await fetch(`${API_BASE_URL}${url}`, {
+    headers: {
+      Cookie: sessionCookie,
+    },
+  });
 
   if (!response.ok) {
-    const body =
-      await response.text();
+    const body = await response.text();
 
-    throw new Error(
-      `GET ${url} → ${response.status}: ${body}`,
-    );
+    throw new Error(`GET ${url} → ${response.status}: ${body}`);
   }
 
   return response.json();
 }
 
-async function getAllClasses(
-  sessionCookie,
-) {
+async function getAllClasses(sessionCookie) {
   const result = [];
 
   let page = 1;
   const pageSize = 100;
 
   while (true) {
-    const response =
-      await apiJson(
-        `/classes?page=${page}&pageSize=${pageSize}`,
-        sessionCookie,
-      );
+    const response = await apiJson(`/classes?page=${page}&pageSize=${pageSize}`, sessionCookie);
 
-    const items =
-      Array.isArray(response)
-        ? response
-        : response.items ?? [];
+    const items = Array.isArray(response) ? response : (response.items ?? []);
 
-    result.push(
-      ...items,
-    );
+    result.push(...items);
 
-    if (
-      Array.isArray(response) ||
-      items.length < pageSize
-    ) {
+    if (Array.isArray(response) || items.length < pageSize) {
       break;
     }
 
@@ -318,148 +208,79 @@ async function getAllClasses(
  * INDEXES
  * ========================================================= */
 
-function indexClassesByName(
-  classes,
-) {
-  const map =
-    new Map();
+function indexClassesByName(classes) {
+  const map = new Map();
 
-  for (
-    const item
-    of classes
-  ) {
-    const key =
-      normalizeText(
-        item.name,
-      );
+  for (const item of classes) {
+    const key = normalizeText(item.name);
 
-    if (
-      !map.has(key)
-    ) {
-      map.set(
-        key,
-        [],
-      );
+    if (!map.has(key)) {
+      map.set(key, []);
     }
 
-    map
-      .get(key)
-      .push(item);
+    map.get(key).push(item);
   }
 
   return map;
 }
 
-function findSingleClass(
-  classIndex,
-  name,
-) {
-  const matches =
-    classIndex.get(
-      normalizeText(
-        name,
-      ),
-    ) ?? [];
+function findSingleClass(classIndex, name) {
+  const matches = classIndex.get(normalizeText(name)) ?? [];
 
-  if (
-    matches.length === 1
-  ) {
+  if (matches.length === 1) {
     return {
-      status:
-        'FOUND',
+      status: 'FOUND',
 
-      class:
-        matches[0],
+      class: matches[0],
     };
   }
 
-  if (
-    matches.length === 0
-  ) {
+  if (matches.length === 0) {
     return {
-      status:
-        'NOT_FOUND',
+      status: 'NOT_FOUND',
 
-      class:
-        null,
+      class: null,
     };
   }
 
   return {
-    status:
-      'AMBIGUOUS',
+    status: 'AMBIGUOUS',
 
-    class:
-      null,
+    class: null,
 
     matches,
   };
 }
 
-function groupEnrollmentsByClass(
-  enrollments,
-) {
-  const map =
-    new Map();
+function groupEnrollmentsByClass(enrollments) {
+  const map = new Map();
 
-  for (
-    const enrollment
-    of enrollments
-  ) {
-    if (
-      !enrollment.classId
-    ) {
+  for (const enrollment of enrollments) {
+    if (!enrollment.classId) {
       continue;
     }
 
-    if (
-      !map.has(
-        enrollment.classId,
-      )
-    ) {
-      map.set(
-        enrollment.classId,
-        [],
-      );
+    if (!map.has(enrollment.classId)) {
+      map.set(enrollment.classId, []);
     }
 
-    map
-      .get(
-        enrollment.classId,
-      )
-      .push(
-        enrollment,
-      );
+    map.get(enrollment.classId).push(enrollment);
   }
 
   return map;
 }
 
-function indexEnrollmentByStudentClass(
-  enrollments,
-) {
-  const map =
-    new Map();
+function indexEnrollmentByStudentClass(enrollments) {
+  const map = new Map();
 
-  for (
-    const enrollment
-    of enrollments
-  ) {
-    const key =
-      `${enrollment.studentId}|${enrollment.classId}`;
+  for (const enrollment of enrollments) {
+    const key = `${enrollment.studentId}|${enrollment.classId}`;
 
-    if (
-      !map.has(key)
-    ) {
-      map.set(
-        key,
-        [],
-      );
+    if (!map.has(key)) {
+      map.set(key, []);
     }
 
-    map
-      .get(key)
-      .push(enrollment);
+    map.get(key).push(enrollment);
   }
 
   return map;
@@ -469,112 +290,61 @@ function indexEnrollmentByStudentClass(
  * PLAN DE RENOMBRES
  * ========================================================= */
 
-function buildRenamePlan({
-  rule,
-  classIndex,
-  enrollmentsByClass,
-}) {
-  const source =
-    findSingleClass(
-      classIndex,
-      rule.sourceName,
-    );
+function buildRenamePlan({ rule, classIndex, enrollmentsByClass }) {
+  const source = findSingleClass(classIndex, rule.sourceName);
 
-  if (
-    source.status !==
-    'FOUND'
-  ) {
+  if (source.status !== 'FOUND') {
     return {
-      operation:
-        rule.operation,
+      operation: rule.operation,
 
-      sourceName:
-        rule.sourceName,
+      sourceName: rule.sourceName,
 
-      targetName:
-        rule.targetName,
+      targetName: rule.targetName,
 
-      status:
-        'BLOCKED',
+      status: 'BLOCKED',
 
-      reason:
-        `No se pudo resolver la clase origen: ${source.status}.`,
+      reason: `No se pudo resolver la clase origen: ${source.status}.`,
     };
   }
 
-  const targetMatches =
-    classIndex.get(
-      normalizeText(
-        rule.targetName,
-      ),
-    ) ?? [];
+  const targetMatches = classIndex.get(normalizeText(rule.targetName)) ?? [];
 
-  const distinctTarget =
-    targetMatches.find(
-      (item) =>
-        item.id !==
-        source.class.id,
-    );
+  const distinctTarget = targetMatches.find((item) => item.id !== source.class.id);
 
-  if (
-    distinctTarget
-  ) {
+  if (distinctTarget) {
     return {
-      operation:
-        rule.operation,
+      operation: rule.operation,
 
-      sourceName:
-        rule.sourceName,
+      sourceName: rule.sourceName,
 
-      sourceClassId:
-        source.class.id,
+      sourceClassId: source.class.id,
 
-      targetName:
-        rule.targetName,
+      targetName: rule.targetName,
 
-      conflictingClassId:
-        distinctTarget.id,
+      conflictingClassId: distinctTarget.id,
 
-      status:
-        'BLOCKED_TARGET_ALREADY_EXISTS',
+      status: 'BLOCKED_TARGET_ALREADY_EXISTS',
 
-      enrollmentCount:
-        (
-          enrollmentsByClass.get(
-            source.class.id,
-          ) ?? []
-        ).length,
+      enrollmentCount: (enrollmentsByClass.get(source.class.id) ?? []).length,
 
-      reason:
-        `Ya existe otra AcademyClass llamada "${rule.targetName}". No conviene renombrar automáticamente.`,
+      reason: `Ya existe otra AcademyClass llamada "${rule.targetName}". No conviene renombrar automáticamente.`,
     };
   }
 
   return {
-    operation:
-      'RENAME_CLASS',
+    operation: 'RENAME_CLASS',
 
-    sourceName:
-      source.class.name,
+    sourceName: source.class.name,
 
-    sourceClassId:
-      source.class.id,
+    sourceClassId: source.class.id,
 
-    targetName:
-      rule.targetName,
+    targetName: rule.targetName,
 
-    enrollmentCount:
-      (
-        enrollmentsByClass.get(
-          source.class.id,
-        ) ?? []
-      ).length,
+    enrollmentCount: (enrollmentsByClass.get(source.class.id) ?? []).length,
 
-    status:
-      'READY',
+    status: 'READY',
 
-    reason:
-      rule.reason,
+    reason: rule.reason,
   };
 }
 
@@ -582,44 +352,23 @@ function buildRenamePlan({
  * PLAN DE MOVIMIENTO
  * ========================================================= */
 
-function buildMovePlan({
-  rule,
-  classIndex,
-  enrollmentsByClass,
-  studentClassIndex,
-}) {
-  const source =
-    findSingleClass(
-      classIndex,
-      rule.sourceName,
-    );
+function buildMovePlan({ rule, classIndex, enrollmentsByClass, studentClassIndex }) {
+  const source = findSingleClass(classIndex, rule.sourceName);
 
-  const target =
-    findSingleClass(
-      classIndex,
-      rule.targetName,
-    );
+  const target = findSingleClass(classIndex, rule.targetName);
 
-  if (
-    source.status !==
-    'FOUND'
-  ) {
+  if (source.status !== 'FOUND') {
     return {
       summary: {
-        operation:
-          rule.operation,
+        operation: rule.operation,
 
-        sourceName:
-          rule.sourceName,
+        sourceName: rule.sourceName,
 
-        targetName:
-          rule.targetName,
+        targetName: rule.targetName,
 
-        status:
-          'BLOCKED',
+        status: 'BLOCKED',
 
-        reason:
-          `Clase origen: ${source.status}.`,
+        reason: `Clase origen: ${source.status}.`,
       },
 
       moves: [],
@@ -628,29 +377,20 @@ function buildMovePlan({
     };
   }
 
-  if (
-    target.status !==
-    'FOUND'
-  ) {
+  if (target.status !== 'FOUND') {
     return {
       summary: {
-        operation:
-          rule.operation,
+        operation: rule.operation,
 
-        sourceName:
-          rule.sourceName,
+        sourceName: rule.sourceName,
 
-        sourceClassId:
-          source.class.id,
+        sourceClassId: source.class.id,
 
-        targetName:
-          rule.targetName,
+        targetName: rule.targetName,
 
-        status:
-          'BLOCKED',
+        status: 'BLOCKED',
 
-        reason:
-          `Clase destino: ${target.status}.`,
+        reason: `Clase destino: ${target.status}.`,
       },
 
       moves: [],
@@ -659,166 +399,98 @@ function buildMovePlan({
     };
   }
 
-  const sourceEnrollments =
-    enrollmentsByClass.get(
-      source.class.id,
-    ) ?? [];
+  const sourceEnrollments = enrollmentsByClass.get(source.class.id) ?? [];
 
   const moves = [];
   const conflicts = [];
 
-  for (
-    const enrollment
-    of sourceEnrollments
-  ) {
-    const targetKey =
-      `${enrollment.studentId}|${target.class.id}`;
+  for (const enrollment of sourceEnrollments) {
+    const targetKey = `${enrollment.studentId}|${target.class.id}`;
 
-    const targetExisting =
-      studentClassIndex.get(
-        targetKey,
-      ) ?? [];
+    const targetExisting = studentClassIndex.get(targetKey) ?? [];
 
-    if (
-      targetExisting.length > 0
-    ) {
+    if (targetExisting.length > 0) {
       conflicts.push({
-        type:
-          'TARGET_ENROLLMENT_ALREADY_EXISTS',
+        type: 'TARGET_ENROLLMENT_ALREADY_EXISTS',
 
-        sourceEnrollmentId:
-          enrollment.id,
+        sourceEnrollmentId: enrollment.id,
 
-        studentId:
-          enrollment.studentId,
+        studentId: enrollment.studentId,
 
-        studentName:
-          studentName(
-            enrollment,
-          ),
+        studentName: studentName(enrollment),
 
-        sourceClassId:
-          source.class.id,
+        sourceClassId: source.class.id,
 
-        sourceClassName:
-          source.class.name,
+        sourceClassName: source.class.name,
 
-        targetClassId:
-          target.class.id,
+        targetClassId: target.class.id,
 
-        targetClassName:
-          target.class.name,
+        targetClassName: target.class.name,
 
-        sourceStartDate:
-          normalizeDate(
-            enrollment.startDate,
-          ),
+        sourceStartDate: normalizeDate(enrollment.startDate),
 
-        sourceEndDate:
-          normalizeDate(
-            enrollment.endDate,
-          ),
+        sourceEndDate: normalizeDate(enrollment.endDate),
 
-        existingTargetEnrollments:
-          targetExisting.map(
-            (item) => ({
-              id:
-                item.id,
+        existingTargetEnrollments: targetExisting.map((item) => ({
+          id: item.id,
 
-              status:
-                item.status,
+          status: item.status,
 
-              startDate:
-                normalizeDate(
-                  item.startDate,
-                ),
+          startDate: normalizeDate(item.startDate),
 
-              endDate:
-                normalizeDate(
-                  item.endDate,
-                ),
-            }),
-          ),
+          endDate: normalizeDate(item.endDate),
+        })),
       });
 
       continue;
     }
 
     moves.push({
-      enrollmentId:
-        enrollment.id,
+      enrollmentId: enrollment.id,
 
-      studentId:
-        enrollment.studentId,
+      studentId: enrollment.studentId,
 
-      studentName:
-        studentName(
-          enrollment,
-        ),
+      studentName: studentName(enrollment),
 
-      status:
-        enrollment.status,
+      status: enrollment.status,
 
-      startDate:
-        normalizeDate(
-          enrollment.startDate,
-        ),
+      startDate: normalizeDate(enrollment.startDate),
 
-      endDate:
-        normalizeDate(
-          enrollment.endDate,
-        ),
+      endDate: normalizeDate(enrollment.endDate),
 
-      sourceClassId:
-        source.class.id,
+      sourceClassId: source.class.id,
 
-      sourceClassName:
-        source.class.name,
+      sourceClassName: source.class.name,
 
-      targetClassId:
-        target.class.id,
+      targetClassId: target.class.id,
 
-      targetClassName:
-        target.class.name,
+      targetClassName: target.class.name,
 
-      operation:
-        'CHANGE_ENROLLMENT_CLASS',
+      operation: 'CHANGE_ENROLLMENT_CLASS',
     });
   }
 
   return {
     summary: {
-      operation:
-        'MOVE_ENROLLMENTS',
+      operation: 'MOVE_ENROLLMENTS',
 
-      sourceName:
-        source.class.name,
+      sourceName: source.class.name,
 
-      sourceClassId:
-        source.class.id,
+      sourceClassId: source.class.id,
 
-      targetName:
-        target.class.name,
+      targetName: target.class.name,
 
-      targetClassId:
-        target.class.id,
+      targetClassId: target.class.id,
 
-      sourceEnrollmentCount:
-        sourceEnrollments.length,
+      sourceEnrollmentCount: sourceEnrollments.length,
 
-      safeMoveCount:
-        moves.length,
+      safeMoveCount: moves.length,
 
-      conflictCount:
-        conflicts.length,
+      conflictCount: conflicts.length,
 
-      status:
-        conflicts.length === 0
-          ? 'READY'
-          : 'REVIEW_CONFLICTS',
+      status: conflicts.length === 0 ? 'READY' : 'REVIEW_CONFLICTS',
 
-      reason:
-        rule.reason,
+      reason: rule.reason,
     },
 
     moves,
@@ -830,96 +502,53 @@ function buildMovePlan({
  * FORMACIÓN: AUDITORÍA DE FECHAS
  * ========================================================= */
 
-function buildFormationDateAudit({
-  classIndex,
-  enrollmentsByClass,
-}) {
-  const result =
-    findSingleClass(
-      classIndex,
-      FORMATION_CLASS_NAME,
-    );
+function buildFormationDateAudit({ classIndex, enrollmentsByClass }) {
+  const result = findSingleClass(classIndex, FORMATION_CLASS_NAME);
 
-  if (
-    result.status !==
-    'FOUND'
-  ) {
+  if (result.status !== 'FOUND') {
     return {
-      classFound:
-        false,
+      classFound: false,
 
       items: [],
     };
   }
 
-  const enrollments =
-    enrollmentsByClass.get(
-      result.class.id,
-    ) ?? [];
+  const enrollments = enrollmentsByClass.get(result.class.id) ?? [];
 
-  const suspicious =
-    enrollments
-      .filter(
-        (item) => {
-          const start =
-            normalizeDate(
-              item.startDate,
-            );
+  const suspicious = enrollments
+    .filter((item) => {
+      const start = normalizeDate(item.startDate);
 
-          return (
-            start &&
-            start <
-              FORMATION_REAL_START
-          );
-        },
-      )
-      .map(
-        (item) => ({
-          enrollmentId:
-            item.id,
+      return start && start < FORMATION_REAL_START;
+    })
+    .map((item) => ({
+      enrollmentId: item.id,
 
-          studentId:
-            item.studentId,
+      studentId: item.studentId,
 
-          studentName:
-            studentName(
-              item,
-            ),
+      studentName: studentName(item),
 
-          currentStartDate:
-            normalizeDate(
-              item.startDate,
-            ),
+      currentStartDate: normalizeDate(item.startDate),
 
-          confirmedEarliestStart:
-            FORMATION_REAL_START,
+      confirmedEarliestStart: FORMATION_REAL_START,
 
-          status:
-            item.status,
+      status: item.status,
 
-          issue:
-            'START_BEFORE_CONFIRMED_PROGRAM_START',
-        }),
-      );
+      issue: 'START_BEFORE_CONFIRMED_PROGRAM_START',
+    }));
 
   return {
-    classFound:
-      true,
+    classFound: true,
 
-    classId:
-      result.class.id,
+    classId: result.class.id,
 
-    className:
-      result.class.name,
+    className: result.class.name,
 
-    enrollmentCount:
-      enrollments.length,
+    enrollmentCount: enrollments.length,
 
-    suspiciousCount:
-      suspicious.length,
+    suspiciousCount: suspicious.length,
 
-    items:
-      suspicious,
+    items: suspicious,
   };
 }
 
@@ -930,82 +559,46 @@ function buildFormationDateAudit({
 async function main() {
   console.log('');
 
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
-  console.log(
-    ' PLAN DE MIGRACIÓN DE MAPPINGS DE CLASES',
-  );
+  console.log(' PLAN DE MIGRACIÓN DE MAPPINGS DE CLASES');
 
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
   console.log('');
 
-  const enrollments =
-    await readEnrollments();
+  const enrollments = await readEnrollments();
 
   /*
    * También verificamos que el plan previo exista.
    */
-  await readJson(
-    RESOLUTION_PLAN_FILE,
-  );
+  await readJson(RESOLUTION_PLAN_FILE);
 
-  console.log(
-    `🎓 Enrollments cargados: ${enrollments.length}`,
-  );
+  console.log(`🎓 Enrollments cargados: ${enrollments.length}`);
 
   console.log('');
-  console.log(
-    '🔐 Iniciando sesión...',
-  );
+  console.log('🔐 Iniciando sesión...');
 
-  const sessionCookie =
-    await login();
+  const sessionCookie = await login();
 
-  console.log(
-    '✅ Sesión iniciada.',
-  );
+  console.log('✅ Sesión iniciada.');
 
-  const classes =
-    await getAllClasses(
-      sessionCookie,
-    );
+  const classes = await getAllClasses(sessionCookie);
 
-  console.log(
-    `💃 Clases en BDD: ${classes.length}`,
-  );
+  console.log(`💃 Clases en BDD: ${classes.length}`);
 
-  const classIndex =
-    indexClassesByName(
-      classes,
-    );
+  const classIndex = indexClassesByName(classes);
 
-  const enrollmentsByClass =
-    groupEnrollmentsByClass(
-      enrollments,
-    );
+  const enrollmentsByClass = groupEnrollmentsByClass(enrollments);
 
-  const studentClassIndex =
-    indexEnrollmentByStudentClass(
-      enrollments,
-    );
+  const studentClassIndex = indexEnrollmentByStudentClass(enrollments);
 
   const operations = [];
   const moveRows = [];
   const conflicts = [];
 
-  for (
-    const rule
-    of CLASS_MAPPING_RULES
-  ) {
-    if (
-      rule.operation ===
-      'RENAME_CLASS'
-    ) {
+  for (const rule of CLASS_MAPPING_RULES) {
+    if (rule.operation === 'RENAME_CLASS') {
       operations.push(
         buildRenamePlan({
           rule,
@@ -1017,258 +610,141 @@ async function main() {
       continue;
     }
 
-    if (
-      rule.operation ===
-      'MOVE_ENROLLMENTS'
-    ) {
-      const result =
-        buildMovePlan({
-          rule,
-          classIndex,
-          enrollmentsByClass,
-          studentClassIndex,
-        });
+    if (rule.operation === 'MOVE_ENROLLMENTS') {
+      const result = buildMovePlan({
+        rule,
+        classIndex,
+        enrollmentsByClass,
+        studentClassIndex,
+      });
 
-      operations.push(
-        result.summary,
-      );
+      operations.push(result.summary);
 
-      moveRows.push(
-        ...result.moves,
-      );
+      moveRows.push(...result.moves);
 
-      conflicts.push(
-        ...result.conflicts,
-      );
+      conflicts.push(...result.conflicts);
     }
   }
 
-  const formationAudit =
-    buildFormationDateAudit({
-      classIndex,
-      enrollmentsByClass,
-    });
+  const formationAudit = buildFormationDateAudit({
+    classIndex,
+    enrollmentsByClass,
+  });
 
-  const readyOperations =
-    operations.filter(
-      (item) =>
-        item.status ===
-        'READY',
-    );
+  const readyOperations = operations.filter((item) => item.status === 'READY');
 
-  const blockedOperations =
-    operations.filter(
-      (item) =>
-        item.status !==
-        'READY',
-    );
+  const blockedOperations = operations.filter((item) => item.status !== 'READY');
 
   console.log('');
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
-  console.log(
-    ' RESULTADO',
-  );
+  console.log(' RESULTADO');
 
-  console.log(
-    '=========================================================',
-  );
+  console.log('=========================================================');
 
   console.log('');
-  console.log(
-    `✅ Operaciones listas: ${readyOperations.length}`,
-  );
+  console.log(`✅ Operaciones listas: ${readyOperations.length}`);
 
-  console.log(
-    `⚠️ Operaciones bloqueadas/revisión: ${blockedOperations.length}`,
-  );
+  console.log(`⚠️ Operaciones bloqueadas/revisión: ${blockedOperations.length}`);
 
-  console.log(
-    `🔁 Enrollments seguros para mover: ${moveRows.length}`,
-  );
+  console.log(`🔁 Enrollments seguros para mover: ${moveRows.length}`);
 
-  console.log(
-    `💥 Conflictos de enrollment: ${conflicts.length}`,
-  );
+  console.log(`💥 Conflictos de enrollment: ${conflicts.length}`);
 
-  console.log(
-    `📅 Fechas sospechosas Formación: ${formationAudit.suspiciousCount ?? 0}`,
-  );
+  console.log(`📅 Fechas sospechosas Formación: ${formationAudit.suspiciousCount ?? 0}`);
 
-  for (
-    const operation
-    of operations
-  ) {
+  for (const operation of operations) {
     console.log('');
-    console.log(
-      `--- ${operation.sourceName} ---`,
-    );
+    console.log(`--- ${operation.sourceName} ---`);
 
-    console.log(
-      `Operación: ${operation.operation}`,
-    );
+    console.log(`Operación: ${operation.operation}`);
 
-    console.log(
-      `Estado: ${operation.status}`,
-    );
+    console.log(`Estado: ${operation.status}`);
 
-    if (
-      operation.sourceClassId
-    ) {
-      console.log(
-        `Origen: ${operation.sourceClassId}`,
-      );
+    if (operation.sourceClassId) {
+      console.log(`Origen: ${operation.sourceClassId}`);
     }
 
-    if (
-      operation.targetName
-    ) {
-      console.log(
-        `Destino/nombre: ${operation.targetName}`,
-      );
+    if (operation.targetName) {
+      console.log(`Destino/nombre: ${operation.targetName}`);
     }
 
-    if (
-      operation.targetClassId
-    ) {
-      console.log(
-        `Target ID: ${operation.targetClassId}`,
-      );
+    if (operation.targetClassId) {
+      console.log(`Target ID: ${operation.targetClassId}`);
     }
 
-    if (
-      operation.safeMoveCount !==
-      undefined
-    ) {
-      console.log(
-        `Moves seguros: ${operation.safeMoveCount}`,
-      );
+    if (operation.safeMoveCount !== undefined) {
+      console.log(`Moves seguros: ${operation.safeMoveCount}`);
 
-      console.log(
-        `Conflictos: ${operation.conflictCount}`,
-      );
+      console.log(`Conflictos: ${operation.conflictCount}`);
     }
 
-    console.log(
-      `Motivo: ${operation.reason}`,
-    );
+    console.log(`Motivo: ${operation.reason}`);
   }
 
-  await fs.mkdir(
-    OUTPUT_DIR,
-    {
-      recursive:
-        true,
-    },
-  );
+  await fs.mkdir(OUTPUT_DIR, {
+    recursive: true,
+  });
 
   const output = {
-    generatedAt:
-      new Date()
-        .toISOString(),
+    generatedAt: new Date().toISOString(),
 
     summary: {
-      operationCount:
-        operations.length,
+      operationCount: operations.length,
 
-      readyOperationCount:
-        readyOperations.length,
+      readyOperationCount: readyOperations.length,
 
-      blockedOperationCount:
-        blockedOperations.length,
+      blockedOperationCount: blockedOperations.length,
 
-      safeEnrollmentMoves:
-        moveRows.length,
+      safeEnrollmentMoves: moveRows.length,
 
-      enrollmentConflicts:
-        conflicts.length,
+      enrollmentConflicts: conflicts.length,
 
-      formationSuspiciousStartDates:
-        formationAudit.suspiciousCount ??
-        0,
+      formationSuspiciousStartDates: formationAudit.suspiciousCount ?? 0,
     },
 
     operations,
 
-    enrollmentMoves:
-      moveRows,
+    enrollmentMoves: moveRows,
 
     conflicts,
 
-    formationDateAudit:
-      formationAudit,
+    formationDateAudit: formationAudit,
   };
 
-  await fs.writeFile(
-    OUTPUT_JSON,
-    JSON.stringify(
-      output,
-      null,
-      2,
-    ),
-    'utf8',
-  );
+  await fs.writeFile(OUTPUT_JSON, JSON.stringify(output, null, 2), 'utf8');
 
-  const workbook =
-    utils.book_new();
+  const workbook = utils.book_new();
+
+  utils.book_append_sheet(workbook, utils.json_to_sheet(operations), 'Operaciones');
+
+  utils.book_append_sheet(workbook, utils.json_to_sheet(moveRows), 'Enrollment moves');
 
   utils.book_append_sheet(
     workbook,
     utils.json_to_sheet(
-      operations,
-    ),
-    'Operaciones',
-  );
+      conflicts.map((item) => ({
+        Tipo: item.type,
 
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      moveRows,
-    ),
-    'Enrollment moves',
-  );
+        Alumno: item.studentName,
 
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      conflicts.map(
-        (item) => ({
-          Tipo:
-            item.type,
+        'Student ID': item.studentId,
 
-          Alumno:
-            item.studentName,
+        'Enrollment origen': item.sourceEnrollmentId,
 
-          'Student ID':
-            item.studentId,
+        'Clase origen': item.sourceClassName,
 
-          'Enrollment origen':
-            item.sourceEnrollmentId,
+        'Clase destino': item.targetClassName,
 
-          'Clase origen':
-            item.sourceClassName,
-
-          'Clase destino':
-            item.targetClassName,
-
-          'Enrollments destino existentes':
-            JSON.stringify(
-              item.existingTargetEnrollments,
-            ),
-        }),
-      ),
+        'Enrollments destino existentes': JSON.stringify(item.existingTargetEnrollments),
+      })),
     ),
     'Conflictos',
   );
 
   utils.book_append_sheet(
     workbook,
-    utils.json_to_sheet(
-      formationAudit.items ??
-      [],
-    ),
+    utils.json_to_sheet(formationAudit.items ?? []),
     'Formacion fechas',
   );
 
@@ -1276,89 +752,57 @@ async function main() {
     workbook,
     utils.json_to_sheet([
       {
-        Métrica:
-          'Operaciones',
+        Métrica: 'Operaciones',
 
-        Cantidad:
-          operations.length,
+        Cantidad: operations.length,
       },
       {
-        Métrica:
-          'Operaciones READY',
+        Métrica: 'Operaciones READY',
 
-        Cantidad:
-          readyOperations.length,
+        Cantidad: readyOperations.length,
       },
       {
-        Métrica:
-          'Operaciones revisión',
+        Métrica: 'Operaciones revisión',
 
-        Cantidad:
-          blockedOperations.length,
+        Cantidad: blockedOperations.length,
       },
       {
-        Métrica:
-          'Enrollment moves seguros',
+        Métrica: 'Enrollment moves seguros',
 
-        Cantidad:
-          moveRows.length,
+        Cantidad: moveRows.length,
       },
       {
-        Métrica:
-          'Conflictos',
+        Métrica: 'Conflictos',
 
-        Cantidad:
-          conflicts.length,
+        Cantidad: conflicts.length,
       },
       {
-        Métrica:
-          'Formation startDate sospechosos',
+        Métrica: 'Formation startDate sospechosos',
 
-        Cantidad:
-          formationAudit.suspiciousCount ??
-          0,
+        Cantidad: formationAudit.suspiciousCount ?? 0,
       },
     ]),
     'Resumen',
   );
 
-  writeFile(
-    workbook,
-    OUTPUT_XLSX,
-  );
+  writeFile(workbook, OUTPUT_XLSX);
 
   console.log('');
-  console.log(
-    `📝 JSON: ${OUTPUT_JSON}`,
-  );
+  console.log(`📝 JSON: ${OUTPUT_JSON}`);
 
-  console.log(
-    `📊 Excel: ${OUTPUT_XLSX}`,
-  );
+  console.log(`📊 Excel: ${OUTPUT_XLSX}`);
 
   console.log('');
-  console.log(
-    '✅ Plan generado. No se modificó la BDD.',
-  );
+  console.log('✅ Plan generado. No se modificó la BDD.');
 
   console.log('');
 }
 
-main().catch(
-  (error) => {
-    console.error('');
-    console.error(
-      '❌ ERROR:',
-    );
+main().catch((error) => {
+  console.error('');
+  console.error('❌ ERROR:');
 
-    console.error(
-      error instanceof Error
-        ? error.stack ??
-          error.message
-        : error,
-    );
+  console.error(error instanceof Error ? (error.stack ?? error.message) : error);
 
-    process.exitCode =
-      1;
-  },
-);
+  process.exitCode = 1;
+});
