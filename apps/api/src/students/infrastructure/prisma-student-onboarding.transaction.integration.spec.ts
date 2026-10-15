@@ -1,12 +1,16 @@
 import { PrismaClient } from '@academy/database';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  integrationTestTimeoutMs,
+  prismaTransactionOptions,
+} from '../../database/prisma-transaction-options';
 import { StudentOnboardingService } from '../application/student-onboarding.service';
 import { PrismaStudentOnboardingTransaction } from './prisma-student-onboarding.transaction';
 
 const enabled = Boolean(process***REMOVED***.DATABASE_URL);
 describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ transactionOptions: prismaTransactionOptions });
   const service = new StudentOnboardingService(
     new PrismaStudentOnboardingTransaction(prisma as PrismaService),
   );
@@ -223,4 +227,4 @@ describe.runIf(enabled)('Student onboarding atomicity and concurrency', () => {
       await cleanup(data);
     }
   });
-});
+}, integrationTestTimeoutMs);

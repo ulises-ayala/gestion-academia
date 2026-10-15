@@ -1,11 +1,15 @@
 import { PrismaClient } from '@academy/database';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { PrismaService } from '../../database/prisma.service';
+import {
+  integrationTestTimeoutMs,
+  prismaTransactionOptions,
+} from '../../database/prisma-transaction-options';
 import { CashShiftsService } from './cash-shifts.service';
 
 const enabled = Boolean(process***REMOVED***.DATABASE_URL);
 describe.runIf(enabled)('CashShiftsService integration', () => {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ transactionOptions: prismaTransactionOptions });
   const service = new CashShiftsService(prisma as PrismaService);
   beforeAll(() => prisma.$connect());
   afterAll(() => prisma.$disconnect());
@@ -109,4 +113,4 @@ describe.runIf(enabled)('CashShiftsService integration', () => {
       await prisma.adminUser.delete({ where: { id: otherActor.id } });
     }
   });
-});
+}, integrationTestTimeoutMs);
