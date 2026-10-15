@@ -47,7 +47,7 @@ Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota me
 Requiere Node.js 22+, npm 10+, Docker y Docker Compose.
 
 ```bash
-cp ***REMOVED***.example ***REMOVED***
+cp .env.example .env
 npm install
 docker compose up -d db
 npm run db:generate
@@ -55,7 +55,7 @@ npm run db:migrate
 npm run dev
 ```
 
-En PowerShell, use `Copy-Item ***REMOVED***.example ***REMOVED***`. Si la política de ejecución bloquea `npm.ps1`, use `npm.cmd`.
+En PowerShell, use `Copy-Item .env.example .env`. Si la política de ejecución bloquea `npm.ps1`, use `npm.cmd`.
 
 - Panel: `http://localhost:3000`
 - API: `http://localhost:3001/api/v1`
@@ -73,7 +73,7 @@ npm run db:seed
 
 El comando es manual, idempotente y exclusivo de desarrollo. Se cancela si `NODE_ENV` no es `development`, si corre en CI o si `DATABASE_URL` no apunta por `localhost`, `127.0.0.1` o `::1` a una base PostgreSQL llamada `academy`. No se ejecuta durante builds, migraciones ni despliegues.
 
-La contraseña común de los usuarios de prueba se toma de `DEV_SEED_PASSWORD`; `***REMOVED***.example` incluye `AcademiaDev2026!` como valor exclusivamente local. Los accesos disponibles son:
+La contraseña común de los usuarios de prueba se toma de `DEV_SEED_PASSWORD`; `.env.example` incluye `AcademiaDev2026!` como valor exclusivamente local. Los accesos disponibles son:
 
 - `admision` (`RECEPTION`, nivel Admisión).
 - `administracion` (`MANAGER`, nivel Administración).
@@ -85,14 +85,14 @@ El dataset incluye 28 alumnos, 6 profesores, 4 tipos de danza, 2 sedes, 4 salone
 
 Staging dispone de un comando administrativo separado que carga exclusivamente datos ficticios en una base PostgreSQL llamada exactamente `academy_staging`. Es manual, idempotente, nunca forma parte del build, CI, migraciones, deploy o arranque, y no borra ni modifica registros ajenos al conjunto reservado del seed.
 
-Debe ejecutarse en un entorno que ya proporcione `DATABASE_URL` (no carga un archivo `***REMOVED***`) y exige simultáneamente:
+Debe ejecutarse en un entorno que ya proporcione `DATABASE_URL` (no carga un archivo `.env`) y exige simultáneamente:
 
 ```text
 NODE_ENV=production
-***REMOVED***true
-***REMOVED***academy_staging
-***REMOVED***SEED_ACADEMY_STAGING
-***REMOVED***<secret>
+ALLOW_STAGING_SEED=true
+STAGING_SEED_TARGET=academy_staging
+STAGING_SEED_CONFIRM=SEED_ACADEMY_STAGING
+STAGING_SEED_PASSWORD=<secret>
 ```
 
 `STAGING_SEED_PASSWORD` no tiene valor predeterminado, debe cumplir la validación de la aplicación (entre 12 y 200 caracteres), se procesa con el mismo hash `scrypt` y nunca se imprime. Las cuentas reservadas son `demo-admision`, `demo-administracion` y `demo-direccion`; así no se pisan cuentas administrativas creadas manualmente.
@@ -174,7 +174,7 @@ npm test
 npm run build
 ```
 
-Durante el job se inicia un service container efímero de PostgreSQL 16. `DATABASE_URL` apunta exclusivamente a la base `academy_ci` del contenedor y usa credenciales fijas sin valor fuera de CI; no lee `***REMOVED***`, la base local ni secretos reales. Después de instalar las dependencias se genera el cliente Prisma requerido por TypeScript y `prisma migrate deploy` aplica desde cero todas las migraciones versionadas antes de ejecutar las pruebas.
+Durante el job se inicia un service container efímero de PostgreSQL 16. `DATABASE_URL` apunta exclusivamente a la base `academy_ci` del contenedor y usa credenciales fijas sin valor fuera de CI; no lee `.env`, la base local ni secretos reales. Después de instalar las dependencias se genera el cliente Prisma requerido por TypeScript y `prisma migrate deploy` aplica desde cero todas las migraciones versionadas antes de ejecutar las pruebas.
 
 ## Staging en Render
 
@@ -213,7 +213,7 @@ El frontend ejecuta `npm ci --include=dev`, `next build` y `next start`. Tanto N
 8. Abrir el frontend, completar una sola vez el alta del primer administrador y probar login/logout.
 9. Crear manualmente datos ficticios desde el panel: sucursal, salones, profesores, tipos de danza, clases, alumnos e inscripciones. No usar datos personales reales. No hay un seed automático en este incremento.
 
-`DATABASE_URL` se completa mediante `fromDatabase.connectionString`; no se carga manualmente ni se copia a un `***REMOVED***`. Render también proporciona `PORT` en runtime. El Blueprint fija `NODE_ENV=production`, `AUTH_COOKIE_SECURE=true`, `AUTH_COOKIE_SAME_SITE=none`, `***REMOVED***` y `***REMOVED***`.
+`DATABASE_URL` se completa mediante `fromDatabase.connectionString`; no se carga manualmente ni se copia a un `.env`. Render también proporciona `PORT` en runtime. El Blueprint fija `NODE_ENV=production`, `AUTH_COOKIE_SECURE=true`, `AUTH_COOKIE_SAME_SITE=none`, `AUTH_SESSION_HOURS` y `BUSINESS_TIMEZONE`.
 
 ### CORS y sesiones
 

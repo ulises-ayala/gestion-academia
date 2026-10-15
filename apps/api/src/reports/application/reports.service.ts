@@ -103,7 +103,7 @@ export class ReportsService {
     pageSize: number;
     debtSort: 'highest' | 'oldest';
   }): Promise<OperationalReportsDto> {
-    const timezone = process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
+    const timezone = process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
     const businessDate = businessDayAt(new Date(), timezone).date;
     const offset = (input.page - 1) * input.pageSize;
     const search = input.q?.trim() ? `%${input.q.trim()}%` : null;

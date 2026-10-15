@@ -7,7 +7,7 @@ import {
 } from '../../database/prisma-transaction-options';
 import { CashShiftsService } from './cash-shifts.service';
 
-const enabled = Boolean(process***REMOVED***.DATABASE_URL);
+const enabled = Boolean(process.env.DATABASE_URL);
 describe.runIf(enabled)(
   'CashShiftsService integration',
   () => {

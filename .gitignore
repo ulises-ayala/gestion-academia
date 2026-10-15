@@ -2,9 +2,9 @@
 node_modules/
 
 # Variables de entorno
-***REMOVED***
-***REMOVED***.*
-!***REMOVED***.example
+.env
+.env.*
+!.env.example
 
 # Builds / outputs
 dist/

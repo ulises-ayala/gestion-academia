@@ -42,7 +42,7 @@ export class ReceivablesService {
   async list(query: ReceivablesQuery): Promise<ReceivablesDto> {
     const today = businessDayAt(
       new Date(),
-      process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+      process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
     ).dateValue;
     const scopeFilter = this.scopeFilter(query.scope, today);
     const searchFilter = query.q

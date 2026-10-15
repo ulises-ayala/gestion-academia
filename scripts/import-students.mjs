@@ -4,15 +4,15 @@ const API_URL = 'http://localhost:3001/api/v1';
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
-const username = process***REMOVED***.IMPORT_ADMIN_USERNAME;
-const password = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
+const username = process.env.IMPORT_ADMIN_USERNAME;
+const password = process.env.IMPORT_ADMIN_PASSWORD;
 
 /**
  * Inicia sesión en la API y devuelve la cookie de sesión.
  */
 async function login() {
   if (!username || !password) {
-    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en el ***REMOVED***');
+    throw new Error('Faltan IMPORT_ADMIN_USERNAME o IMPORT_ADMIN_PASSWORD en el .env');
   }
 
   console.log('🔐 Iniciando sesión...');

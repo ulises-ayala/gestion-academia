@@ -21,7 +21,7 @@ Construir el sistema en incrementos verticales pequeños. No implementar reglas 
 - DNI es texto normalizado, no número.
 - Toda modificación de esquema requiere migración; no reescribir migraciones aplicadas.
 - Guardar solamente hashes de contraseña; nunca registrar secretos, tokens ni contraseñas.
-- Configuración por entorno; actualizar `***REMOVED***.example` sin secretos.
+- Configuración por entorno; actualizar `.env.example` sin secretos.
 - Errores de dominio tipados y traducción a HTTP en presentación.
 
 ## Calidad

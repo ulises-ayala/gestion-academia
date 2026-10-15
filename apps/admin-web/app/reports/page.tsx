@@ -18,7 +18,7 @@ const methods = { CASH: 'Efectivo', MERCADO_PAGO: 'Mercado Pago', CARD: 'Tarjeta
 const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
 const amount = (value: string) => money.format(Number(value));
 const date = (value: string) => value.split('T')[0]!.split('-').reverse().join('/');
-const apiUrl = process***REMOVED***.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 const currentMonth = () => {
   const value = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/Buenos_Aires',

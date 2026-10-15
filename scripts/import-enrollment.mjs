@@ -3,8 +3,8 @@ import XLSX from 'xlsx';
 const API_URL = 'http://localhost:3001/api/v1';
 const DRY_RUN = process.argv.includes('--dry-run');
 
-const username = process***REMOVED***.IMPORT_ADMIN_USERNAME;
-const password = process***REMOVED***.IMPORT_ADMIN_PASSWORD;
+const username = process.env.IMPORT_ADMIN_USERNAME;
+const password = process.env.IMPORT_ADMIN_PASSWORD;
 
 const activityClassMap = {
   'Arabe Infantil': 'Árabe infantil',

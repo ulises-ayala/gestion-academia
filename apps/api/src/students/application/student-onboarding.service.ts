@@ -13,7 +13,7 @@ import {
 
 const businessDate = () => {
   const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+    timeZone: process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

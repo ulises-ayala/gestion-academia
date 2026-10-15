@@ -67,7 +67,7 @@ export class ReportsController {
     pageSize?: string,
     debtSort?: string,
   ) {
-    const timezone = process***REMOVED***.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
+    const timezone = process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
     const today = businessDayAt(new Date(), timezone).date;
     const [year, month] = today.split('-');
     const from = fromValue || `${year}-${month}-01`;

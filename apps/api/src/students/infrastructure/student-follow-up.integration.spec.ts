@@ -10,10 +10,10 @@ import { EnrollmentsService } from '../../enrollments/application/enrollments.se
 import { PrismaStudentFollowUpReader } from './prisma-student-follow-up.reader';
 import { followUpCountQuery } from './student-follow-up-query';
 
-// Explicit opt-in; never load a developer's ***REMOVED*** or run fixtures on the academy database.
+// Explicit opt-in; never load a developer's .env or run fixtures on the academy database.
 const enabled = Boolean(
-  process***REMOVED***.DATABASE_URL &&
-    /(?:academy_ci|follow_up_test)(?:\?|$)/.test(process***REMOVED***.DATABASE_URL),
+  process.env.DATABASE_URL &&
+    /(?:academy_ci|follow_up_test)(?:\?|$)/.test(process.env.DATABASE_URL),
 );
 describe.runIf(enabled)(
   'Student follow-up PostgreSQL read model and enrollment end',
