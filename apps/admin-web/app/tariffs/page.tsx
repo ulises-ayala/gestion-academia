@@ -1,24 +1,38 @@
 'use client';
 
-import type { TariffDto } from '@academy/contracts';
+import type { ClassListDto, TariffDto } from '@academy/contracts';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { formatDate } from '../../lib/dates';
 import { PermissionGate } from '../../components/permission-gate';
 
-const emptyForm = { name: '', amount: '40000.00', validFrom: '', validTo: '' };
+const emptyForm = { classId: '', name: '', amount: '40000.00', validFrom: '', validTo: '' };
 const money = (value: string) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 
 export default function TariffsPage() {
   const [items, setItems] = useState<readonly TariffDto[]>([]);
+  const [classes, setClasses] = useState<ClassListDto['items']>([]);
   const [editing, setEditing] = useState<TariffDto | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [message, setMessage] = useState('');
   const load = useCallback(async () => setItems(await apiRequest<TariffDto[]>('/tariffs')), []);
+  const loadClasses =
+  useCallback(async () => {
+    const response =
+      await apiRequest<ClassListDto>(
+        '/classes?status=ACTIVE&page=1&pageSize=100',
+      );
+
+    setClasses(response.items);
+  }, []);
+
   useEffect(() => {
-    void load();
-  }, [load]);
+    void Promise.all([
+      load(),
+      loadClasses(),
+    ]);
+  }, [load, loadClasses]);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -49,6 +63,40 @@ export default function TariffsPage() {
     }
   }
 
+  async function remove(item: TariffDto) {
+  const confirmed = confirm(
+    `¿Eliminar definitivamente la tarifa "${item.name}"?\n\nEsta acción no se puede deshacer.`,
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  setMessage('');
+
+  try {
+    await apiRequest(
+      `/tariffs/${item.id}/permanent`,
+      {
+        method: 'DELETE',
+      },
+    );
+
+    if (editing?.id === item.id) {
+      setEditing(null);
+      setForm(emptyForm);
+    }
+
+    await load();
+  } catch (error) {
+    setMessage(
+      error instanceof ApiClientError
+        ? error.message
+        : 'No se pudo eliminar la tarifa',
+    );
+  }
+}
+
   return (
     <>
       <div className="page-heading">
@@ -62,6 +110,32 @@ export default function TariffsPage() {
         <section className="card">
           <h2>{editing ? 'Editar tarifa' : 'Nueva tarifa'}</h2>
           <form className="catalog-form tariff-form" onSubmit={submit}>
+            <label>
+                Clase
+              <select
+                required
+                value={form.classId}
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    classId: event.target.value,
+                  })
+                }
+              >
+                <option value="">
+                  Seleccionar clase
+                </option>
+
+                {classes.map((academicClass) => (
+                  <option
+                    key={academicClass.id}
+                    value={academicClass.id}
+                  >
+                    {academicClass.name}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label>
               Nombre
               <input
@@ -121,6 +195,7 @@ export default function TariffsPage() {
           <table>
             <thead>
               <tr>
+                <th>Clase</th>
                 <th>Nombre</th>
                 <th>Monto</th>
                 <th>Vigencia</th>
@@ -131,6 +206,12 @@ export default function TariffsPage() {
             <tbody>
               {items.map((item) => (
                 <tr key={item.id}>
+                  <td data-label="Clase">
+                    {classes.find(
+                      (academicClass) =>
+                        academicClass.id === item.classId,
+                    )?.name ?? 'Clase no encontrada'}
+                  </td>
                   <td data-label="Nombre">{item.name}</td>
                   <td data-label="Monto">{money(item.amount)}</td>
                   <td data-label="Vigencia">
@@ -148,6 +229,7 @@ export default function TariffsPage() {
                         onClick={() => {
                           setEditing(item);
                           setForm({
+                            classId: item.classId,
                             name: item.name,
                             amount: item.amount,
                             validFrom: item.validFrom,
@@ -160,6 +242,14 @@ export default function TariffsPage() {
                       <button onClick={() => void toggle(item)}>
                         {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
                       </button>
+                      {item.status === 'INACTIVE' && (
+                      <button
+                        className="secondary"
+                        onClick={() => void remove(item)}
+                      >
+                        Eliminar
+                      </button>
+                    )}
                     </PermissionGate>
                   </td>
                 </tr>

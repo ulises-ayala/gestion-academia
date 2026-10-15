@@ -24,6 +24,7 @@ export class BillingService {
     return this.repository.updateTariff(
       id,
       validateTariff({
+        classId: patch.classId ?? current.classId,
         name: patch.name ?? current.name,
         amount: patch.amount ?? current.amount,
         validFrom: patch.validFrom ?? current.validFrom,
@@ -33,6 +34,32 @@ export class BillingService {
       actorId,
     );
   }
+
+async deleteTariff(id: string) {
+  const tariff =
+    await this.repository.findTariff(id);
+
+  if (!tariff) {
+    throw new DomainError(
+      'TARIFF_NOT_FOUND',
+      'Tarifa no encontrada',
+    );
+  }
+
+  if (tariff.status === 'ACTIVE') {
+    throw new DomainError(
+      'TARIFF_MUST_BE_INACTIVE',
+      'Primero debés desactivar la tarifa antes de eliminarla',
+    );
+  }
+
+  await this.repository.deleteTariff(id);
+
+  return {
+    id,
+    deleted: true,
+  };
+}
 
   async createCharge(input: CreateMonthlyChargeDto) {
     const { period, dueDate } = validateChargeDates(input.period, input.dueDate);
@@ -50,6 +77,12 @@ export class BillingService {
         'TARIFF_INACTIVE',
         'No se puede generar una cuota con una tarifa inactiva',
       );
+    if (tariff.classId !== enrollment.classId) {
+      throw new DomainError(
+        'TARIFF_CLASS_MISMATCH',
+        'La tarifa no corresponde a la clase de esta inscripción',
+      );
+    };
     if (period < tariff.validFrom || (tariff.validTo && period > tariff.validTo))
       throw new DomainError(
         'TARIFF_NOT_VALID_FOR_PERIOD',

@@ -386,6 +386,7 @@ export type EnrollmentAvailabilityDto = Readonly<{
 }>;
 
 export type TariffDto = Readonly<{
+  classId: string;
   id: string;
   name: string;
   amount: string;
@@ -396,6 +397,7 @@ export type TariffDto = Readonly<{
   updatedAt: string;
 }>;
 export type CreateTariffDto = Readonly<{
+  classId: string;
   name: string;
   amount: string;
   validFrom: string;

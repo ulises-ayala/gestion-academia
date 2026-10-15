@@ -1,9 +1,23 @@
+# Dependencias
 node_modules/
+
+# Variables de entorno
 ***REMOVED***
 ***REMOVED***.*
+!***REMOVED***.example
+
+# Builds / outputs
 dist/
 build/
 .next/
 coverage/
 .prisma/
 *.tsbuildinfo
+
+# Backups SQL privados en la raíz
+/backup_*.sql
+/academy_backup_*.sql
+
+# Datos reales / resultados de migración
+/exports/
+/scripts/data/
