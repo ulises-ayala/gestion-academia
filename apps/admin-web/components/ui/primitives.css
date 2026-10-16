@@ -1,0 +1,80 @@
+/* Extensions of the existing native controls, .button, .card and .status system. */
+.ui-button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ui-button.ui-button-small {
+  min-height: var(--control-height-sm);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+}
+.ui-button.ui-button-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-secondary);
+}
+.ui-button.ui-button-ghost:hover:not(:disabled) {
+  border-color: transparent;
+  background: var(--surface-hover);
+  color: var(--text);
+}
+.ui-button.danger-button:hover:not(:disabled) {
+  border-color: var(--destructive-fill-hover);
+  background: var(--destructive-fill-hover);
+}
+.ui-button[aria-busy='true'] {
+  cursor: progress;
+}
+.ui-field {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: var(--space-1);
+}
+.ui-field > input,
+.ui-field > select {
+  height: var(--control-height);
+}
+.ui-field > textarea {
+  margin-top: 0;
+}
+.ui-field > label {
+  color: var(--text-secondary);
+}
+.ui-field-help,
+.ui-field > .field-error {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height);
+}
+.ui-field-help {
+  color: var(--text-muted);
+}
+.ui-badge-warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.ui-badge-info {
+  background: var(--info-soft);
+  color: var(--info);
+}
+.ui-panel {
+  margin: 0;
+  padding: var(--space-4);
+}
+.ui-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+}
+.ui-empty-state > * {
+  margin: 0;
+}
+.ui-skeleton {
+  display: block;
+  height: var(--space-4);
+  width: 100%;
+  border-radius: var(--radius-sm);
+  background: var(--surface-secondary);
+}

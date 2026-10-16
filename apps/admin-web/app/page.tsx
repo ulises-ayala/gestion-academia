@@ -1,12 +1,24 @@
 'use client';
 
 import type { OperationalDashboardDto } from '@academy/contracts';
+import {
+  AlertTriangle,
+  ArrowUpRight,
+  CalendarCheck,
+  Contact,
+  CreditCard,
+  ListPlus,
+  UserPlus,
+  Wallet,
+  type LucideIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { AdminShell } from '../components/admin-shell';
 import { ConfirmedPaymentsChart } from '../components/confirmed-payments-chart';
 import { FollowUpDashboardLink } from '../components/student-follow-up';
 import { useAuth } from '../components/auth-provider';
+import { PageHeader } from '../components/ui/page-header';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { dashboardContextLinks, dashboardQuickActions } from '../lib/contextual-filters';
 
@@ -38,6 +50,14 @@ const entityLabels: Readonly<Record<string, string>> = {
   ATTENDANCE: 'Asistencia',
   ENROLLMENT: 'Inscripción',
   CASH_SHIFT: 'Turno de caja',
+};
+const quickActionIcons: Readonly<Record<string, LucideIcon>> = {
+  'Nuevo alumno': UserPlus,
+  'Registrar pago': CreditCard,
+  'Tomar asistencia': CalendarCheck,
+  'Nuevo potencial': Contact,
+  'Inscribir alumno': ListPlus,
+  'Abrir o consultar caja': Wallet,
 };
 
 const greeting = () => {
@@ -80,30 +100,37 @@ function Dashboard() {
     (data.followUp?.students ?? 0);
   return (
     <div className="dashboard-page">
-      <header className="dashboard-heading">
-        <div>
-          <p className="eyebrow">RESUMEN OPERATIVO</p>
-          <h1>
+      <PageHeader
+        title={
+          <>
             {greeting()}, {user.username}
-          </h1>
-          <p>Lo más importante de hoy, en un solo lugar.</p>
-        </div>
-        <span className="dashboard-date">{data.businessDate.split('-').reverse().join('/')}</span>
-      </header>
-      <section className="card dashboard-card quick-actions-card">
-        <div>
-          <p className="eyebrow">ACCIONES RÁPIDAS</p>
-          <h2>¿Qué querés hacer hoy?</h2>
-        </div>
+          </>
+        }
+        description="Lo más importante de hoy, en un solo lugar."
+        actions={
+          <time dateTime={data.businessDate}>
+            {data.businessDate.split('-').reverse().join('/')}
+          </time>
+        }
+      />
+      <section aria-labelledby="quick-actions-title" className="quick-actions-section">
+        <h2 id="quick-actions-title">¿Qué querés hacer hoy?</h2>
         <div className="quick-actions">
           {dashboardQuickActions
             .filter(([, , permission]) => can(permission))
-            .map(([label, href]) => (
-              <Link className="button quick-action" href={href} key={label}>
-                {label}
-                <span aria-hidden="true">→</span>
-              </Link>
-            ))}
+            .map(([label, href]) => {
+              const Icon = quickActionIcons[label];
+              return (
+                <Link
+                  className={`button quick-action ${label === 'Nuevo alumno' ? '' : 'secondary'}`}
+                  href={href}
+                  key={label}
+                >
+                  {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.5} />}
+                  {label}
+                </Link>
+              );
+            })}
         </div>
       </section>
       <section aria-label="Indicadores principales" className="metric-grid">
@@ -137,8 +164,13 @@ function Dashboard() {
       <section
         className={`card dashboard-card attention-card attention-primary ${urgent > 0 ? 'has-urgent' : ''}`}
       >
-        <p className="eyebrow">REQUIERE ATENCIÓN</p>
-        <h2>{urgent > 0 ? `${urgent} pendientes` : 'Todo al día'}</h2>
+        <div className="attention-heading">
+          <span>
+            <AlertTriangle aria-hidden="true" size={16} strokeWidth={1.5} />
+            Requiere atención
+          </span>
+          <strong>{urgent > 0 ? `${urgent} pendientes` : 'Todo al día'}</strong>
+        </div>
         {urgent === 0 ? (
           <p className="dashboard-empty">No hay alertas operativas urgentes.</p>
         ) : (
@@ -271,37 +303,6 @@ function Dashboard() {
           )}
         </div>
         <aside className="dashboard-stack">
-          <section
-            className={`card dashboard-card attention-card ${urgent > 0 ? 'has-urgent' : ''}`}
-          >
-            <p className="eyebrow">REQUIERE ATENCIÓN</p>
-            <h2>{urgent > 0 ? `${urgent} pendientes` : 'Todo al día'}</h2>
-            {urgent === 0 ? (
-              <p className="dashboard-empty">No hay alertas operativas urgentes.</p>
-            ) : (
-              <div className="attention-list">
-                {data.followUp && can('students:manage') && (
-                  <FollowUpDashboardLink students={data.followUp.students} />
-                )}
-                {data.billing && data.billing.overdueCharges > 0 && (
-                  <Link href={dashboardContextLinks.overdueCharges}>
-                    <strong>{data.billing.overdueCharges}</strong>
-                    <span>
-                      cuotas vencidas <small>Ver detalle →</small>
-                    </span>
-                  </Link>
-                )}
-                {data.leads && data.leads.overdueFollowUps > 0 && (
-                  <Link href={dashboardContextLinks.overdueFollowUps}>
-                    <strong>{data.leads.overdueFollowUps}</strong>
-                    <span>
-                      seguimientos vencidos <small>Ver detalle →</small>
-                    </span>
-                  </Link>
-                )}
-              </div>
-            )}
-          </section>
           {data.attendance && (
             <section className="card dashboard-card">
               <p className="eyebrow">ASISTENCIA DE HOY</p>
@@ -322,19 +323,6 @@ function Dashboard() {
               </Link>
             </section>
           )}
-          <section className="card dashboard-card legacy-quick-actions">
-            <p className="eyebrow">ACCESOS RÁPIDOS</p>
-            <h2>¿Qué querés hacer?</h2>
-            <div className="quick-actions">
-              {dashboardQuickActions
-                .filter(([, , permission]) => can(permission))
-                .map(([label, href]) => (
-                  <Link className="button secondary" href={href} key={href}>
-                    {label}
-                  </Link>
-                ))}
-            </div>
-          </section>
         </aside>
       </div>
     </div>
@@ -352,7 +340,8 @@ function Metric({
       <span>{label}</span>
       <strong>{value}</strong>
       {detail && <small>{detail}</small>}
-      <small className="metric-action">Ver detalle →</small>
+      <ArrowUpRight aria-hidden="true" className="metric-icon" size={16} strokeWidth={1.5} />
+      <span className="sr-only">Ver detalle →</span>
     </Link>
   );
 }
