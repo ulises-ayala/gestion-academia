@@ -1,4 +1,4 @@
-import React, { type ComponentPropsWithRef } from 'react';
+import React, { type ComponentPropsWithRef, type ReactNode } from 'react';
 
 type Tone = 'neutral' | 'success' | 'warning' | 'destructive' | 'info';
 const toneClass: Record<Tone, string> = {
@@ -27,8 +27,22 @@ export function Panel({ className = '', ...props }: ComponentPropsWithRef<'secti
   return <section {...props} className={`card ui-panel ${className}`.trim()} />;
 }
 
-export function EmptyState({ className = '', ...props }: ComponentPropsWithRef<'div'>) {
-  return <div {...props} className={`empty-state ui-empty-state ${className}`.trim()} />;
+export function EmptyState({
+  className = '',
+  icon,
+  children,
+  ...props
+}: ComponentPropsWithRef<'div'> & { icon?: ReactNode }) {
+  return (
+    <div {...props} className={`empty-state ui-empty-state ${className}`.trim()}>
+      {icon && (
+        <span aria-hidden="true" className="ui-empty-state-icon">
+          {icon}
+        </span>
+      )}
+      {children}
+    </div>
+  );
 }
 
 /** Decorative placeholder. Put the existing loading message on its parent region. */

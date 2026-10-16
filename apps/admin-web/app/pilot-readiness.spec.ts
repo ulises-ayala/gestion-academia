@@ -37,13 +37,12 @@ describe('Pilot readiness critical screens', () => {
     );
   });
 
-  it('distribuye las acciones rápidas en una grilla visual uniforme', () => {
+  it('mantiene acciones rápidas compactas, con wrap y una acción primaria', () => {
     const styles = read('./dashboard.css');
-    expect(styles).toContain('grid-template-columns: repeat(3, minmax(0, 1fr))');
+    expect(styles).toContain('display: flex;');
+    expect(styles).toContain('flex-wrap: wrap;');
+    expect(styles).toContain('width: fit-content;');
     expect(styles).toContain('.quick-actions-section .quick-action');
-    expect(styles).toMatch(
-      /@media \(max-width: 39\.999rem\)[\s\S]*\.quick-actions-section \.quick-actions,[\s\S]*grid-template-columns: 1fr/,
-    );
   });
 
   it('no bloquea clases y tarifas si falla la consulta de caja durante el alta', () => {

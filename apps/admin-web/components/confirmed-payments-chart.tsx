@@ -18,7 +18,6 @@ export function ConfirmedPaymentsChart({ data }: Readonly<{ data: FinancialData 
     <section className="card dashboard-card financial-card">
       <div className="dashboard-card-title">
         <div>
-          <p className="eyebrow">INFORMACIÓN PARA GESTIÓN</p>
           <h2>Evolución de cobros</h2>
         </div>
         <span className="financial-period">Últimos 6 meses</span>
@@ -42,7 +41,7 @@ export function ConfirmedPaymentsChart({ data }: Readonly<{ data: FinancialData 
                 <span className="payment-bar-value">{compactMoney(amount)}</span>
                 <span
                   aria-label={`${item.fullLabel}: ${pesos.format(amount)} pesos`}
-                  className="payment-bar-track"
+                  className={`payment-bar-track ${item === data.monthlyConfirmed.at(-1) ? 'current' : ''}`}
                 >
                   <span className="payment-bar" style={{ height: `${height}%` }} />
                 </span>

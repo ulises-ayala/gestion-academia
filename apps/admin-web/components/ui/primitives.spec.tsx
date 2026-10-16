@@ -43,6 +43,7 @@ describe('Shared native UI controls', () => {
     const html = renderToStaticMarkup(<Button loading>Guardando…</Button>);
     expect(html).toContain('aria-busy="true"');
     expect(html).toContain('disabled=""');
+    expect(html).toContain('ui-button-spinner');
     expect(html).toContain('Guardando…');
     expect(renderToStaticMarkup(<Button>Guardar</Button>)).not.toContain('disabled=""');
   });

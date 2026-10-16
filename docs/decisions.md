@@ -1,5 +1,24 @@
 # Decisiones y supuestos
 
+## Acabado moderno de Admin Web
+
+- El modo claro diferencia la estructura de la aplicaciÃ³n (`#F2F0ED`) de las superficies de trabajo blancas. Bordes `#DDD9D4`, controles `#8C8781` (ajustado desde el gris inicial para alcanzar 3:1 sobre blanco y sobre el fondo de aplicaciÃ³n) y una sombra de 1 px aportan jerarquÃ­a sin convertir las tarjetas en elementos flotantes; el modo oscuro conserva sus valores previos.
+
+- `PageContainer` establece anchos centrados de 1440, 1200 y 960 px para `wide`, `default` y `narrow`. Inicio y Alumnos usan `wide`; las barras del gráfico mantienen un ancho máximo y se centran en su columna para no deformarse en pantallas amplias.
+
+- Los tokens distinguen tres niveles sobrios: fondo de aplicación, superficie operativa y superficie elevada para capas superpuestas. Las tarjetas no ganan sombras; solamente popovers y diálogos usan dos capas de sombra de baja opacidad.
+- El acento vino se limita a acciones primarias, foco, enlaces al interactuar, indicador/icono activo de la navegación, subrayado de tabs y barras destacadas. La navegación activa usa texto y fondo neutros.
+- La tabla reutilizable de personas incorpora avatar decorativo de iniciales y conserva scroll horizontal dentro del contenedor en móvil. No se altera el contenido, orden, búsqueda ni los enlaces de datos.
+- La sidebar no se colapsa en esta fase: el estado persistente no existe y añadirlo agregaría una interacción estructural fuera del alcance.
+- Auditoría de acento en los patrones intervenidos: permanece en marca/botón primario, foco, subrayado de tab, indicador e icono activo de sidebar, enlace al hover y barra actual del gráfico. Se eliminó de la superficie activa de sidebar, los contadores de atención y las pistas de barras. Los usos restantes en estilos de pantallas no intervenidas se conservan para una adopción gradual posterior.
+
+## Densidad, Alumnos e Inicio — fase 4
+
+- La escala base se confirma en 14 px para cuerpo y tabla, 13 px para texto secundario, labels y sidebar, 22–24 px para títulos y 24–28 px para KPIs. Los controles mantienen 36 px y suben a 44 px solamente en puntero táctil grueso.
+- Alumnos adopta tabs planos, toolbar, tabla y paginación reutilizables. En móvil la tabla conserva su estructura semántica y desplaza horizontalmente dentro de su contenedor, sin provocar scroll horizontal de la página.
+- Nombre y teléfono se formatean exclusivamente para lectura. El nombre aplica title case y conserva partículas simples; el teléfono sólo se formatea cuando coincide de forma inequívoca con el patrón móvil argentino. Valores de API, búsqueda, enlaces y copiado no se modifican.
+- La topbar no repite la sección en escritorio para pantallas de primer nivel. Se conserva el rótulo y los controles de menú/usuario en tablet y móvil, donde sí aportan contexto. El indicador de desarrollo de Next se ubica abajo a la derecha mediante configuración exclusiva de desarrollo.
+
 ## Base visual administrativa — fases 1 y 2
 
 - La base visual usa superficies neutras, Geist mediante `next/font` y vino como acento. Reemplaza la decisión visual 108 para las superficies generales, sin cambiar reglas funcionales.

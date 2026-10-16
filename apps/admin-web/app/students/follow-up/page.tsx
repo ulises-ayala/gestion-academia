@@ -7,6 +7,7 @@ import { useAuth } from '../../../components/auth-provider';
 import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';
 import { FollowUpEmpty, FollowUpTable } from '../../../components/student-follow-up';
 import { StudentsNavigation } from '../../../components/students-navigation';
+import { Tabs } from '../../../components/ui/data-display';
 import { apiRequest } from '../../../lib/api-client';
 import {
   defaultFollowUpFilters,
@@ -79,7 +80,9 @@ export default function StudentFollowUpPage() {
           <p className="subtitle">Alumnos con ausencias consecutivas que conviene revisar.</p>
         </div>
       </div>
-      <StudentsNavigation active="follow-up" />
+      <Tabs aria-label="Secciones de alumnos">
+        <StudentsNavigation active="follow-up" />
+      </Tabs>
       {notice && <p role="status">{notice}</p>}
       <section className="card follow-up-stack">
         <form className="follow-up-filters" onSubmit={apply}>

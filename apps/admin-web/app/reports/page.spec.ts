@@ -16,8 +16,8 @@ describe('Reports page', () => {
   });
 
   it('muestra Reportes sólo con reports:operational', () => {
-    expect(shell).toContain(
-      "href: '/reports', label: 'Reportes', permission: 'reports:operational'",
+    expect(shell).toMatch(
+      /href:\s*'\/reports',[\s\S]*?label:\s*'Reportes',[\s\S]*?permission:\s*'reports:operational'/,
     );
   });
 

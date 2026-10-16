@@ -17,7 +17,7 @@
   border: 0;
   border-right: 1px solid var(--border);
   border-radius: 0;
-  background: var(--surface);
+  background: var(--sidebar-bg);
   box-shadow: none;
 }
 
@@ -77,11 +77,16 @@
   flex: 1;
   padding: var(--space-2);
   overflow-y: auto;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 .sidebar-nav::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background: var(--border-strong);
 }
 
 .nav-group + .nav-group {
@@ -137,9 +142,16 @@
 
 .nav-link.active {
   border-color: transparent;
-  background: var(--accent-muted);
+  background: var(--surface-secondary);
   box-shadow: none;
-  color: var(--accent);
+  color: var(--text);
+  font-weight: var(--font-weight-medium);
+}
+
+:root:not([data-theme='dark']) .nav-link.active {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -159,6 +171,9 @@
 
 .nav-link.active .nav-active-indicator {
   background: var(--accent);
+}
+.nav-link.active .nav-icon {
+  color: var(--accent);
 }
 
 .sidebar-account {
@@ -251,7 +266,7 @@
   border: 0;
   border-bottom: 1px solid var(--border);
   border-radius: 0;
-  background: var(--surface);
+  background: var(--sidebar-bg);
   box-shadow: none;
 }
 
@@ -266,11 +281,45 @@
   font-weight: var(--font-weight-medium);
 }
 
+@media (min-width: 64rem) {
+  .topbar,
+  .topbar-section {
+    display: none;
+  }
+}
+
 .admin-content > main {
-  width: min(100%, 80rem);
-  max-width: 80rem;
+  width: 100%;
+  min-width: 0;
   margin: 0;
   padding: var(--space-6) var(--space-8) var(--space-12);
+  animation: page-enter 180ms var(--motion-easing) both;
+}
+
+.page-container {
+  width: 100%;
+  margin-inline: auto;
+}
+
+.page-container--wide {
+  max-width: 90rem;
+}
+.page-container--default {
+  max-width: 75rem;
+}
+.page-container--narrow {
+  max-width: 60rem;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .page-header {
@@ -397,5 +446,16 @@
   .shell-icon-button {
     width: 2.75rem;
     min-width: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

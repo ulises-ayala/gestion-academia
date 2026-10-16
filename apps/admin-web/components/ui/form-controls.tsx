@@ -1,4 +1,5 @@
 import React, { type ComponentPropsWithRef, type ReactNode } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 type FieldProps = {
   /** Stable, unique id, also used to associate the label and descriptions. */
@@ -66,14 +67,17 @@ export function Select({
   const field = { label, helpText, error, id };
   return (
     <Field {...field}>
-      <select
-        {...props}
-        id={id}
-        aria-describedby={descriptions(field, props['aria-describedby'])}
-        aria-invalid={error ? true : props['aria-invalid']}
-      >
-        {children}
-      </select>
+      <span className="ui-select-control">
+        <select
+          {...props}
+          id={id}
+          aria-describedby={descriptions(field, props['aria-describedby'])}
+          aria-invalid={error ? true : props['aria-invalid']}
+        >
+          {children}
+        </select>
+        <ChevronDown aria-hidden="true" size={16} strokeWidth={1.5} />
+      </span>
     </Field>
   );
 }

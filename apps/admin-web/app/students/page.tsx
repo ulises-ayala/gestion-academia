@@ -1,12 +1,25 @@
 'use client';
 
 import type { StudentListDto, StudentStatusDto } from '@academy/contracts';
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  UsersRound,
+} from 'lucide-react';
 import Link from 'next/link';
-import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { ApiClientError, apiRequest } from '../../lib/api-client';
-import { calculateAge, formatDate } from '../../lib/dates';
-import { studentStatusFromSearch } from '../../lib/contextual-filters';
+import { type FormEvent, useCallback, useEffect, useState } from 'react';
 import { StudentsNavigation } from '../../components/students-navigation';
+import { FilterToolbar, Pagination, Table, Tabs } from '../../components/ui/data-display';
+import { Badge, EmptyState, Skeleton } from '../../components/ui/feedback';
+import { PageHeader } from '../../components/ui/page-header';
+import { PageContainer } from '../../components/ui/page-container';
+import { ApiClientError, apiRequest } from '../../lib/api-client';
+import { studentStatusFromSearch } from '../../lib/contextual-filters';
+import { calculateAge, formatDate } from '../../lib/dates';
+import { formatStudentName, formatStudentPhone } from '../../lib/student-presentation';
 
 type StatusFilter = '' | StudentStatusDto;
 const pageSize = 25;
@@ -46,46 +59,47 @@ export default function StudentsPage() {
     setPage(1);
     setQuery(draftQuery.trim());
   }
+
   const pageCount = Math.max(1, Math.ceil(result.total / result.pageSize));
+  const resultDescription = `${result.total} alumno${result.total === 1 ? '' : 's'} encontrado${result.total === 1 ? '' : 's'}.`;
 
   return (
-    <>
-      <div className="page-heading">
-        <div>
-          <p className="eyebrow">Personas</p>
-          <h1>Alumnos</h1>
-          <p className="subtitle">
-            {result.total} alumno{result.total === 1 ? '' : 's'} encontrado
-            {result.total === 1 ? '' : 's'}.
-          </p>
+    <PageContainer className="students-page" width="wide">
+      <PageHeader
+        title="Alumnos"
+        description={resultDescription}
+        actions={
+          <Link className="button" href="/students/new">
+            Nuevo alumno
+          </Link>
+        }
+      />
+      <Tabs aria-label="Secciones de alumnos">
+        <StudentsNavigation active="all" />
+      </Tabs>
+      {status && (
+        <div className="context-filter">
+          <span>
+            Filtro activo: <strong>{status === 'ACTIVE' ? 'Activos' : 'Inactivos'}</strong>
+          </span>
+          <button className="secondary" onClick={() => setStatus('')} type="button">
+            Limpiar filtro
+          </button>
         </div>
-        <Link className="button" href="/students/new">
-          Nuevo alumno
-        </Link>
-      </div>
-      <StudentsNavigation active="all" />
-      <section className="card">
-        {status && (
-          <div className="context-filter">
-            <span>
-              Filtro activo: <strong>{status === 'ACTIVE' ? 'Activos' : 'Inactivos'}</strong>
-            </span>
-            <button className="secondary" onClick={() => setStatus('')}>
-              Limpiar filtro
-            </button>
-          </div>
-        )}
-        <form className="filters" onSubmit={search}>
-          <label className="search-field">
-            Buscar
-            <input
-              placeholder="Nombre, apellido, DNI o teléfono"
-              value={draftQuery}
-              onChange={(event) => setDraftQuery(event.target.value)}
-            />
-          </label>
-          <label>
-            Estado
+      )}
+      <FilterToolbar onSubmit={search}>
+        <label className="ui-filter-search">
+          Buscar
+          <Search aria-hidden="true" size={16} strokeWidth={1.5} />
+          <input
+            placeholder="Nombre, apellido, DNI o teléfono"
+            value={draftQuery}
+            onChange={(event) => setDraftQuery(event.target.value)}
+          />
+        </label>
+        <label>
+          Estado
+          <span className="ui-select-control">
             <select
               value={status}
               onChange={(event) => {
@@ -97,94 +111,117 @@ export default function StudentsPage() {
               <option value="ACTIVE">Activos</option>
               <option value="INACTIVE">Inactivos</option>
             </select>
-          </label>
-          <button type="submit">Buscar</button>
-        </form>
-        {message && (
-          <div className="module-state" role="alert">
-            <p>{message}</p>
-            <button className="secondary" onClick={() => void load()}>
-              Reintentar
-            </button>
-          </div>
-        )}
-        {loading ? (
-          <p role="status">Cargando alumnos…</p>
-        ) : message ? null : result.items.length === 0 ? (
-          <div className="empty-state">
-            <h2>
-              {query || status
-                ? 'No hay alumnos con estos filtros.'
-                : 'No hay alumnos registrados.'}
-            </h2>
-            <p>
-              {query || status
-                ? 'Probá cambiar la búsqueda o limpiar el filtro.'
-                : 'Creá el primer alumno para comenzar.'}
-            </p>
-          </div>
-        ) : (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Alumno</th>
-                  <th>DNI</th>
-                  <th>Contacto</th>
-                  <th>Edad</th>
-                  <th>Estado</th>
-                  <th>Fecha de alta</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {result.items.map((student) => (
-                  <tr key={student.id}>
-                    <td data-label="Alumno">
-                      <strong>
-                        {student.lastName}, {student.firstName}
-                      </strong>
-                    </td>
-                    <td data-label="DNI">{student.dni}</td>
-                    <td data-label="Contacto">{student.email || student.phone || '—'}</td>
-                    <td data-label="Edad">{calculateAge(student.birthDate) ?? '—'}</td>
-                    <td data-label="Estado">
-                      <span className={`status ${student.status.toLowerCase()}`}>
-                        {student.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </td>
-                    <td data-label="Fecha de alta">{formatDate(student.joinedAt)}</td>
-                    <td data-label="Acciones">
-                      <Link className="text-link" href={`/students/${student.id}`}>
-                        Ver ficha
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-        <div className="pagination">
-          <button
-            className="secondary"
-            disabled={page <= 1 || loading}
-            onClick={() => setPage((value) => value - 1)}
-          >
-            Anterior
-          </button>
-          <span>
-            Página {result.page} de {pageCount}
+            <ChevronDown aria-hidden="true" size={16} strokeWidth={1.5} />
           </span>
-          <button
-            className="secondary"
-            disabled={page >= pageCount || loading}
-            onClick={() => setPage((value) => value + 1)}
-          >
-            Siguiente
+        </label>
+        <button className="secondary" type="submit">
+          Buscar
+        </button>
+      </FilterToolbar>
+      {message && (
+        <div className="module-state" role="alert">
+          <p>{message}</p>
+          <button className="secondary" onClick={() => void load()} type="button">
+            Reintentar
           </button>
         </div>
-      </section>
-    </>
+      )}
+      {loading ? (
+        <div aria-busy="true" className="students-table-loading" role="status">
+          <span className="sr-only">Cargando alumnos…</span>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </div>
+      ) : message ? null : result.items.length === 0 ? (
+        <EmptyState icon={<UsersRound size={22} strokeWidth={1.5} />}>
+          <h2>
+            {query || status ? 'No hay alumnos con estos filtros.' : 'No hay alumnos registrados.'}
+          </h2>
+          <p>
+            {query || status
+              ? 'Probá cambiar la búsqueda o limpiar el filtro.'
+              : 'Creá el primer alumno para comenzar.'}
+          </p>
+        </EmptyState>
+      ) : (
+        <Table>
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>DNI</th>
+              <th>Contacto</th>
+              <th>Edad</th>
+              <th>Estado</th>
+              <th>Fecha de alta</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {result.items.map((student) => (
+              <tr key={student.id}>
+                <td data-label="Alumno">
+                  <span className="student-identity">
+                    <span aria-hidden="true" className="student-avatar">
+                      {`${student.lastName.charAt(0)}${student.firstName.charAt(0)}`.toUpperCase()}
+                    </span>
+                    <span
+                      className="student-name"
+                      title={`${student.lastName}, ${student.firstName}`}
+                    >
+                      {formatStudentName(student.lastName, student.firstName)}
+                    </span>
+                  </span>
+                </td>
+                <td data-label="DNI">{student.dni}</td>
+                <td
+                  className="student-contact"
+                  data-label="Contacto"
+                  title={student.email || student.phone || '—'}
+                >
+                  {student.email || (student.phone && formatStudentPhone(student.phone)) || '—'}
+                </td>
+                <td data-label="Edad">{calculateAge(student.birthDate) ?? '—'}</td>
+                <td data-label="Estado">
+                  <Badge tone={student.status === 'ACTIVE' ? 'success' : 'neutral'}>
+                    {student.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
+                  </Badge>
+                </td>
+                <td className="student-joined" data-label="Fecha de alta">
+                  {formatDate(student.joinedAt)}
+                </td>
+                <td data-label="Acciones">
+                  <Link className="student-action" href={`/students/${student.id}`}>
+                    Ver ficha <ArrowRight aria-hidden="true" size={14} strokeWidth={1.5} />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+      <Pagination aria-label="Paginación de alumnos">
+        <button
+          className="secondary"
+          disabled={page <= 1 || loading}
+          onClick={() => setPage((value) => value - 1)}
+          type="button"
+        >
+          <ChevronLeft aria-hidden="true" size={14} strokeWidth={1.5} /> Anterior
+        </button>
+        <span aria-live="polite">
+          Página {result.page} de {pageCount}
+        </span>
+        <button
+          className="secondary"
+          disabled={page >= pageCount || loading}
+          onClick={() => setPage((value) => value + 1)}
+          type="button"
+        >
+          Siguiente <ChevronRight aria-hidden="true" size={14} strokeWidth={1.5} />
+        </button>
+      </Pagination>
+    </PageContainer>
   );
 }

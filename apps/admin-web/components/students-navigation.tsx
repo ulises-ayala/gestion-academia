@@ -4,23 +4,25 @@ type StudentsSection = 'all' | 'follow-up';
 
 export function StudentsNavigation({ active }: Readonly<{ active: StudentsSection }>) {
   return (
-    <nav aria-label="Secciones de alumnos" className="students-navigation">
+    <div className="students-navigation">
       <Link
         aria-current={active === 'all' ? 'page' : undefined}
-        className={`students-navigation-link ${active === 'all' ? 'active' : ''}`}
+        className="ui-tab"
         href="/students"
+        title="Listado, altas y fichas de alumnos."
       >
-        <strong>Todos los alumnos</strong>
-        <span>Listado, altas y fichas de alumnos.</span>
+        Todos los alumnos
+        <span className="sr-only">: listado, altas y fichas de alumnos.</span>
       </Link>
       <Link
         aria-current={active === 'follow-up' ? 'page' : undefined}
-        className={`students-navigation-link ${active === 'follow-up' ? 'active' : ''}`}
+        className="ui-tab"
         href="/students/follow-up"
+        title="Alumnos con ausencias consecutivas."
       >
-        <strong>Requieren seguimiento</strong>
-        <span>Alumnos con ausencias consecutivas.</span>
+        Requieren seguimiento
+        <span className="sr-only">: alumnos con ausencias consecutivas.</span>
       </Link>
-    </nav>
+    </div>
   );
 }

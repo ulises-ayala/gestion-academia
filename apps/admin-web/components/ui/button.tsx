@@ -1,4 +1,5 @@
 import React, { type ComponentPropsWithRef } from 'react';
+import { LoaderCircle } from 'lucide-react';
 
 type ButtonProps = ComponentPropsWithRef<'button'> & {
   variant?: 'primary' | 'secondary' | 'ghost' | 'destructive';
@@ -32,6 +33,14 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || props['aria-busy']}
     >
+      {loading && (
+        <LoaderCircle
+          aria-hidden="true"
+          className="ui-button-spinner"
+          size={14}
+          strokeWidth={1.5}
+        />
+      )}
       {children}
     </button>
   );

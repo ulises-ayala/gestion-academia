@@ -1,0 +1,244 @@
+.ui-tabs {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+}
+.ui-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.ui-tab {
+  position: relative;
+  min-height: var(--control-height);
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ui-tab::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: transparent;
+  content: '';
+}
+
+.ui-tab:hover {
+  color: var(--text);
+}
+.ui-tab[aria-current='page'] {
+  color: var(--text);
+}
+.ui-tab[aria-current='page']::after {
+  background: var(--accent);
+}
+
+.ui-filter-toolbar {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) 11rem auto;
+  align-items: end;
+  gap: var(--space-3);
+}
+
+.ui-filter-search {
+  position: relative;
+}
+.ui-filter-search svg {
+  position: absolute;
+  bottom: calc((var(--control-height) - 1rem) / 2);
+  left: var(--space-3);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.ui-filter-search input {
+  padding-left: 2.25rem;
+}
+.ui-filter-toolbar > button {
+  min-height: var(--control-height);
+}
+
+.ui-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.ui-table-wrap {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.ui-table {
+  width: 100%;
+  min-width: 47rem;
+  border-collapse: collapse;
+}
+.ui-table th,
+.ui-table td {
+  height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: var(--font-size-body);
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+.ui-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+:root:not([data-theme='dark']) .ui-table th {
+  background: var(--surface-secondary);
+}
+.ui-table tbody tr {
+  transition: background-color var(--motion-duration) var(--motion-easing);
+}
+.ui-table tbody tr:hover {
+  background: var(--surface-hover);
+}
+.ui-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.ui-table .student-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--font-weight-medium);
+}
+.student-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.student-avatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  background: var(--surface-secondary);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+.ui-table .student-contact,
+.ui-table .student-joined {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+.ui-table .student-action {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ui-table .student-action:hover,
+.ui-table .student-action:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ui-table .student-action svg {
+  transition: transform 120ms var(--motion-easing);
+}
+.ui-table tbody tr:hover .student-action {
+  color: var(--text);
+}
+.ui-table .student-action:hover svg,
+.ui-table .student-action:focus-visible svg {
+  transform: translateX(2px);
+}
+
+.ui-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.ui-pagination button {
+  min-height: var(--control-height-sm);
+}
+.ui-pagination button svg {
+  flex: none;
+}
+
+.status {
+  border: 1px solid transparent;
+}
+.status.active {
+  border-color: var(--success-border);
+}
+.status.inactive {
+  border-color: var(--border);
+}
+
+@media (max-width: 39.999rem) {
+  .ui-filter-toolbar {
+    grid-template-columns: 1fr;
+  }
+  .ui-filter-toolbar > button {
+    width: 100%;
+  }
+  .ui-pagination {
+    justify-content: space-between;
+  }
+}
+
+@media (pointer: coarse) {
+  .ui-filter-toolbar > button {
+    min-height: 2.75rem;
+  }
+  .ui-tab {
+    min-height: 2.75rem;
+  }
+}
+
+.students-page {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.students-page .students-navigation {
+  display: contents;
+}
+
+.students-page .context-filter {
+  margin: 0;
+}
+
+.students-table-loading {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.students-table-loading .ui-skeleton {
+  height: 2.75rem;
+}

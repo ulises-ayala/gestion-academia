@@ -25,6 +25,15 @@
 .ui-button[aria-busy='true'] {
   cursor: progress;
 }
+.ui-button-spinner {
+  flex: none;
+  animation: ui-button-spin 700ms linear infinite;
+}
+@keyframes ui-button-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
 .ui-field {
   display: grid;
   min-width: 0;
@@ -32,7 +41,8 @@
   gap: var(--space-1);
 }
 .ui-field > input,
-.ui-field > select {
+.ui-field > select,
+.ui-field > .ui-select-control > select {
   height: var(--control-height);
 }
 .ui-field > textarea {
@@ -40,6 +50,22 @@
 }
 .ui-field > label {
   color: var(--text-secondary);
+}
+.ui-select-control {
+  position: relative;
+  display: block;
+}
+.ui-select-control select {
+  appearance: none;
+  padding-right: 2.25rem;
+}
+.ui-select-control svg {
+  position: absolute;
+  top: 50%;
+  right: var(--space-3);
+  color: var(--text-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 .ui-field-help,
 .ui-field > .field-error {
@@ -52,10 +78,12 @@
 }
 .ui-badge-warning {
   background: var(--warning-soft);
+  border-color: var(--warning-border);
   color: var(--warning);
 }
 .ui-badge-info {
   background: var(--info-soft);
+  border-color: var(--info-border);
   color: var(--info);
 }
 .ui-panel {
@@ -71,10 +99,43 @@
 .ui-empty-state > * {
   margin: 0;
 }
+.ui-empty-state-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--surface-secondary);
+  color: var(--text-muted);
+}
+.ui-empty-state h2 {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+}
+.ui-empty-state p {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
 .ui-skeleton {
   display: block;
   height: var(--space-4);
   width: 100%;
   border-radius: var(--radius-sm);
-  background: var(--surface-secondary);
+  background: var(--surface-sunken);
+  animation: ui-skeleton-pulse 1.4s var(--motion-easing) infinite alternate;
+}
+:root:not([data-theme='dark']) .ui-skeleton {
+  background: linear-gradient(90deg, #ece9e5 0%, #f5f3f0 50%, #ece9e5 100%);
+  background-size: 200% 100%;
+  animation: ui-skeleton-shimmer 1.4s var(--motion-easing) infinite;
+}
+@keyframes ui-skeleton-pulse {
+  to {
+    opacity: 0.55;
+  }
+}
+@keyframes ui-skeleton-shimmer {
+  to {
+    background-position: -200% 0;
+  }
 }

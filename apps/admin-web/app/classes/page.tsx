@@ -121,7 +121,7 @@ export default function Page() {
           <button>Aplicar</button>
         </form>
         <div className="table-wrap">
-          <table>
+          <table className="classes-table">
             <thead>
               <tr>
                 <th>Clase</th>
@@ -162,7 +162,7 @@ export default function Page() {
                     </span>
                   </td>
                   <td data-label="Acción">
-                    <Link className="text-link" href={`/classes/${item.id}`}>
+                    <Link className="text-link classes-table-action" href={`/classes/${item.id}`}>
                       Ver
                     </Link>
                   </td>

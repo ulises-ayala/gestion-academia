@@ -19,6 +19,7 @@ import { ConfirmedPaymentsChart } from '../components/confirmed-payments-chart';
 import { FollowUpDashboardLink } from '../components/student-follow-up';
 import { useAuth } from '../components/auth-provider';
 import { PageHeader } from '../components/ui/page-header';
+import { PageContainer } from '../components/ui/page-container';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { dashboardContextLinks, dashboardQuickActions } from '../lib/contextual-filters';
 
@@ -71,6 +72,9 @@ const greeting = () => {
   return hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches';
 };
 
+const presentUsername = (username: string) =>
+  `${username.charAt(0).toLocaleUpperCase('es-AR')}${username.slice(1)}`;
+
 function Dashboard() {
   const { user, can } = useAuth();
   const [data, setData] = useState<OperationalDashboardDto | null>(null);
@@ -99,11 +103,11 @@ function Dashboard() {
     (data.leads?.overdueFollowUps ?? 0) +
     (data.followUp?.students ?? 0);
   return (
-    <div className="dashboard-page">
+    <PageContainer className="dashboard-page" width="wide">
       <PageHeader
         title={
           <>
-            {greeting()}, {user.username}
+            {greeting()}, {presentUsername(user.username)}
           </>
         }
         description="Lo más importante de hoy, en un solo lugar."
@@ -169,7 +173,9 @@ function Dashboard() {
             <AlertTriangle aria-hidden="true" size={16} strokeWidth={1.5} />
             Requiere atención
           </span>
-          <strong>{urgent > 0 ? `${urgent} pendientes` : 'Todo al día'}</strong>
+          <strong className={`attention-count ${urgent > 0 ? 'is-urgent' : ''}`}>
+            {urgent > 0 ? `${urgent} pendientes` : 'Todo al día'}
+          </strong>
         </div>
         {urgent === 0 ? (
           <p className="dashboard-empty">No hay alertas operativas urgentes.</p>
@@ -205,7 +211,6 @@ function Dashboard() {
           <section className="card dashboard-card">
             <div className="dashboard-card-title">
               <div>
-                <p className="eyebrow">HOY</p>
                 <h2>Clases programadas</h2>
               </div>
               {data.classes && <strong>{data.classes.scheduledToday}</strong>}
@@ -237,7 +242,6 @@ function Dashboard() {
             <section className="card dashboard-card">
               <div className="dashboard-card-title">
                 <div>
-                  <p className="eyebrow">SEGUIMIENTO</p>
                   <h2>Potenciales alumnos</h2>
                 </div>
                 <Link href="/leads">Ver todos</Link>
@@ -276,7 +280,6 @@ function Dashboard() {
             <section className="card dashboard-card">
               <div className="dashboard-card-title">
                 <div>
-                  <p className="eyebrow">TRAZABILIDAD</p>
                   <h2>Actividad reciente</h2>
                 </div>
                 <Link href="/audit">Ver auditoría</Link>
@@ -305,7 +308,6 @@ function Dashboard() {
         <aside className="dashboard-stack">
           {data.attendance && (
             <section className="card dashboard-card">
-              <p className="eyebrow">ASISTENCIA DE HOY</p>
               <h2>{data.attendance.classesWithRecords} clases registradas</h2>
               <div className="attendance-summary">
                 <span>
@@ -325,7 +327,7 @@ function Dashboard() {
           )}
         </aside>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -339,7 +341,7 @@ function Metric({
     <Link className="metric-card" href={href}>
       <span>{label}</span>
       <strong>{value}</strong>
-      {detail && <small>{detail}</small>}
+      <small className={detail ? undefined : 'metric-detail-placeholder'}>{detail ?? ' '}</small>
       <ArrowUpRight aria-hidden="true" className="metric-icon" size={16} strokeWidth={1.5} />
       <span className="sr-only">Ver detalle →</span>
     </Link>

@@ -6,7 +6,7 @@ const shell = readFileSync(new URL('../../components/admin-shell.tsx', import.me
 
 describe('Users page security', () => {
   it('muestra Usuarios únicamente con el permiso exclusivo de Dirección', () => {
-    expect(shell).toContain("label: 'Usuarios', permission: 'users:manage-direction'");
+    expect(shell).toMatch(/label:\s*'Usuarios',[\s\S]*?permission:\s*'users:manage-direction'/);
   });
 
   it('solicita la contraseña actual antes de desactivar una cuenta', () => {

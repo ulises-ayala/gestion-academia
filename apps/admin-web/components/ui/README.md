@@ -3,6 +3,8 @@
 Fases 1 y 2: adopción incremental, sin cambiar reglas, rutas ni textos funcionales.
 
 - Los valores visuales viven en `app/tokens.css`. `data-theme` y su persistencia siguen a cargo del shell existente. No agregar colores locales.
+- `PageContainer` centra encabezado y contenido dentro del shell. Variantes: `wide` (1440 px, datos y dashboard), `default` (1200 px, vistas mixtas) y `narrow` (960 px, formularios y fichas); debajo de cada tope es fluido.
+- `Tabs`, `FilterToolbar`, `Table` y `Pagination` son contenedores semÃ¡nticos y de estilo, sin estado ni reglas de negocio. Usar enlaces reales para tabs y los controles nativos existentes en filtros y paginaciÃ³n. `Table` conserva scroll horizontal dentro de su propio contenedor en mÃ³vil.
 - `Button` usa el botón nativo y las clases existentes. Variantes: `primary`, `secondary`, `ghost`, `destructive`; tamaño normal o `small`. Por defecto es `type="button"`: indicar `type="submit"` en formularios. `loading` deshabilita el botón y anuncia `aria-busy`; el consumidor conserva el texto de progreso existente. Un botón sólo con icono debe tener `aria-label`. Para navegar, conservar enlaces reales.
 - `Input`, `Select`, `Textarea`: controles nativos con `id` único, `label`, `helpText` y `error`. Reenvían atributos, eventos y refs de React 19. No validan ni transforman valores. Vinculan ayuda/error mediante `aria-describedby`, conservando descripciones externas. El error también establece `aria-invalid`.
 - `Badge`: recibe el texto traducido existente y un tono visual; no conoce enums de negocio. No usar sólo un color para comunicar estado.
