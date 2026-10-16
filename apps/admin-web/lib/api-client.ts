@@ -2,6 +2,15 @@ import type { ApiErrorDto } from '@academy/contracts';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 
+let activeRequestsCount = 0;
+
+function updateLoadingState(delta: number) {
+  activeRequestsCount = Math.max(0, activeRequestsCount + delta);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('academy:loading', { detail: activeRequestsCount > 0 }));
+  }
+}
+
 export class ApiClientError extends Error {
   constructor(
     public readonly status: number,
@@ -24,26 +33,31 @@ export const apiErrorMessage = (status: number, error: ApiErrorDto) => {
 };
 
 export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${apiUrl}${path}`, {
-    ...init,
-    cache: init?.cache ?? 'no-store',
-    credentials: 'include',
-    headers: { ...(init?.body ? { 'Content-Type': 'application/json' } : {}), ...init?.headers },
-  });
-  if (!response.ok) {
-    let error: ApiErrorDto = { code: 'HTTP_ERROR', message: 'No se pudo completar la operación' };
-    try {
-      error = (await response.json()) as ApiErrorDto;
-    } catch {
-      /* respuesta sin JSON */
-    }
-    if (response.status === 401 && typeof window !== 'undefined' && !path.startsWith('/auth/'))
-      window.dispatchEvent(new Event('academy:unauthorized'));
-    throw new ApiClientError(response.status, {
-      ...error,
-      message: apiErrorMessage(response.status, error),
+  updateLoadingState(1);
+  try {
+    const response = await fetch(`${apiUrl}${path}`, {
+      ...init,
+      cache: init?.cache ?? 'no-store',
+      credentials: 'include',
+      headers: { ...(init?.body ? { 'Content-Type': 'application/json' } : {}), ...init?.headers },
     });
+    if (!response.ok) {
+      let error: ApiErrorDto = { code: 'HTTP_ERROR', message: 'No se pudo completar la operación' };
+      try {
+        error = (await response.json()) as ApiErrorDto;
+      } catch {
+        /* respuesta sin JSON */
+      }
+      if (response.status === 401 && typeof window !== 'undefined' && !path.startsWith('/auth/'))
+        window.dispatchEvent(new Event('academy:unauthorized'));
+      throw new ApiClientError(response.status, {
+        ...error,
+        message: apiErrorMessage(response.status, error),
+      });
+    }
+    if (response.status === 204) return undefined as T;
+    return response.json() as Promise<T>;
+  } finally {
+    updateLoadingState(-1);
   }
-  if (response.status === 204) return undefined as T;
-  return response.json() as Promise<T>;
 }

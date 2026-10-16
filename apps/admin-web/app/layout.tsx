@@ -7,6 +7,8 @@ import './shell.css';
 import './dashboard.css';
 import './data-display.css';
 import { AuthProvider } from '../components/auth-provider';
+import { Toaster } from 'sonner';
+import { GlobalLoadingIndicator } from '../components/global-loading-indicator';
 
 const geist = Geist({ subsets: ['latin'], display: 'swap', variable: '--font-geist' });
 
@@ -20,6 +22,8 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="es" className={geist.variable}>
       <body>
         <AuthProvider>{children}</AuthProvider>
+        <GlobalLoadingIndicator />
+        <Toaster theme="dark" position="bottom-right" richColors closeButton />
       </body>
     </html>
   );

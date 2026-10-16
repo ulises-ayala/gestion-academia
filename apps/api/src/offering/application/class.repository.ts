@@ -28,6 +28,7 @@ export type ClassQuery = Readonly<{
   branchId?: string;
   page: number;
   pageSize: number;
+  roomId?: string;
 }>;
 export interface ClassRepository {
   findById(id: string): Promise<ClassData | null>;

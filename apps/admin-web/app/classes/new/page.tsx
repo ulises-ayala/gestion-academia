@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ClassForm } from '../../../components/class-form';
 import { RequirePermission } from '../../../components/permission-gate';
+import { notifySuccess } from '../../../lib/notify';
 export default function Page() {
   const router = useRouter();
   return (
@@ -13,7 +14,12 @@ export default function Page() {
       </Link>
       <h1>Nueva clase</h1>
       <section className="card">
-        <ClassForm onSaved={(item: ClassDto) => router.push(`/classes/${item.id}`)} />
+        <ClassForm
+          onSaved={(item: ClassDto) => {
+            notifySuccess('Clase creada con éxito', `${item.name} · Cupo: ${item.capacity}`);
+            router.push(`/classes/${item.id}`);
+          }}
+        />
       </section>
     </RequirePermission>
   );

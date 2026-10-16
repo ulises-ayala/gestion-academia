@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { leadSourceLabels, leadStatusLabels, localDateTimeValue } from '../lib/leads';
+import { notifyError } from '../lib/notify';
 
 type LeadFormState = {
   name: string;
@@ -97,12 +98,14 @@ export function LeadForm({
       });
       onSaved(saved);
     } catch (error) {
-      if (error instanceof ApiClientError && error.field)
+      if (error instanceof ApiClientError && error.field) {
         setFieldErrors({ [error.field]: error.message });
-      else
+      } else {
         setMessage(
           error instanceof ApiClientError ? error.message : 'No se pudo conectar con la API',
         );
+      }
+      notifyError(error, lead ? 'Fallo al actualizar potencial' : 'Fallo al crear potencial');
     } finally {
       setSubmitting(false);
     }

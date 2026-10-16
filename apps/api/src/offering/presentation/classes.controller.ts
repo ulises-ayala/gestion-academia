@@ -28,6 +28,7 @@ export class ClassesController {
     @Query('branchId') branchId?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
+    @Query('roomId') roomId?: string,
   ) {
     if (q && q.trim().length > 100)
       throw new DomainError('VALIDATION_ERROR', 'La búsqueda no puede superar 100 caracteres', {
@@ -40,6 +41,7 @@ export class ClassesController {
       ...(danceTypeId ? { danceTypeId: parseUuid(danceTypeId, 'danceTypeId') } : {}),
       ...(teacherId ? { teacherId: parseUuid(teacherId, 'teacherId') } : {}),
       ...(branchId ? { branchId: parseUuid(branchId, 'branchId') } : {}),
+      ...(roomId ? { roomId: parseUuid(roomId, 'roomId') } : {}),
       page: parsePage(page, 'page', 1, Number.MAX_SAFE_INTEGER),
       pageSize: parsePage(pageSize, 'pageSize', 25, 100),
     });

@@ -19,6 +19,7 @@ import {
   OnboardingSelection,
   selectedClassConflict,
 } from '../../../lib/student-onboarding';
+import { notifySuccess, notifyError } from '../../../lib/notify';
 
 type FormState = Record<keyof CreateStudentDto, string>;
 const emptyForm: FormState = {
@@ -136,17 +137,31 @@ export default function NewStudentPage() {
         collect,
         paymentMethod,
       );
-      setResult(
-        await apiRequest<StudentOnboardingResultDto>('/students/onboarding', {
-          method: 'POST',
-          body: JSON.stringify(payload),
-        }),
+      const res = await apiRequest<StudentOnboardingResultDto>('/students/onboarding', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      setResult(res);
+
+      notifySuccess(
+        'Alumno registrado con éxito',
+        `${res.student.firstName} ${res.student.lastName} (DNI ${res.student.dni})${
+          res.enrollments.length > 0 ? ` · ${res.enrollments.length} inscripción(es)` : ''
+        }`,
       );
     } catch (error) {
       if (error instanceof ApiClientError) {
-        if (error.field) setFieldErrors({ [error.field]: error.message });
-        else setMessage(error.message);
-      } else setMessage('No se pudo conectar con la API');
+        if (error.field) {
+          setFieldErrors({ [error.field]: error.message });
+        } else {
+          setMessage(error.message);
+        }
+      } else {
+        setMessage('No se pudo conectar con la API');
+      }
+
+      notifyError(error, 'Fallo al registrar el alumno');
     } finally {
       setSubmitting(false);
     }

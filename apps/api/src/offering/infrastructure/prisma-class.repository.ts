@@ -76,8 +76,18 @@ export class PrismaClassRepository implements ClassRepository {
       ...(query.q ? { name: { contains: query.q, mode: 'insensitive' } } : {}),
       ...(query.danceTypeId ? { danceTypeId: query.danceTypeId } : {}),
       ...(query.teacherId ? { teacherId: query.teacherId } : {}),
-      ...(query.branchId
-        ? { schedules: { some: { status: 'ACTIVE', room: { branchId: query.branchId } } } }
+      ...(query.branchId || query.roomId
+        ? {
+            schedules: {
+              some: {
+                status: 'ACTIVE',
+                room: {
+                  ...(query.branchId ? { branchId: query.branchId } : {}),
+                  ...(query.roomId ? { id: query.roomId } : {}),
+                },
+              },
+            },
+          }
         : {}),
     };
     const [items, total] = await this.prisma.$transaction([
