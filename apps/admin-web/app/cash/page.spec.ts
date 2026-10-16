@@ -39,6 +39,8 @@ describe('Cash page', () => {
   it('incluye adaptación móvil sin tabla horizontal', () => {
     expect(styles).toContain('.cash-totals');
     expect(styles).toMatch(/@media \(max-width: 48rem\)[\s\S]*\.cash-totals/);
-    expect(page).not.toContain('<table');
+    expect(page).toContain('<table>');
+    expect(page).toContain('data-label="Responsable"');
+    expect(styles).toContain('td::before');
   });
 });
