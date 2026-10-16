@@ -1,10 +1,11 @@
 'use client';
-import type { BranchDto, ClassListDto, DanceTypeDto, TeacherListDto } from '@academy/contracts';
+import type { BranchDto, ClassListDto, DanceTypeDto, RoomDto, TeacherListDto } from '@academy/contracts';
 import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { apiRequest } from '../../lib/api-client';
 import { dayLabels } from '../../lib/offering';
 import { PermissionGate } from '../../components/permission-gate';
+
 export default function Page() {
   const [data, setData] = useState<ClassListDto>({ items: [], total: 0, page: 1, pageSize: 25 });
   const [options, setOptions] = useState<{
@@ -12,6 +13,8 @@ export default function Page() {
     teachers: TeacherListDto['items'];
     branches: readonly BranchDto[];
   }>({ dances: [], teachers: [], branches: [] });
+
+  const [availableRooms, setAvailableRooms] = useState<readonly RoomDto[]>([]);
   const [draft, setDraft] = useState('');
   const [filters, setFilters] = useState({
     q: '',
@@ -19,8 +22,11 @@ export default function Page() {
     danceTypeId: '',
     teacherId: '',
     branchId: '',
+    roomId: '',
   });
   const [page, setPage] = useState(1);
+
+  // Cargar opciones fijas iniciales
   useEffect(() => {
     void Promise.all([
       apiRequest<DanceTypeDto[]>('/dance-types?status=ACTIVE'),
@@ -30,6 +36,24 @@ export default function Page() {
       setOptions({ dances, teachers: teachers.items, branches }),
     );
   }, []);
+
+  // Cargar salones en cascada al cambiar la sucursal
+  useEffect(() => {
+    if (!filters.branchId) {
+      setAvailableRooms([]);
+      setFilters((prev) => (prev.roomId ? { ...prev, roomId: '' } : prev));
+      return;
+    }
+
+    void apiRequest<RoomDto[]>(`/rooms?status=ACTIVE&branchId=${filters.branchId}`)
+      .then((rooms) => {
+        setAvailableRooms(rooms);
+      })
+      .catch(() => {
+        setAvailableRooms([]);
+      });
+  }, [filters.branchId]);
+
   const load = useCallback(async () => {
     const p = new URLSearchParams({ page: String(page), pageSize: '25' });
     Object.entries(filters).forEach(([key, value]) => {
@@ -37,15 +61,27 @@ export default function Page() {
     });
     setData(await apiRequest<ClassListDto>(`/classes?${p}`));
   }, [filters, page]);
+
   useEffect(() => {
     void load();
   }, [load]);
+
   function search(e: FormEvent) {
     e.preventDefault();
-    setFilters({ ...filters, q: draft.trim() });
+    setFilters((prev) => ({ ...prev, q: draft.trim() }));
     setPage(1);
   }
+
+  function handleBranchChange(newBranchId: string) {
+    setFilters((prev) => ({
+      ...prev,
+      branchId: newBranchId,
+      roomId: '', // Resetear salón al cambiar sucursal
+    }));
+  }
+
   const pages = Math.max(1, Math.ceil(data.total / data.pageSize));
+
   return (
     <>
       <div className="page-heading">
@@ -108,7 +144,7 @@ export default function Page() {
             Sucursal
             <select
               value={filters.branchId}
-              onChange={(e) => setFilters({ ...filters, branchId: e.target.value })}
+              onChange={(e) => handleBranchChange(e.target.value)}
             >
               <option value="">Todas</option>
               {options.branches.map((x) => (
@@ -118,6 +154,30 @@ export default function Page() {
               ))}
             </select>
           </label>
+
+          {/* FILTRO EN CASCADA: Salón */}
+          <label>
+            Salón
+            <select
+              value={filters.roomId}
+              disabled={!filters.branchId || availableRooms.length === 0}
+              onChange={(e) => setFilters({ ...filters, roomId: e.target.value })}
+            >
+              <option value="">
+                {!filters.branchId
+                  ? 'Elija sucursal'
+                  : availableRooms.length === 0
+                  ? 'Sin salones'
+                  : 'Todos'}
+              </option>
+              {availableRooms.map((room) => (
+                <option key={room.id} value={room.id}>
+                  {room.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <button>Aplicar</button>
         </form>
         <div className="table-wrap">
@@ -146,12 +206,63 @@ export default function Page() {
                     {item.teacher.firstName} {item.teacher.lastName}
                   </td>
                   <td data-label="Horarios">
-                    {item.schedules
-                      .map(
-                        (s) =>
-                          `${dayLabels[s.dayOfWeek]} ${s.startTime}–${s.endTime} · ${s.room.branch.name}/${s.room.name}`,
-                      )
-                      .join(' | ')}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', minWidth: '220px' }}>
+                      {item.schedules.length === 0 ? (
+                        <span style={{ color: '#888', fontStyle: 'italic', fontSize: '0.85rem' }}>Sin horarios</span>
+                      ) : (
+                        item.schedules.map((s) => (
+                          <div
+                            key={s.id}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              background: 'rgba(255, 255, 255, 0.04)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
+                              padding: '0.25rem 0.55rem',
+                              borderRadius: '6px',
+                              fontSize: '0.85rem',
+                              lineHeight: 1.2,
+                              width: 'fit-content',
+                            }}
+                          >
+                            {/* Badge del día */}
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                textAlign: 'center',
+                                minWidth: '42px',
+                                background: 'rgba(235, 34, 88, 0.15)',
+                                color: '#ff6b8b',
+                                padding: '0.2rem 0.35rem',
+                                borderRadius: '4px',
+                                fontWeight: 600,
+                                fontSize: '0.75rem',
+                                letterSpacing: '0.04em',
+                                textTransform: 'uppercase',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
+                              }}
+                            >
+                              {dayLabels[s.dayOfWeek]?.slice(0, 3) ?? s.dayOfWeek}
+                            </span>
+
+                            {/* Horario */}
+                            <span style={{ color: '#f3f4f6', fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0, }}>
+                              {s.startTime}–{s.endTime}
+                            </span>
+
+                            {/* Separador sutil */}
+                            <span style={{ color: '#555' }}>•</span>
+
+                            {/* Salón y Sucursal */}
+                            <span style={{ color: '#9ca3af', fontSize: '0.8rem', whiteSpace: 'nowrap', flexShrink: 0,}}>
+                              {s.room.name}
+                            </span>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </td>
                   <td data-label="Cupo">
                     {item.activeEnrollmentCount ?? 0} / {item.capacity}
@@ -161,8 +272,8 @@ export default function Page() {
                       {item.status === 'ACTIVE' ? 'Activa' : 'Inactiva'}
                     </span>
                   </td>
-                  <td data-label="Acción">
-                    <Link className="text-link" href={`/classes/${item.id}`}>
+                  <td data-label="Acción" style={{ whiteSpace: 'nowrap', width: '1%' }}>
+                    <Link className="text-link" href={`/classes/${item.id}`} style={{ whiteSpace: 'nowrap', width: '1%' }}>
                       Ver
                     </Link>
                   </td>

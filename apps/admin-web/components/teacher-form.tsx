@@ -2,6 +2,7 @@
 import type { CreateTeacherDto, TeacherDto } from '@academy/contracts';
 import { FormEvent, useState } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
+import { notifyError } from '../lib/notify';
 const empty = { dni: '', firstName: '', lastName: '', phone: '', email: '', address: '' };
 export function TeacherForm({
   teacher,
@@ -23,22 +24,27 @@ export function TeacherForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
-  async function submit(event: FormEvent) {
+async function submit(event: FormEvent) {
     event.preventDefault();
     setErrors({});
     setMessage('');
     setSaving(true);
     try {
-      onSaved(
-        await apiRequest<TeacherDto>(teacher ? `/teachers/${teacher.id}` : '/teachers', {
+      const saved = await apiRequest<TeacherDto>(
+        teacher ? `/teachers/${teacher.id}` : '/teachers',
+        {
           method: teacher ? 'PATCH' : 'POST',
           body: JSON.stringify(form satisfies CreateTeacherDto),
-        }),
+        },
       );
+      onSaved(saved);
     } catch (error) {
-      if (error instanceof ApiClientError && error.field)
+      if (error instanceof ApiClientError && error.field) {
         setErrors({ [error.field]: error.message });
-      else setMessage(error instanceof Error ? error.message : 'No se pudo guardar');
+      } else {
+        setMessage(error instanceof Error ? error.message : 'No se pudo guardar');
+      }
+      notifyError(error, teacher ? 'Fallo al actualizar profesor' : 'Fallo al crear profesor');
     } finally {
       setSaving(false);
     }

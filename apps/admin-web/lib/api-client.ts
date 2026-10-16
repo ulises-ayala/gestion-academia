@@ -2,6 +2,17 @@ import type { ApiErrorDto } from '@academy/contracts';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 
+let activeRequestsCount = 0;
+
+function updateLoadingState(delta: number) {
+  activeRequestsCount = Math.max(0, activeRequestsCount + delta);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('academy:loading', { detail: activeRequestsCount > 0 }),
+    );
+  }
+}
+
 export class ApiClientError extends Error {
   constructor(
     public readonly status: number,
@@ -24,6 +35,8 @@ export const apiErrorMessage = (status: number, error: ApiErrorDto) => {
 };
 
 export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  updateLoadingState(1);
+  try{
   const response = await fetch(`${apiUrl}${path}`, {
     ...init,
     cache: init?.cache ?? 'no-store',
@@ -46,4 +59,7 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
   }
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
+  } finally {
+    updateLoadingState(-1);
+  }
 }

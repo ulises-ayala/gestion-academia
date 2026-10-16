@@ -271,29 +271,125 @@ export default function CashPage() {
           </div>
         </section>
       )}
-      <section className="panel">
-        <h2>{can('cash:reconcile') ? 'Turnos' : 'Mis turnos'}</h2>
+      <section className="panel card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h2 style={{ margin: 0 }}>{can('cash:reconcile') ? 'Turnos de caja' : 'Mis turnos'}</h2>
+          {history?.total ? (
+            <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+              {history.total} turnos registrados
+            </span>
+          ) : null}
+        </div>
+
         {history?.items.length ? (
-          <div className="cash-history">
-            {history.items.map((shift) => (
-              <button
-                className="cash-history-row"
-                key={shift.id}
-                onClick={() => void detail(shift.id)}
-              >
-                <span>
-                  <strong>{shift.user.username}</strong>
-                  <small>{new Date(shift.openedAt).toLocaleString('es-AR')}</small>
-                </span>
-                <span className={`status ${shift.status === 'OPEN' ? 'active' : 'inactive'}`}>
-                  {shift.status === 'OPEN' ? 'Abierto' : 'Cerrado'}
-                </span>
-                <span>Sistema {money(shift.expectedAmount)}</span>
-                <span>
-                  Diferencia {shift.differenceAmount === null ? '—' : money(shift.differenceAmount)}
-                </span>
-              </button>
-            ))}
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Responsable</th>
+                  <th>Apertura</th>
+                  <th>Cierre</th>
+                  <th>Estado</th>
+                  <th style={{ textAlign: 'right' }}>Total Sistema</th>
+                  <th style={{ textAlign: 'right' }}>Declarado</th>
+                  <th style={{ textAlign: 'right' }}>Diferencia</th>
+                  <th style={{ textAlign: 'center', width: '1%' }}>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.items.map((shift) => {
+                  const diffNumber = shift.differenceAmount !== null ? Number(shift.differenceAmount) : null;
+                  const isPositive = diffNumber !== null && diffNumber > 0;
+                  const isNegative = diffNumber !== null && diffNumber < 0;
+
+                  return (
+                    <tr key={shift.id}>
+                      <td data-label="Responsable">
+                        <strong style={{ color: '#f3f4f6' }}>{shift.user.username}</strong>
+                      </td>
+
+                      <td data-label="Apertura" style={{ whiteSpace: 'nowrap' }}>
+                        {new Date(shift.openedAt).toLocaleDateString('es-AR')}{' '}
+                        <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+                          {new Date(shift.openedAt).toLocaleTimeString('es-AR', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </td>
+
+                      <td data-label="Cierre" style={{ whiteSpace: 'nowrap' }}>
+                        {shift.closedAt ? (
+                          <>
+                            {new Date(shift.closedAt).toLocaleDateString('es-AR')}{' '}
+                            <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+                              {new Date(shift.closedAt).toLocaleTimeString('es-AR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </span>
+                          </>
+                        ) : (
+                          <span style={{ color: '#6b7280' }}>—</span>
+                        )}
+                      </td>
+
+                      <td data-label="Estado">
+                        <span className={`status ${shift.status === 'OPEN' ? 'active' : 'inactive'}`}>
+                          {shift.status === 'OPEN' ? 'Abierto' : 'Cerrado'}
+                        </span>
+                      </td>
+
+                      <td data-label="Total Sistema" style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        <span style={{ fontWeight: 500, color: '#f3f4f6' }}>
+                          {money(shift.expectedAmount)}
+                        </span>
+                      </td>
+
+                      <td data-label="Declarado" style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        {shift.declaredAmount !== null ? (
+                          <span>{money(shift.declaredAmount)}</span>
+                        ) : (
+                          <span style={{ color: '#6b7280' }}>—</span>
+                        )}
+                      </td>
+
+                      <td data-label="Diferencia" style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        {diffNumber === null ? (
+                          <span style={{ color: '#6b7280' }}>—</span>
+                        ) : (
+                          <span
+                            style={{
+                              fontWeight: 600,
+                              color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#9ca3af',
+                            }}
+                          >
+                            {isPositive ? `+${money(diffNumber)}` : money(diffNumber)}
+                          </span>
+                        )}
+                      </td>
+
+                      <td data-label="Acción" style={{ textAlign: 'center', whiteSpace: 'nowrap', width: '1%' }}>
+                        <button
+                          type="button"
+                          className="text-link"
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            padding: '0.2rem 0.5rem',
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap',
+                          }}
+                          onClick={() => void detail(shift.id)}
+                        >
+                          Ver detalle
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         ) : (
           <p>Todavía no hay turnos para mostrar.</p>

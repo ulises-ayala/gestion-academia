@@ -12,6 +12,8 @@ import type {
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { dayLabels } from '../lib/offering';
+import { notifyError } from '../lib/notify';
+
 type UiSchedule = ClassScheduleInputDto & { branchId: string };
 const days = Object.keys(dayLabels) as DayOfWeekDto[];
 export function ClassForm({
@@ -80,10 +82,12 @@ export function ClassForm({
     setSchedules([...schedules, { ...draft, roomId }]);
     setMessage('');
   }
-  async function submit(e: FormEvent) {
+async function submit(e: FormEvent) {
     e.preventDefault();
     if (!schedules.length) {
-      setMessage('Agregá al menos un horario');
+      const err = new Error('Agregá al menos un horario para la clase');
+      setMessage(err.message);
+      notifyError(err, 'Faltan datos de la clase', 'VALIDATION_ERROR');
       return;
     }
     setSaving(true);
@@ -93,14 +97,17 @@ export function ClassForm({
       schedules: schedules.map(({ branchId: _branchId, ...schedule }) => schedule),
     };
     try {
-      onSaved(
-        await apiRequest<ClassDto>(academicClass ? `/classes/${academicClass.id}` : '/classes', {
+      const saved = await apiRequest<ClassDto>(
+        academicClass ? `/classes/${academicClass.id}` : '/classes',
+        {
           method: academicClass ? 'PATCH' : 'POST',
           body: JSON.stringify(payload),
-        }),
+        },
       );
+      onSaved(saved);
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo guardar la clase');
+      notifyError(error, academicClass ? 'Fallo al actualizar clase' : 'Fallo al crear clase');
     } finally {
       setSaving(false);
     }
