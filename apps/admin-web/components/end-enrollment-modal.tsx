@@ -5,6 +5,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { businessToday } from '../lib/dates';
 import { enrollmentEndLabels } from '../lib/enrollment-end';
+import { Button } from './ui/button';
+import { Input, Select, Textarea } from './ui/form-controls';
 
 export type EndEnrollmentTarget = Readonly<{
   enrollmentId: string;
@@ -77,47 +79,43 @@ export function EndEnrollmentModal({
           <br />
           Actividad: <strong>{target.className}</strong>
         </p>
-        <label>
-          Fecha de finalización
-          <input
-            type="date"
-            required
-            min={target.startDate}
-            value={endDate}
-            disabled={saving}
-            onChange={(event) => setEndDate(event.target.value)}
-          />
-        </label>
-        <label>
-          Motivo *
-          <select
-            required
-            autoFocus
-            value={reason}
-            disabled={saving}
-            onChange={(event) => setReason(event.target.value as EnrollmentEndReasonDto | '')}
-          >
-            <option value="">Seleccioná un motivo</option>
-            {Object.entries(enrollmentEndLabels).map(([value, label]) => (
-              <option value={value} key={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Observación{reason === 'OTHER' ? ' *' : ' (opcional)'}
-          <textarea
-            required={reason === 'OTHER'}
-            maxLength={500}
-            rows={3}
-            value={note}
-            disabled={saving}
-            onChange={(event) => setNote(event.target.value)}
-            aria-describedby={reason === 'OTHER' ? 'end-note-help' : undefined}
-          />
-        </label>
-        {reason === 'OTHER' && <p id="end-note-help">Contanos brevemente el motivo.</p>}
+        <Input
+          id="enrollment-end-date"
+          label="Fecha de finalización"
+          type="date"
+          required
+          min={target.startDate}
+          value={endDate}
+          disabled={saving}
+          onChange={(event) => setEndDate(event.target.value)}
+        />
+        <Select
+          id="enrollment-end-reason"
+          label="Motivo *"
+          required
+          autoFocus
+          value={reason}
+          disabled={saving}
+          onChange={(event) => setReason(event.target.value as EnrollmentEndReasonDto | '')}
+        >
+          <option value="">Seleccioná un motivo</option>
+          {Object.entries(enrollmentEndLabels).map(([value, label]) => (
+            <option value={value} key={value}>
+              {label}
+            </option>
+          ))}
+        </Select>
+        <Textarea
+          id="end-note"
+          label={<>Observación{reason === 'OTHER' ? ' *' : ' (opcional)'}</>}
+          required={reason === 'OTHER'}
+          maxLength={500}
+          rows={3}
+          value={note}
+          disabled={saving}
+          onChange={(event) => setNote(event.target.value)}
+          helpText={reason === 'OTHER' ? 'Contanos brevemente el motivo.' : undefined}
+        />
         <p className="modal-note neutral">
           El historial de la inscripción se conservará. El alumno seguirá conservando sus demás
           actividades.
@@ -128,12 +126,12 @@ export function EndEnrollmentModal({
           </p>
         )}
         <div className="modal-actions">
-          <button type="button" className="secondary" disabled={saving} onClick={onClose}>
+          <Button type="button" variant="secondary" disabled={saving} onClick={onClose}>
             Cancelar
-          </button>
-          <button disabled={saving || !reason}>
+          </Button>
+          <Button type="submit" disabled={saving || !reason} loading={saving}>
             {saving ? 'Finalizando…' : 'Finalizar inscripción'}
-          </button>
+          </Button>
         </div>
       </form>
     </dialog>
