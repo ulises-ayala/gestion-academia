@@ -383,7 +383,7 @@ export default function CashPage() {
                               color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#9ca3af',
                             }}
                           >
-                            {isPositive ? `+${money(diffNumber)}` : money(diffNumber)}
+                            {isPositive ? `+${money(String(diffNumber))}` : money(String(diffNumber))}
                           </span>
                         )}
                       </td>
