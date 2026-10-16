@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const page = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
+const tokens = readFileSync(new URL('../../tokens.css', import.meta.url), 'utf8');
 
 describe('Condiciones económicas en Ficha 360', () => {
   it('explica la sección y usa un botón principal inequívoco', () => {
@@ -55,8 +56,8 @@ describe('Condiciones económicas en Ficha 360', () => {
   });
 
   it('usa variables semánticas y reglas responsive para light y dark mode', () => {
-    expect(css).toContain('--brand-on-fill: #fff');
-    expect(css).toContain(":root[data-theme='dark']");
+    expect(tokens).toContain('--brand-on-fill: #fff');
+    expect(tokens).toContain(":root[data-theme='dark']");
     expect(css).toContain('.billing-add-button');
     expect(css).toContain('color: var(--brand-on-fill)');
     expect(css).toContain('.billing-condition-actions button');

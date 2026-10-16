@@ -38,11 +38,11 @@ describe('Pilot readiness critical screens', () => {
   });
 
   it('distribuye las acciones rápidas en una grilla visual uniforme', () => {
-    const styles = read('./styles.css');
+    const styles = read('./dashboard.css');
     expect(styles).toContain('grid-template-columns: repeat(3, minmax(0, 1fr))');
-    expect(styles).toContain('.quick-actions-card .quick-action span');
+    expect(styles).toContain('.quick-actions-section .quick-action');
     expect(styles).toMatch(
-      /@media \(max-width: 28rem\)[\s\S]*\.quick-actions-card \.quick-actions[\s\S]*grid-template-columns: 1fr/,
+      /@media \(max-width: 39\.999rem\)[\s\S]*\.quick-actions-section \.quick-actions,[\s\S]*grid-template-columns: 1fr/,
     );
   });
 

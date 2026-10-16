@@ -1,5 +1,19 @@
 # Decisiones y supuestos
 
+## Base visual administrativa — fases 1 y 2
+
+- La base visual usa superficies neutras, Geist mediante `next/font` y vino como acento. Reemplaza la decisión visual 108 para las superficies generales, sin cambiar reglas funcionales.
+- `apps/admin-web/app/tokens.css` concentra ambos temas, escalas y aliases compatibles con las clases existentes. Se conserva el atributo `data-theme` y la persistencia actual.
+- Los componentes base envuelven controles HTML nativos y comparten los estilos existentes. La adopción es incremental: esta entrega no cambia navegación, permisos ni composición de pantallas. El shell definitivo y el rediseño por pantalla pertenecen a las fases siguientes.
+- Los colores de texto y foco se separan de los rellenos de botones para conservar contraste en ambos temas. Las superficies comunes no tienen sombra; las capas superpuestas sí.
+
+## Shell administrativo e Inicio — fase 3
+
+- El shell usa una sidebar fija de 224 px y una topbar plana de 48 px. El contenido conserva un ancho máximo de 1280 px alineado a la izquierda para mantener densidad y posiciones predecibles en pantallas amplias.
+- Usuario, rol, tema y cierre de sesión viven en un pie fijo de la sidebar. Se eligieron controles compactos explícitos en lugar de un popover para reducir estado interactivo; en tablet/móvil esos controles se replican en la topbar porque la sidebar permanece cerrada.
+- Bajo 1024 px, la misma navegación filtrada funciona como drawer. El drawer cierra al navegar, con overlay o Escape, bloquea el scroll del body, cicla el foco y lo devuelve al botón que lo abrió.
+- Inicio adopta `PageHeader`, acciones rápidas compactas y KPIs enlazables completos. La información, rutas y permisos no cambian; se elimina únicamente presentación duplicada u ornamental.
+
 ## Decisiones iniciales
 
 1. **Monolito modular:** reduce complejidad inicial. Los módulos se comunican mediante interfaces/casos de uso.
