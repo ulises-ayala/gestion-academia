@@ -208,6 +208,107 @@
   }
 }
 
+/* Nombre y nivel en el listado de clases */
+.class-name-cell {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.class-name-cell small {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Horarios en el listado de clases */
+.class-schedule-list {
+  min-width: 13.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.class-schedule-item {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.2;
+}
+
+.class-schedule-day {
+  min-width: 2.5rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.class-schedule-time {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.class-schedule-room {
+  color: var(--text-muted);
+}
+
+.class-schedule-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* En celular las tablas se muestran como tarjetas (ver styles.css): sin altura fija ni ancho
+   mínimo, para que el contenido no desborde ni lo crucen las líneas divisorias. */
+@media (max-width: 768px) {
+  .ui-table-wrap {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .ui-table {
+    min-width: 0;
+  }
+  .ui-table th,
+  .ui-table td {
+    height: auto;
+  }
+  .ui-table td {
+    align-items: center;
+    padding: var(--space-2) 0;
+  }
+  .ui-table tbody tr:last-child td {
+    border-bottom: 1px solid var(--border);
+  }
+  .ui-table tbody tr td:last-child {
+    border-bottom: 0;
+  }
+  .class-schedule-list {
+    min-width: 0;
+  }
+  .ui-table .student-name,
+  .ui-table .student-contact,
+  .ui-table .student-joined {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
 @media (pointer: coarse) {
   .ui-filter-toolbar > button {
     min-height: 2.75rem;

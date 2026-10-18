@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isNavigationLinkActive, sectionLabelForPath } from './admin-shell';
+import { documentTitleForPath, isNavigationLinkActive, sectionLabelForPath } from './admin-shell';
 
 describe('Admin shell navigation', () => {
   it('does not mark Inicio active on nested routes', () => {
@@ -14,6 +14,12 @@ describe('Admin shell navigation', () => {
   });
 
   it('uses a stable fallback for an unknown path', () => {
-    expect(sectionLabelForPath('/not-found')).toBe('Gestión Academia');
+    expect(sectionLabelForPath('/not-found')).toBe('Carmesí');
+  });
+
+  it('names the browser tab after the current section', () => {
+    expect(documentTitleForPath('/payments')).toBe('Pagos · Carmesí');
+    expect(documentTitleForPath('/students/student-1')).toBe('Alumnos · Carmesí');
+    expect(documentTitleForPath('/not-found')).toBe('Carmesí · Academia de danza');
   });
 });

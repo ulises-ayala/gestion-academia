@@ -1801,10 +1801,18 @@ dd {
     font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+    overflow-wrap: normal;
+    hyphens: manual;
   }
   td.actions {
     min-width: 0;
     align-items: stretch;
+  }
+  /* Todo el contenido de la celda va en la columna de valores (la etiqueta ocupa la primera),
+     aunque la celda tenga varios elementos: nivel, horarios, estados o botones. */
+  td > * {
+    grid-column: 2;
+    min-width: 0;
   }
   td.actions button,
   td button.secondary,
@@ -1873,9 +1881,10 @@ dd {
   .selection-list {
     grid-template-columns: 1fr;
   }
-  td {
-    grid-template-columns: 1fr;
-    gap: var(--space-1);
+  td,
+  tbody tr:last-child td {
+    grid-template-columns: minmax(6.5rem, 36%) minmax(0, 1fr);
+    gap: var(--space-2);
   }
   .pagination {
     flex-wrap: wrap;
@@ -2280,14 +2289,21 @@ dialog.enrollment-end-dialog:not([open]) {
 }
 .attendance-summary > span {
   display: inline-flex;
+  align-items: baseline;
   gap: var(--space-2);
-  padding: 0.55rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   border-radius: 999px;
   background: var(--surface-muted);
   color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.2;
 }
 .attendance-summary strong {
+  display: inline;
   color: var(--text);
+  font-size: 1.125rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
 }
 .student-loading {
   text-align: center;
@@ -2419,7 +2435,7 @@ dialog.enrollment-end-dialog:not([open]) {
 .account-metrics {
   display: grid;
   grid-template-columns: 1.45fr repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 .account-metric {
   min-width: 0;
@@ -2580,7 +2596,7 @@ dialog.enrollment-end-dialog:not([open]) {
   margin-bottom: var(--space-1);
 }
 .student-account-metrics {
-  margin-bottom: var(--space-4);
+  margin-block: var(--space-4);
 }
 
 @media (max-width: 1100px) {

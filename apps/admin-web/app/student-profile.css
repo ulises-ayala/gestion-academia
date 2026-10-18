@@ -1,0 +1,363 @@
+/* Ficha integral del alumno.
+   Encabezado con identidad y acciones, franja de resumen, y dos columnas:
+   operación (clases, cuenta, asistencia, historial) y referencia (datos y pagos). */
+
+.student-back-link {
+  display: inline-flex;
+  margin-bottom: var(--space-3);
+}
+
+.student-profile-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: 0;
+}
+
+.student-profile-avatar {
+  width: 4rem;
+  height: 4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.student-profile-header .student-profile-identity {
+  min-width: 0;
+  display: block;
+}
+
+.student-profile-identity .eyebrow {
+  margin: 0 0 var(--space-1);
+}
+
+.student-profile-header .student-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.student-profile-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 0.8vw, 1.875rem);
+  line-height: 1.15;
+  text-transform: capitalize;
+}
+
+.student-quick-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-body);
+  list-style: none;
+}
+
+.student-quick-facts li + li::before {
+  content: '·';
+  margin-right: var(--space-2);
+  color: var(--text-muted);
+}
+
+.student-quick-facts a {
+  color: inherit;
+}
+
+.student-profile-header .student-primary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+/* Resumen */
+
+.student-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0;
+  overflow: hidden;
+}
+
+.student-summary-item {
+  min-width: 0;
+  display: grid;
+  gap: 0.125rem;
+  padding: var(--space-5) var(--space-6);
+}
+
+.student-summary-item + .student-summary-item {
+  border-left: 1px solid var(--border);
+}
+
+.student-summary-item span {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.student-summary-item strong {
+  margin-top: var(--space-1);
+  font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.student-summary-item small {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.student-summary-item.is-debt {
+  background: color-mix(in srgb, var(--accent-muted) 75%, var(--surface));
+}
+
+.student-summary-item.is-debt strong {
+  color: var(--accent);
+}
+
+.student-summary-item.is-warning strong {
+  color: var(--warning);
+}
+
+/* Dos columnas */
+
+.student-profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+  align-items: start;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.student-profile-main > .card:first-child,
+.student-profile-aside > .card:first-child {
+  margin-top: 0;
+}
+
+.student-profile-aside {
+  position: sticky;
+  top: 5rem;
+}
+
+.student-profile-layout .section-heading {
+  margin-bottom: var(--space-4);
+}
+
+.student-profile-layout .section-heading h2,
+.student-profile-aside h2 {
+  margin: 0;
+}
+
+/* Clases actuales */
+
+.student-class-list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.student-class-card {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.student-class-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.student-class-heading h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.student-class-heading p {
+  margin: var(--space-1) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-body);
+}
+
+.student-class-heading button {
+  flex: none;
+}
+
+.student-schedule-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.student-schedule-chips li {
+  display: grid;
+  gap: 0.125rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.student-schedule-chips strong {
+  font-size: var(--font-size-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.student-schedule-chips span,
+.student-class-since {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.student-class-since {
+  margin: 0;
+}
+
+.student-class-card .billing-conditions {
+  margin-top: var(--space-1);
+}
+
+@media (min-width: 48.0625rem) {
+  .student-profile-main td {
+    white-space: nowrap;
+  }
+}
+
+.student-profile-main td:last-child {
+  white-space: normal;
+}
+
+.student-profile-main .attendance-summary {
+  margin: 0;
+}
+
+.student-profile-main .section-heading {
+  flex-wrap: wrap;
+}
+
+/* Columna de referencia */
+
+.student-detail-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+}
+
+.student-detail-list > div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.student-detail-list > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.student-detail-list dt {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.student-detail-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.student-payments-card .student-payment-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1) var(--space-3);
+}
+
+.student-payments-card .student-payment-list article > div:nth-child(2) {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.student-payments-card .student-payment-list article > .status {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+}
+
+/* Responsive */
+
+@media (max-width: 75rem) {
+  .student-profile-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .student-profile-aside {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: var(--space-4);
+  }
+  .student-profile-aside > .card {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 60rem) {
+  .student-profile-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .student-profile-header .student-primary-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+  .student-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .student-summary-item:nth-child(3) {
+    border-left: 0;
+  }
+  .student-summary-item:nth-child(n + 3) {
+    border-top: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 40rem) {
+  .student-profile-avatar {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1rem;
+  }
+  .student-profile-header {
+    gap: var(--space-3) var(--space-4);
+  }
+  .student-profile-aside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .student-class-heading {
+    flex-direction: column;
+  }
+  .student-summary-item {
+    padding: var(--space-4);
+  }
+  .student-detail-list > div {
+    grid-template-columns: 6rem minmax(0, 1fr);
+  }
+}

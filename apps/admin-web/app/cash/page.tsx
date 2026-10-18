@@ -282,7 +282,7 @@ export default function CashPage() {
         >
           <h2 style={{ margin: 0 }}>{can('cash:reconcile') ? 'Turnos de caja' : 'Mis turnos'}</h2>
           {history?.total ? (
-            <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
               {history.total} turnos registrados
             </span>
           ) : null}
@@ -313,12 +313,12 @@ export default function CashPage() {
                   return (
                     <tr key={shift.id}>
                       <td data-label="Responsable">
-                        <strong style={{ color: '#f3f4f6' }}>{shift.user.username}</strong>
+                        <strong style={{ color: 'var(--text)' }}>{shift.user.username}</strong>
                       </td>
 
                       <td data-label="Apertura" style={{ whiteSpace: 'nowrap' }}>
                         {new Date(shift.openedAt).toLocaleDateString('es-AR')}{' '}
-                        <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                           {new Date(shift.openedAt).toLocaleTimeString('es-AR', {
                             hour: '2-digit',
                             minute: '2-digit',
@@ -330,7 +330,7 @@ export default function CashPage() {
                         {shift.closedAt ? (
                           <>
                             {new Date(shift.closedAt).toLocaleDateString('es-AR')}{' '}
-                            <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                               {new Date(shift.closedAt).toLocaleTimeString('es-AR', {
                                 hour: '2-digit',
                                 minute: '2-digit',
@@ -338,7 +338,7 @@ export default function CashPage() {
                             </span>
                           </>
                         ) : (
-                          <span style={{ color: '#6b7280' }}>—</span>
+                          <span style={{ color: 'var(--text-muted)' }}>—</span>
                         )}
                       </td>
 
@@ -354,7 +354,7 @@ export default function CashPage() {
                         data-label="Total Sistema"
                         style={{ textAlign: 'right', whiteSpace: 'nowrap' }}
                       >
-                        <span style={{ fontWeight: 500, color: '#f3f4f6' }}>
+                        <span style={{ fontWeight: 500, color: 'var(--text)' }}>
                           {money(shift.expectedAmount)}
                         </span>
                       </td>
@@ -366,7 +366,7 @@ export default function CashPage() {
                         {shift.declaredAmount !== null ? (
                           <span>{money(shift.declaredAmount)}</span>
                         ) : (
-                          <span style={{ color: '#6b7280' }}>—</span>
+                          <span style={{ color: 'var(--text-muted)' }}>—</span>
                         )}
                       </td>
 
@@ -375,12 +375,16 @@ export default function CashPage() {
                         style={{ textAlign: 'right', whiteSpace: 'nowrap' }}
                       >
                         {diffNumber === null ? (
-                          <span style={{ color: '#6b7280' }}>—</span>
+                          <span style={{ color: 'var(--text-muted)' }}>—</span>
                         ) : (
                           <span
                             style={{
                               fontWeight: 600,
-                              color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#9ca3af',
+                              color: isPositive
+                                ? 'var(--success)'
+                                : isNegative
+                                  ? 'var(--destructive)'
+                                  : 'var(--text-muted)',
                             }}
                           >
                             {isPositive

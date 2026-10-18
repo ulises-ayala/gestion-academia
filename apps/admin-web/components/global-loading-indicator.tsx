@@ -45,8 +45,8 @@ export function GlobalLoadingIndicator() {
         style={{
           width: '14px',
           height: '14px',
-          border: '2px solid rgba(255, 255, 255, 0.15)',
-          borderTopColor: '#eb2258',
+          border: '2px solid var(--border)',
+          borderTopColor: 'var(--accent)',
           borderRadius: '50%',
           display: 'inline-block',
           animation: 'spin 0.75s linear infinite',
