@@ -1,3 +1,4 @@
+import React from 'react';
 import { ChevronRight, CircleCheck, CircleDashed, Clock3, Minus } from 'lucide-react';
 import Link from 'next/link';
 import {

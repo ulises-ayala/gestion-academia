@@ -5,16 +5,14 @@ import {
   integrationTestTimeoutMs,
   prismaTransactionOptions,
 } from '../../database/prisma-transaction-options';
+import { integrationDatabaseEnabled } from '../../database/integration-database';
 import { PrismaEnrollmentRepository } from '../../enrollments/infrastructure/prisma-enrollment.repository';
 import { EnrollmentsService } from '../../enrollments/application/enrollments.service';
 import { PrismaStudentFollowUpReader } from './prisma-student-follow-up.reader';
 import { followUpCountQuery } from './student-follow-up-query';
 
 // Explicit opt-in; never load a developer's .env or run fixtures on the academy database.
-const enabled = Boolean(
-  process.env.DATABASE_URL &&
-    /(?:academy_ci|follow_up_test)(?:\?|$)/.test(process.env.DATABASE_URL),
-);
+const enabled = integrationDatabaseEnabled;
 describe.runIf(enabled)(
   'Student follow-up PostgreSQL read model and enrollment end',
   () => {

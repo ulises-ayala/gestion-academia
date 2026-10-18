@@ -1,7 +1,7 @@
 'use client';
 
 import { Info } from 'lucide-react';
-import { useId } from 'react';
+import React, { useId } from 'react';
 
 /** Ayuda breve junto a un indicador. Se muestra al pasar el mouse o al enfocar. */
 export function InfoHint({ label, text }: Readonly<{ label: string; text: string }>) {

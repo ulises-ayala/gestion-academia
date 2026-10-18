@@ -2,6 +2,11 @@ import type { EnrollmentDto } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  SERIALIZABLE_TRANSACTION_ATTEMPTS,
+  isSerializationConflict,
+  waitBeforeSerializableRetry,
+} from '../../database/serializable-retry';
 import { DomainError } from '../../shared/domain/domain-error';
 import type {
   EnrollmentQuery,
@@ -94,7 +99,7 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
     classId: string;
     startDate: Date;
   }): Promise<EnrollmentDto> {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < SERIALIZABLE_TRANSACTION_ATTEMPTS; attempt++) {
       try {
         return await this.prisma.$transaction(
           async (tx) => {
@@ -192,12 +197,16 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
             'ENROLLMENT_ALREADY_ACTIVE',
             'El alumno ya tiene una inscripción activa en esta clase.',
           );
-        if (
-          error instanceof Prisma.PrismaClientKnownRequestError &&
-          error.code === 'P2034' &&
-          attempt < 2
-        )
-          continue;
+        if (isSerializationConflict(error)) {
+          if (attempt < SERIALIZABLE_TRANSACTION_ATTEMPTS - 1) {
+            await waitBeforeSerializableRetry(attempt);
+            continue;
+          }
+          throw new DomainError(
+            'ENROLLMENT_CONCURRENCY_CONFLICT',
+            'No se pudo confirmar la inscripción. Intentá nuevamente.',
+          );
+        }
         throw error;
       }
     }

@@ -799,6 +799,7 @@ export type OperationalDashboardDto = Readonly<{
   followUp?: Readonly<{ students: number }>;
   classes?: Readonly<{
     active: number;
+    /** Horarios de hoy: una clase con dos horarios en el día cuenta dos veces. */
     scheduledToday: number;
     today: readonly Readonly<{
       id: string;

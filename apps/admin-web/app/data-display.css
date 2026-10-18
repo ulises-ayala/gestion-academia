@@ -48,7 +48,7 @@
 .ui-filter-toolbar {
   display: grid;
   grid-template-columns: minmax(14rem, 1fr) 11rem auto;
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-3);
 }
 

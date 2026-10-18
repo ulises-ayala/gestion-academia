@@ -2,6 +2,11 @@ import type { PaymentDto, PaymentMethodDto } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  SERIALIZABLE_TRANSACTION_ATTEMPTS,
+  isSerializationConflict,
+  waitBeforeSerializableRetry,
+} from '../../database/serializable-retry';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { PaymentQuery, PaymentsRepository } from '../application/payments.repository';
 import {
@@ -60,18 +65,10 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   createdAt: item.createdAt.toISOString(),
   updatedAt: item.updatedAt.toISOString(),
 });
-const isRetryableTransactionError = (error: unknown) =>
-  error instanceof Prisma.PrismaClientKnownRequestError &&
-  (error.code === 'P2034' ||
-    (error.code === 'P2010' && /40001|40P01|serializ|deadlock/i.test(JSON.stringify(error.meta))));
-/**
- * Reintentos ante conflictos de serialización. La espera creciente con jitter evita que dos
- * cobros simultáneos sobre la misma cuota vuelvan a chocar en cada reintento cuando la base
- * tiene latencia alta; el reintento ganador ve el saldo ya actualizado.
- */
-export const PAYMENT_TRANSACTION_ATTEMPTS = 5;
-const waitBeforeRetry = (attempt: number) =>
-  new Promise((resolve) => setTimeout(resolve, 25 * 2 ** attempt + Math.random() * 25));
+const isRetryableTransactionError = isSerializationConflict;
+const waitBeforeRetry = waitBeforeSerializableRetry;
+/** Ver `database/serializable-retry.ts`: el reintento posterior ve el saldo ya actualizado. */
+export const PAYMENT_TRANSACTION_ATTEMPTS = SERIALIZABLE_TRANSACTION_ATTEMPTS;
 @Injectable()
 export class PrismaPaymentsRepository implements PaymentsRepository {
   constructor(private readonly prisma: PrismaService) {}

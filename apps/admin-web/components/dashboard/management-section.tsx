@@ -1,3 +1,4 @@
+import React from 'react';
 import type { OperationalDashboardDto } from '@academy/contracts';
 import { BarChart3, ChevronRight, CreditCard } from 'lucide-react';
 import Link from 'next/link';

@@ -168,11 +168,12 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
         first.focus();
       }
     };
+    const menuButton = menuButtonRef.current;
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = previousOverflow;
-      menuButtonRef.current?.focus();
+      menuButton?.focus();
     };
   }, [navigationOpen]);
 

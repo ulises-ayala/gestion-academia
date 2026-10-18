@@ -12,9 +12,20 @@
 - **Estado de asistencia por clase del día:** `GET /api/v1/dashboard/operational` agrega a cada clase de hoy `enrolledStudents` (inscripciones activas vigentes en el día operativo) y `attendanceRecords` (registros de asistencia del día para la clase; `null` sin permiso `attendance:manage`). La interfaz muestra Completada cuando los registros alcanzan a los inscriptos, Parcial cuando hay algunos y Pendiente cuando no hay ninguno. `billing` agrega `overdueStudents` (alumnos distintos con cuotas vencidas).
 - **Actualización sin perder contexto:** el Inicio muestra la hora de la última actualización y un botón para actualizar; mientras refresca o si falla, conserva el último resultado. Los alumnos en seguimiento se cargan por separado y pueden fallar y reintentarse sin ocultar el resto.
 
+## Mantenimiento técnico — octubre 2026
+
+- **Seguridad de dependencias:** `next` sube a 15.5.28 (corrige CVE-2025-66478 y avisos posteriores de la línea 15) y `react`/`react-dom` a 19.1.10; NestJS a 11.2.7. Quedan pendientes, por requerir versiones mayores: PostCSS embebido en Next (sólo compila estilos propios; se resuelve con Next 16), la dependencia `effect` del CLI de Prisma (Prisma 7) y `xlsx`, sin versión corregida en npm y usada sólo por scripts de migración.
+- **Tests de integración aislados:** sólo corren contra bases de tests (`academy_ci` o `*_test`); con otra `DATABASE_URL` se omiten. `INTEGRATION_TESTS_ALLOW_ANY_DATABASE=true` habilita explícitamente otra base descartable.
+- **Reintentos serializables compartidos:** `apps/api/src/database/serializable-retry.ts` centraliza la detección de conflictos y la espera con jitter (5 intentos). La usan pagos, inscripciones y alta rápida; inscripciones ahora informa `ENROLLMENT_CONCURRENCY_CONFLICT` también en el último intento en vez de propagar el error de Prisma.
+- **Saltos de línea:** `.gitattributes` fija LF en todo el repositorio (CRLF sólo para scripts `.bat`, `.cmd` y `.ps1`).
+- **Lint:** ESLint 9 con `typescript-eslint`, reglas de Next y de hooks de React; `npm run lint` corre en la raíz. Los scripts puntuales de `scripts/` quedan fuera del lint.
+- **CSS heredado:** se eliminaron de `styles.css` los selectores que ningún componente usa (dashboard, topbar y navegación anteriores).
+- **Movimiento reducido:** con `prefers-reduced-motion` se eliminan animaciones y desplazamientos, pero se conservan los fundidos de color y opacidad que comunican hover y foco.
+- **Clases con dos horarios el mismo día:** la agenda muestra una fila por horario. Como la asistencia se registra por inscripción y fecha, ambas filas comparten el mismo estado; es el comportamiento esperado. `scheduledToday` cuenta horarios.
+
 ## Acabado moderno de Admin Web
 
-- El modo claro diferencia la estructura de la aplicaciÃ³n (`#F2F0ED`) de las superficies de trabajo blancas. Bordes `#DDD9D4`, controles `#8C8781` (ajustado desde el gris inicial para alcanzar 3:1 sobre blanco y sobre el fondo de aplicaciÃ³n) y una sombra de 1 px aportan jerarquÃ­a sin convertir las tarjetas en elementos flotantes; el modo oscuro conserva sus valores previos.
+- El modo claro diferencia la estructura de la aplicación (`#F2F0ED`) de las superficies de trabajo blancas. Bordes `#DDD9D4`, controles `#8C8781` (ajustado desde el gris inicial para alcanzar 3:1 sobre blanco y sobre el fondo de aplicación) y una sombra de 1 px aportan jerarquía sin convertir las tarjetas en elementos flotantes; el modo oscuro conserva sus valores previos.
 
 - `PageContainer` establece anchos centrados de 1440, 1200 y 960 px para `wide`, `default` y `narrow`. Inicio y Alumnos usan `wide`; las barras del gráfico mantienen un ancho máximo y se centran en su columna para no deformarse en pantallas amplias.
 

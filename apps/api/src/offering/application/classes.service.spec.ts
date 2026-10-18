@@ -197,7 +197,7 @@ describe('ClassesService', () => {
       code: 'CLASS_HAS_ACTIVE_ENROLLMENTS',
     });
   });
-  it('permite reducir el cupo por encima o exactamente hasta la ocupaciÃ³n activa', async () => {
+  it('permite reducir el cupo por encima o exactamente hasta la ocupación activa', async () => {
     const created = await service.create(input());
     repo.enrollmentCounts.set(created.id, { active: 15, ended: 5 });
     await expect(service.update(created.id, { capacity: 18 })).resolves.toMatchObject({
@@ -207,7 +207,7 @@ describe('ClassesService', () => {
       capacity: 15,
     });
   });
-  it('rechaza reducir el cupo por debajo de la ocupaciÃ³n activa', async () => {
+  it('rechaza reducir el cupo por debajo de la ocupación activa', async () => {
     const created = await service.create(input());
     repo.enrollmentCounts.set(created.id, { active: 15, ended: 5 });
     await expect(service.update(created.id, { capacity: 14 })).rejects.toMatchObject({
@@ -215,7 +215,7 @@ describe('ClassesService', () => {
       details: { activeEnrollmentCount: 15, requestedCapacity: 14 },
     });
   });
-  it('no cuenta inscripciones finalizadas para el cupo mÃ­nimo', async () => {
+  it('no cuenta inscripciones finalizadas para el cupo mínimo', async () => {
     const created = await service.create(input());
     repo.enrollmentCounts.set(created.id, { active: 10, ended: 5 });
     await expect(service.update(created.id, { capacity: 10 })).resolves.toMatchObject({

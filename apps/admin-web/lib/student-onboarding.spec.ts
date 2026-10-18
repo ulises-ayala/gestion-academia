@@ -1,4 +1,4 @@
-import type { ClassDto, TariffDto } from '@academy/contracts';
+import type { TariffDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import { buildOnboardingPayload, onboardingTotal } from './student-onboarding';
 

@@ -30,20 +30,7 @@ describe('Pilot readiness critical screens', () => {
     );
   });
 
-  it('abre los cobros de hoy en el historial del día de negocio', () => {
-    const management = read('../components/dashboard/management-section.tsx');
-    expect(management).toContain(
-      'const todayHref = `/payments?tab=history&from=${data.businessDate}&to=${data.businessDate}`;',
-    );
-  });
-
-  it('agrupa las acciones frecuentes como secundarias, con wrap y 44 px de alto', () => {
-    const dashboard = read('./page.tsx');
-    const styles = read('./dashboard.css');
-    expect(dashboard).toContain('className="button secondary frequent-action"');
-    expect(styles).toMatch(/\.frequent-actions-list \{\s*display: flex;\s*flex-wrap: wrap;/);
-    expect(styles).toMatch(/\.frequent-action \{\s*min-height: 2\.75rem;/);
-  });
+  // El Inicio se verifica renderizando sus paneles: components/dashboard/dashboard-panels.spec.tsx.
 
   it('no bloquea clases y tarifas si falla la consulta de caja durante el alta', () => {
     const onboarding = read('./students/new/page.tsx');

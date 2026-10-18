@@ -21,6 +21,7 @@ const conditionInclude = {
   authorizedBy: { select: { id: true, username: true } },
 };
 const isoPeriod = (date: Date) => date.toISOString().slice(0, 7);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- payload de Prisma con includes variables
 const mapCondition = (item: any): EnrollmentBillingConditionDto => ({
   id: item.id,
   enrollmentId: item.enrollmentId,
@@ -40,7 +41,7 @@ const mapCondition = (item: any): EnrollmentBillingConditionDto => ({
 const reason = (value: string) => {
   const normalized = value?.trim();
   if (!normalized || normalized.length > 500)
-    throw new DomainError('VALIDATION_ERROR', 'El motivo es obligatorio (mÃ¡ximo 500 caracteres)', {
+    throw new DomainError('VALIDATION_ERROR', 'El motivo es obligatorio (máximo 500 caracteres)', {
       field: 'reason',
     });
   return normalized;

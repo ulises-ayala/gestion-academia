@@ -1,5 +1,4 @@
 import { toast } from 'sonner';
-import { ApiClientError } from './api-client';
 
 export const notifySuccess = (title: string, description?: string) => {
   toast.success(title, {
@@ -17,7 +16,12 @@ export const notifyError = (
   let code = customCode ?? 'ERR_UNKNOWN';
 
   if (typeof error === 'object' && error !== null) {
-    const err = error as Record<string, any>;
+    const err = error as Readonly<{
+      error?: { message?: string; code?: string } | null;
+      message?: string;
+      code?: unknown;
+      status?: number;
+    }>;
 
     // 1. Si es ApiClientError o tiene el objeto error interno (ApiErrorDto)
     if (err.error && typeof err.error === 'object') {

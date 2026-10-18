@@ -5,10 +5,11 @@ import {
   integrationTestTimeoutMs,
   prismaTransactionOptions,
 } from '../../database/prisma-transaction-options';
+import { integrationDatabaseEnabled } from '../../database/integration-database';
 import { StudentOnboardingService } from '../application/student-onboarding.service';
 import { PrismaStudentOnboardingTransaction } from './prisma-student-onboarding.transaction';
 
-const enabled = Boolean(process.env.DATABASE_URL);
+const enabled = integrationDatabaseEnabled;
 describe.runIf(enabled)(
   'Student onboarding atomicity and concurrency',
   () => {

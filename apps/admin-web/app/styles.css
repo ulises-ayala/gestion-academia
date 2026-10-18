@@ -115,7 +115,7 @@
   color: var(--text-muted);
 }
 .reports-inline-filters {
-  align-items: end;
+  align-items: flex-end;
   margin-bottom: var(--space-4);
 }
 .reports-inline-filters label:first-child {
@@ -126,7 +126,7 @@
   max-width: 100%;
   overflow-x: auto;
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-2);
   padding: var(--space-4) 0;
   border-bottom: 1px solid var(--border);
@@ -138,7 +138,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
   gap: var(--space-1);
 }
 .reports-chart div > span {
@@ -233,7 +233,6 @@
 }
 .cash-heading,
 .cash-range,
-.cash-history-row,
 .cash-movements article {
   display: flex;
   align-items: center;
@@ -264,42 +263,17 @@
 .cash-totals strong {
   font-size: 1.2rem;
 }
-.cash-history,
 .cash-movements {
   display: grid;
   gap: var(--space-2);
   margin-top: var(--space-3);
-}
-.cash-history-row {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(15rem, 1.5fr) minmax(7rem, 0.7fr) minmax(11rem, 1fr) minmax(
-      12rem,
-      1fr
-    );
-  align-items: center;
-  text-align: left;
-  color: var(--text);
-  background: var(--surface-muted);
-  border: 1px solid var(--border);
-}
-.cash-history-row span:first-child {
-  display: grid;
-}
-.cash-history-row > .status {
-  justify-self: start;
-}
-.cash-history-row > span:nth-last-child(-n + 2) {
-  justify-self: end;
-  text-align: right;
-  white-space: nowrap;
 }
 .cash-movements article {
   padding: var(--space-3);
   border-bottom: 1px solid var(--border);
 }
 .cash-range {
-  align-items: end;
+  align-items: flex-end;
   justify-content: flex-start;
   flex-wrap: wrap;
   margin-top: var(--space-3);
@@ -312,22 +286,15 @@
   .class-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .cash-history-row {
-    grid-template-columns: minmax(12rem, 1fr) auto auto;
-  }
 }
 @media (max-width: 48rem) {
   .cash-totals {
     grid-template-columns: 1fr;
   }
   .cash-heading,
-  .cash-history-row,
   .cash-movements article {
     align-items: stretch;
     flex-direction: column;
-  }
-  .cash-history-row {
-    display: flex;
   }
   .cash-heading button,
   .cash-heading .button,
@@ -393,65 +360,8 @@ svg {
   display: grid;
   gap: var(--space-6);
 }
-.dashboard-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-.dashboard-heading h1 {
-  margin: 0.2rem 0;
-}
-.dashboard-heading p {
-  margin: 0;
-  color: var(--text-muted);
-}
-.dashboard-heading .eyebrow,
 .dashboard-card .eyebrow {
   color: var(--brand);
-}
-.dashboard-date {
-  padding: 0.5rem 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text-muted);
-}
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-3);
-}
-.metric-card {
-  display: grid;
-  gap: 0.25rem;
-  padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  text-decoration: none;
-}
-.metric-card:hover {
-  border-color: var(--brand);
-  background: var(--surface-hover);
-}
-.metric-card span,
-.metric-card small {
-  color: var(--text-muted);
-}
-.metric-card strong {
-  font-size: clamp(1.35rem, 2vw, 1.8rem);
-}
-.dashboard-columns {
-  display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(17rem, 0.75fr);
-  gap: var(--space-4);
-  align-items: flex-start;
-}
-.dashboard-stack {
-  display: grid;
-  gap: var(--space-4);
 }
 .dashboard-card {
   padding: var(--space-4);
@@ -475,148 +385,29 @@ svg {
   background: var(--brand-soft);
   color: var(--brand);
 }
-.dashboard-card-title a,
-.dashboard-link {
+.dashboard-card-title a {
   color: var(--brand);
   font-weight: 700;
-}
-.dashboard-list {
-  display: grid;
-  border-top: 1px solid var(--border);
-}
-.schedule-row,
-.lead-row,
-.audit-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 0.8rem 0;
-  border-bottom: 1px solid var(--border);
-  text-decoration: none;
-}
-.schedule-row:hover,
-.lead-row:hover,
-.audit-row:hover {
-  color: var(--brand);
-}
-.schedule-row small,
-.lead-row small,
-.audit-row small {
-  display: block;
-  color: var(--text-muted);
-  font-weight: 400;
-}
-.lead-row,
-.audit-row {
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-.audit-row time {
-  color: var(--text-muted);
-  font-size: 0.82rem;
 }
 .dashboard-empty {
   color: var(--text-muted);
 }
-.mini-metrics,
 .attendance-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-2);
   margin-bottom: var(--space-4);
 }
-.mini-metrics span,
-.mini-metrics a,
 .attendance-summary span {
   padding: 0.7rem;
   border-radius: var(--radius-md);
   background: var(--surface-muted);
   color: var(--text-muted);
 }
-.mini-metrics a {
-  text-decoration: none;
-}
-.mini-metrics strong,
 .attendance-summary strong {
   display: block;
   color: var(--text);
   font-size: 1.2rem;
-}
-.attention-card.has-urgent {
-  border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
-  background: color-mix(in srgb, var(--danger-soft) 55%, var(--surface));
-}
-.attention-list {
-  display: grid;
-  gap: var(--space-2);
-}
-.attention-list a {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 0.65rem;
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  text-decoration: none;
-}
-.attention-list strong {
-  color: var(--danger);
-  font-size: 1.3rem;
-}
-.quick-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
-}
-.quick-actions-card {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: var(--space-6);
-}
-.quick-actions-card h2 {
-  margin-bottom: 0;
-}
-.quick-actions-card .quick-actions {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.quick-actions-card .quick-action {
-  min-height: 3.5rem;
-  justify-content: space-between;
-  padding: var(--space-3) var(--space-4);
-  border-color: var(--border);
-  background: var(--surface-muted);
-  color: var(--text);
-  text-align: left;
-}
-.quick-actions-card .quick-action:hover {
-  border-color: var(--brand);
-  background: var(--brand-soft);
-  color: var(--text);
-}
-.quick-actions-card .quick-action span {
-  width: 1.75rem;
-  height: 1.75rem;
-  flex: 0 0 1.75rem;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: var(--brand-fill);
-  color: var(--brand-on-fill);
-}
-.metric-action {
-  color: var(--brand) !important;
-  font-weight: 700;
-}
-.attention-list small {
-  display: block;
-  color: var(--brand);
-}
-.dashboard-columns .attention-card {
-  display: none;
-}
-.legacy-quick-actions {
-  display: none;
 }
 .context-filter {
   display: flex;
@@ -631,23 +422,6 @@ svg {
 .context-filter a {
   color: var(--brand);
   font-weight: 700;
-}
-.receivables-summary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-.receivables-summary span {
-  padding: 0.8rem;
-  border-radius: var(--radius-md);
-  background: var(--surface-muted);
-  color: var(--text-muted);
-}
-.receivables-summary strong {
-  display: block;
-  color: var(--text);
-  font-size: 1.2rem;
 }
 .debtor-list {
   display: grid;
@@ -672,9 +446,6 @@ svg {
   display: flex;
   gap: var(--space-2);
 }
-.quick-actions .button {
-  padding-inline: 0.6rem;
-}
 .dashboard-loading {
   padding: var(--space-8);
   color: var(--text-muted);
@@ -691,7 +462,7 @@ svg {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: clamp(0.35rem, 2vw, 1rem);
-  align-items: end;
+  align-items: flex-end;
   padding: var(--space-4) var(--space-2);
   border-bottom: 1px solid var(--border);
 }
@@ -778,39 +549,8 @@ svg {
   border-block: 1px solid var(--border);
   text-align: center;
 }
-@media (max-width: 68rem) {
-  .metric-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .dashboard-columns {
-    grid-template-columns: 1fr;
-  }
-  .quick-actions-card {
-    grid-template-columns: 1fr;
-  }
-  .quick-actions-card .quick-actions {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
 @media (max-width: 40rem) {
-  .dashboard-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .metric-grid {
-    grid-template-columns: 1fr;
-  }
-  .mini-metrics,
   .attendance-summary {
-    grid-template-columns: 1fr;
-  }
-  .quick-actions {
-    grid-template-columns: 1fr;
-  }
-  .quick-actions-card .quick-actions {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .receivables-summary {
     grid-template-columns: 1fr;
   }
   .debtor-row {
@@ -819,15 +559,6 @@ svg {
   .debtor-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-  }
-  .schedule-row {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-  .schedule-row > span:last-child {
-    display: none;
-  }
-  .audit-row {
-    grid-template-columns: 1fr;
   }
   .financial-metrics {
     grid-template-columns: repeat(2, 1fr);
@@ -841,11 +572,6 @@ svg {
     font-size: 0.62rem;
   }
 }
-@media (max-width: 28rem) {
-  .quick-actions-card .quick-actions {
-    grid-template-columns: 1fr;
-  }
-}
 @media (max-width: 22rem) {
   .financial-metrics {
     grid-template-columns: 1fr;
@@ -853,7 +579,6 @@ svg {
   .payment-bar-value {
     visibility: hidden;
   }
-  .quick-actions-card .quick-actions,
   .debtor-actions {
     grid-template-columns: 1fr;
   }
@@ -982,17 +707,6 @@ button.secondary:hover:not(:disabled),
   color: var(--text-muted);
   font-size: 0.72rem;
 }
-.brand-mark {
-  width: 2.25rem;
-  height: 2.25rem;
-  display: grid;
-  place-items: center;
-  flex: none;
-  border-radius: var(--radius-md);
-  background: var(--brand-fill);
-  color: var(--brand-on-fill);
-  font-size: 0.72rem;
-}
 .sidebar-nav {
   display: grid;
   gap: var(--space-3);
@@ -1035,23 +749,6 @@ button.secondary:hover:not(:disabled),
   color: var(--brand-on-fill);
   font-weight: 750;
 }
-.nav-indicator {
-  width: 0.4rem;
-  height: 0.4rem;
-  flex: none;
-  border: 1.5px solid currentcolor;
-  border-radius: 50%;
-}
-.nav-link.active .nav-indicator {
-  background: currentcolor;
-}
-.sidebar-footer {
-  margin: auto 0 0;
-  padding: var(--space-6) var(--space-3) var(--space-2);
-  border-top: 1px solid var(--border-strong);
-  color: var(--text-muted);
-  font-size: 0.75rem;
-}
 .sidebar-close,
 .menu-button,
 .sidebar-backdrop {
@@ -1073,42 +770,6 @@ button.secondary:hover:not(:disabled),
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
-}
-.topbar-spacer {
-  flex: 1;
-}
-.user-context {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.theme-toggle {
-  width: 2.4rem;
-  min-width: 2.4rem;
-  min-height: 2.4rem;
-  padding: 0;
-  border-radius: 50%;
-  font-size: 1rem;
-}
-.user-avatar {
-  width: 2.25rem;
-  height: 2.25rem;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--brand-soft);
-  color: var(--brand);
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-.user-badge {
-  display: grid;
-  font-size: 0.82rem;
-  line-height: 1.25;
-}
-.user-badge small {
-  color: var(--text-muted);
-  font-size: 0.72rem;
 }
 .admin-content > main {
   width: min(100%, 82rem);
@@ -1205,7 +866,7 @@ p {
 .lead-filters {
   display: grid;
   grid-template-columns: minmax(15rem, 1.6fr) repeat(3, minmax(9rem, 0.7fr)) auto;
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-3);
   margin-bottom: var(--space-4);
 }
@@ -1691,7 +1352,6 @@ dd {
   overflow-wrap: anywhere;
   font-size: 0.95rem;
 }
-.future-grid,
 .enrollment-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1784,7 +1444,7 @@ dd {
 }
 .attendance-quick-filters {
   grid-template-columns: minmax(15rem, 2fr) minmax(12rem, 1fr) auto;
-  align-items: end;
+  align-items: flex-end;
 }
 .attendance-list,
 .attendance-quick-results,
@@ -1796,7 +1456,7 @@ dd {
 .attendance-row {
   display: grid;
   grid-template-columns: minmax(11rem, 1fr) minmax(10rem, 0.75fr) minmax(14rem, 1.4fr);
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-4);
   padding: var(--space-4);
   border: 1px solid var(--border);
@@ -1820,11 +1480,6 @@ dd {
   display: flex;
   justify-content: flex-end;
   margin-top: var(--space-6);
-}
-.attendance-tabs {
-  display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
 }
 .attendance-student-header,
 .attendance-section-heading,
@@ -1876,13 +1531,6 @@ dd {
 .attendance-day-card p {
   margin-top: var(--space-1);
   color: var(--text-muted);
-}
-.attendance-suggestion {
-  display: inline-block;
-  margin-top: var(--space-2);
-  color: var(--brand);
-  font-size: 0.75rem;
-  font-weight: 750;
 }
 .attendance-quick-action {
   min-width: 12rem;
@@ -2013,31 +1661,16 @@ dd {
   .attendance-row-actions button {
     flex: 1;
   }
-  .attendance-notes {
-    grid-column: 1 / -1;
-  }
 }
 @media (max-width: 768px) {
   .topbar {
     min-height: 3.75rem;
     padding: var(--space-2) var(--space-4);
   }
-  .topbar-spacer {
-    min-width: 0;
-  }
   .topbar > button:last-child {
     min-height: 2.25rem;
     padding: 0.45rem 0.65rem;
     font-size: 0.76rem;
-  }
-  .user-avatar {
-    display: none;
-  }
-  .user-badge strong {
-    max-width: 7rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .admin-content > main {
     padding: var(--space-6) var(--space-4) var(--space-12);
@@ -2059,7 +1692,6 @@ dd {
   .student-form,
   .lead-form,
   .detail-grid,
-  .future-grid,
   .enrollment-grid,
   .class-filters,
   .schedule-builder,
@@ -2180,7 +1812,6 @@ dd {
     min-height: 2.75rem;
   }
   .wide,
-  .attendance-notes,
   .attendance-row-actions {
     grid-column: auto;
   }
@@ -2199,16 +1830,12 @@ dd {
   .pagination button {
     min-height: 2.75rem;
   }
-  .attendance-tabs,
   .attendance-student-header,
   .attendance-section-heading,
   .attendance-roster-heading,
   .attendance-day-card {
     align-items: stretch;
     flex-direction: column;
-  }
-  .attendance-tabs button {
-    flex: 1;
   }
   .attendance-day-card {
     display: flex;
@@ -2233,9 +1860,6 @@ dd {
     top: var(--space-1);
     gap: var(--space-2);
     padding-inline: var(--space-2);
-  }
-  .user-context {
-    display: none;
   }
   .admin-content > main {
     padding: var(--space-4) var(--space-2) var(--space-8);
@@ -2262,16 +1886,6 @@ dd {
     text-align: center;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-  }
-}
 .audit-filter-card {
   padding: var(--space-4);
 }
@@ -2279,7 +1893,7 @@ dd {
   display: grid;
   grid-template-columns: minmax(10rem, 0.8fr) minmax(11rem, 1fr) minmax(13rem, 1.25fr);
   gap: var(--space-3);
-  align-items: end;
+  align-items: flex-end;
 }
 .audit-filters label {
   min-width: 0;
@@ -2471,38 +2085,11 @@ dd {
   border-radius: var(--radius-md);
   background: var(--surface-hover);
 }
-.students-navigation-link {
-  display: grid;
-  flex: 1 1 15rem;
-  gap: 0.2rem;
-  min-width: 0;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  text-decoration: none;
-}
-.students-navigation-link strong {
-  color: var(--text);
-}
-.students-navigation-link span {
-  font-size: 0.82rem;
-}
-.students-navigation-link:hover,
-.students-navigation-link:focus-visible {
-  background: var(--surface);
-}
-.students-navigation-link.active {
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px var(--brand);
-}
-.students-navigation-link.active strong {
-  color: var(--brand);
-}
 .follow-up-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  align-items: end;
+  align-items: flex-end;
 }
 .follow-up-filters label {
   flex: 1 1 12rem;
@@ -2877,7 +2464,7 @@ dialog.enrollment-end-dialog:not([open]) {
 .payment-account-filters {
   display: grid;
   grid-template-columns: minmax(15rem, 1fr) minmax(12rem, 0.35fr) auto;
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-3);
   padding-bottom: var(--space-4);
 }
@@ -2960,7 +2547,7 @@ dialog.enrollment-end-dialog:not([open]) {
 .payment-history-filters {
   display: grid;
   grid-template-columns: minmax(14rem, 1.4fr) repeat(4, minmax(9rem, 0.65fr));
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-3);
   margin-bottom: var(--space-4);
 }
