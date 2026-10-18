@@ -808,12 +808,17 @@ export type OperationalDashboardDto = Readonly<{
       teacher: string;
       room: string;
       branch: string;
+      /** Inscripciones activas vigentes en el día operativo. */
+      enrolledStudents: number;
+      /** Registros de asistencia del día para la clase; null sin permiso de asistencia. */
+      attendanceRecords: number | null;
     }>[];
   }>;
   billing?: Readonly<{
     pendingCharges: number;
     pendingDebt: string;
     overdueCharges: number;
+    overdueStudents: number;
   }>;
   payments?: Readonly<{ confirmedToday: number; confirmedAmountToday: string }>;
   financial?: Readonly<{

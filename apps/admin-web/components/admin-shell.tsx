@@ -9,7 +9,6 @@ import {
   DoorOpen,
   GraduationCap,
   LayoutDashboard,
-  LogOut,
   Menu,
   Moon,
   Music,
@@ -29,6 +28,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import type { UiPermission } from '../lib/permissions';
 import { roleLabel } from '../lib/permissions';
 import { useAuth } from './auth-provider';
+import { UserMenu } from './user-menu';
 
 type NavigationLink = Readonly<{
   href: string;
@@ -37,19 +37,28 @@ type NavigationLink = Readonly<{
   icon: LucideIcon;
 }>;
 
-const navigation: ReadonlyArray<{ label: string; links: readonly NavigationLink[] }> = [
+type NavigationGroup = Readonly<{
+  label: string;
+  placement: 'primary' | 'secondary';
+  links: readonly NavigationLink[];
+}>;
+
+const navigation: readonly NavigationGroup[] = [
   {
     label: 'Gestión',
+    placement: 'primary',
     links: [
       { href: '/', label: 'Inicio', permission: 'students:manage', icon: LayoutDashboard },
       { href: '/students', label: 'Alumnos', permission: 'students:manage', icon: Users },
-      { href: '/leads', label: 'Potenciales', permission: 'leads:manage', icon: UserPlus },
+      { href: '/payments', label: 'Pagos', permission: 'payments:read', icon: CreditCard },
+      { href: '/cash', label: 'Caja', permission: 'cash:manage', icon: Wallet },
       {
         href: '/attendances',
         label: 'Asistencias',
         permission: 'attendance:manage',
         icon: CalendarCheck,
       },
+      { href: '/leads', label: 'Potenciales', permission: 'leads:manage', icon: UserPlus },
       { href: '/classes', label: 'Clases', permission: 'offering:read', icon: CalendarDays },
       {
         href: '/teachers',
@@ -57,13 +66,6 @@ const navigation: ReadonlyArray<{ label: string; links: readonly NavigationLink[
         permission: 'offering:manage',
         icon: GraduationCap,
       },
-    ],
-  },
-  {
-    label: 'Finanzas',
-    links: [
-      { href: '/payments', label: 'Pagos', permission: 'payments:read', icon: CreditCard },
-      { href: '/cash', label: 'Caja', permission: 'cash:manage', icon: Wallet },
       {
         href: '/reports',
         label: 'Reportes',
@@ -74,6 +76,7 @@ const navigation: ReadonlyArray<{ label: string; links: readonly NavigationLink[
   },
   {
     label: 'Configuración',
+    placement: 'secondary',
     links: [
       {
         href: '/dance-types',
@@ -93,6 +96,7 @@ const navigation: ReadonlyArray<{ label: string; links: readonly NavigationLink[
   },
   {
     label: 'Administración',
+    placement: 'secondary',
     links: [
       {
         href: '/users',
@@ -120,7 +124,6 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const initials = user.username.slice(0, 2).toUpperCase();
   const sectionLabel = sectionLabelForPath(pathname);
 
   useEffect(() => {
@@ -180,32 +183,6 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     window.localStorage.setItem('academy-theme', nextTheme);
   };
 
-  const themeLabel = theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro';
-  const ThemeIcon = theme === 'light' ? Moon : Sun;
-
-  const accountControls = (mobile = false) => (
-    <div className={mobile ? 'mobile-account-controls' : 'sidebar-account-actions'}>
-      <button
-        aria-label={themeLabel}
-        className="shell-icon-button"
-        onClick={toggleTheme}
-        title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
-        type="button"
-      >
-        <ThemeIcon aria-hidden="true" size={16} strokeWidth={1.5} />
-      </button>
-      <button
-        aria-label="Cerrar sesión"
-        className="shell-icon-button"
-        onClick={() => void logout()}
-        title="Cerrar sesión"
-        type="button"
-      >
-        <LogOut aria-hidden="true" size={16} strokeWidth={1.5} />
-      </button>
-    </div>
-  );
-
   return (
     <div className="admin-layout">
       <aside
@@ -217,10 +194,10 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
       >
         <div className="sidebar-header">
           <Link className="brand" href="/" onClick={() => setNavigationOpen(false)}>
-            <span className="brand-mark" aria-hidden="true">
-              GA
+            <span className="brand-copy">
+              <span className="brand-name">Carmesí</span>
+              <span className="brand-tagline">Academia de danza</span>
             </span>
-            <span className="brand-name">Gestión Academia</span>
           </Link>
           <button
             aria-label="Cerrar navegación"
@@ -233,45 +210,52 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
           </button>
         </div>
         <nav aria-label="Módulos" className="sidebar-nav">
-          {navigation.map((group) => {
-            const visibleLinks = group.links.filter((link) => can(link.permission));
-            if (visibleLinks.length === 0) return null;
+          {(['primary', 'secondary'] as const).map((placement) => {
+            const groups = navigation
+              .filter((group) => group.placement === placement)
+              .map((group) => ({
+                ...group,
+                links: group.links.filter((link) => can(link.permission)),
+              }))
+              .filter((group) => group.links.length > 0);
+            if (groups.length === 0) return null;
             return (
-              <div className="nav-group" key={group.label}>
-                <p className="nav-group-label">{group.label}</p>
-                <div className="nav-group-links">
-                  {visibleLinks.map((link) => {
-                    const Icon = link.icon;
-                    const active = isNavigationLinkActive(pathname, link.href);
-                    return (
-                      <Link
-                        aria-current={active ? 'page' : undefined}
-                        className={`nav-link ${active ? 'active' : ''}`}
-                        href={link.href}
-                        key={link.href}
-                        onClick={() => setNavigationOpen(false)}
-                      >
-                        <span className="nav-active-indicator" aria-hidden="true" />
-                        <Icon aria-hidden="true" className="nav-icon" size={16} strokeWidth={1.5} />
-                        <span>{link.label}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
+              <div className={`nav-section nav-section--${placement}`} key={placement}>
+                {groups.map((group) => (
+                  <div className="nav-group" key={group.label}>
+                    <p className={`nav-group-label ${placement === 'primary' ? 'sr-only' : ''}`}>
+                      {group.label}
+                    </p>
+                    <div className="nav-group-links">
+                      {group.links.map((link) => {
+                        const Icon = link.icon;
+                        const active = isNavigationLinkActive(pathname, link.href);
+                        return (
+                          <Link
+                            aria-current={active ? 'page' : undefined}
+                            className={`nav-link ${active ? 'active' : ''}`}
+                            href={link.href}
+                            key={link.href}
+                            onClick={() => setNavigationOpen(false)}
+                          >
+                            <span className="nav-active-indicator" aria-hidden="true" />
+                            <Icon
+                              aria-hidden="true"
+                              className="nav-icon"
+                              size={19}
+                              strokeWidth={1.6}
+                            />
+                            <span>{link.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             );
           })}
         </nav>
-        <div className="sidebar-account">
-          <span className="user-avatar" aria-hidden="true">
-            {initials}
-          </span>
-          <span className="user-badge">
-            <strong>{user.username}</strong>
-            <small>{roleLabel[user.role]}</small>
-          </span>
-          {accountControls()}
-        </div>
       </aside>
       {navigationOpen && (
         <button
@@ -294,7 +278,27 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
             <Menu aria-hidden="true" size={19} strokeWidth={1.5} />
           </button>
           <p className="topbar-section">{sectionLabel}</p>
-          {accountControls(true)}
+          <div className="topbar-actions">
+            <button
+              aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
+              aria-pressed={theme === 'dark'}
+              className="shell-icon-button theme-toggle-button"
+              onClick={toggleTheme}
+              title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
+              type="button"
+            >
+              {theme === 'light' ? (
+                <Moon aria-hidden="true" size={18} strokeWidth={1.6} />
+              ) : (
+                <Sun aria-hidden="true" size={18} strokeWidth={1.6} />
+              )}
+            </button>
+            <UserMenu
+              onLogout={() => void logout()}
+              roleLabel={roleLabel[user.role]}
+              username={user.username}
+            />
+          </div>
         </header>
         <main>{children}</main>
       </div>

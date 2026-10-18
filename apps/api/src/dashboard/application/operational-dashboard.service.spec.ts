@@ -20,6 +20,7 @@ const prismaMock = () => ({
               pendingCharges: 3n,
               pendingDebt: new Prisma.Decimal('1500.00'),
               overdueCharges: 2n,
+              overdueStudents: 1n,
             },
           ]
         : sql.strings.join(' ').includes('COUNT(DISTINCT "studentId")')
@@ -32,6 +33,7 @@ const prismaMock = () => ({
     count: vi.fn().mockResolvedValue(4),
     findMany: vi.fn().mockResolvedValue([]),
   },
+  enrollment: { groupBy: vi.fn().mockResolvedValue([]) },
   monthlyCharge: {
     aggregate: vi.fn().mockResolvedValue({
       _count: { id: 3 },
@@ -65,6 +67,7 @@ describe('OperationalDashboardService', () => {
       pendingCharges: 3,
       pendingDebt: '1500.00',
       overdueCharges: 2,
+      overdueStudents: 1,
     });
     expect(result.audit).toBeUndefined();
     expect(prisma.auditLog.findMany).not.toHaveBeenCalled();
@@ -92,6 +95,61 @@ describe('OperationalDashboardService', () => {
     expect(financialQuery.strings.join(' ')).not.toContain("status = 'VOID'");
     expect(prisma.auditLog.findMany).toHaveBeenCalledWith(
       expect.objectContaining({ take: 5, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }] }),
+    );
+  });
+
+  it('adds enrollment and attendance progress to today classes', async () => {
+    const prisma = prismaMock();
+    prisma.academyClass.findMany.mockResolvedValue([
+      {
+        id: 'class-1',
+        name: 'Ballet inicial',
+        teacher: { firstName: 'Valentina', lastName: 'Ruiz' },
+        schedules: [
+          {
+            startTime: new Date('1970-01-01T10:00:00.000Z'),
+            endTime: new Date('1970-01-01T11:00:00.000Z'),
+            room: { name: 'Sala 2', branch: { name: 'Centro' } },
+          },
+        ],
+      },
+      {
+        id: 'class-2',
+        name: 'Contemporáneo',
+        teacher: { firstName: 'Mariana', lastName: 'Gómez' },
+        schedules: [
+          {
+            startTime: new Date('1970-01-01T17:00:00.000Z'),
+            endTime: new Date('1970-01-01T18:00:00.000Z'),
+            room: { name: 'Sala 1', branch: { name: 'Centro' } },
+          },
+        ],
+      },
+    ]);
+    prisma.enrollment.groupBy.mockResolvedValue([{ classId: 'class-1', _count: { id: 18 } }]);
+    prisma.studentAttendance.findMany.mockImplementation((args: { where: object }) =>
+      Promise.resolve(
+        'enrollment' in args.where
+          ? [{ enrollment: { classId: 'class-1' } }, { enrollment: { classId: 'class-1' } }]
+          : [],
+      ),
+    );
+    const result = await new OperationalDashboardService(prisma as unknown as PrismaService).get(
+      user('RECEPTION'),
+      new Date('2026-08-30T15:00:00.000Z'),
+    );
+
+    expect(result.classes?.today).toEqual([
+      expect.objectContaining({ id: 'class-1', enrolledStudents: 18, attendanceRecords: 2 }),
+      expect.objectContaining({ id: 'class-2', enrolledStudents: 0, attendanceRecords: 0 }),
+    ]);
+    expect(prisma.enrollment.groupBy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          classId: { in: ['class-1', 'class-2'] },
+          status: 'ACTIVE',
+        }),
+      }),
     );
   });
 

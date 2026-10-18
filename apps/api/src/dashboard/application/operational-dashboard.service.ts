@@ -18,6 +18,7 @@ type BillingSummaryRow = Readonly<{
   pendingCharges: bigint;
   pendingDebt: Prisma.Decimal;
   overdueCharges: bigint;
+  overdueStudents: bigint;
 }>;
 
 @Injectable()
@@ -67,7 +68,38 @@ export class OperationalDashboardService {
               },
             },
           }),
-        ]).then(([active, classes]) => {
+        ]).then(async ([active, classes]) => {
+          const classIds = classes.map((item) => item.id);
+          const [enrolled, records] = await Promise.all([
+            classIds.length
+              ? this.prisma.enrollment.groupBy({
+                  by: ['classId'],
+                  where: {
+                    classId: { in: classIds },
+                    status: 'ACTIVE',
+                    startDate: { lte: day.dateValue },
+                    OR: [{ endDate: null }, { endDate: { gte: day.dateValue } }],
+                  },
+                  _count: { id: true },
+                })
+              : [],
+            classIds.length && hasPermissions(user, ['attendance:manage'])
+              ? this.prisma.studentAttendance.findMany({
+                  where: {
+                    attendanceDate: day.dateValue,
+                    enrollment: { classId: { in: classIds } },
+                  },
+                  select: { enrollment: { select: { classId: true } } },
+                })
+              : null,
+          ]);
+          const enrolledByClass = new Map(
+            enrolled.map((group) => [group.classId, group._count.id] as const),
+          );
+          const recordsFor = (classId: string) =>
+            records === null
+              ? null
+              : records.filter((record) => record.enrollment.classId === classId).length;
           const today = classes
             .flatMap((item) =>
               item.schedules.map((schedule) => ({
@@ -78,6 +110,8 @@ export class OperationalDashboardService {
                 teacher: `${item.teacher.firstName} ${item.teacher.lastName}`,
                 room: schedule.room.name,
                 branch: schedule.room.branch.name,
+                enrolledStudents: enrolledByClass.get(item.id) ?? 0,
+                attendanceRecords: recordsFor(item.id),
               })),
             )
             .sort((left, right) => left.startTime.localeCompare(right.startTime));
@@ -97,7 +131,7 @@ export class OperationalDashboardService {
                    BOOL_OR(type = 'LATE_FEE') AS has_late_fee
             FROM monthly_charge_adjustments GROUP BY monthly_charge_id
           ), calculated AS (
-            SELECT mc.due_date, COALESCE(c.paid, 0) AS paid,
+            SELECT mc.student_id, mc.due_date, COALESCE(c.paid, 0) AS paid,
                    GREATEST(mc.base_amount + COALESCE(a.student_delta, 0), 0) AS adjusted_due,
                    COALESCE(a.has_late_fee, false) AS has_late_fee
             FROM monthly_charges mc
@@ -105,14 +139,16 @@ export class OperationalDashboardService {
             LEFT JOIN adjustment_totals a ON a.monthly_charge_id = mc.id
             WHERE mc.status <> 'VOID'
           ), open_charges AS (
-            SELECT due_date, GREATEST(adjusted_due + CASE
+            SELECT student_id, due_date, GREATEST(adjusted_due + CASE
               WHEN due_date < ${day.dateValue} AND NOT has_late_fee AND adjusted_due - paid > 0
               THEN 1000 ELSE 0 END - paid, 0) AS outstanding
             FROM calculated
           )
           SELECT COUNT(*)::bigint AS "pendingCharges",
                  COALESCE(SUM(outstanding), 0) AS "pendingDebt",
-                 COUNT(*) FILTER (WHERE due_date < ${day.dateValue})::bigint AS "overdueCharges"
+                 COUNT(*) FILTER (WHERE due_date < ${day.dateValue})::bigint AS "overdueCharges",
+                 COUNT(DISTINCT student_id) FILTER (WHERE due_date < ${day.dateValue})::bigint
+                   AS "overdueStudents"
           FROM open_charges WHERE outstanding > 0
         `,
           )
@@ -121,6 +157,7 @@ export class OperationalDashboardService {
               pendingCharges: Number(billing?.pendingCharges ?? 0),
               pendingDebt: billing?.pendingDebt.toFixed(2) ?? '0.00',
               overdueCharges: Number(billing?.overdueCharges ?? 0),
+              overdueStudents: Number(billing?.overdueStudents ?? 0),
             };
           }),
       hasPermissions(user, ['payments:read']) &&

@@ -30,19 +30,19 @@ describe('Pilot readiness critical screens', () => {
     );
   });
 
-  it('abre Cobrado hoy en el historial del día de negocio', () => {
-    const dashboard = read('./page.tsx');
-    expect(dashboard).toContain(
-      'href={`/payments?tab=history&from=${data.businessDate}&to=${data.businessDate}`}',
+  it('abre los cobros de hoy en el historial del día de negocio', () => {
+    const management = read('../components/dashboard/management-section.tsx');
+    expect(management).toContain(
+      'const todayHref = `/payments?tab=history&from=${data.businessDate}&to=${data.businessDate}`;',
     );
   });
 
-  it('mantiene acciones rápidas compactas, con wrap y una acción primaria', () => {
+  it('agrupa las acciones frecuentes como secundarias, con wrap y 44 px de alto', () => {
+    const dashboard = read('./page.tsx');
     const styles = read('./dashboard.css');
-    expect(styles).toContain('display: flex;');
-    expect(styles).toContain('flex-wrap: wrap;');
-    expect(styles).toContain('width: fit-content;');
-    expect(styles).toContain('.quick-actions-section .quick-action');
+    expect(dashboard).toContain('className="button secondary frequent-action"');
+    expect(styles).toMatch(/\.frequent-actions-list \{\s*display: flex;\s*flex-wrap: wrap;/);
+    expect(styles).toMatch(/\.frequent-action \{\s*min-height: 2\.75rem;/);
   });
 
   it('no bloquea clases y tarifas si falla la consulta de caja durante el alta', () => {

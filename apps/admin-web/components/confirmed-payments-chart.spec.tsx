@@ -27,7 +27,8 @@ describe('ConfirmedPaymentsChart', () => {
     );
     expect(html).toContain('Evolución de cobros');
     expect(html.match(/payment-bar-column/g)).toHaveLength(6);
-    expect(html).toContain('Agosto 2026: 250 pesos');
+    expect(html).toContain('<th scope="row">Agosto 2026</th>');
+    expect(html).toContain('aria-hidden="true" class="payment-chart"');
     expect(html).toContain('Cobrado este mes');
     expect(html).toContain('Variación');
     expect(html).toContain('pagos confirmados registrados');
@@ -46,5 +47,17 @@ describe('ConfirmedPaymentsChart', () => {
     );
     expect(html).toContain('Todavía no hay cobros confirmados para mostrar.');
     expect(html).toContain('Sin comparación');
+  });
+
+  it('omits the metric grid in the compact dashboard variant', () => {
+    const html = renderToStaticMarkup(
+      <ConfirmedPaymentsChart
+        data={financial(['100', '0', '0', '0', '200', '250'])}
+        variant="compact"
+      />,
+    );
+    expect(html).toContain('financial-card--compact');
+    expect(html).not.toContain('Cobrado este mes');
+    expect(html).toContain('<caption>Cobros confirmados por mes, últimos 6 meses</caption>');
   });
 });

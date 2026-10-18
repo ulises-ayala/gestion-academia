@@ -64,6 +64,14 @@ const isRetryableTransactionError = (error: unknown) =>
   error instanceof Prisma.PrismaClientKnownRequestError &&
   (error.code === 'P2034' ||
     (error.code === 'P2010' && /40001|40P01|serializ|deadlock/i.test(JSON.stringify(error.meta))));
+/**
+ * Reintentos ante conflictos de serialización. La espera creciente con jitter evita que dos
+ * cobros simultáneos sobre la misma cuota vuelvan a chocar en cada reintento cuando la base
+ * tiene latencia alta; el reintento ganador ve el saldo ya actualizado.
+ */
+export const PAYMENT_TRANSACTION_ATTEMPTS = 5;
+const waitBeforeRetry = (attempt: number) =>
+  new Promise((resolve) => setTimeout(resolve, 25 * 2 ** attempt + Math.random() * 25));
 @Injectable()
 export class PrismaPaymentsRepository implements PaymentsRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -73,7 +81,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
   ) {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
       try {
         return await this.prisma.$transaction(
           async (tx) => {
@@ -204,7 +212,10 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
         );
       } catch (error) {
         if (isRetryableTransactionError(error)) {
-          if (attempt < 2) continue;
+          if (attempt < PAYMENT_TRANSACTION_ATTEMPTS - 1) {
+            await waitBeforeRetry(attempt);
+            continue;
+          }
           throw new DomainError(
             'PAYMENT_CONCURRENCY_CONFLICT',
             'La deuda cambió mientras registrabas el pago. Actualizá el estado de cuenta.',
@@ -277,7 +288,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
   }
 
   async void(id: string, actorId: string, reason: string) {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
       try {
         return await this.prisma.$transaction(
           async (tx) => {
@@ -366,7 +377,10 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
         );
       } catch (error) {
         if (isRetryableTransactionError(error)) {
-          if (attempt < 2) continue;
+          if (attempt < PAYMENT_TRANSACTION_ATTEMPTS - 1) {
+            await waitBeforeRetry(attempt);
+            continue;
+          }
           throw new DomainError(
             'PAYMENT_CONCURRENCY_CONFLICT',
             'El pago fue modificado al mismo tiempo.',

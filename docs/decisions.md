@@ -1,5 +1,17 @@
 # Decisiones y supuestos
 
+## Contexto de producto e interfaz
+
+- **Prioridad de recepción confirmada:** Carmesí es un panel interno para Admisión, Administración y Dirección de una academia de baile. Las próximas superficies deben priorizar la velocidad y claridad del trabajo diario de recepción, sin debilitar permisos, trazabilidad ni reglas existentes.
+- **Flujo visual imagen-primero:** para nuevas superficies se aprueba primero una propuesta visual de referencia antes de implementar código. La preferencia se guarda en `.impeccable/config.json` como `buildPath: comp`.
+- **Sidebar Carmesí en todo el panel:** el shell conserva todas las secciones, rutas y filtros por permiso vigentes. Se adopta la identidad tipográfica Carmesí y una navegación más cálida con el vino reservado para el estado activo; no se agregan módulos ni se comprime la navegación en esta iteración.
+- **Sidebar y topbar de recepción:** la navegación operativa (Inicio, Alumnos, Pagos, Caja, Asistencias, Potenciales, Clases, Profesores, Reportes) se muestra como una lista sin encabezados visibles; Configuración y Administración quedan agrupadas al pie de la sidebar. Todas las rutas y filtros por permiso se conservan. La cuenta (modo claro/oscuro y cierre de sesión) pasa a un menú de usuario en la topbar, visible también en escritorio. No se agregan notificaciones, Inscripciones ni Ayuda como entradas propias hasta que existan esas funciones.
+- **Inicio como cola de trabajo de recepción:** el Inicio se ordena de arriba hacia abajo así: acciones frecuentes (las seis acciones rápidas, todas secundarias), "Ahora" (una única prioridad con un botón directo y las alertas debajo), "Gestión" en cards grandes (deuda, cobros del mes y evolución de cobros), la agenda de hoy con estado de asistencia y, al final, los seguimientos pendientes. Se retiran del Inicio los indicadores de alumnos y clases activas, el resumen de asistencias y la actividad reciente; siguen disponibles en sus módulos.
+- **Regla de prioridad de "Ahora" (supuesto de interfaz, no de negocio):** 1) clase en curso o que empieza dentro de los próximos 60 minutos con asistencia incompleta; 2) clase de hoy ya terminada con asistencia incompleta; 3) la primera alerta en este orden: alumnos con 3 o más ausencias consecutivas, cuotas vencidas, seguimientos comerciales atrasados; 4) la próxima clase del día; 5) todo al día. La ventana de 60 minutos es ajustable (`UPCOMING_CLASS_WINDOW_MINUTES`).
+- **Alertas separadas por tipo de decisión:** el Inicio deja de sumar cuotas vencidas, seguimientos comerciales y ausencias en un único total; cada alerta se muestra en su propia fila con su motivo.
+- **Estado de asistencia por clase del día:** `GET /api/v1/dashboard/operational` agrega a cada clase de hoy `enrolledStudents` (inscripciones activas vigentes en el día operativo) y `attendanceRecords` (registros de asistencia del día para la clase; `null` sin permiso `attendance:manage`). La interfaz muestra Completada cuando los registros alcanzan a los inscriptos, Parcial cuando hay algunos y Pendiente cuando no hay ninguno. `billing` agrega `overdueStudents` (alumnos distintos con cuotas vencidas).
+- **Actualización sin perder contexto:** el Inicio muestra la hora de la última actualización y un botón para actualizar; mientras refresca o si falla, conserva el último resultado. Los alumnos en seguimiento se cargan por separado y pueden fallar y reintentarse sin ocultar el resto.
+
 ## Acabado moderno de Admin Web
 
 - El modo claro diferencia la estructura de la aplicaciÃ³n (`#F2F0ED`) de las superficies de trabajo blancas. Bordes `#DDD9D4`, controles `#8C8781` (ajustado desde el gris inicial para alcanzar 3:1 sobre blanco y sobre el fondo de aplicaciÃ³n) y una sombra de 1 px aportan jerarquÃ­a sin convertir las tarjetas en elementos flotantes; el modo oscuro conserva sus valores previos.
@@ -294,6 +306,8 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 124. **Concurrencia por alumno:** el cobro adquiere un advisory lock por alumno, bloquea sus cuotas abiertas en orden estable, vuelve a leer imputaciones confirmadas y ejecuta con aislamiento serializable y reintentos acotados. Dos cajas no pueden consumir la misma deuda.
 125. **Anulación con historia intacta:** anular marca el pago `VOID` y conserva tenders e imputaciones. Cada cuota afectada se recalcula usando los demás pagos confirmados, por lo que puede resultar `PENDING`, `PARTIAL` o `PAID`.
 126. **Migración compatible:** cada pago v1 se transforma en un pago con un único tender del mismo medio e importe antes de eliminar `payments.payment_method`. Caja, saldo a favor, devoluciones, transferencia bancaria, mora, recargos y descuentos permanecen fuera de alcance.
+
+- **Reintentos de cobros y anulaciones concurrentes:** las transacciones serializables de pagos se reintentan hasta 5 veces con espera exponencial y jitter (25 ms, 50 ms, 100 ms, 200 ms) antes de informar `PAYMENT_CONCURRENCY_CONFLICT`. Con latencia alta de base, 3 reintentos inmediatos podían agotarse aunque el cobro concurrente ya hubiera confirmado; ahora el reintento ve el saldo actualizado e informa `PAYMENT_EXCEEDS_OUTSTANDING_BALANCE`.
 
 ## Payments v2 — centro operativo
 

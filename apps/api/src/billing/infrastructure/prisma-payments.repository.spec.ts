@@ -1,7 +1,43 @@
-import type { Prisma } from '@academy/database';
+import { Prisma } from '@academy/database';
 import { describe, expect, it, vi } from 'vitest';
 import type { PrismaService } from '../../database/prisma.service';
-import { PrismaPaymentsRepository } from './prisma-payments.repository';
+import {
+  PAYMENT_TRANSACTION_ATTEMPTS,
+  PrismaPaymentsRepository,
+} from './prisma-payments.repository';
+
+const serializationFailure = () =>
+  new Prisma.PrismaClientKnownRequestError('could not serialize access', {
+    code: 'P2034',
+    clientVersion: 'test',
+  });
+
+describe('PrismaPaymentsRepository concurrency retries', () => {
+  it('retries serialization conflicts and returns the later successful attempt', async () => {
+    const payment = { id: 'payment-1' };
+    const $transaction = vi
+      .fn()
+      .mockRejectedValueOnce(serializationFailure())
+      .mockRejectedValueOnce(serializationFailure())
+      .mockResolvedValueOnce(payment);
+    const repository = new PrismaPaymentsRepository({ $transaction } as unknown as PrismaService);
+
+    await expect(
+      repository.create('student-1', [{ method: 'CASH', amount: '100.00' }], 'actor-1'),
+    ).resolves.toBe(payment);
+    expect($transaction).toHaveBeenCalledTimes(3);
+  });
+
+  it('reports a concurrency conflict only after exhausting every attempt', async () => {
+    const $transaction = vi.fn().mockRejectedValue(serializationFailure());
+    const repository = new PrismaPaymentsRepository({ $transaction } as unknown as PrismaService);
+
+    await expect(
+      repository.create('student-1', [{ method: 'CASH', amount: '100.00' }], 'actor-1'),
+    ).rejects.toMatchObject({ code: 'PAYMENT_CONCURRENCY_CONFLICT' });
+    expect($transaction).toHaveBeenCalledTimes(PAYMENT_TRANSACTION_ATTEMPTS);
+  });
+});
 
 const setup = () => {
   const findMany = vi.fn().mockResolvedValue([]);
