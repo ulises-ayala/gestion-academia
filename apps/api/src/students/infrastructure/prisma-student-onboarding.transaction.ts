@@ -5,6 +5,7 @@ import { PaymentsService } from '../../billing/application/payments.service';
 import { PrismaBillingRepository } from '../../billing/infrastructure/prisma-billing.repository';
 import { PrismaPaymentsRepository } from '../../billing/infrastructure/prisma-payments.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { withSerializableRetry } from '../../database/serializable-retry';
 import { EnrollmentsService } from '../../enrollments/application/enrollments.service';
 import { PrismaEnrollmentRepository } from '../../enrollments/infrastructure/prisma-enrollment.repository';
 import { DomainError } from '../../shared/domain/domain-error';
@@ -15,35 +16,21 @@ import type {
 import { StudentsService } from '../application/students.service';
 import { PrismaStudentRepository } from './prisma-student.repository';
 
-const retryable = (error: unknown) =>
-  error instanceof Prisma.PrismaClientKnownRequestError &&
-  (error.code === 'P2034' ||
-    (error.code === 'P2010' && /40001|40P01|serializ|deadlock/i.test(JSON.stringify(error.meta))));
-
 @Injectable()
 export class PrismaStudentOnboardingTransaction implements StudentOnboardingTransaction {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute<T>(work: (operations: StudentOnboardingOperations) => Promise<T>): Promise<T> {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        return await this.prisma.$transaction(async (tx) => work(this.operations(tx)), {
+    return withSerializableRetry(
+      () =>
+        this.prisma.$transaction(async (tx) => work(this.operations(tx)), {
           isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-        });
-      } catch (error) {
-        if (retryable(error)) {
-          if (attempt < 2) continue;
-          throw new DomainError(
-            'ONBOARDING_CONCURRENCY_CONFLICT',
-            'No se pudo completar el alta porque los cupos cambiaron. Intentá nuevamente.',
-          );
-        }
-        throw error;
-      }
-    }
-    throw new DomainError(
-      'ONBOARDING_CONCURRENCY_CONFLICT',
-      'No se pudo completar el alta. Intentá nuevamente.',
+        }),
+      () =>
+        new DomainError(
+          'ONBOARDING_CONCURRENCY_CONFLICT',
+          'No se pudo completar el alta porque los cupos cambiaron. Intentá nuevamente.',
+        ),
     );
   }
 

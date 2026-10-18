@@ -156,6 +156,23 @@ npm test
 npm run build
 ```
 
+### Tests de integración
+
+Los tests de integración crean usuarios, alumnos, cuotas y pagos de prueba, así que **sólo corren contra una base dedicada a tests**: `academy_ci` (CI) o cualquier base cuyo nombre termine en `_test`. Con otra base en `DATABASE_URL` (la de desarrollo o la de Neon), se omiten y se muestra un aviso.
+
+Para correrlos localmente con el PostgreSQL de Docker (PowerShell):
+
+```powershell
+docker compose up -d db
+docker compose exec db createdb -U academy academy_test
+$env:DATABASE_URL = "postgresql://academy:academy@localhost:5432/academy_test?schema=public"
+npx prisma migrate deploy --schema packages/database/prisma/schema.prisma
+npm test
+Remove-Item Env:DATABASE_URL
+```
+
+Para otra base descartable (por ejemplo, una rama de Neon creada sólo para tests), habilitarlos explícitamente con `INTEGRATION_TESTS_ALLOW_ANY_DATABASE=true`. Nunca usar la base de producción.
+
 ## Integración continua
 
 El workflow `.github/workflows/ci.yml` se ejecuta para cada `push` y `pull_request` dirigido a `main`. Usa Node.js 22 con caché de npm e instala exactamente las dependencias del lockfile mediante `npm ci`.

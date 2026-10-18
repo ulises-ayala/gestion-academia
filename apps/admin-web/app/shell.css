@@ -562,6 +562,8 @@
   }
 }
 
+/* Movimiento reducido: se eliminan desplazamientos, giros y animaciones, pero se conservan
+   los fundidos de color y opacidad que comunican hover, foco y estados. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -569,6 +571,6 @@
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-property: color, background-color, border-color, opacity, box-shadow !important;
   }
 }

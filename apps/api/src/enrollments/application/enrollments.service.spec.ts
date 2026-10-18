@@ -151,9 +151,11 @@ describe('EnrollmentsService', () => {
     ['CLASS_INACTIVE', 'class', 'INACTIVE'],
   ])('rechaza %s', async (code, kind, status) => {
     const repo = new MemoryEnrollments();
-    if (kind === 'student')
-      status ? repo.students.set(studentId, status) : repo.students.delete(studentId);
-    else status ? repo.classes.set(classId, { status, capacity: 1 }) : repo.classes.delete(classId);
+    if (kind === 'student') {
+      if (status) repo.students.set(studentId, status);
+      else repo.students.delete(studentId);
+    } else if (status) repo.classes.set(classId, { status, capacity: 1 });
+    else repo.classes.delete(classId);
     await expect(
       new EnrollmentsService(repo).create({ studentId, classId, startDate: '2026-08-20' }),
     ).rejects.toMatchObject({ code });

@@ -5,9 +5,10 @@ import {
   integrationTestTimeoutMs,
   prismaTransactionOptions,
 } from '../../database/prisma-transaction-options';
+import { integrationDatabaseEnabled } from '../../database/integration-database';
 import { CashShiftsService } from './cash-shifts.service';
 
-const enabled = Boolean(process.env.DATABASE_URL);
+const enabled = integrationDatabaseEnabled;
 describe.runIf(enabled)(
   'CashShiftsService integration',
   () => {

@@ -49,8 +49,10 @@ export default function ReportsPage() {
   const query = useCallback(
     (changes: Record<string, string | null>) => {
       const next = new URLSearchParams(search.toString());
-      for (const [key, value] of Object.entries(changes))
-        value ? next.set(key, value) : next.delete(key);
+      for (const [key, value] of Object.entries(changes)) {
+        if (value) next.set(key, value);
+        else next.delete(key);
+      }
       router.push(`${pathname}?${next}`);
     },
     [pathname, router, search],

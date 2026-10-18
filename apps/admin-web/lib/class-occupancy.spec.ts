@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { resolveClassOccupancy } from './class-occupancy';
 
 describe('class occupancy', () => {
-  it('usa el conteo global y no la cantidad de elementos de la pÃ¡gina', () => {
+  it('usa el conteo global y no la cantidad de elementos de la página', () => {
     expect(resolveClassOccupancy(140, 25)).toBe(140);
   });
 

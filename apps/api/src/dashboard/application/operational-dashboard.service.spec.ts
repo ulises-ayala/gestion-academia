@@ -139,6 +139,7 @@ describe('OperationalDashboardService', () => {
       new Date('2026-08-30T15:00:00.000Z'),
     );
 
+    expect(result.classes?.scheduledToday).toBe(2);
     expect(result.classes?.today).toEqual([
       expect.objectContaining({ id: 'class-1', enrolledStudents: 18, attendanceRecords: 2 }),
       expect.objectContaining({ id: 'class-2', enrolledStudents: 0, attendanceRecords: 0 }),

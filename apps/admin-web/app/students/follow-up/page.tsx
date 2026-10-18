@@ -1,7 +1,6 @@
 'use client';
 
 import type { StudentFollowUpItemDto, StudentFollowUpResponseDto } from '@academy/contracts';
-import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useAuth } from '../../../components/auth-provider';
 import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';

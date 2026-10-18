@@ -5,11 +5,12 @@ import {
   integrationTestTimeoutMs,
   prismaTransactionOptions,
 } from '../../database/prisma-transaction-options';
+import { integrationDatabaseEnabled } from '../../database/integration-database';
 import { ReceivablesService } from '../application/receivables.service';
 import { PrismaBillingRepository } from './prisma-billing.repository';
 import { PrismaPaymentsRepository } from './prisma-payments.repository';
 
-const enabled = Boolean(process.env.DATABASE_URL);
+const enabled = integrationDatabaseEnabled;
 describe.runIf(enabled)(
   'PrismaPaymentsRepository concurrency',
   () => {

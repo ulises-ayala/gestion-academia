@@ -121,8 +121,10 @@ export class PrismaCatalogRepository implements CatalogRepository {
     id: string,
     data: object,
     actorId?: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- delegate dinámico (danceType | branch)
   ): Promise<any> {
     return this.prisma.$transaction(async (tx) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ver arriba
       const delegate = tx[model] as any;
       const before = await delegate.findUniqueOrThrow({ where: { id } });
       const updated = await delegate.update({ where: { id }, data });

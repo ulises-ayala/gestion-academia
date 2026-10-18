@@ -11,7 +11,7 @@ import { Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
-import { CASH_METHODS, cashTotals, parseCashAmount, zeroByMethod } from '../domain/cash';
+import { CASH_METHODS, cashTotals, parseCashAmount } from '../domain/cash';
 
 const detailInclude = {
   user: { select: { id: true, username: true } },

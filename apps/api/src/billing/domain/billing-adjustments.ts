@@ -15,7 +15,7 @@ export const parseBillingPeriod = (value: string, field = 'effectiveFrom') => {
     throw new DomainError('VALIDATION_ERROR', `${field} debe tener formato AAAA-MM`, { field });
   const date = new Date(`${value}-01T00:00:00.000Z`);
   if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 7) !== value)
-    throw new DomainError('VALIDATION_ERROR', `${field} no es un perÃ­odo vÃ¡lido`, { field });
+    throw new DomainError('VALIDATION_ERROR', `${field} no es un período válido`, { field });
   return date;
 };
 
@@ -41,7 +41,7 @@ export const validateCondition = (input: {
     value.lessThanOrEqualTo(0) ||
     (calculation === 'PERCENTAGE' && value.greaterThan(100))
   )
-    throw new DomainError('VALIDATION_ERROR', 'El valor del ajuste no es vÃ¡lido', {
+    throw new DomainError('VALIDATION_ERROR', 'El valor del ajuste no es válido', {
       field: 'configuredValue',
     });
   return { calculation, configuredValue: value };

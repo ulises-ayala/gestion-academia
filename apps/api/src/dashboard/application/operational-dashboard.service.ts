@@ -115,7 +115,7 @@ export class OperationalDashboardService {
               })),
             )
             .sort((left, right) => left.startTime.localeCompare(right.startTime));
-          result.classes = { active, scheduledToday: classes.length, today };
+          result.classes = { active, scheduledToday: today.length, today };
         }),
       hasPermissions(user, ['charges:read']) &&
         this.prisma
