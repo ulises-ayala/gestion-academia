@@ -200,91 +200,29 @@ export default function Page() {
               {data.items.map((item) => (
                 <tr key={item.id}>
                   <td data-label="Clase">
-                    <strong>{item.name}</strong>
-                    <br />
-                    {item.level ?? '—'}
+                    <span className="class-name-cell">
+                      <strong>{item.name}</strong>
+                      <small>{item.level ? `Nivel ${item.level}` : 'Sin nivel'}</small>
+                    </span>
                   </td>
                   <td data-label="Danza">{item.danceType.name}</td>
                   <td data-label="Profesor">
                     {item.teacher.firstName} {item.teacher.lastName}
                   </td>
                   <td data-label="Horarios">
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '0.4rem',
-                        minWidth: '220px',
-                      }}
-                    >
+                    <div className="class-schedule-list">
                       {item.schedules.length === 0 ? (
-                        <span style={{ color: '#888', fontStyle: 'italic', fontSize: '0.85rem' }}>
-                          Sin horarios
-                        </span>
+                        <span className="class-schedule-empty">Sin horarios</span>
                       ) : (
                         item.schedules.map((s) => (
-                          <div
-                            key={s.id}
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '0.5rem',
-                              background: 'rgba(255, 255, 255, 0.04)',
-                              border: '1px solid rgba(255, 255, 255, 0.08)',
-                              padding: '0.25rem 0.55rem',
-                              borderRadius: '6px',
-                              fontSize: '0.85rem',
-                              lineHeight: 1.2,
-                              width: 'fit-content',
-                            }}
-                          >
-                            {/* Badge del día */}
-                            <span
-                              style={{
-                                display: 'inline-block',
-                                textAlign: 'center',
-                                minWidth: '42px',
-                                background: 'rgba(235, 34, 88, 0.15)',
-                                color: '#ff6b8b',
-                                padding: '0.2rem 0.35rem',
-                                borderRadius: '4px',
-                                fontWeight: 600,
-                                fontSize: '0.75rem',
-                                letterSpacing: '0.04em',
-                                textTransform: 'uppercase',
-                                whiteSpace: 'nowrap',
-                                flexShrink: 0,
-                              }}
-                            >
+                          <div className="class-schedule-item" key={s.id}>
+                            <span className="class-schedule-day">
                               {dayLabels[s.dayOfWeek]?.slice(0, 3) ?? s.dayOfWeek}
                             </span>
-
-                            {/* Horario */}
-                            <span
-                              style={{
-                                color: '#f3f4f6',
-                                fontWeight: 500,
-                                whiteSpace: 'nowrap',
-                                flexShrink: 0,
-                              }}
-                            >
+                            <span className="class-schedule-time">
                               {s.startTime}–{s.endTime}
                             </span>
-
-                            {/* Separador sutil */}
-                            <span style={{ color: '#555' }}>•</span>
-
-                            {/* Salón y Sucursal */}
-                            <span
-                              style={{
-                                color: '#9ca3af',
-                                fontSize: '0.8rem',
-                                whiteSpace: 'nowrap',
-                                flexShrink: 0,
-                              }}
-                            >
-                              {s.room.name}
-                            </span>
+                            <span className="class-schedule-room">{s.room.name}</span>
                           </div>
                         ))
                       )}

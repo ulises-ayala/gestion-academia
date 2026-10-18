@@ -115,7 +115,13 @@ export const isNavigationLinkActive = (pathname: string, href: string) =>
 export const sectionLabelForPath = (pathname: string) =>
   navigation
     .flatMap((group) => group.links)
-    .find((link) => isNavigationLinkActive(pathname, link.href))?.label ?? 'Gestión Academia';
+    .find((link) => isNavigationLinkActive(pathname, link.href))?.label ?? 'Carmesí';
+
+/** Título de la pestaña del navegador: la sección actual y la marca. */
+export const documentTitleForPath = (pathname: string) => {
+  const section = sectionLabelForPath(pathname);
+  return section === 'Carmesí' ? 'Carmesí · Academia de danza' : `${section} · Carmesí`;
+};
 
 export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const { user, can, logout } = useAuth();
@@ -139,6 +145,10 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   }, []);
 
   useEffect(() => setNavigationOpen(false), [pathname]);
+
+  useEffect(() => {
+    document.title = documentTitleForPath(pathname);
+  }, [pathname]);
 
   useEffect(() => {
     if (!navigationOpen) return;

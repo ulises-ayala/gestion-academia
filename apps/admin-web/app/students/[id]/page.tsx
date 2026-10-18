@@ -57,6 +57,11 @@ const adjustmentLabel = {
   REVERSAL: 'Corrección',
 } as const;
 
+const initials = (student: StudentDto) =>
+  `${student.firstName.trim().charAt(0)}${student.lastName.trim().charAt(0)}`.toLocaleUpperCase(
+    'es-AR',
+  );
+
 const formatBillingPeriod = (period: string) => {
   const [year, month] = period.split('-').map(Number);
   if (!year || !month) return period;
@@ -502,6 +507,11 @@ export default function StudentDetailPage() {
     [enrollments, charges, paymentTotal, today],
   );
   const attendanceSummary = useMemo(() => attendanceCounts(attendances), [attendances]);
+  const hasDebt = summary.pendingDebt !== '0.00';
+  const canCollect =
+    can('payments:collect') &&
+    charges.some((item) => item.status === 'PENDING' || item.status === 'PARTIAL');
+  const age = student ? calculateAge(student.birthDate) : null;
   const classByEnrollment = new Map(enrollments.map((item) => [item.id, item.academicClass.name]));
 
   async function changeStatus() {
@@ -540,11 +550,14 @@ export default function StudentDetailPage() {
     );
   return (
     <>
-      <div className="student-profile-heading">
-        <div>
-          <Link className="back-link" href="/students">
-            ← Volver
-          </Link>
+      <Link className="back-link student-back-link" href="/students">
+        ← Alumnos
+      </Link>
+      <header className="card student-profile-header">
+        <span className="student-profile-avatar" aria-hidden="true">
+          {initials(student)}
+        </span>
+        <div className="student-profile-identity">
           <p className="eyebrow">Ficha integral del alumno</p>
           <div className="student-title-row">
             <h1>
@@ -554,23 +567,34 @@ export default function StudentDetailPage() {
               {student.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
             </span>
           </div>
-          <p className="subtitle">DNI {student.dni}</p>
+          <ul className="student-quick-facts" aria-label="Datos principales">
+            <li>DNI {student.dni}</li>
+            {age !== null && <li>{age} años</li>}
+            {student.phone && (
+              <li>
+                <a href={`tel:${student.phone.replace(/[^\d+]/g, '')}`}>{student.phone}</a>
+              </li>
+            )}
+            <li>Alumno desde {formatDate(student.joinedAt)}</li>
+          </ul>
         </div>
         <div className="student-primary-actions">
+          {canCollect && (
+            <Link className="button" href={`/payments?studentId=${id}`}>
+              Registrar pago
+            </Link>
+          )}
           {can('enrollments:manage') && student.status === 'ACTIVE' && (
-            <Link className="button" href={`/students/${id}/enrollments/new`}>
+            <Link
+              className={`button ${canCollect ? 'secondary' : ''}`}
+              href={`/students/${id}/enrollments/new`}
+            >
               Inscribir a otra clase
             </Link>
           )}
-          {can('payments:collect') &&
-            charges.some((item) => item.status === 'PENDING' || item.status === 'PARTIAL') && (
-              <Link className="button" href={`/payments?studentId=${id}`}>
-                Registrar pago
-              </Link>
-            )}
           {can('students:manage') && (
             <button className="secondary" onClick={() => setEditing((value) => !value)}>
-              Editar
+              {editing ? 'Cerrar edición' : 'Editar'}
             </button>
           )}
           {can('students:manage') && (
@@ -584,7 +608,7 @@ export default function StudentDetailPage() {
             </button>
           )}
         </div>
-      </div>
+      </header>
       {message && (
         <p className="message" role="alert">
           {message}
@@ -603,328 +627,339 @@ export default function StudentDetailPage() {
         </section>
       )}
 
-      <section aria-labelledby="summary-title">
-        <h2 className="section-title" id="summary-title">
-          Resumen
-        </h2>
-        <div className="student-metrics">
-          <article className="card">
-            <span>Clases activas</span>
-            <strong>{summary.activeClasses}</strong>
-          </article>
-          <article className="card">
-            <span>Deuda pendiente</span>
-            <strong>
-              {summary.pendingDebt === '0.00' ? 'Sin deuda pendiente.' : money(summary.pendingDebt)}
-            </strong>
-          </article>
-          <article className="card">
-            <span>Cuotas vencidas</span>
-            <strong>{summary.overdueCharges}</strong>
-          </article>
-          <article className="card">
-            <span>Total pagado</span>
-            <strong>{money(summary.totalPaid)}</strong>
-          </article>
+      <section aria-label="Resumen del alumno" className="card student-summary">
+        <div className={`student-summary-item ${hasDebt ? 'is-debt' : ''}`}>
+          <span>Deuda pendiente</span>
+          <strong>{hasDebt ? money(summary.pendingDebt) : money('0')}</strong>
+          <small>{hasDebt ? 'Saldo a cobrar' : 'Al día'}</small>
+        </div>
+        <div className={`student-summary-item ${summary.overdueCharges > 0 ? 'is-warning' : ''}`}>
+          <span>Cuotas vencidas</span>
+          <strong>{summary.overdueCharges}</strong>
+          <small>{summary.overdueCharges > 0 ? 'Requieren cobro' : 'Sin vencimientos'}</small>
+        </div>
+        <div className="student-summary-item">
+          <span>Clases activas</span>
+          <strong>{summary.activeClasses}</strong>
+          <small>
+            {history.length > 0 ? `${history.length} finalizadas` : 'Sin historial previo'}
+          </small>
+        </div>
+        <div className="student-summary-item">
+          <span>Total pagado</span>
+          <strong>{money(summary.totalPaid)}</strong>
+          <small>Pagos confirmados</small>
         </div>
       </section>
 
-      <section className="card">
-        <h2>Clases actuales</h2>
-        {sectionErrors.followUp && <p role="alert">{sectionErrors.followUp}</p>}
-        {sectionErrors.enrollments ? (
-          <p className="message">{sectionErrors.enrollments}</p>
-        ) : active.length === 0 ? (
-          <p className="empty-state">No tiene clases activas.</p>
-        ) : (
-          <div className="enrollment-grid">
-            {active.map((item) => (
-              <article className="enrollment-card" key={item.id}>
-                <h3>{item.academicClass.name}</h3>
-                <p>
-                  {item.academicClass.danceType.name}
-                  {item.academicClass.level ? ` · ${item.academicClass.level}` : ''}
-                </p>
-                <p>
-                  Profesor: {item.academicClass.teacher.firstName}{' '}
-                  {item.academicClass.teacher.lastName}
-                </p>
-                <ul className="schedule-list">
-                  {item.academicClass.schedules.map((schedule) => (
-                    <li key={schedule.id}>
-                      {dayLabels[schedule.dayOfWeek]} {schedule.startTime}–{schedule.endTime}
-                      <br />
-                      {schedule.room.branch.name} · {schedule.room.name}
-                    </li>
-                  ))}
-                </ul>
-                <p>Desde {formatDate(item.startDate)}</p>
-                <FollowUpIndicator
-                  item={followUp.find((follow) => follow.enrollmentId === item.id)}
-                />
-                {can('enrollments:manage') && (
-                  <button className="secondary" onClick={() => openEnd(item)}>
-                    Finalizar inscripción
-                  </button>
-                )}
-                <BillingConditions
-                  enrollment={item}
-                  canManage={can('charges:manage')}
-                  isAdministrator={user.role === 'ADMINISTRATOR'}
-                  onChanged={load}
-                />
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {can('charges:read') && (
-        <section className="card">
-          <div className="section-heading">
-            <div>
-              <h2>Estado de cuenta</h2>
-              <p className="subtitle">
-                {summary.pendingDebt === '0.00'
-                  ? 'Sin deuda pendiente.'
-                  : `Deuda pendiente: ${money(summary.pendingDebt)}`}
-              </p>
+      <div className="student-profile-layout">
+        <div className="student-profile-main">
+          <section className="card">
+            <div className="section-heading">
+              <div>
+                <h2>Clases actuales</h2>
+                <p className="subtitle">Horarios, seguimiento y condiciones económicas.</p>
+              </div>
             </div>
-            {can('payments:collect') &&
-              charges.some((item) => item.status === 'PENDING' || item.status === 'PARTIAL') && (
-                <Link className="button" href={`/payments?studentId=${id}`}>
-                  Registrar pago
-                </Link>
-              )}
-          </div>
-          {sectionErrors.charges ? (
-            <p className="message">{sectionErrors.charges}</p>
-          ) : orderedCharges.length === 0 ? (
-            <p className="empty-state">No tiene cuotas registradas.</p>
-          ) : (
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Período</th>
-                    <th>Clase</th>
-                    <th>Importe</th>
-                    <th>Pagado</th>
-                    <th>Saldo</th>
-                    <th>Vencimiento</th>
-                    <th>Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orderedCharges.map((charge) => {
-                    const overdue = isOverdueCharge(charge, today);
-                    return (
-                      <tr key={charge.id}>
-                        <td data-label="Período">{charge.period}</td>
-                        <td data-label="Clase">{charge.academicClass.name}</td>
-                        <td data-label="Importe">
-                          {money(charge.studentDueAmount)}
-                          {charge.adjustments.length > 0 && (
-                            <small className="billing-adjustment-summary">
-                              {charge.adjustments
-                                .map((item) => adjustmentLabel[item.type])
-                                .join(' · ')}
-                            </small>
-                          )}
-                        </td>
-                        <td data-label="Pagado">{money(charge.paidAmount)}</td>
-                        <td data-label="Saldo">{money(charge.outstandingAmount)}</td>
-                        <td data-label="Vencimiento">{formatDate(charge.dueDate)}</td>
-                        <td data-label="Estado">
-                          <span className={`status ${charge.status.toLowerCase()}`}>
-                            {chargeStatus[charge.status]}
+            {sectionErrors.followUp && <p role="alert">{sectionErrors.followUp}</p>}
+            {sectionErrors.enrollments ? (
+              <p className="message">{sectionErrors.enrollments}</p>
+            ) : active.length === 0 ? (
+              <p className="empty-state">No tiene clases activas.</p>
+            ) : (
+              <div className="student-class-list">
+                {active.map((item) => (
+                  <article className="enrollment-card student-class-card" key={item.id}>
+                    <div className="student-class-heading">
+                      <div>
+                        <h3>{item.academicClass.name}</h3>
+                        <p>
+                          {item.academicClass.danceType.name}
+                          {item.academicClass.level ? ` · Nivel ${item.academicClass.level}` : ''} ·
+                          Prof. {item.academicClass.teacher.firstName}{' '}
+                          {item.academicClass.teacher.lastName}
+                        </p>
+                      </div>
+                      {can('enrollments:manage') && (
+                        <button className="secondary" onClick={() => openEnd(item)}>
+                          Finalizar inscripción
+                        </button>
+                      )}
+                    </div>
+                    <ul className="student-schedule-chips" aria-label="Horarios">
+                      {item.academicClass.schedules.map((schedule) => (
+                        <li key={schedule.id}>
+                          <strong>
+                            {dayLabels[schedule.dayOfWeek]} {schedule.startTime}–{schedule.endTime}
+                          </strong>
+                          <span>
+                            {schedule.room.branch.name} · {schedule.room.name}
                           </span>
-                          {overdue && <span className="status void">Vencida</span>}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="student-class-since">
+                      Inscripto desde {formatDate(item.startDate)}
+                    </p>
+                    <FollowUpIndicator
+                      item={followUp.find((follow) => follow.enrollmentId === item.id)}
+                    />
+                    <BillingConditions
+                      enrollment={item}
+                      canManage={can('charges:manage')}
+                      isAdministrator={user.role === 'ADMINISTRATOR'}
+                      onChanged={load}
+                    />
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {can('charges:read') && (
+            <section className="card">
+              <div className="section-heading">
+                <div>
+                  <h2>Estado de cuenta</h2>
+                  <p className="subtitle">
+                    {summary.pendingDebt === '0.00'
+                      ? 'Sin deuda pendiente.'
+                      : `Deuda pendiente: ${money(summary.pendingDebt)}`}
+                  </p>
+                </div>
+                <Link className="button secondary" href={`/payments?studentId=${id}`}>
+                  Ver en Pagos
+                </Link>
+              </div>
+              {sectionErrors.charges ? (
+                <p className="message">{sectionErrors.charges}</p>
+              ) : orderedCharges.length === 0 ? (
+                <p className="empty-state">No tiene cuotas registradas.</p>
+              ) : (
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Período</th>
+                        <th>Clase</th>
+                        <th>Importe</th>
+                        <th>Pagado</th>
+                        <th>Saldo</th>
+                        <th>Vencimiento</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orderedCharges.map((charge) => {
+                        const overdue = isOverdueCharge(charge, today);
+                        return (
+                          <tr key={charge.id}>
+                            <td data-label="Período">{charge.period}</td>
+                            <td data-label="Clase">{charge.academicClass.name}</td>
+                            <td data-label="Importe">
+                              {money(charge.studentDueAmount)}
+                              {charge.adjustments.length > 0 && (
+                                <small className="billing-adjustment-summary">
+                                  {charge.adjustments
+                                    .map((item) => adjustmentLabel[item.type])
+                                    .join(' · ')}
+                                </small>
+                              )}
+                            </td>
+                            <td data-label="Pagado">{money(charge.paidAmount)}</td>
+                            <td data-label="Saldo">{money(charge.outstandingAmount)}</td>
+                            <td data-label="Vencimiento">{formatDate(charge.dueDate)}</td>
+                            <td data-label="Estado">
+                              <span className={`status ${charge.status.toLowerCase()}`}>
+                                {chargeStatus[charge.status]}
+                              </span>
+                              {overdue && <span className="status void">Vencida</span>}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          )}
+
+          {can('attendance:manage') && (
+            <section className="card">
+              <div className="section-heading">
+                <div>
+                  <h2>Asistencia reciente</h2>
+                  <p className="subtitle">Últimos 10 registros.</p>
+                </div>
+                <div className="attendance-summary">
+                  <span>
+                    Presentes <strong>{attendanceSummary.present}</strong>
+                  </span>
+                  <span>
+                    Ausentes <strong>{attendanceSummary.absent}</strong>
+                  </span>
+                  <span>
+                    Justificadas <strong>{attendanceSummary.justified}</strong>
+                  </span>
+                </div>
+              </div>
+              {sectionErrors.attendances ? (
+                <p className="message">{sectionErrors.attendances}</p>
+              ) : attendances.length === 0 ? (
+                <p className="empty-state">No hay asistencias registradas.</p>
+              ) : (
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Fecha</th>
+                        <th>Clase</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {attendances.map((item) => (
+                        <tr key={item.id}>
+                          <td data-label="Fecha">{formatDate(item.attendanceDate)}</td>
+                          <td data-label="Clase">
+                            {classByEnrollment.get(item.enrollmentId) ?? 'Clase'}
+                          </td>
+                          <td data-label="Estado">{attendanceStatus[item.status]}</td>
+                          <td data-label="Observaciones">{item.notes ?? '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          )}
+
+          <section className="card">
+            <h2>Historial de inscripciones</h2>
+            {history.length === 0 ? (
+              <p className="empty-state">No hay inscripciones finalizadas.</p>
+            ) : (
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Clase</th>
+                      <th>Inicio</th>
+                      <th>Finalización</th>
+                      <th>Motivo de finalización</th>
+                      <th>Observación</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((item) => (
+                      <tr key={item.id}>
+                        <td data-label="Clase">{item.academicClass.name}</td>
+                        <td data-label="Inicio">{formatDate(item.startDate)}</td>
+                        <td data-label="Finalización">{formatDate(item.endDate)}</td>
+                        <td data-label="Motivo de finalización">
+                          {enrollmentEndLabel(item.endReason)}
+                        </td>
+                        <td data-label="Observación">{item.endNote || '—'}</td>
+                        <td data-label="Estado">
+                          <span className="status inactive">Finalizada</span>
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      )}
-
-      {can('payments:read') && (
-        <section className="card">
-          <div className="section-heading">
-            <div>
-              <h2>Pagos recientes</h2>
-              <p className="subtitle">Últimos movimientos registrados.</p>
-            </div>
-            <Link className="button secondary" href={`/payments?studentId=${id}`}>
-              Ver todos
-            </Link>
-          </div>
-          {sectionErrors.payments ? (
-            <p className="message">{sectionErrors.payments}</p>
-          ) : payments.length === 0 ? (
-            <p className="empty-state">No hay pagos registrados.</p>
-          ) : (
-            <div className="student-payment-list">
-              {payments.map((payment) => (
-                <article key={payment.id}>
-                  <div>
-                    <strong>{money(payment.amount)}</strong>
-                    <span>
-                      {dateTime(payment.paidAt)} ·{' '}
-                      {payment.tenders
-                        .map(
-                          (tender) =>
-                            `${paymentMethodLabels[tender.method]} ${money(tender.amount)}`,
-                        )
-                        .join(' + ')}
-                    </span>
-                  </div>
-                  <div>
-                    <span>
-                      {payment.allocations
-                        .map(
-                          (allocation) =>
-                            `${allocation.academicClass.name} ${allocation.period}: ${money(allocation.amount)}`,
-                        )
-                        .join(', ')}
-                    </span>
-                    <small>Registrado por {payment.createdBy.username}</small>
-                  </div>
-                  <span className={`status ${payment.status === 'CONFIRMED' ? 'active' : 'void'}`}>
-                    {payment.status === 'CONFIRMED' ? 'Confirmado' : 'Anulado'}
-                  </span>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {can('attendance:manage') && (
-        <section className="card">
-          <h2>Asistencia reciente</h2>
-          <div className="attendance-summary">
-            <span>
-              Presentes <strong>{attendanceSummary.present}</strong>
-            </span>
-            <span>
-              Ausentes <strong>{attendanceSummary.absent}</strong>
-            </span>
-            <span>
-              Justificadas <strong>{attendanceSummary.justified}</strong>
-            </span>
-          </div>
-          {sectionErrors.attendances ? (
-            <p className="message">{sectionErrors.attendances}</p>
-          ) : attendances.length === 0 ? (
-            <p className="empty-state">No hay asistencias registradas.</p>
-          ) : (
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Clase</th>
-                    <th>Estado</th>
-                    <th>Observaciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {attendances.map((item) => (
-                    <tr key={item.id}>
-                      <td data-label="Fecha">{formatDate(item.attendanceDate)}</td>
-                      <td data-label="Clase">
-                        {classByEnrollment.get(item.enrollmentId) ?? 'Clase'}
-                      </td>
-                      <td data-label="Estado">{attendanceStatus[item.status]}</td>
-                      <td data-label="Observaciones">{item.notes ?? '—'}</td>
-                    </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        </div>
+        <aside className="student-profile-aside" aria-label="Datos y pagos del alumno">
+          <section className="card student-personal-data">
+            <h2>Datos personales</h2>
+            <dl className="student-detail-list">
+              <div>
+                <dt>Edad</dt>
+                <dd>{calculateAge(student.birthDate) ?? '—'}</dd>
+              </div>
+              <div>
+                <dt>Nacimiento</dt>
+                <dd>{formatDate(student.birthDate)}</dd>
+              </div>
+              <div>
+                <dt>Teléfono</dt>
+                <dd>{student.phone ?? '—'}</dd>
+              </div>
+              <div>
+                <dt>Correo</dt>
+                <dd>{student.email ?? '—'}</dd>
+              </div>
+              <div>
+                <dt>Domicilio</dt>
+                <dd>{student.address ?? '—'}</dd>
+              </div>
+              <div>
+                <dt>Fecha de alta</dt>
+                <dd>{formatDate(student.joinedAt)}</dd>
+              </div>
+            </dl>
+          </section>
+          {can('payments:read') && (
+            <section className="card student-payments-card">
+              <div className="section-heading">
+                <div>
+                  <h2>Pagos recientes</h2>
+                  <p className="subtitle">Últimos movimientos.</p>
+                </div>
+                <Link className="button secondary" href={`/payments?studentId=${id}`}>
+                  Ver todos
+                </Link>
+              </div>
+              {sectionErrors.payments ? (
+                <p className="message">{sectionErrors.payments}</p>
+              ) : payments.length === 0 ? (
+                <p className="empty-state">No hay pagos registrados.</p>
+              ) : (
+                <div className="student-payment-list">
+                  {payments.map((payment) => (
+                    <article key={payment.id}>
+                      <div>
+                        <strong>{money(payment.amount)}</strong>
+                        <span>
+                          {dateTime(payment.paidAt)} ·{' '}
+                          {payment.tenders
+                            .map(
+                              (tender) =>
+                                `${paymentMethodLabels[tender.method]} ${money(tender.amount)}`,
+                            )
+                            .join(' + ')}
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          {payment.allocations
+                            .map(
+                              (allocation) =>
+                                `${allocation.academicClass.name} ${allocation.period}: ${money(allocation.amount)}`,
+                            )
+                            .join(', ')}
+                        </span>
+                        <small>Registrado por {payment.createdBy.username}</small>
+                      </div>
+                      <span
+                        className={`status ${payment.status === 'CONFIRMED' ? 'active' : 'void'}`}
+                      >
+                        {payment.status === 'CONFIRMED' ? 'Confirmado' : 'Anulado'}
+                      </span>
+                    </article>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </div>
+              )}
+            </section>
           )}
-        </section>
-      )}
-
-      <section className="card">
-        <h2>Historial de inscripciones</h2>
-        {history.length === 0 ? (
-          <p className="empty-state">No hay inscripciones finalizadas.</p>
-        ) : (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Clase</th>
-                  <th>Inicio</th>
-                  <th>Finalización</th>
-                  <th>Motivo de finalización</th>
-                  <th>Observación</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((item) => (
-                  <tr key={item.id}>
-                    <td data-label="Clase">{item.academicClass.name}</td>
-                    <td data-label="Inicio">{formatDate(item.startDate)}</td>
-                    <td data-label="Finalización">{formatDate(item.endDate)}</td>
-                    <td data-label="Motivo de finalización">
-                      {enrollmentEndLabel(item.endReason)}
-                    </td>
-                    <td data-label="Observación">{item.endNote || '—'}</td>
-                    <td data-label="Estado">
-                      <span className="status inactive">Finalizada</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      <section className="card">
-        <h2>Datos personales</h2>
-        <dl className="detail-grid">
-          <div>
-            <dt>DNI</dt>
-            <dd>{student.dni}</dd>
-          </div>
-          <div>
-            <dt>Edad</dt>
-            <dd>{calculateAge(student.birthDate) ?? '—'}</dd>
-          </div>
-          <div>
-            <dt>Nacimiento</dt>
-            <dd>{formatDate(student.birthDate)}</dd>
-          </div>
-          <div>
-            <dt>Teléfono</dt>
-            <dd>{student.phone ?? '—'}</dd>
-          </div>
-          <div>
-            <dt>Correo</dt>
-            <dd>{student.email ?? '—'}</dd>
-          </div>
-          <div>
-            <dt>Domicilio</dt>
-            <dd>{student.address ?? '—'}</dd>
-          </div>
-          <div>
-            <dt>Fecha de alta</dt>
-            <dd>{formatDate(student.joinedAt)}</dd>
-          </div>
-          <div>
-            <dt>Estado</dt>
-            <dd>{student.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}</dd>
-          </div>
-        </dl>
-      </section>
+        </aside>
+      </div>
       {endTarget && (
         <EndEnrollmentModal
           target={{

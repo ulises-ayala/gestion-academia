@@ -792,6 +792,21 @@ a.agenda-row.is-focus .agenda-time {
 }
 
 @media (max-width: 47.999rem) {
+  .frequent-actions-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .frequent-action {
+    justify-content: flex-start;
+    padding-inline: var(--space-3);
+    font-size: var(--font-size-sm);
+    line-height: 1.25;
+    text-align: left;
+    white-space: normal;
+  }
+  .frequent-action svg {
+    flex: none;
+  }
   .dashboard-header {
     align-items: flex-start;
     flex-direction: column;

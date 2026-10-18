@@ -395,10 +395,41 @@
 
 .admin-content > main {
   width: 100%;
+  max-width: 96rem;
   min-width: 0;
-  margin: 0;
+  margin: 0 auto;
   padding: var(--space-6) var(--space-8) var(--space-12);
   animation: page-enter 180ms var(--motion-easing) both;
+}
+
+/* Ritmo vertical común: los bloques de cada pantalla se separan con el mismo espacio,
+   sin depender de márgenes sueltos de cada componente. */
+.admin-content > main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.admin-content > main > * {
+  margin-block: 0;
+}
+
+.admin-content > main > :is(.page-heading, .page-header, .student-back-link) {
+  margin-bottom: var(--space-2);
+}
+
+.admin-content > main > :is(a, .back-link) {
+  align-self: flex-start;
+}
+
+/* Tablas sin filas: mensaje explícito en lugar de sólo los encabezados. */
+:is(.table-wrap, .ui-table-wrap):has(tbody:empty)::after {
+  content: 'No hay registros para mostrar.';
+  display: block;
+  padding: var(--space-6) var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--font-size-body);
+  text-align: center;
 }
 
 .page-container {

@@ -6,6 +6,7 @@ import '../components/ui/primitives.css';
 import './shell.css';
 import './dashboard.css';
 import './data-display.css';
+import './student-profile.css';
 import { AuthProvider } from '../components/auth-provider';
 import { Toaster } from 'sonner';
 import { GlobalLoadingIndicator } from '../components/global-loading-indicator';
@@ -13,7 +14,7 @@ import { GlobalLoadingIndicator } from '../components/global-loading-indicator';
 const geist = Geist({ subsets: ['latin'], display: 'swap', variable: '--font-geist' });
 
 export const metadata: Metadata = {
-  title: 'Gestión Academia',
+  title: 'Carmesí · Academia de danza',
   description: 'Panel administrativo de la academia',
 };
 

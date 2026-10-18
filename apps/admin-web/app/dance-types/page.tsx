@@ -72,43 +72,45 @@ export default function Page() {
         {message && <p className="message">{message}</p>}
       </section>
       <section className="card">
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id}>
-                <td data-label="Nombre">{item.name}</td>
-                <td data-label="Descripción">{item.description ?? '—'}</td>
-                <td data-label="Estado">
-                  <span className={`status ${item.status.toLowerCase()}`}>
-                    {item.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
-                  </span>
-                </td>
-                <td className="actions" data-label="Acciones">
-                  <button
-                    className="secondary"
-                    onClick={() => {
-                      setEditing(item);
-                      setForm({ name: item.name, description: item.description ?? '' });
-                    }}
-                  >
-                    Editar
-                  </button>
-                  <button onClick={() => void toggle(item)}>
-                    {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
-                  </button>
-                </td>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id}>
+                  <td data-label="Nombre">{item.name}</td>
+                  <td data-label="Descripción">{item.description ?? '—'}</td>
+                  <td data-label="Estado">
+                    <span className={`status ${item.status.toLowerCase()}`}>
+                      {item.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </td>
+                  <td className="actions" data-label="Acciones">
+                    <button
+                      className="secondary"
+                      onClick={() => {
+                        setEditing(item);
+                        setForm({ name: item.name, description: item.description ?? '' });
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button onClick={() => void toggle(item)}>
+                      {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
     </>
   );

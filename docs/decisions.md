@@ -12,6 +12,12 @@
 - **Estado de asistencia por clase del día:** `GET /api/v1/dashboard/operational` agrega a cada clase de hoy `enrolledStudents` (inscripciones activas vigentes en el día operativo) y `attendanceRecords` (registros de asistencia del día para la clase; `null` sin permiso `attendance:manage`). La interfaz muestra Completada cuando los registros alcanzan a los inscriptos, Parcial cuando hay algunos y Pendiente cuando no hay ninguno. `billing` agrega `overdueStudents` (alumnos distintos con cuotas vencidas).
 - **Actualización sin perder contexto:** el Inicio muestra la hora de la última actualización y un botón para actualizar; mientras refresca o si falla, conserva el último resultado. Los alumnos en seguimiento se cargan por separado y pueden fallar y reintentarse sin ocultar el resto.
 
+## Ficha del alumno y consistencia del panel — octubre 2026
+
+- **Ficha integral en dos columnas:** encabezado con iniciales, estado y datos rápidos (DNI, edad, teléfono, alta); una sola acción principal (`Registrar pago` si hay deuda, si no `Inscribir a otra clase`); franja de resumen con la deuda primero; columna operativa (clases, estado de cuenta, asistencia, historial) y columna de referencia fija (datos personales y pagos recientes). Se aprobó a partir de una propuesta visual previa. Estilos en `app/student-profile.css`.
+- **Layout común de pantallas:** el área principal tiene un ancho máximo (96rem, centrado) y separa sus bloques con un espacio único, sin depender de márgenes de cada componente. Las tablas sin filas muestran "No hay registros para mostrar.".
+- **Título de pestaña e ícono:** la pestaña muestra la sección actual (`Pagos · Carmesí`) y el panel usa un ícono Carmesí (`app/icon.svg`).
+
 ## Mantenimiento técnico — octubre 2026
 
 - **Seguridad de dependencias:** `next` sube a 15.5.28 (corrige CVE-2025-66478 y avisos posteriores de la línea 15) y `react`/`react-dom` a 19.1.10; NestJS a 11.2.7. Quedan pendientes, por requerir versiones mayores: PostCSS embebido en Next (sólo compila estilos propios; se resuelve con Next 16), la dependencia `effect` del CLI de Prisma (Prisma 7) y `xlsx`, sin versión corregida en npm y usada sólo por scripts de migración.
