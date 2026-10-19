@@ -59,6 +59,10 @@
   appearance: none;
   padding-right: 2.25rem;
 }
+/* Este control dibuja su propio ícono; se anula la flecha global de styles.css. */
+.ui-select-control > select:not([multiple]):not([size]) {
+  background-image: none;
+}
 .ui-select-control svg {
   position: absolute;
   top: 50%;

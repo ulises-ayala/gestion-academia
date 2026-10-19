@@ -1058,6 +1058,25 @@ textarea {
 input::placeholder {
   color: var(--text-muted);
 }
+/* Flecha propia para que respete el mismo margen interno que el texto. */
+select:not([multiple]):not([size]) {
+  appearance: none;
+  padding-right: calc(var(--space-3) * 2 + 0.75rem);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+  background-position:
+    right calc(var(--space-3) + 0.3125rem) center,
+    right var(--space-3) center;
+  background-repeat: no-repeat;
+  background-size: 0.3125rem 0.3125rem;
+  text-overflow: ellipsis;
+}
+select:not([multiple]):not([size]):disabled {
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+}
 textarea::placeholder {
   color: var(--text-muted);
 }

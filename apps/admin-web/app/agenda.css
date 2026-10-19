@@ -113,8 +113,10 @@
 }
 
 .agenda-entry {
+  min-width: 0;
   display: grid;
   gap: 0.125rem;
+  overflow: hidden;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
@@ -130,6 +132,8 @@
 }
 
 .agenda-entry strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-semibold);
   line-height: 1.25;
