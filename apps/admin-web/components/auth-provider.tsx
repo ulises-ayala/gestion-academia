@@ -13,6 +13,7 @@ import {
 } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { roleCan, type UiPermission } from '../lib/permissions';
+import Image from 'next/image';
 
 type AuthContextValue = {
   user: AuthUserDto;
@@ -145,7 +146,8 @@ export function LoginScreen({
   }
 
   return (
-    <main className="auth-shell">
+    <main className="auth-shell auth-shell--login">
+      <div className="auth-layout">
       <section className="card auth-card">
         <p className="eyebrow">Sistema administrativo</p>
         <h1>{setupRequired ? 'Crear administrador' : 'Iniciar sesión'}</h1>
@@ -185,6 +187,25 @@ export function LoginScreen({
           </p>
         )}
       </section>
+      <div className="auth-brand">
+        <Image
+          className="auth-logo auth-logo--light"
+          src="/logo-carmesi-light.jpg"
+          alt="Carmesí – Arte y Movimiento"
+          width={1200}
+          height={675}
+          priority
+        />
+        <Image
+          className="auth-logo auth-logo--dark"
+          src="/logo-carmesi-dark.jpg"
+          alt=""
+          width={1200}
+          height={675}
+          priority
+        />
+      </div>
+    </div>
     </main>
   );
 }

@@ -1463,6 +1463,93 @@ dd {
   outline-offset: 0;
 }
 
+/* Login: móvil primero (logo arriba, tarjeta debajo) */
+.auth-shell--login {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+.auth-layout {
+  width: 100%;
+  max-width: 27rem;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-5);
+}
+
+.auth-layout > .auth-card {
+  flex: none;
+  width: 100%;
+}
+
+.auth-brand {
+  order: -1;
+  flex: none;
+  width: 100%;
+  max-width: 16rem;
+  margin-inline: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-logo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Un logo por tema */
+.auth-logo--dark {
+  display: none;
+}
+:root[data-theme='dark'] .auth-logo--light {
+  display: none;
+}
+:root[data-theme='dark'] .auth-logo--dark {
+  display: block;
+}
+
+/* Tablet ancha y escritorio: tarjeta a la izquierda, logo a la derecha, conjunto centrado */
+@media (min-width: 64rem) {
+  .auth-shell--login {
+    align-items: center;
+    padding: var(--space-6) clamp(var(--space-4), 5vw, var(--space-12));
+  }
+
+  .auth-layout {
+    max-width: 72rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(var(--space-8), 7vw, 7rem);
+  }
+
+  .auth-layout > .auth-card {
+    flex: 0 1 27rem;
+    width: auto;
+  }
+
+  .auth-brand {
+    order: 0;
+    flex: 1 1 0;
+    width: auto;
+    max-width: 36rem;
+    margin-inline: 0;
+  }
+
+  .auth-logo {
+    aspect-ratio: 16 / 9;
+  }
+}
+
 .attendance-header {
   margin-bottom: var(--space-6);
 }
