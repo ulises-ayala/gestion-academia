@@ -102,7 +102,7 @@ export default function WeeklyAgendaPage() {
       </button>
       <section
         aria-label="Filtros de la agenda"
-        className={`card agenda-filters ${filtersOpen ? 'is-open' : ''}`}
+        className={`card agenda-filters ${activeFilters ? 'has-clear' : ''} ${filtersOpen ? 'is-open' : ''}`}
         id="agenda-filters"
       >
         <label>

@@ -2,9 +2,20 @@
 
 .agenda-filters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: end;
-  gap: var(--space-3);
+  gap: var(--space-3) var(--space-4);
+}
+
+@media (min-width: 64.0625rem) {
+  .agenda-filters.has-clear {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  }
+}
+
+.agenda-filters select,
+.agenda-clear {
+  height: var(--control-height);
 }
 
 .agenda-filters label {
@@ -65,6 +76,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
+  min-height: 2.75rem;
   padding: var(--space-1) var(--space-1) var(--space-2);
   border-bottom: 1px solid var(--border);
 }

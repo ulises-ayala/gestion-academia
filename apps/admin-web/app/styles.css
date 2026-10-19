@@ -959,12 +959,30 @@ p {
   grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
 }
 .class-filters {
-  grid-template-columns: minmax(12rem, 1.25fr) repeat(4, minmax(10rem, 1fr)) auto;
+  grid-template-columns: minmax(12rem, 1.4fr) repeat(5, minmax(8rem, 1fr)) auto;
   margin-bottom: var(--space-4);
+}
+.class-filters input,
+.class-filters select,
+.class-filters > button {
+  height: var(--control-height);
 }
 .class-filters > button {
   align-self: end;
+  padding-inline: var(--space-5);
   white-space: nowrap;
+}
+.classes-table-capacity {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 90rem) {
+  .class-filters {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .class-filters > button {
+    grid-column: -2 / -1;
+  }
 }
 .classes-table th:last-child,
 .classes-table td:last-child {

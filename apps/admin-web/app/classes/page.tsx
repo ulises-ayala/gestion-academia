@@ -233,7 +233,7 @@ export default function Page() {
                       )}
                     </div>
                   </td>
-                  <td data-label="Cupo">
+                  <td className="classes-table-capacity" data-label="Cupo">
                     {item.activeEnrollmentCount ?? 0} / {item.capacity}
                   </td>
                   <td data-label="Estado">
