@@ -95,11 +95,16 @@ export default function Page() {
           <p className="eyebrow">Oferta académica</p>
           <h1>Clases</h1>
         </div>
-        <PermissionGate permission="offering:manage">
-          <Link className="button" href="/classes/new">
-            Nueva clase
+        <div className="page-heading-actions">
+          <Link className="button secondary" href="/classes/agenda">
+            Agenda semanal
           </Link>
-        </PermissionGate>
+          <PermissionGate permission="offering:manage">
+            <Link className="button" href="/classes/new">
+              Nueva clase
+            </Link>
+          </PermissionGate>
+        </div>
       </div>
       <section className="card">
         <form className="class-filters" onSubmit={search}>

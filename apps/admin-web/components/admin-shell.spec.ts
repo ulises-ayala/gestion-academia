@@ -13,6 +13,14 @@ describe('Admin shell navigation', () => {
     expect(sectionLabelForPath('/payments')).toBe('Pagos');
   });
 
+  it('marks only the most specific link for nested sections', () => {
+    expect(isNavigationLinkActive('/classes/agenda', '/classes/agenda')).toBe(true);
+    expect(isNavigationLinkActive('/classes/agenda', '/classes')).toBe(false);
+    expect(isNavigationLinkActive('/classes/class-1', '/classes')).toBe(true);
+    expect(sectionLabelForPath('/classes/agenda')).toBe('Agenda');
+    expect(isNavigationLinkActive('/studentsx', '/students')).toBe(false);
+  });
+
   it('uses a stable fallback for an unknown path', () => {
     expect(sectionLabelForPath('/not-found')).toBe('Carmesí');
   });

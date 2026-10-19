@@ -12,6 +12,12 @@
 - **Estado de asistencia por clase del día:** `GET /api/v1/dashboard/operational` agrega a cada clase de hoy `enrolledStudents` (inscripciones activas vigentes en el día operativo) y `attendanceRecords` (registros de asistencia del día para la clase; `null` sin permiso `attendance:manage`). La interfaz muestra Completada cuando los registros alcanzan a los inscriptos, Parcial cuando hay algunos y Pendiente cuando no hay ninguno. `billing` agrega `overdueStudents` (alumnos distintos con cuotas vencidas).
 - **Actualización sin perder contexto:** el Inicio muestra la hora de la última actualización y un botón para actualizar; mientras refresca o si falla, conserva el último resultado. Los alumnos en seguimiento se cargan por separado y pueden fallar y reintentarse sin ocultar el resto.
 
+## Búsqueda rápida y agenda semanal — octubre 2026
+
+- **Búsqueda rápida:** un buscador en la barra superior (Ctrl/Cmd + K o `/`) encuentra alumnos y potenciales por nombre, DNI o teléfono usando los endpoints de listado existentes (`q`, 5 resultados por tipo) y permite saltar a cualquier sección del menú. Respeta los permisos: sólo busca alumnos con `students:manage` y potenciales con `leads:manage`. No agrega endpoints ni reglas nuevas.
+- **Agenda semanal:** `/classes/agenda` muestra las clases activas por día (lunes a sábado; domingo sólo si tiene clases), con horario, salón, profesor y cupo usado, filtrable por sucursal, salón, profesor y danza. El cupo se marca como casi completo desde el 80 % y completo al llegar al cupo; es una indicación visual, no una regla de inscripción. Se arma en el panel a partir de `GET /classes` (todas las páginas) sin cambios en la API.
+- **Navegación:** en rutas anidadas se marca sólo el enlace más específico del menú (Agenda y no Clases en `/classes/agenda`).
+
 ## Ficha del alumno y consistencia del panel — octubre 2026
 
 - **Ficha integral en dos columnas:** encabezado con iniciales, estado y datos rápidos (DNI, edad, teléfono, alta); una sola acción principal (`Registrar pago` si hay deuda, si no `Inscribir a otra clase`); franja de resumen con la deuda primero; columna operativa (clases, estado de cuenta, asistencia, historial) y columna de referencia fija (datos personales y pagos recientes). Se aprobó a partir de una propuesta visual previa. Estilos en `app/student-profile.css`.

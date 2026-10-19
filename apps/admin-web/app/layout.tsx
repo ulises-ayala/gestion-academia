@@ -7,6 +7,8 @@ import './shell.css';
 import './dashboard.css';
 import './data-display.css';
 import './student-profile.css';
+import './agenda.css';
+import './quick-search.css';
 import { AuthProvider } from '../components/auth-provider';
 import { Toaster } from 'sonner';
 import { GlobalLoadingIndicator } from '../components/global-loading-indicator';

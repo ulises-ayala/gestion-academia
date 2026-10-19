@@ -5,6 +5,7 @@ import {
   Building2,
   CalendarCheck,
   CalendarDays,
+  CalendarRange,
   CreditCard,
   DoorOpen,
   GraduationCap,
@@ -28,6 +29,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import type { UiPermission } from '../lib/permissions';
 import { roleLabel } from '../lib/permissions';
 import { useAuth } from './auth-provider';
+import { QuickSearch } from './quick-search';
 import { UserMenu } from './user-menu';
 
 type NavigationLink = Readonly<{
@@ -60,6 +62,12 @@ const navigation: readonly NavigationGroup[] = [
       },
       { href: '/leads', label: 'Potenciales', permission: 'leads:manage', icon: UserPlus },
       { href: '/classes', label: 'Clases', permission: 'offering:read', icon: CalendarDays },
+      {
+        href: '/classes/agenda',
+        label: 'Agenda',
+        permission: 'offering:read',
+        icon: CalendarRange,
+      },
       {
         href: '/teachers',
         label: 'Profesores',
@@ -109,13 +117,22 @@ const navigation: readonly NavigationGroup[] = [
   },
 ];
 
+const navigationLinks = navigation.flatMap((group) => group.links);
+
+const matchesPath = (pathname: string, href: string) =>
+  href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
+
+/** El enlace más específico que corresponde a la ruta (p. ej. Agenda antes que Clases). */
+export const activeNavigationHref = (pathname: string) =>
+  navigationLinks
+    .filter((link) => matchesPath(pathname, link.href))
+    .sort((left, right) => right.href.length - left.href.length)[0]?.href ?? null;
+
 export const isNavigationLinkActive = (pathname: string, href: string) =>
-  href === '/' ? pathname === '/' : pathname.startsWith(href);
+  activeNavigationHref(pathname) === href;
 
 export const sectionLabelForPath = (pathname: string) =>
-  navigation
-    .flatMap((group) => group.links)
-    .find((link) => isNavigationLinkActive(pathname, link.href))?.label ?? 'Carmesí';
+  navigationLinks.find((link) => link.href === activeNavigationHref(pathname))?.label ?? 'Carmesí';
 
 /** Título de la pestaña del navegador: la sección actual y la marca. */
 export const documentTitleForPath = (pathname: string) => {
@@ -131,6 +148,9 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const sectionLabel = sectionLabelForPath(pathname);
+  const searchSections = navigationLinks
+    .filter((link) => can(link.permission))
+    .map((link) => ({ href: link.href, label: link.label }));
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('academy-theme');
@@ -290,6 +310,11 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
           </button>
           <p className="topbar-section">{sectionLabel}</p>
           <div className="topbar-actions">
+            <QuickSearch
+              canSearchLeads={can('leads:manage')}
+              canSearchStudents={can('students:manage')}
+              sections={searchSections}
+            />
             <button
               aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
               aria-pressed={theme === 'dark'}
