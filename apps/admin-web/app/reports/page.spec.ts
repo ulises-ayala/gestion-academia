@@ -11,6 +11,8 @@ describe('Reports page', () => {
       expect(page).toContain(label);
     expect(page).toContain('`/reports/operational?${params}`');
     expect(page).toContain('/reports/export/');
+    expect(page).toContain('`${apiUrl}/reports/pdf?${params}`');
+    expect(page).toContain('Descargar PDF');
     expect(page).toContain('No pudimos cargar este reporte.');
     expect(page).toContain('Los valores reflejan la situación actual');
   });

@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { toCsv } from '../domain/csv';
+import { PDF_DEBTOR_LIMIT, renderOperationalReportPdf } from '../domain/report-pdf';
 
 const METHODS: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'CARD'];
 const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
@@ -271,6 +272,15 @@ export class ReportsService {
       },
       cash: { ...cash, openShifts },
     };
+  }
+
+  async pdf(input: Parameters<ReportsService['operational']>[0]) {
+    const report = await this.operational({ ...input, page: 1, pageSize: PDF_DEBTOR_LIMIT });
+    return renderOperationalReportPdf(report, {
+      timezone: process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+      debtSort: input.debtSort,
+      classFiltered: Boolean(input.classId),
+    });
   }
 
   async export(
