@@ -148,64 +148,68 @@ export function LoginScreen({
   return (
     <main className="auth-shell auth-shell--login">
       <div className="auth-layout">
-      <section className="card auth-card">
-        <p className="eyebrow">Sistema administrativo</p>
-        <h1>{setupRequired ? 'Crear administrador' : 'Iniciar sesión'}</h1>
-        <p>
-          {setupRequired
-            ? 'Configurá el primer usuario administrador del sistema.'
-            : 'Ingresá con tu usuario administrativo.'}
-        </p>
-        <form className="auth-form" onSubmit={submit}>
-          <label>
-            Usuario
-            <input
-              autoComplete="username"
-              required
-              minLength={3}
-              value={credentials.username}
-              onChange={(event) => setCredentials({ ...credentials, username: event.target.value })}
-            />
-          </label>
-          <label>
-            Contraseña
-            <PasswordField
-              password={credentials.password}
-              visible={showPassword}
-              setupRequired={setupRequired}
-              onChange={(event) => setCredentials({ ...credentials, password: event.target.value })}
-              onToggle={() => setShowPassword((visible) => !visible)}
-            />
-          </label>
-          <button disabled={submitting} type="submit">
-            {submitting ? 'Procesando…' : setupRequired ? 'Crear administrador' : 'Ingresar'}
-          </button>
-        </form>
-        {message && (
-          <p className="message" role="alert">
-            {message}
+        <section className="card auth-card">
+          <p className="eyebrow">Sistema administrativo</p>
+          <h1>{setupRequired ? 'Crear administrador' : 'Iniciar sesión'}</h1>
+          <p>
+            {setupRequired
+              ? 'Configurá el primer usuario administrador del sistema.'
+              : 'Ingresá con tu usuario administrativo.'}
           </p>
-        )}
-      </section>
-      <div className="auth-brand">
-        <Image
-          className="auth-logo auth-logo--light"
-          src="/logo-carmesi-light.jpg"
-          alt="Carmesí – Arte y Movimiento"
-          width={1200}
-          height={675}
-          priority
-        />
-        <Image
-          className="auth-logo auth-logo--dark"
-          src="/logo-carmesi-dark.jpg"
-          alt=""
-          width={1200}
-          height={675}
-          priority
-        />
+          <form className="auth-form" onSubmit={submit}>
+            <label>
+              Usuario
+              <input
+                autoComplete="username"
+                required
+                minLength={3}
+                value={credentials.username}
+                onChange={(event) =>
+                  setCredentials({ ...credentials, username: event.target.value })
+                }
+              />
+            </label>
+            <label>
+              Contraseña
+              <PasswordField
+                password={credentials.password}
+                visible={showPassword}
+                setupRequired={setupRequired}
+                onChange={(event) =>
+                  setCredentials({ ...credentials, password: event.target.value })
+                }
+                onToggle={() => setShowPassword((visible) => !visible)}
+              />
+            </label>
+            <button disabled={submitting} type="submit">
+              {submitting ? 'Procesando…' : setupRequired ? 'Crear administrador' : 'Ingresar'}
+            </button>
+          </form>
+          {message && (
+            <p className="message" role="alert">
+              {message}
+            </p>
+          )}
+        </section>
+        <div className="auth-brand">
+          <Image
+            className="auth-logo auth-logo--light"
+            src="/logo-carmesi-light.jpg"
+            alt="Carmesí – Arte y Movimiento"
+            width={1200}
+            height={675}
+            priority
+          />
+          <Image
+            className="auth-logo auth-logo--dark"
+            src="/logo-carmesi-dark.jpg"
+            alt=""
+            width={1200}
+            height={675}
+            priority
+          />
+        </div>
       </div>
-    </div>
     </main>
   );
 }
