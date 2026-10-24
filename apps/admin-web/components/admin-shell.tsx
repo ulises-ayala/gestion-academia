@@ -30,6 +30,7 @@ import type { UiPermission } from '../lib/permissions';
 import { roleLabel } from '../lib/permissions';
 import { useAuth } from './auth-provider';
 import { QuickSearch } from './quick-search';
+import { SelfCheckIn } from './self-check-in';
 import { UserMenu } from './user-menu';
 
 type NavigationLink = Readonly<{
@@ -337,6 +338,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
           </div>
         </header>
         <main>{children}</main>
+        {can('attendance:manage') && <SelfCheckIn />}
       </div>
     </div>
   );
