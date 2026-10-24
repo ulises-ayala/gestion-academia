@@ -744,6 +744,20 @@ export type AttendanceDayClassDto = Readonly<{
   presentCount: number;
 }>;
 
+export type SelfCheckInRequestDto = Readonly<{ dni: string }>;
+export type SelfCheckInOutcomeDto =
+  | 'CHECKED_IN'
+  | 'ALREADY_CHECKED_IN'
+  | 'NO_CLASS_NOW'
+  | 'STUDENT_NOT_FOUND';
+export type SelfCheckInPaymentStatusDto = 'UP_TO_DATE' | 'OVERDUE';
+export type SelfCheckInDto = Readonly<{
+  outcome: SelfCheckInOutcomeDto;
+  student: Readonly<{ firstName: string; lastName: string }> | null;
+  class: Readonly<{ name: string; startTime: string; endTime: string }> | null;
+  paymentStatus: SelfCheckInPaymentStatusDto | null;
+}>;
+
 export type AttendanceDayDto = Readonly<{
   date: string;
   items: readonly AttendanceDayClassDto[];
