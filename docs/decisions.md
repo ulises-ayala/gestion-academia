@@ -12,6 +12,13 @@
 - **Estado de asistencia por clase del día:** `GET /api/v1/dashboard/operational` agrega a cada clase de hoy `enrolledStudents` (inscripciones activas vigentes en el día operativo) y `attendanceRecords` (registros de asistencia del día para la clase; `null` sin permiso `attendance:manage`). La interfaz muestra Completada cuando los registros alcanzan a los inscriptos, Parcial cuando hay algunos y Pendiente cuando no hay ninguno. `billing` agrega `overdueStudents` (alumnos distintos con cuotas vencidas).
 - **Actualización sin perder contexto:** el Inicio muestra la hora de la última actualización y un botón para actualizar; mientras refresca o si falla, conserva el último resultado. Los alumnos en seguimiento se cargan por separado y pueden fallar y reintentarse sin ocultar el resto.
 
+## Reporte operativo en PDF — octubre 2026
+
+- **Dónde se genera:** la API arma el PDF en `GET /api/v1/reports/pdf` (mismo permiso `reports:operational` y mismos datos que la pantalla de Reportes), con `pdfkit` y las fuentes estándar del PDF, sin navegador ni servicios externos. Así el archivo es idéntico para todos los usuarios y no depende de la impresión del navegador.
+- **Contenido:** período elegido, indicadores del resumen, cobros (por medio y por día con cobros), deudores, asistencia por clase y caja (por medio, por operador y cierres con diferencia). Respeta el orden de deudores y el filtro de clase elegidos en pantalla.
+- **Límite de deudores:** el PDF incluye los primeros 20 deudores según el orden elegido e indica cuántos hay en total; la lista completa sigue saliendo por "Exportar deudores CSV". El listado de alumnos no se incluye (sus totales sí, en el resumen).
+- **Fechas:** los cierres de caja se muestran en el día de la zona horaria del negocio (`BUSINESS_TIMEZONE`).
+
 ## Búsqueda rápida y agenda semanal — octubre 2026
 
 - **Búsqueda rápida:** un buscador en la barra superior (Ctrl/Cmd + K o `/`) encuentra alumnos y potenciales por nombre, DNI o teléfono usando los endpoints de listado existentes (`q`, 5 resultados por tipo) y permite saltar a cualquier sección del menú. Respeta los permisos: sólo busca alumnos con `students:manage` y potenciales con `leads:manage`. No agrega endpoints ni reglas nuevas.

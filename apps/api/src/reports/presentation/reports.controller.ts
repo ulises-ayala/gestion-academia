@@ -1,9 +1,10 @@
-import { Controller, Get, Header, Param, Query } from '@nestjs/common';
+import { Controller, Get, Header, Param, Query, StreamableFile } from '@nestjs/common';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { DomainError } from '../../shared/domain/domain-error';
 import { parsePage, parseStatus, parseUuid } from '../../shared/presentation/request-validation';
 import { ReportsService } from '../application/reports.service';
+import { reportPdfFileName } from '../domain/report-pdf';
 
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = (value: string) => {
@@ -32,6 +33,22 @@ export class ReportsController {
     return this.service.operational(
       this.input(from, to, studentStatus, q, classId, page, pageSize, debtSort),
     );
+  }
+
+  @Get('pdf')
+  async pdf(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('classId') classId?: string,
+    @Query('debtSort') debtSort?: string,
+  ) {
+    const input = this.input(from, to, undefined, undefined, classId, '1', '20', debtSort);
+    const file = await this.service.pdf(input);
+    return new StreamableFile(file, {
+      type: 'application/pdf',
+      disposition: `attachment; filename="${reportPdfFileName(input.fromDate, input.toDate)}"`,
+      length: file.length,
+    });
   }
 
   @Get('export/:kind')
