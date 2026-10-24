@@ -43,9 +43,11 @@ const currentPeriod = () =>
     .slice(0, 7);
 const periodLabel = (period: string) => {
   const [year, month] = period.split('-').map(Number);
-  return new Intl.DateTimeFormat('es-AR', { month: 'long', year: 'numeric' }).format(
-    new Date(Date.UTC(year!, month! - 1, 1)),
-  );
+  return new Intl.DateTimeFormat('es-AR', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(Date.UTC(year!, month! - 1, 1)));
 };
 
 export default function NewStudentPage() {
