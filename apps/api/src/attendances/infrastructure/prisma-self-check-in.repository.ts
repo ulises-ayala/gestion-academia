@@ -32,9 +32,10 @@ export class PrismaSelfCheckInRepository implements SelfCheckInRepository {
         class: {
           select: {
             name: true,
+            teacher: { select: { firstName: true, lastName: true } },
             schedules: {
               where: { status: 'ACTIVE', dayOfWeek },
-              select: { startTime: true, endTime: true },
+              select: { startTime: true, endTime: true, room: { select: { name: true } } },
             },
           },
         },
@@ -45,6 +46,8 @@ export class PrismaSelfCheckInRepository implements SelfCheckInRepository {
       enrollment.class.schedules.map((schedule) => ({
         enrollmentId: enrollment.id,
         className: enrollment.class.name,
+        teacherName: `${enrollment.class.teacher.firstName} ${enrollment.class.teacher.lastName}`,
+        roomName: schedule.room.name,
         startTime: isoTime(schedule.startTime),
         endTime: isoTime(schedule.endTime),
         attendanceStatus: enrollment.attendances[0]?.status ?? null,

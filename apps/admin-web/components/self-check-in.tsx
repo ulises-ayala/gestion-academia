@@ -1,7 +1,7 @@
 'use client';
 
 import type { SelfCheckInDto } from '@academy/contracts';
-import { CheckCircle2, CircleAlert, Info, Wallet } from 'lucide-react';
+import { BadgeCheck, CheckCircle2, CircleAlert, Info, TriangleAlert } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { apiRequest } from '../lib/api-client';
 import {
@@ -125,9 +125,14 @@ export function SelfCheckIn() {
             <Icon aria-hidden="true" className="self-check-in-icon" size={64} strokeWidth={1.6} />
             <p className="self-check-in-title">{message.title}</p>
             {message.detail && <p className="self-check-in-detail">{message.detail}</p>}
+            {message.location && <p className="self-check-in-location">{message.location}</p>}
             {message.payment && (
               <p className={`self-check-in-payment is-${message.payment.tone}`}>
-                <Wallet aria-hidden="true" size={20} strokeWidth={1.7} />
+                {message.payment.tone === 'ok' ? (
+                  <BadgeCheck aria-hidden="true" size={22} strokeWidth={1.8} />
+                ) : (
+                  <TriangleAlert aria-hidden="true" size={22} strokeWidth={1.8} />
+                )}
                 {message.payment.text}
               </p>
             )}

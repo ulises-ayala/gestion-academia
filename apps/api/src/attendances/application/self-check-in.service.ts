@@ -38,6 +38,8 @@ export class SelfCheckInService {
         name: pick.candidate.className,
         startTime: pick.candidate.startTime,
         endTime: pick.candidate.endTime,
+        teacherName: pick.candidate.teacherName,
+        roomName: pick.candidate.roomName,
       },
       paymentStatus,
     };

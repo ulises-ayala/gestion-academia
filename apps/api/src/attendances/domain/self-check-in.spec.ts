@@ -13,6 +13,8 @@ const candidate = (
 ): SelfCheckInCandidate => ({
   enrollmentId: `${startTime}-${endTime}`,
   className: `Clase ${startTime}`,
+  teacherName: 'Profesora',
+  roomName: 'Salón principal',
   startTime,
   endTime,
   attendanceStatus: null,

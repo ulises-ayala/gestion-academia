@@ -41,7 +41,9 @@ export type CheckInMessage = Readonly<{
   tone: 'success' | 'info' | 'warning';
   title: string;
   detail: string;
-  /** Aviso discreto de cuota: sin montos, para que no lo lean los demás. */
+  /** Profesor y salón de la clase marcada. */
+  location: string;
+  /** Aviso de cuota sin montos, para que no lo lean los demás. */
   payment: Readonly<{ tone: 'ok' | 'pending'; text: string }> | null;
   durationMs: number;
 }>;
@@ -55,6 +57,8 @@ const paymentNotice = (status: SelfCheckInDto['paymentStatus']): CheckInMessage[
 
 const classLabel = (dto: SelfCheckInDto) =>
   dto.class ? `${dto.class.name} · ${dto.class.startTime} a ${dto.class.endTime}` : '';
+const locationLabel = (dto: SelfCheckInDto) =>
+  dto.class ? `Prof. ${dto.class.teacherName} · ${dto.class.roomName}` : '';
 
 export function checkInMessage(dto: SelfCheckInDto): CheckInMessage {
   const firstName = dto.student?.firstName ?? '';
@@ -63,6 +67,7 @@ export function checkInMessage(dto: SelfCheckInDto): CheckInMessage {
       tone: 'success',
       title: `¡Hola, ${firstName}! Presente`,
       detail: classLabel(dto),
+      location: locationLabel(dto),
       payment: paymentNotice(dto.paymentStatus),
       durationMs: SELF_CHECK_IN_RESULT_MS,
     };
@@ -71,6 +76,7 @@ export function checkInMessage(dto: SelfCheckInDto): CheckInMessage {
       tone: 'info',
       title: `${firstName}, ya tenías el presente`,
       detail: classLabel(dto),
+      location: locationLabel(dto),
       payment: paymentNotice(dto.paymentStatus),
       durationMs: SELF_CHECK_IN_RESULT_MS,
     };
@@ -79,6 +85,7 @@ export function checkInMessage(dto: SelfCheckInDto): CheckInMessage {
       tone: 'warning',
       title: `${firstName}, no tenés una clase en este horario`,
       detail: 'Acercate a recepción.',
+      location: '',
       payment: paymentNotice(dto.paymentStatus),
       durationMs: SELF_CHECK_IN_RESULT_MS,
     };
@@ -86,6 +93,7 @@ export function checkInMessage(dto: SelfCheckInDto): CheckInMessage {
     tone: 'warning',
     title: 'No encontramos ese DNI',
     detail: 'Acercate a recepción.',
+    location: '',
     payment: null,
     durationMs: SELF_CHECK_IN_NOT_FOUND_MS,
   };
@@ -95,6 +103,7 @@ export const checkInFailureMessage: CheckInMessage = {
   tone: 'warning',
   title: 'No pudimos registrar la asistencia',
   detail: 'Avisá en recepción.',
+  location: '',
   payment: null,
   durationMs: SELF_CHECK_IN_NOT_FOUND_MS,
 };

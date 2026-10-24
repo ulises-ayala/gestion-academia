@@ -14,6 +14,8 @@ const student: SelfCheckInStudent = {
 const salsa: SelfCheckInCandidate = {
   enrollmentId: 'e1',
   className: 'Salsa inicial',
+  teacherName: 'José Barrios',
+  roomName: 'Salón principal',
   startTime: '18:00',
   endTime: '19:00',
   attendanceStatus: null,
@@ -38,7 +40,13 @@ describe('SelfCheckInService', () => {
     await expect(service.checkIn('40111222', now)).resolves.toEqual({
       outcome: 'CHECKED_IN',
       student: { firstName: 'Lucía', lastName: 'Gómez' },
-      class: { name: 'Salsa inicial', startTime: '18:00', endTime: '19:00' },
+      class: {
+        name: 'Salsa inicial',
+        startTime: '18:00',
+        endTime: '19:00',
+        teacherName: 'José Barrios',
+        roomName: 'Salón principal',
+      },
       paymentStatus: 'UP_TO_DATE',
     });
     expect(repository.markPresent).toHaveBeenCalledWith('e1', new Date('2026-10-16T00:00:00.000Z'));

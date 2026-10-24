@@ -754,7 +754,13 @@ export type SelfCheckInPaymentStatusDto = 'UP_TO_DATE' | 'OVERDUE';
 export type SelfCheckInDto = Readonly<{
   outcome: SelfCheckInOutcomeDto;
   student: Readonly<{ firstName: string; lastName: string }> | null;
-  class: Readonly<{ name: string; startTime: string; endTime: string }> | null;
+  class: Readonly<{
+    name: string;
+    startTime: string;
+    endTime: string;
+    teacherName: string;
+    roomName: string;
+  }> | null;
   paymentStatus: SelfCheckInPaymentStatusDto | null;
 }>;
 

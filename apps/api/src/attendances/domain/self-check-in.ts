@@ -31,6 +31,8 @@ export const minutesOfDay = (time: string) => {
 export type SelfCheckInCandidate = Readonly<{
   enrollmentId: string;
   className: string;
+  teacherName: string;
+  roomName: string;
   startTime: string;
   endTime: string;
   attendanceStatus: AttendanceStatus | null;

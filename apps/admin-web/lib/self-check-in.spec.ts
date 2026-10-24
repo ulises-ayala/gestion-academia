@@ -13,7 +13,13 @@ const type = (keys: string[], state: CaptureState = idleCapture) =>
 const dto = (overrides: Partial<SelfCheckInDto>): SelfCheckInDto => ({
   outcome: 'CHECKED_IN',
   student: { firstName: 'Lucía', lastName: 'Gómez' },
-  class: { name: 'Salsa inicial', startTime: '18:00', endTime: '19:00' },
+  class: {
+    name: 'Salsa inicial',
+    startTime: '18:00',
+    endTime: '19:00',
+    teacherName: 'José Barrios',
+    roomName: 'Salón principal',
+  },
   paymentStatus: 'UP_TO_DATE',
   ...overrides,
 });
@@ -52,6 +58,7 @@ describe('checkInMessage', () => {
       tone: 'success',
       title: '¡Hola, Lucía! Presente',
       detail: 'Salsa inicial · 18:00 a 19:00',
+      location: 'Prof. José Barrios · Salón principal',
       payment: { tone: 'ok', text: 'Cuota al día' },
     });
   });
