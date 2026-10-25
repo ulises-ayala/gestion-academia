@@ -31,6 +31,7 @@
   "devDependencies": {
     "@eslint/js": "9.39.5",
     "@next/eslint-plugin-next": "15.5.28",
+    "@types/pdfkit": "^0.17.7",
     "eslint": "9.39.5",
     "eslint-plugin-react-hooks": "5.2.0",
     "globals": "16.5.0",
@@ -39,6 +40,7 @@
     "typescript-eslint": "8.71.2"
   },
   "dependencies": {
+    "pdfkit": "^0.20.2",
     "xlsx": "^0.18.5"
   }
 }
