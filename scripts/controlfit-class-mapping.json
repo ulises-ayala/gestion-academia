@@ -1,0 +1,25 @@
+{
+  "descripcion": "Equivalencias entre actividades de ControlFit y clases de Carmesí. Cada actividad apunta a uno o más nombres exactos de clase; con más de uno se elige la clase donde el alumno está inscripto y, si no se puede decidir, la indicada en 'fallback'. Una lista vacía significa pendiente de definir: esos movimientos quedan excluidos de la importación.",
+  "aliases": {
+    "Street Coreografico Juvenil": ["S.C Juvenil (12-17 años)"],
+    "Street Coreografico Infantil": ["S.C Infantil (6-11 años)"],
+    "Street Coreografico Adulto": ["S.C Adultos (+18 años)"],
+    "Street Coreografico Avanzado Intermedio": ["Street Int/Avanzado"],
+    "Infantil 1": ["Infantil (6 a 7 años)"],
+    "Kids": ["Kids 4-5 años"],
+    "Teens": ["Teens (8 a 12 años)"],
+    "Zumba": ["Zumba - Profe Joselo"],
+    "Heels": ["Hells"],
+    "Mambo En Pareja": ["Mambo en parejas"],
+    "Estilo Femenino": ["Clase femenino Sofi"],
+    "Estilo Femenino Inicial": ["Clase femenino Sofi"],
+    "Ladys Training": ["Clase LT - A.Frank"],
+    "Salsa Y Bachata En Pareja _Fabi": ["S&B Parejas"],
+    "Clase En Pareja (B.S.K)_Fabi": ["S&B Parejas"],
+    "Urbanflow": ["Urbanflow"],
+    "Coreografico_Puchini": {
+      "names": ["Grupo C. Sofi", "Clase femenino Sofi"],
+      "fallback": "Grupo C. Sofi"
+    }
+  }
+}

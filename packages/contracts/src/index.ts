@@ -411,7 +411,8 @@ export type BillingAdjustmentTypeDto =
   | 'TEACHER_SCHOLARSHIP'
   | 'TEACHER_DISCOUNT'
   | 'LATE_FEE'
-  | 'REVERSAL';
+  | 'REVERSAL'
+  | 'HISTORICAL_DISCOUNT';
 export type BillingCalculationDto = 'PERCENTAGE' | 'FIXED';
 export type MonthlyChargeAdjustmentDto = Readonly<{
   id: string | null;

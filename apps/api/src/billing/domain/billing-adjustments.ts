@@ -7,7 +7,8 @@ type AdjustmentType =
   | 'TEACHER_SCHOLARSHIP'
   | 'TEACHER_DISCOUNT'
   | 'LATE_FEE'
-  | 'REVERSAL';
+  | 'REVERSAL'
+  | 'HISTORICAL_DISCOUNT';
 type Calculation = 'PERCENTAGE' | 'FIXED';
 
 export const parseBillingPeriod = (value: string, field = 'effectiveFrom') => {

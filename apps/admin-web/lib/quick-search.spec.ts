@@ -11,11 +11,11 @@ const sections = [
 
 const student = (overrides: Partial<StudentDto> = {}): StudentDto => ({
   id: 's1',
-  dni: '14827445',
-  firstName: 'Gladis',
-  lastName: 'Acosta',
+  dni: '30111222',
+  firstName: 'Ana',
+  lastName: 'Pérez',
   birthDate: null,
-  phone: '+5493704697300',
+  phone: '+5491100000000',
   email: null,
   address: null,
   joinedAt: '2026-08-28',
@@ -65,7 +65,7 @@ describe('buildQuickSearchGroups', () => {
       [lead],
     );
     expect(groups.map((group) => group.label)).toEqual(['Alumnos', 'Potenciales', 'Secciones']);
-    expect(groups[0]?.items[0]).toMatchObject({ href: '/students/s1', title: 'Acosta, Gladis' });
+    expect(groups[0]?.items[0]).toMatchObject({ href: '/students/s1', title: 'Pérez, Ana' });
     expect(groups[0]?.items[1]).toMatchObject({ muted: true });
     expect(groups[0]?.items[1]?.detail).toContain('Inactivo');
     expect(groups[1]?.items[0]).toMatchObject({ href: '/leads/l1', title: 'Lucía Martínez' });

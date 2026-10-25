@@ -55,6 +55,7 @@ const adjustmentLabel = {
   TEACHER_DISCOUNT: 'Descuento del profesor',
   LATE_FEE: 'Recargo por mora',
   REVERSAL: 'Corrección',
+  HISTORICAL_DISCOUNT: 'Descuento histórico (ControlFit)',
 } as const;
 
 const initials = (student: StudentDto) =>

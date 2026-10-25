@@ -14,10 +14,36 @@ coverage/
 .prisma/
 *.tsbuildinfo
 
-# Backups SQL privados en la raíz
-/backup_*.sql
-/academy_backup_*.sql
+# ---------------------------------------------------------------
+# Datos privados de alumnos: nunca versionar.
+# Reportes de ControlFit, planillas, exportaciones y respaldos
+# contienen DNI, nombres, teléfonos y pagos reales.
+# ---------------------------------------------------------------
 
-# Datos reales / resultados de migración
-/exports/
+# Datos reales de origen y resultados de migración/análisis
 /scripts/data/
+/exports/
+
+# Planillas y exportaciones tabulares en cualquier carpeta
+*.xlsx
+*.xlsm
+*.xls
+*.ods
+*.csv
+*.tsv
+
+# Respaldos y volcados de base de datos (las migraciones de Prisma sí se versionan)
+*.sql
+!packages/database/prisma/migrations/**/migration.sql
+*.dump
+*.backup
+*.bak
+*.sqlite
+*.db
+
+# Documentos generados (recibos, reportes) y logs que pueden incluir datos de alumnos
+*.pdf
+*.log
+
+# Archivos temporales de scripts locales
+.tmp-*

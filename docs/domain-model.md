@@ -6,7 +6,7 @@
 - `CashMovement` es append-only. Cada tender genera una `COLLECTION`; anular el pago genera su `REVERSAL`, incluso después del cierre. El esperado actual es collections menos reversals por `CASH`, `MERCADO_PAGO` y `CARD`.
 - `CashShiftClosingLine` conserva el snapshot inmutable visto al cerrar: esperado, declarado y diferencia por medio. El backend bloquea el turno y recalcula lo esperado.
 - `CashReconciliationCorrection` corrige únicamente lo declarado, con delta, antes/después, actor, instante y motivo. No permite inventar ni modificar movimientos financieros.
-- V1 no tiene fondo inicial, Income, Expenses, retiros, depósitos, créditos, refunds ni liquidaciones. Payments anteriores no reciben un turno inventado: no hay backfill histórico.
+- V1 no tiene fondo inicial, Income, Expenses, retiros, depósitos, créditos, refunds ni liquidaciones. Payments anteriores no reciben un turno inventado. Los cobros históricos importados de ControlFit (`origin = CONTROLFIT_IMPORT`) tampoco generan movimientos de Caja.
 
 ## Contextos y entidades
 
@@ -81,6 +81,12 @@ erDiagram
 - La cuota congela `baseAmount`, `discountAmount` y `finalAmount`. Cambiar una tarifa después no modifica cuotas existentes.
 - `discountAmount` es cero en v1. `PENDING`, `PARTIAL` y `PAID` reflejan respectivamente deuda intacta, pago parcial y deuda cubierta; `VOID` queda reservado para una cuota anulada.
 - Las relaciones financieras usan borrado restringido y las entidades se desactivan sin eliminar el historial.
+
+## Importación histórica de ControlFit
+
+- `Payment.origin` distingue los cobros de caja (`CASH_DESK`) de los importados (`CONTROLFIT_IMPORT`). `legacyReference` identifica el movimiento de origen y es único, lo que hace idempotente la importación.
+- Cada movimiento importado crea una cuota `PAID` de su inscripción y período, un pago con su fecha real, un único medio y una imputación por el total. El importe base de la cuota es el costo informado por ControlFit.
+- Un cobro menor que el costo se representa con un ajuste `HISTORICAL_DISCOUNT`; un excedente exacto de ARS 1.000, con un `LATE_FEE`. Ambos son append-only como el resto de los ajustes.
 
 ## Pagos v2 core
 

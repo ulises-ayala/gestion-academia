@@ -1048,7 +1048,9 @@ function StudentAccount({
                                 ? 'Beca docente'
                                 : item.type === 'REVERSAL'
                                   ? 'Corrección'
-                                  : 'Descuento docente',
+                                  : item.type === 'HISTORICAL_DISCOUNT'
+                                    ? 'Descuento histórico'
+                                    : 'Descuento docente',
                         )
                         .join(' · ')}
                     </small>
