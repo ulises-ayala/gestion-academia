@@ -1,6 +1,7 @@
 'use client';
 
 import type { OperationalReportsDto } from '@academy/contracts';
+import { FileDown } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -89,6 +90,14 @@ export default function ReportsPage() {
     }
     return `${apiUrl}/reports/export/${kind}?${params}`;
   };
+  const pdfHref = () => {
+    const params = new URLSearchParams({ from, to });
+    for (const key of ['debtSort', 'classId']) {
+      const value = search.get(key);
+      if (value) params.set(key, value);
+    }
+    return `${apiUrl}/reports/pdf?${params}`;
+  };
 
   return (
     <div className="reports-page">
@@ -97,6 +106,16 @@ export default function ReportsPage() {
           <p className="eyebrow">ANÁLISIS OPERATIVO</p>
           <h1>Reportes</h1>
           <p className="subtitle">Datos reales para administrar la academia.</p>
+        </div>
+        <div className="page-heading-actions">
+          <a
+            className="button"
+            href={pdfHref()}
+            title="Resumen, cobros, deudores, asistencia y caja del período elegido"
+          >
+            <FileDown aria-hidden="true" size={16} strokeWidth={1.75} />
+            Descargar PDF
+          </a>
         </div>
       </header>
       <nav aria-label="Secciones de reportes" className="reports-tabs" role="tablist">

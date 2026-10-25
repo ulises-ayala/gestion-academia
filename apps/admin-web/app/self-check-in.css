@@ -1,0 +1,136 @@
+/* Autoregistro de asistencia (#DNI): aviso grande, legible a distancia, que se cierra solo. */
+.self-check-in-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: var(--overlay);
+}
+
+.self-check-in {
+  width: min(44rem, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10, 2.5rem) var(--space-8);
+  border: 1px solid var(--border);
+  border-top: 6px solid var(--accent);
+  border-radius: var(--radius-xl, 1.25rem);
+  background: var(--surface);
+  box-shadow: var(--shadow-dialog);
+  color: var(--text);
+  text-align: center;
+  animation: self-check-in-in 160ms var(--motion-easing, ease-out);
+}
+
+.self-check-in.is-success {
+  border-top-color: var(--success);
+}
+
+.self-check-in.is-warning {
+  border-top-color: var(--warning);
+}
+
+.self-check-in-eyebrow {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.self-check-in-title {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.15;
+}
+
+.self-check-in-detail,
+.self-check-in-hint {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+}
+
+.self-check-in-hint {
+  font-size: var(--font-size-body);
+}
+
+.self-check-in-location {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.self-check-in-icon {
+  color: var(--accent);
+}
+
+.self-check-in.is-success .self-check-in-icon {
+  color: var(--success);
+}
+
+.self-check-in.is-warning .self-check-in-icon {
+  color: var(--warning);
+}
+
+.self-check-in-slots {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+}
+
+.self-check-in-slots span {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-full);
+}
+
+.self-check-in-slots span.is-filled {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.self-check-in-payment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3) var(--space-5, 1.25rem);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-size: 1.15rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Verde: al día. Rojo: debe. El texto lo dice también, no solo el color. */
+.self-check-in-payment.is-ok {
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+  background: color-mix(in srgb, var(--success) 16%, var(--surface));
+  color: var(--success);
+}
+
+.self-check-in-payment.is-pending {
+  border-color: color-mix(in srgb, var(--destructive) 50%, transparent);
+  background: color-mix(in srgb, var(--destructive) 16%, var(--surface));
+  color: var(--destructive);
+}
+
+@keyframes self-check-in-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .self-check-in {
+    animation: none;
+  }
+}

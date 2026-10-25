@@ -42,6 +42,12 @@ const localMidnightToUtc = (year: number, month: number, day: number, timeZone: 
   return new Date(guess - (represented - guess));
 };
 
+/** Minutos transcurridos desde la medianoche en la zona horaria del negocio. */
+export const businessMinutesAt = (now: Date, timeZone: string) => {
+  const parts = partsAt(now, timeZone);
+  return Number(parts.hour) * 60 + Number(parts.minute);
+};
+
 export const businessDayAt = (now: Date, timeZone: string) => {
   const parts = partsAt(now, timeZone);
   const year = Number(parts.year);
