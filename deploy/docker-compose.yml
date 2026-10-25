@@ -1,0 +1,63 @@
+# Producción en VPS: Caddy (HTTPS) + API + panel. La base es PostgreSQL en Neon.
+# Uso, desde esta carpeta: docker compose up -d --build
+# Las variables se leen de deploy/.env (copiar de deploy/.env.example).
+name: academy
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?Definir APP_DOMAIN en deploy/.env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - web
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+    restart: unless-stopped
+    # Sin "ports": la API sólo es accesible a través de Caddy.
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Definir DATABASE_URL en deploy/.env}
+      DIRECT_URL: ${DIRECT_URL:?Definir DIRECT_URL en deploy/.env}
+      ADMIN_ORIGINS: https://${APP_DOMAIN}
+      AUTH_COOKIE_SECURE: 'true'
+      AUTH_COOKIE_SAME_SITE: lax
+      AUTH_SESSION_HOURS: ${AUTH_SESSION_HOURS:-12}
+      BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-America/Buenos_Aires}
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://localhost:3001/api/v1/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/web.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://${APP_DOMAIN}/api/v1
+    restart: unless-stopped
+    depends_on:
+      - api
+
+volumes:
+  caddy_data:
+  caddy_config:

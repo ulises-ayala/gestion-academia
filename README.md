@@ -40,7 +40,7 @@ Tarifas/Cuotas v1 permite administrar tarifas y generar manualmente una cuota me
 
 - Node.js 22+, TypeScript estricto y npm workspaces.
 - NestJS, Next.js, PostgreSQL, Prisma y Vitest.
-- Docker Compose solamente para PostgreSQL local.
+- Docker Compose para PostgreSQL local y para producción en VPS (ver [docs/deploy-vps.md](docs/deploy-vps.md)).
 
 ## Puesta en marcha
 

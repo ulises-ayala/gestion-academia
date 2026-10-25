@@ -1,0 +1,29 @@
+# Dependencias y builds: se generan dentro de la imagen.
+**/node_modules
+**/.next
+**/dist
+**/coverage
+**/*.tsbuildinfo
+.prisma
+
+# Secretos: las variables llegan por deploy/.env en tiempo de ejecución.
+**/.env
+**/.env.*
+!**/.env.example
+
+# Datos privados de alumnos: nunca deben entrar en una imagen.
+exports
+scripts/data
+**/*.xlsx
+**/*.xls
+**/*.csv
+**/*.sql
+!packages/database/prisma/migrations/**/migration.sql
+**/*.dump
+**/*.pdf
+**/*.log
+
+.git
+.github
+.vscode
+.impeccable

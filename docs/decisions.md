@@ -12,6 +12,14 @@
 - **Estado de asistencia por clase del día:** `GET /api/v1/dashboard/operational` agrega a cada clase de hoy `enrolledStudents` (inscripciones activas vigentes en el día operativo) y `attendanceRecords` (registros de asistencia del día para la clase; `null` sin permiso `attendance:manage`). La interfaz muestra Completada cuando los registros alcanzan a los inscriptos, Parcial cuando hay algunos y Pendiente cuando no hay ninguno. `billing` agrega `overdueStudents` (alumnos distintos con cuotas vencidas).
 - **Actualización sin perder contexto:** el Inicio muestra la hora de la última actualización y un botón para actualizar; mientras refresca o si falla, conserva el último resultado. Los alumnos en seguimiento se cargan por separado y pueden fallar y reintentarse sin ocultar el resto.
 
+## Producción en VPS — octubre 2026
+
+- **Dónde corre:** el panel y la API corren en un VPS de OVHcloud (Vint Hill, Virginia) con Docker Compose; la base sigue en Neon (`us-east-1`), cerca del VPS. Reemplaza los servicios web gratuitos de Render, que se suspendían por inactividad. Render queda como respaldo hasta darlo de baja. Guía en `docs/deploy-vps.md`.
+- **Docker también en producción:** se amplía la decisión de usar Docker sólo para PostgreSQL local. Las imágenes (`deploy/api.Dockerfile`, `deploy/web.Dockerfile`) repiten los comandos de Render: `npm ci --include=dev`, Prisma Client y build; la API aplica `prisma migrate deploy` al arrancar, como en la decisión 39.
+- **Un solo origen:** Caddy publica `gestion.academiacarmesi.com.ar` con HTTPS automático, envía `/api/*` a la API y el resto al panel. Por compartir origen, la cookie usa `SameSite=Lax` y `Secure`, sin depender de cookies de terceros (a diferencia de la decisión 40 para staging). La API y el panel no publican puertos.
+- **Respaldo propio:** `deploy/backup-db.sh` guarda un `pg_dump` diario de Neon en el VPS durante 30 días, porque el plan gratuito de Neon conserva poco historial. Pendiente: copia fuera del VPS.
+- **Despliegue manual:** `git pull` y `docker compose up -d --build` fuera del horario de la academia (lunes a sábado de 15 a 23 h). Automatizarlo con GitHub Actions queda para más adelante.
+
 ## Autoregistro de asistencia por DNI — octubre 2026
 
 - **Cómo se usa:** en la computadora de recepción, con la sesión de un usuario con `attendance:manage`, el alumno escribe `#` y su DNI en el teclado numérico, desde cualquier pantalla del panel. Al completar 8 dígitos se envía solo, porque el teclado no tiene Enter; un DNI de 7 dígitos se escribe con un 0 adelante (`#08765432`). Mientras se escribe, los dígitos no llegan a ningún campo del panel, y Escape cancela.

@@ -1,0 +1,13 @@
+# Un solo dominio: /api/* va a la API y el resto al panel. Al compartir origen,
+# la cookie de sesión funciona con SameSite=Lax. Caddy obtiene y renueva el certificado HTTPS.
+{$APP_DOMAIN} {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy api:3001
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+}
