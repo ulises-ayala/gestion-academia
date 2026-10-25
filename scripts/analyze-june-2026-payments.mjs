@@ -39,18 +39,11 @@ const INPUT_FILE = path.resolve(
 
 const OUTPUT_DIR = path.resolve('./exports');
 
-const OUTPUT_JSON = path.join(
-  OUTPUT_DIR,
-  'june-oct-2026-payments-analysis.json',
-);
+const OUTPUT_JSON = path.join(OUTPUT_DIR, 'june-oct-2026-payments-analysis.json');
 
-const OUTPUT_XLSX = path.join(
-  OUTPUT_DIR,
-  'june-oct-2026-payments-analysis.xlsx',
-);
+const OUTPUT_XLSX = path.join(OUTPUT_DIR, 'june-oct-2026-payments-analysis.xlsx');
 
-const BUSINESS_TIME_ZONE =
-  process.env.BUSINESS_TIMEZONE ?? 'America/Argentina/Cordoba';
+const BUSINESS_TIME_ZONE = process.env.BUSINESS_TIMEZONE ?? 'America/Argentina/Cordoba';
 
 let activePrismaClient = null;
 
@@ -128,8 +121,7 @@ const CLASS_ALIASES = new Map([
     normalizeText('Coreografico_Puchini'),
     {
       names: ['Grupo C. Sofi', 'Clase femenino Sofi'],
-      reason:
-        'El nombre histórico puede corresponder a Grupo C. Sofi o Clase femenino Sofi.',
+      reason: 'El nombre histórico puede corresponder a Grupo C. Sofi o Clase femenino Sofi.',
     },
   ],
   [
@@ -163,12 +155,8 @@ const CLASS_ALIASES = new Map([
   [
     normalizeText('Coreografico E.Masc-Bachata/Urban'),
     {
-      names: [
-        'Coreográfico E.Masc-Bachata/Urban',
-        'Urbanflow',
-      ],
-      reason:
-        'No se confirmó la fecha exacta en que la actividad pasó a llamarse Urbanflow.',
+      names: ['Coreográfico E.Masc-Bachata/Urban', 'Urbanflow'],
+      reason: 'No se confirmó la fecha exacta en que la actividad pasó a llamarse Urbanflow.',
     },
   ],
 ]);
@@ -180,28 +168,18 @@ const CLASS_ALIASES = new Map([
  * vacía deja la actividad pendiente.
  */
 
-const CLASS_MAPPING_FILE = path.resolve(
-  './scripts/controlfit-class-mapping.json',
-);
+const CLASS_MAPPING_FILE = path.resolve('./scripts/controlfit-class-mapping.json');
 
 try {
-  const mapping = JSON.parse(
-    await fs.readFile(CLASS_MAPPING_FILE, 'utf8'),
-  );
+  const mapping = JSON.parse(await fs.readFile(CLASS_MAPPING_FILE, 'utf8'));
 
-  for (const [activity, entry] of Object.entries(
-    mapping.aliases ?? {},
-  )) {
-    const names = Array.isArray(entry)
-      ? entry
-      : entry?.names ?? [];
+  for (const [activity, entry] of Object.entries(mapping.aliases ?? {})) {
+    const names = Array.isArray(entry) ? entry : (entry?.names ?? []);
 
     if (names.length > 0) {
       CLASS_ALIASES.set(normalizeText(activity), {
         names,
-        fallback: Array.isArray(entry)
-          ? null
-          : entry.fallback ?? null,
+        fallback: Array.isArray(entry) ? null : (entry.fallback ?? null),
         reason: null,
       });
     }
@@ -227,18 +205,11 @@ function normalizeText(value) {
 }
 
 function normalizeDni(value) {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ''
-  ) {
+  if (value === null || value === undefined || value === '') {
     return '';
   }
 
-  if (
-    typeof value === 'number' &&
-    Number.isFinite(value)
-  ) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
     return String(Math.trunc(value))
       .replace(/[^A-Z0-9]/gi, '')
       .toUpperCase();
@@ -253,17 +224,11 @@ function roundMoney(value) {
     return null;
   }
 
-  return Math.round(
-    (value + Number.EPSILON) * 100,
-  ) / 100;
+  return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
 function parseMoney(value) {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ''
-  ) {
+  if (value === null || value === undefined || value === '') {
     return null;
   }
 
@@ -284,35 +249,23 @@ function parseMoney(value) {
 
   if (comma >= 0 && dot >= 0) {
     if (comma > dot) {
-      text = text
-        .replace(/\./g, '')
-        .replace(',', '.');
+      text = text.replace(/\./g, '').replace(',', '.');
     } else {
       text = text.replace(/,/g, '');
     }
   } else if (comma >= 0) {
-    text = text
-      .replace(/\./g, '')
-      .replace(',', '.');
+    text = text.replace(/\./g, '').replace(',', '.');
   } else if (dot >= 0) {
     const parts = text.split('.');
 
-    if (
-      parts.length > 2 ||
-      (
-        parts.length === 2 &&
-        parts[1].length === 3
-      )
-    ) {
+    if (parts.length > 2 || (parts.length === 2 && parts[1].length === 3)) {
       text = parts.join('');
     }
   }
 
   const number = Number(text);
 
-  return Number.isFinite(number)
-    ? roundMoney(number)
-    : null;
+  return Number.isFinite(number) ? roundMoney(number) : null;
 }
 
 /* =========================================================
@@ -320,10 +273,7 @@ function parseMoney(value) {
  * ========================================================= */
 
 function isoDateFromUtcDate(date) {
-  if (
-    !(date instanceof Date) ||
-    Number.isNaN(date.getTime())
-  ) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
     return null;
   }
 
@@ -339,10 +289,7 @@ function isoDateInBusinessZone(value) {
     return null;
   }
 
-  const date =
-    value instanceof Date
-      ? value
-      : new Date(value);
+  const date = value instanceof Date ? value : new Date(value);
 
   if (Number.isNaN(date.getTime())) {
     return null;
@@ -355,28 +302,17 @@ function isoDateInBusinessZone(value) {
     day: '2-digit',
   }).formatToParts(date);
 
-  const values = Object.fromEntries(
-    parts.map((part) => [
-      part.type,
-      part.value,
-    ]),
-  );
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
 
   return `${values.year}-${values.month}-${values.day}`;
 }
 
 function parseExcelDate(value) {
-  if (
-    value instanceof Date &&
-    !Number.isNaN(value.getTime())
-  ) {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
     return value;
   }
 
-  if (
-    typeof value === 'number' &&
-    Number.isFinite(value)
-  ) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
     const parsed = xlsx.SSF.parse_date_code(value);
 
     if (!parsed) {
@@ -384,26 +320,14 @@ function parseExcelDate(value) {
     }
 
     return new Date(
-      Date.UTC(
-        parsed.y,
-        parsed.m - 1,
-        parsed.d,
-        parsed.H,
-        parsed.M,
-        Math.floor(parsed.S),
-      ),
+      Date.UTC(parsed.y, parsed.m - 1, parsed.d, parsed.H, parsed.M, Math.floor(parsed.S)),
     );
   }
 
-  if (
-    typeof value === 'string' &&
-    value.trim()
-  ) {
+  if (typeof value === 'string' && value.trim()) {
     const text = value.trim();
 
-    const normalized = text.includes('T')
-      ? text
-      : text.replace(' ', 'T');
+    const normalized = text.includes('T') ? text : text.replace(' ', 'T');
 
     const date = new Date(normalized);
 
@@ -426,15 +350,11 @@ function dateOnly(value) {
 
   const text = String(value);
 
-  return /^\d{4}-\d{2}-\d{2}/.test(text)
-    ? text.slice(0, 10)
-    : null;
+  return /^\d{4}-\d{2}-\d{2}/.test(text) ? text.slice(0, 10) : null;
 }
 
 function makeUtcDate(year, month, day) {
-  const date = new Date(
-    Date.UTC(year, month - 1, day),
-  );
+  const date = new Date(Date.UTC(year, month - 1, day));
 
   if (
     date.getUTCFullYear() !== year ||
@@ -448,10 +368,7 @@ function makeUtcDate(year, month, day) {
 }
 
 function dayDifference(start, end) {
-  return Math.round(
-    (end.getTime() - start.getTime()) /
-      86_400_000,
-  );
+  return Math.round((end.getTime() - start.getTime()) / 86_400_000);
 }
 
 /*
@@ -468,79 +385,41 @@ function dayDifference(start, end) {
  */
 
 function inferPeriodDates(periodParts, paymentDateIso) {
-  if (
-    !periodParts ||
-    !paymentDateIso
-  ) {
+  if (!periodParts || !paymentDateIso) {
     return null;
   }
 
-  const paymentDate = new Date(
-    `${paymentDateIso}T00:00:00.000Z`,
-  );
+  const paymentDate = new Date(`${paymentDateIso}T00:00:00.000Z`);
 
-  const paymentYear =
-    paymentDate.getUTCFullYear();
+  const paymentYear = paymentDate.getUTCFullYear();
 
   const candidates = [];
 
-  for (
-    let startYear = paymentYear - 1;
-    startYear <= paymentYear + 1;
-    startYear += 1
-  ) {
-    for (
-      const endYear of [
-        startYear,
-        startYear + 1,
-      ]
-    ) {
-      const start = makeUtcDate(
-        startYear,
-        periodParts.startMonth,
-        periodParts.startDay,
-      );
+  for (let startYear = paymentYear - 1; startYear <= paymentYear + 1; startYear += 1) {
+    for (const endYear of [startYear, startYear + 1]) {
+      const start = makeUtcDate(startYear, periodParts.startMonth, periodParts.startDay);
 
-      const end = makeUtcDate(
-        endYear,
-        periodParts.endMonth,
-        periodParts.endDay,
-      );
+      const end = makeUtcDate(endYear, periodParts.endMonth, periodParts.endDay);
 
-      if (
-        !start ||
-        !end ||
-        end <= start
-      ) {
+      if (!start || !end || end <= start) {
         continue;
       }
 
-      const durationDays =
-        dayDifference(start, end);
+      const durationDays = dayDifference(start, end);
 
-      if (
-        durationDays < 1 ||
-        durationDays > 370
-      ) {
+      if (durationDays < 1 || durationDays > 370) {
         continue;
       }
 
       let distanceDays = 0;
 
       if (paymentDate < start) {
-        distanceDays = dayDifference(
-          paymentDate,
-          start,
-        );
+        distanceDays = dayDifference(paymentDate, start);
       } else if (paymentDate > end) {
-        distanceDays = dayDifference(
-          end,
-          paymentDate,
-        );
+        distanceDays = dayDifference(end, paymentDate);
       }
 
-      const yearPenalty =
-        Math.abs(startYear - paymentYear) * 0.01;
+      const yearPenalty = Math.abs(startYear - paymentYear) * 0.01;
 
       candidates.push({
         start,
@@ -551,21 +430,13 @@ function inferPeriodDates(periodParts, paymentDateIso) {
     }
   }
 
-  candidates.sort(
-    (a, b) => a.score - b.score,
-  );
+  candidates.sort((a, b) => a.score - b.score);
 
   if (!candidates.length) {
     return null;
   }
 
-  if (
-    candidates.length > 1 &&
-    Math.abs(
-      candidates[0].score -
-        candidates[1].score,
-    ) < 0.001
-  ) {
+  if (candidates.length > 1 && Math.abs(candidates[0].score - candidates[1].score) < 0.001) {
     return { ambiguous: true };
   }
 
@@ -574,37 +445,24 @@ function inferPeriodDates(periodParts, paymentDateIso) {
   const periodType =
     chosen.durationDays <= 10
       ? 'WEEKLY'
-      : chosen.durationDays >= 25 &&
-          chosen.durationDays <= 35
+      : chosen.durationDays >= 25 && chosen.durationDays <= 35
         ? 'MONTHLY'
         : 'NONSTANDARD';
 
-  const startDate =
-    isoDateFromUtcDate(chosen.start);
+  const startDate = isoDateFromUtcDate(chosen.start);
 
   return {
     startDate,
     endDate: isoDateFromUtcDate(chosen.end),
     durationDays: chosen.durationDays,
     periodType,
-    chargePeriod:
-      periodType === 'MONTHLY'
-        ? startDate.slice(0, 7)
-        : null,
-    distanceFromPaymentDays: Math.max(
-      0,
-      Math.round(chosen.score),
-    ),
+    chargePeriod: periodType === 'MONTHLY' ? startDate.slice(0, 7) : null,
+    distanceFromPaymentDays: Math.max(0, Math.round(chosen.score)),
   };
 }
 
-function parseBilledPeriod(
-  activityText,
-  paymentDateIso,
-) {
-  const normalized = String(
-    activityText ?? '',
-  )
+function parseBilledPeriod(activityText, paymentDateIso) {
+  const normalized = String(activityText ?? '')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toUpperCase();
@@ -617,32 +475,21 @@ function parseBilledPeriod(
     return {
       raw: null,
       parsed: null,
-      error:
-        'No se encontró la etiqueta Período abonado.',
+      error: 'No se encontró la etiqueta Período abonado.',
     };
   }
 
   const startDay = Number(match[1]);
-  const startMonth =
-    MONTHS[normalizeText(match[2])];
+  const startMonth = MONTHS[normalizeText(match[2])];
 
   const endDay = Number(match[3]);
-  const endMonth =
-    MONTHS[normalizeText(match[4])];
+  const endMonth = MONTHS[normalizeText(match[4])];
 
-  if (
-    !startMonth ||
-    !endMonth ||
-    startDay < 1 ||
-    startDay > 31 ||
-    endDay < 1 ||
-    endDay > 31
-  ) {
+  if (!startMonth || !endMonth || startDay < 1 || startDay > 31 || endDay < 1 || endDay > 31) {
     return {
       raw: match[0],
       parsed: null,
-      error:
-        'El período contiene un día o mes no reconocido.',
+      error: 'El período contiene un día o mes no reconocido.',
     };
   }
 
@@ -660,8 +507,7 @@ function parseBilledPeriod(
     return {
       raw: match[0],
       parsed: null,
-      error:
-        'No se pudo inferir el año del período.',
+      error: 'No se pudo inferir el año del período.',
     };
   }
 
@@ -669,8 +515,7 @@ function parseBilledPeriod(
     return {
       raw: match[0],
       parsed: null,
-      error:
-        'El año del período quedó ambiguo.',
+      error: 'El año del período quedó ambiguo.',
     };
   }
 
@@ -686,12 +531,7 @@ function parseBilledPeriod(
  * ========================================================= */
 
 function classifyMovement(activityText) {
-  const match = MOVEMENT_TYPES.find(
-    (type) =>
-      type.pattern.test(
-        String(activityText ?? ''),
-      ),
-  );
+  const match = MOVEMENT_TYPES.find((type) => type.pattern.test(String(activityText ?? '')));
 
   return (
     match ?? {
@@ -704,20 +544,14 @@ function classifyMovement(activityText) {
 function mapPaymentMethod(value) {
   const key = normalizeText(value);
 
-  if (
-    key === 'EFECTIVO' ||
-    key === 'CASH'
-  ) {
+  if (key === 'EFECTIVO' || key === 'CASH') {
     return {
       normalized: 'CASH',
       supported: true,
     };
   }
 
-  if (
-    key === 'MERCADO PAGO' ||
-    key === 'MERCADOPAGO'
-  ) {
+  if (key === 'MERCADO PAGO' || key === 'MERCADOPAGO') {
     return {
       normalized: 'MERCADO_PAGO',
       supported: true,
@@ -737,10 +571,7 @@ function mapPaymentMethod(value) {
     };
   }
 
-  if (
-    key === 'TRANSFERENCIA' ||
-    key === 'TRANSFER'
-  ) {
+  if (key === 'TRANSFERENCIA' || key === 'TRANSFER') {
     return {
       normalized: 'TRANSFER',
       supported: false,
@@ -759,15 +590,10 @@ function mapPaymentMethod(value) {
 
 function findHeaderRow(rows) {
   return rows.findIndex((row) => {
-    const cells = row.map(
-      (cell) => normalizeText(cell),
-    );
+    const cells = row.map((cell) => normalizeText(cell));
 
     return (
-      row.some(
-        (cell) =>
-          String(cell ?? '').trim() === '#',
-      ) &&
+      row.some((cell) => String(cell ?? '').trim() === '#') &&
       cells.includes('DNI') &&
       cells.includes('ACTIVIDAD') &&
       cells.includes('FECHA HORA') &&
@@ -778,39 +604,23 @@ function findHeaderRow(rows) {
 
 function parseFooterTotal(rows) {
   for (const row of rows) {
-    for (
-      let index = 0;
-      index < row.length;
-      index += 1
-    ) {
+    for (let index = 0; index < row.length; index += 1) {
       const value = row[index];
 
-      const text = String(
-        value ?? '',
-      ).trim();
+      const text = String(value ?? '').trim();
 
       if (!/^TOTAL\s*:/i.test(text)) {
         continue;
       }
 
-      const embedded = text.match(
-        /^TOTAL\s*:\s*([\d.,-]+)/i,
-      );
+      const embedded = text.match(/^TOTAL\s*:\s*([\d.,-]+)/i);
 
       if (embedded) {
         return parseMoney(embedded[1]);
       }
 
-      for (
-        let next = index + 1;
-        next < row.length;
-        next += 1
-      ) {
-        if (
-          row[next] !== null &&
-          row[next] !== undefined &&
-          row[next] !== ''
-        ) {
+      for (let next = index + 1; next < row.length; next += 1) {
+        if (row[next] !== null && row[next] !== undefined && row[next] !== '') {
           return parseMoney(row[next]);
         }
       }
@@ -821,49 +631,35 @@ function parseFooterTotal(rows) {
 }
 
 function readReport(filePath) {
-  const workbook = readFile(
-    filePath,
-    {
-      cellDates: true,
-      raw: true,
-    },
-  );
+  const workbook = readFile(filePath, {
+    cellDates: true,
+    raw: true,
+  });
 
   if (!workbook.SheetNames.length) {
-    throw new Error(
-      'El Excel no contiene hojas.',
-    );
+    throw new Error('El Excel no contiene hojas.');
   }
 
-  const sheet =
-    workbook.Sheets[workbook.SheetNames[0]];
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-  const rows = utils.sheet_to_json(
-    sheet,
-    {
-      header: 1,
-      raw: true,
-      defval: null,
-      blankrows: true,
-    },
-  );
+  const rows = utils.sheet_to_json(sheet, {
+    header: 1,
+    raw: true,
+    defval: null,
+    blankrows: true,
+  });
 
   const headerIndex = findHeaderRow(rows);
 
   if (headerIndex < 0) {
-    throw new Error(
-      'No encontré la fila de encabezados (#, DNI, Actividad, Fecha/Hora, Total).',
-    );
+    throw new Error('No encontré la fila de encabezados (#, DNI, Actividad, Fecha/Hora, Total).');
   }
 
   const headers = rows[headerIndex];
   const indexes = {};
 
   headers.forEach((header, index) => {
-    const key =
-      String(header ?? '').trim() === '#'
-        ? '#'
-        : normalizeText(header);
+    const key = String(header ?? '').trim() === '#' ? '#' : normalizeText(header);
 
     if (key) {
       indexes[key] = index;
@@ -882,34 +678,21 @@ function readReport(filePath) {
     'TOTAL',
   ];
 
-  const missing = required.filter(
-    (key) => indexes[key] === undefined,
-  );
+  const missing = required.filter((key) => indexes[key] === undefined);
 
   if (missing.length) {
-    throw new Error(
-      `Faltan columnas requeridas en el reporte: ${missing.join(', ')}.`,
-    );
+    throw new Error(`Faltan columnas requeridas en el reporte: ${missing.join(', ')}.`);
   }
 
   const footerTotal = parseFooterTotal(rows);
   const items = [];
 
-  for (
-    let index = headerIndex + 1;
-    index < rows.length;
-    index += 1
-  ) {
+  for (let index = headerIndex + 1; index < rows.length; index += 1) {
     const row = rows[index];
 
-    const movementNumber =
-      row[indexes['#']];
+    const movementNumber = row[indexes['#']];
 
-    if (
-      movementNumber === null ||
-      movementNumber === undefined ||
-      movementNumber === ''
-    ) {
+    if (movementNumber === null || movementNumber === undefined || movementNumber === '') {
       continue;
     }
 
@@ -917,61 +700,35 @@ function readReport(filePath) {
       continue;
     }
 
-    const activityText = String(
-      row[indexes.ACTIVIDAD] ?? '',
-    ).trim();
+    const activityText = String(row[indexes.ACTIVIDAD] ?? '').trim();
 
-    const paymentDate = parseExcelDate(
-      row[indexes['FECHA HORA']],
-    );
+    const paymentDate = parseExcelDate(row[indexes['FECHA HORA']]);
 
-    const paymentDateIso = paymentDate
-      ? isoDateFromUtcDate(paymentDate)
-      : null;
+    const paymentDateIso = paymentDate ? isoDateFromUtcDate(paymentDate) : null;
 
-    const period = parseBilledPeriod(
-      activityText,
-      paymentDateIso,
-    );
+    const period = parseBilledPeriod(activityText, paymentDateIso);
 
-    const movementType =
-      classifyMovement(activityText);
+    const movementType = classifyMovement(activityText);
 
-    const paymentMethod = mapPaymentMethod(
-      row[indexes.PAGO],
-    );
+    const paymentMethod = mapPaymentMethod(row[indexes.PAGO]);
 
-    const cost = parseMoney(
-      row[indexes.COSTO],
-    );
+    const cost = parseMoney(row[indexes.COSTO]);
 
-    const total = parseMoney(
-      row[indexes.TOTAL],
-    );
+    const total = parseMoney(row[indexes.TOTAL]);
 
-    const activityName =
-      activityText.split('|')[0].trim();
+    const activityName = activityText.split('|')[0].trim();
 
     items.push({
       sourceRow: index + 1,
       movementNumber: Number(movementNumber),
 
-      dniRaw:
-        row[indexes.DNI] === null
-          ? ''
-          : String(row[indexes.DNI]).trim(),
+      dniRaw: row[indexes.DNI] === null ? '' : String(row[indexes.DNI]).trim(),
 
-      dniNormalized: normalizeDni(
-        row[indexes.DNI],
-      ),
+      dniNormalized: normalizeDni(row[indexes.DNI]),
 
-      lastName: String(
-        row[indexes.APELLIDO] ?? '',
-      ).trim(),
+      lastName: String(row[indexes.APELLIDO] ?? '').trim(),
 
-      firstName: String(
-        row[indexes.NOMBRE] ?? '',
-      ).trim(),
+      firstName: String(row[indexes.NOMBRE] ?? '').trim(),
 
       activityText,
       activityName,
@@ -984,35 +741,23 @@ function readReport(filePath) {
 
       paymentDate: paymentDateIso,
 
-      paymentDateTime: paymentDate
-        ? paymentDate.toISOString()
-        : null,
+      paymentDateTime: paymentDate ? paymentDate.toISOString() : null,
 
-      paymentMethodRaw: String(
-        row[indexes.PAGO] ?? '',
-      ).trim(),
+      paymentMethodRaw: String(row[indexes.PAGO] ?? '').trim(),
 
       paymentMethod: paymentMethod.normalized,
       paymentMethodSupported: paymentMethod.supported,
 
       total,
 
-      amountDifference:
-        cost !== null && total !== null
-          ? roundMoney(total - cost)
-          : null,
+      amountDifference: cost !== null && total !== null ? roundMoney(total - cost) : null,
 
       periodRaw: period.raw,
-      periodStart:
-        period.parsed?.startDate ?? null,
-      periodEnd:
-        period.parsed?.endDate ?? null,
-      periodDays:
-        period.parsed?.durationDays ?? null,
-      periodType:
-        period.parsed?.periodType ?? null,
-      chargePeriod:
-        period.parsed?.chargePeriod ?? null,
+      periodStart: period.parsed?.startDate ?? null,
+      periodEnd: period.parsed?.endDate ?? null,
+      periodDays: period.parsed?.durationDays ?? null,
+      periodType: period.parsed?.periodType ?? null,
+      chargePeriod: period.parsed?.chargePeriod ?? null,
 
       periodParseError: period.error,
 
@@ -1059,14 +804,9 @@ function buildClassIndex(classes) {
   const byId = new Map();
 
   for (const academicClass of classes) {
-    byId.set(
-      academicClass.id,
-      academicClass,
-    );
+    byId.set(academicClass.id, academicClass);
 
-    const key = normalizeText(
-      academicClass.name,
-    );
+    const key = normalizeText(academicClass.name);
 
     if (!byName.has(key)) {
       byName.set(key, []);
@@ -1081,14 +821,11 @@ function buildClassIndex(classes) {
   };
 }
 
-function buildEnrollmentsByStudentClass(
-  enrollments,
-) {
+function buildEnrollmentsByStudentClass(enrollments) {
   const index = new Map();
 
   for (const enrollment of enrollments) {
-    const key =
-      `${enrollment.studentId}|${enrollment.classId}`;
+    const key = `${enrollment.studentId}|${enrollment.classId}`;
 
     if (!index.has(key)) {
       index.set(key, []);
@@ -1104,14 +841,8 @@ function buildEnrollmentsByStudentClass(
  * RESOLUCIÓN DE CLASE
  * ========================================================= */
 
-function resolveClassForStudent(
-  item,
-  studentId,
-  classIndex,
-  enrollmentsByStudentClass,
-) {
-  const exact =
-    classIndex.byName.get(item.activityKey) ?? [];
+function resolveClassForStudent(item, studentId, classIndex, enrollmentsByStudentClass) {
+  const exact = classIndex.byName.get(item.activityKey) ?? [];
 
   if (exact.length === 1) {
     return {
@@ -1125,13 +856,11 @@ function resolveClassForStudent(
     return {
       academicClass: null,
       aliasUsed: false,
-      reviewReason:
-        'Hay más de una clase con el mismo nombre normalizado.',
+      reviewReason: 'Hay más de una clase con el mismo nombre normalizado.',
     };
   }
 
-  const alias =
-    CLASS_ALIASES.get(item.activityKey);
+  const alias = CLASS_ALIASES.get(item.activityKey);
 
   if (!alias) {
     return {
@@ -1142,54 +871,31 @@ function resolveClassForStudent(
   }
 
   const candidateClasses = alias.names
-    .flatMap(
-      (name) =>
-        classIndex.byName.get(
-          normalizeText(name),
-        ) ?? [],
-    )
+    .flatMap((name) => classIndex.byName.get(normalizeText(name)) ?? [])
     .filter(
       (academicClass, index, all) =>
-        all.findIndex(
-          (candidate) =>
-            candidate.id === academicClass.id,
-        ) === index,
+        all.findIndex((candidate) => candidate.id === academicClass.id) === index,
     );
 
   if (candidateClasses.length === 1) {
     const selected = candidateClasses[0];
 
     const transitionReview =
-      item.activityKey ===
-        normalizeText(
-          'Coreografico E.Masc-Bachata/Urban',
-        ) &&
-      normalizeText(selected.name) ===
-        normalizeText('Urbanflow');
+      item.activityKey === normalizeText('Coreografico E.Masc-Bachata/Urban') &&
+      normalizeText(selected.name) === normalizeText('Urbanflow');
 
     return {
       academicClass: selected,
       aliasUsed: true,
-      reviewReason:
-        transitionReview
-          ? alias.reason
-          : null,
+      reviewReason: transitionReview ? alias.reason : null,
     };
   }
 
-  if (
-    candidateClasses.length > 1 &&
-    studentId
-  ) {
-    const enrolledCandidates =
-      candidateClasses.filter(
-        (academicClass) =>
-          (
-            enrollmentsByStudentClass.get(
-              `${studentId}|${academicClass.id}`,
-            ) ?? []
-          ).length > 0,
-      );
+  if (candidateClasses.length > 1 && studentId) {
+    const enrolledCandidates = candidateClasses.filter(
+      (academicClass) =>
+        (enrollmentsByStudentClass.get(`${studentId}|${academicClass.id}`) ?? []).length > 0,
+    );
 
     if (enrolledCandidates.length === 1) {
       return {
@@ -1201,9 +907,7 @@ function resolveClassForStudent(
 
     const fallback = alias.fallback
       ? candidateClasses.find(
-          (academicClass) =>
-            normalizeText(academicClass.name) ===
-            normalizeText(alias.fallback),
+          (academicClass) => normalizeText(academicClass.name) === normalizeText(alias.fallback),
         )
       : null;
 
@@ -1219,8 +923,7 @@ function resolveClassForStudent(
       return {
         academicClass: null,
         aliasUsed: true,
-        reviewReason:
-          'El alumno tiene inscripciones en más de una clase candidata del alias.',
+        reviewReason: 'El alumno tiene inscripciones en más de una clase candidata del alias.',
       };
     }
   }
@@ -1228,9 +931,7 @@ function resolveClassForStudent(
   return {
     academicClass: null,
     aliasUsed: true,
-    reviewReason:
-      alias.reason ??
-      'El alias no se pudo resolver contra una única clase.',
+    reviewReason: alias.reason ?? 'El alias no se pudo resolver contra una única clase.',
   };
 }
 
@@ -1238,22 +939,13 @@ function resolveClassForStudent(
  * INSCRIPCIONES Y TARIFAS
  * ========================================================= */
 
-function findEnrollment(
-  item,
-  studentId,
-  classId,
-  enrollmentsByStudentClass,
-) {
-  const candidates =
-    enrollmentsByStudentClass.get(
-      `${studentId}|${classId}`,
-    ) ?? [];
+function findEnrollment(item, studentId, classId, enrollmentsByStudentClass) {
+  const candidates = enrollmentsByStudentClass.get(`${studentId}|${classId}`) ?? [];
 
   if (!candidates.length) {
     return {
       enrollment: null,
-      reason:
-        'No hay inscripción del alumno para esta clase.',
+      reason: 'No hay inscripción del alumno para esta clase.',
     };
   }
 
@@ -1264,33 +956,19 @@ function findEnrollment(
     };
   }
 
-  const withinDates = candidates.filter(
-    (enrollment) => {
-      if (
-        !item.periodStart ||
-        !item.periodEnd
-      ) {
-        return false;
-      }
+  const withinDates = candidates.filter((enrollment) => {
+    if (!item.periodStart || !item.periodEnd) {
+      return false;
+    }
 
-      const startDate = dateOnly(
-        enrollment.startDate,
-      );
+    const startDate = dateOnly(enrollment.startDate);
 
-      const endDate = dateOnly(
-        enrollment.endDate,
-      );
+    const endDate = dateOnly(enrollment.endDate);
 
-      return Boolean(
-        startDate &&
-        item.periodStart >= startDate &&
-        (
-          !endDate ||
-          item.periodEnd <= endDate
-        ),
-      );
-    },
-  );
+    return Boolean(
+      startDate && item.periodStart >= startDate && (!endDate || item.periodEnd <= endDate),
+    );
+  });
 
   if (withinDates.length === 1) {
     return {
@@ -1301,16 +979,11 @@ function findEnrollment(
 
   return {
     enrollment: null,
-    reason:
-      'Hay varias inscripciones posibles y no se puede elegir una con seguridad.',
+    reason: 'Hay varias inscripciones posibles y no se puede elegir una con seguridad.',
   };
 }
 
-function findTariff(
-  item,
-  classId,
-  tariffs,
-) {
+function findTariff(item, classId, tariffs) {
   if (!classId) {
     return {
       tariff: null,
@@ -1319,19 +992,11 @@ function findTariff(
   }
 
   const classLinkedTariffs = tariffs.filter(
-    (tariff) =>
-      (
-        tariff.classId ??
-        tariff.academyClassId
-      ) === classId,
+    (tariff) => (tariff.classId ?? tariff.academyClassId) === classId,
   );
 
   if (!classLinkedTariffs.length) {
-    const hasClassLinks = tariffs.some(
-      (tariff) =>
-        tariff.classId ||
-        tariff.academyClassId,
-    );
+    const hasClassLinks = tariffs.some((tariff) => tariff.classId || tariff.academyClassId);
 
     return {
       tariff: null,
@@ -1344,85 +1009,54 @@ function findTariff(
   if (!item.periodStart) {
     return {
       tariff: null,
-      reason:
-        'No hay fecha de inicio del período para validar la tarifa.',
+      reason: 'No hay fecha de inicio del período para validar la tarifa.',
     };
   }
 
-  const candidates = classLinkedTariffs.filter(
-    (tariff) => {
-      const validFrom = dateOnly(
-        tariff.validFrom,
-      );
+  const candidates = classLinkedTariffs.filter((tariff) => {
+    const validFrom = dateOnly(tariff.validFrom);
 
-      const validTo = dateOnly(
-        tariff.validTo,
-      );
+    const validTo = dateOnly(tariff.validTo);
 
-      return Boolean(
-        validFrom &&
-        validFrom <= item.periodStart &&
-        (
-          !validTo ||
-          validTo >= item.periodStart
-        ),
-      );
-    },
-  );
+    return Boolean(
+      validFrom && validFrom <= item.periodStart && (!validTo || validTo >= item.periodStart),
+    );
+  });
 
   if (candidates.length === 0) {
     return {
       tariff: null,
-      reason:
-        'No se encontró una tarifa vigente para la fecha de inicio del período.',
+      reason: 'No se encontró una tarifa vigente para la fecha de inicio del período.',
     };
   }
 
   if (candidates.length > 1) {
     return {
       tariff: null,
-      reason:
-        'Hay más de una tarifa vigente para la misma clase y fecha.',
+      reason: 'Hay más de una tarifa vigente para la misma clase y fecha.',
     };
   }
 
   const tariff = candidates[0];
   const validTo = dateOnly(tariff.validTo);
 
-  if (
-    validTo &&
-    item.periodEnd &&
-    validTo < item.periodEnd
-  ) {
-    const continuations =
-      classLinkedTariffs.filter(
-        (candidate) => {
-          const nextFrom = dateOnly(
-            candidate.validFrom,
-          );
+  if (validTo && item.periodEnd && validTo < item.periodEnd) {
+    const continuations = classLinkedTariffs.filter((candidate) => {
+      const nextFrom = dateOnly(candidate.validFrom);
 
-          const nextTo = dateOnly(
-            candidate.validTo,
-          );
+      const nextTo = dateOnly(candidate.validTo);
 
-          return Boolean(
-            nextFrom &&
-            nextFrom > validTo &&
-            nextFrom <= item.periodEnd &&
-            (
-              !nextTo ||
-              nextTo >= item.periodEnd
-            ),
-          );
-        },
+      return Boolean(
+        nextFrom &&
+          nextFrom > validTo &&
+          nextFrom <= item.periodEnd &&
+          (!nextTo || nextTo >= item.periodEnd),
       );
+    });
 
     if (
       continuations.length === 1 &&
-      Math.abs(
-        parseMoney(continuations[0].amount) -
-          parseMoney(tariff.amount),
-      ) < 0.009
+      Math.abs(parseMoney(continuations[0].amount) - parseMoney(tariff.amount)) < 0.009
     ) {
       return {
         tariff,
@@ -1433,8 +1067,7 @@ function findTariff(
     if (continuations.length > 0) {
       return {
         tariff,
-        reason:
-          'Hay un cambio de tarifa o más de una tarifa durante el período abonado.',
+        reason: 'Hay un cambio de tarifa o más de una tarifa durante el período abonado.',
       };
     }
 
@@ -1459,16 +1092,13 @@ function indexExistingCharges(charges) {
   const index = new Map();
 
   for (const charge of charges) {
-    const period = dateOnly(
-      charge.period,
-    )?.slice(0, 7);
+    const period = dateOnly(charge.period)?.slice(0, 7);
 
     if (!period) {
       continue;
     }
 
-    const key =
-      `${charge.enrollmentId}|${period}`;
+    const key = `${charge.enrollmentId}|${period}`;
 
     if (!index.has(key)) {
       index.set(key, []);
@@ -1480,16 +1110,8 @@ function indexExistingCharges(charges) {
   return index;
 }
 
-function flag(
-  item,
-  code,
-  detail = null,
-) {
-  if (
-    !item.flags.some(
-      (entry) => entry.code === code,
-    )
-  ) {
+function flag(item, code, detail = null) {
+  if (!item.flags.some((entry) => entry.code === code)) {
     item.flags.push({
       code,
       detail,
@@ -1503,31 +1125,15 @@ function addDataQualityFlags(item) {
   }
 
   if (!item.dniNormalized) {
-    flag(
-      item,
-      'NO_DNI',
-      'El movimiento no tiene DNI para identificar al alumno.',
-    );
+    flag(item, 'NO_DNI', 'El movimiento no tiene DNI para identificar al alumno.');
   }
 
   if (!item.paymentDate) {
-    flag(
-      item,
-      'INVALID_PAYMENT_DATE',
-      'No se pudo interpretar la fecha del movimiento.',
-    );
+    flag(item, 'INVALID_PAYMENT_DATE', 'No se pudo interpretar la fecha del movimiento.');
   }
 
-  if (
-    !item.periodRaw ||
-    !item.periodStart ||
-    !item.periodEnd
-  ) {
-    flag(
-      item,
-      'PERIOD_NOT_PARSED',
-      item.periodParseError,
-    );
+  if (!item.periodRaw || !item.periodStart || !item.periodEnd) {
+    flag(item, 'PERIOD_NOT_PARSED', item.periodParseError);
   }
 
   if (item.periodType === 'WEEKLY') {
@@ -1539,11 +1145,7 @@ function addDataQualityFlags(item) {
   }
 
   if (item.periodType === 'NONSTANDARD') {
-    flag(
-      item,
-      'NONSTANDARD_PERIOD',
-      'La duración del período no parece mensual ni semanal.',
-    );
+    flag(item, 'NONSTANDARD_PERIOD', 'La duración del período no parece mensual ni semanal.');
   }
 
   if (!item.paymentMethodSupported) {
@@ -1554,33 +1156,18 @@ function addDataQualityFlags(item) {
     );
   }
 
-  if (
-    item.cost === null ||
-    item.total === null
-  ) {
-    flag(
-      item,
-      'INVALID_AMOUNT',
-      'Costo o total no numérico.',
-    );
+  if (item.cost === null || item.total === null) {
+    flag(item, 'INVALID_AMOUNT', 'Costo o total no numérico.');
   }
 
-  if (
-    item.cost !== null &&
-    item.total !== null &&
-    Math.abs(item.total - item.cost) > 0.009
-  ) {
+  if (item.cost !== null && item.total !== null && Math.abs(item.total - item.cost) > 0.009) {
     if (item.total < item.cost) {
       flag(
         item,
         'TOTAL_BELOW_COST',
         'El total cobrado es menor que el costo; no se puede asumir si fue descuento, pago parcial u otra condición.',
       );
-    } else if (
-      Math.abs(
-        item.total - item.cost - 1000,
-      ) < 0.009
-    ) {
+    } else if (Math.abs(item.total - item.cost - 1000) < 0.009) {
       flag(
         item,
         'POSSIBLE_LATE_FEE_1000',
@@ -1600,61 +1187,35 @@ function addDataQualityFlags(item) {
  * CONTRASTE CON LA BASE DE DATOS
  * ========================================================= */
 
-function enrichItemsWithDatabase(
-  items,
-  db,
-) {
-  const studentsByDni =
-    buildStudentIndex(db.students);
+function enrichItemsWithDatabase(items, db) {
+  const studentsByDni = buildStudentIndex(db.students);
 
-  const classIndex =
-    buildClassIndex(db.classes);
+  const classIndex = buildClassIndex(db.classes);
 
-  const enrollmentsByStudentClass =
-    buildEnrollmentsByStudentClass(
-      db.enrollments,
-    );
+  const enrollmentsByStudentClass = buildEnrollmentsByStudentClass(db.enrollments);
 
-  const chargesByEnrollmentPeriod =
-    indexExistingCharges(db.charges);
+  const chargesByEnrollmentPeriod = indexExistingCharges(db.charges);
 
   const tendersByPayment = new Map();
 
   for (const tender of db.tenders) {
-    if (
-      !tendersByPayment.has(
-        tender.paymentId,
-      )
-    ) {
-      tendersByPayment.set(
-        tender.paymentId,
-        [],
-      );
+    if (!tendersByPayment.has(tender.paymentId)) {
+      tendersByPayment.set(tender.paymentId, []);
     }
 
-    tendersByPayment
-      .get(tender.paymentId)
-      .push(tender);
+    tendersByPayment.get(tender.paymentId).push(tender);
   }
 
   for (const item of items) {
     addDataQualityFlags(item);
 
     if (item.movementType !== 'QUOTA') {
-      item.classification =
-        'OTHER_MOVEMENT';
+      item.classification = 'OTHER_MOVEMENT';
 
       continue;
     }
 
-    const studentMatches =
-      item.dniNormalized
-        ? (
-            studentsByDni.get(
-              item.dniNormalized,
-            ) ?? []
-          )
-        : [];
+    const studentMatches = item.dniNormalized ? (studentsByDni.get(item.dniNormalized) ?? []) : [];
 
     if (!item.dniNormalized) {
       item.classification = 'REVIEW';
@@ -1673,11 +1234,7 @@ function enrichItemsWithDatabase(
     }
 
     if (studentMatches.length > 1) {
-      flag(
-        item,
-        'DUPLICATE_DNI_IN_DATABASE',
-        'Más de un alumno coincide con el DNI normalizado.',
-      );
+      flag(item, 'DUPLICATE_DNI_IN_DATABASE', 'Más de un alumno coincide con el DNI normalizado.');
 
       item.classification = 'REVIEW';
       continue;
@@ -1687,19 +1244,16 @@ function enrichItemsWithDatabase(
 
     item.studentId = student.id;
 
-    item.studentNameDatabase =
-      `${student.lastName ?? ''} ${student.firstName ?? ''}`.trim();
+    item.studentNameDatabase = `${student.lastName ?? ''} ${student.firstName ?? ''}`.trim();
 
-    item.studentStatus =
-      student.status ?? null;
+    item.studentStatus = student.status ?? null;
 
-    const classResolution =
-      resolveClassForStudent(
-        item,
-        student.id,
-        classIndex,
-        enrollmentsByStudentClass,
-      );
+    const classResolution = resolveClassForStudent(
+      item,
+      student.id,
+      classIndex,
+      enrollmentsByStudentClass,
+    );
 
     if (!classResolution.academicClass) {
       flag(
@@ -1713,66 +1267,43 @@ function enrichItemsWithDatabase(
       continue;
     }
 
-    const academicClass =
-      classResolution.academicClass;
+    const academicClass = classResolution.academicClass;
 
     item.classId = academicClass.id;
-    item.classNameDatabase =
-      academicClass.name;
+    item.classNameDatabase = academicClass.name;
 
-    item.classAliasUsed =
-      classResolution.aliasUsed;
+    item.classAliasUsed = classResolution.aliasUsed;
 
     if (classResolution.reviewReason) {
-      flag(
-        item,
-        'CLASS_ALIAS_REVIEW',
-        classResolution.reviewReason,
-      );
+      flag(item, 'CLASS_ALIAS_REVIEW', classResolution.reviewReason);
     }
 
-    const enrollmentResult =
-      findEnrollment(
-        item,
-        student.id,
-        academicClass.id,
-        enrollmentsByStudentClass,
-      );
+    const enrollmentResult = findEnrollment(
+      item,
+      student.id,
+      academicClass.id,
+      enrollmentsByStudentClass,
+    );
 
     if (!enrollmentResult.enrollment) {
-      flag(
-        item,
-        'ENROLLMENT_NOT_RESOLVED',
-        enrollmentResult.reason,
-      );
+      flag(item, 'ENROLLMENT_NOT_RESOLVED', enrollmentResult.reason);
 
       item.classification = 'REVIEW';
       continue;
     }
 
-    const enrollment =
-      enrollmentResult.enrollment;
+    const enrollment = enrollmentResult.enrollment;
 
     item.enrollmentId = enrollment.id;
 
-    item.enrollmentStatus =
-      enrollment.status ?? null;
+    item.enrollmentStatus = enrollment.status ?? null;
 
-    item.enrollmentStartDate =
-      dateOnly(enrollment.startDate);
+    item.enrollmentStartDate = dateOnly(enrollment.startDate);
 
-    item.enrollmentEndDate =
-      dateOnly(enrollment.endDate);
+    item.enrollmentEndDate = dateOnly(enrollment.endDate);
 
-    if (
-      item.periodStart &&
-      item.periodEnd
-    ) {
-      if (
-        item.enrollmentStartDate &&
-        item.periodStart <
-          item.enrollmentStartDate
-      ) {
+    if (item.periodStart && item.periodEnd) {
+      if (item.enrollmentStartDate && item.periodStart < item.enrollmentStartDate) {
         flag(
           item,
           'PERIOD_BEFORE_ENROLLMENT',
@@ -1780,11 +1311,7 @@ function enrichItemsWithDatabase(
         );
       }
 
-      if (
-        item.enrollmentEndDate &&
-        item.periodEnd >
-          item.enrollmentEndDate
-      ) {
+      if (item.enrollmentEndDate && item.periodEnd > item.enrollmentEndDate) {
         flag(
           item,
           'PERIOD_AFTER_ENROLLMENT',
@@ -1792,10 +1319,7 @@ function enrichItemsWithDatabase(
         );
       }
 
-      if (
-        enrollment.status === 'ENDED' &&
-        !item.enrollmentEndDate
-      ) {
+      if (enrollment.status === 'ENDED' && !item.enrollmentEndDate) {
         flag(
           item,
           'ENDED_ENROLLMENT_WITHOUT_END_DATE',
@@ -1804,50 +1328,31 @@ function enrichItemsWithDatabase(
       }
     }
 
-    if (
-      item.periodType === 'MONTHLY' &&
-      item.chargePeriod
-    ) {
-      const tariffResult = findTariff(
-        item,
-        academicClass.id,
-        db.tariffs,
-      );
+    if (item.periodType === 'MONTHLY' && item.chargePeriod) {
+      const tariffResult = findTariff(item, academicClass.id, db.tariffs);
 
       if (tariffResult.tariff) {
-        const tariff =
-          tariffResult.tariff;
+        const tariff = tariffResult.tariff;
 
         item.tariffId = tariff.id;
-        item.tariffName =
-          tariff.name ?? null;
+        item.tariffName = tariff.name ?? null;
 
-        item.tariffAmount =
-          parseMoney(tariff.amount);
+        item.tariffAmount = parseMoney(tariff.amount);
 
-        item.tariffValidFrom =
-          dateOnly(tariff.validFrom);
+        item.tariffValidFrom = dateOnly(tariff.validFrom);
 
-        item.tariffValidTo =
-          dateOnly(tariff.validTo);
+        item.tariffValidTo = dateOnly(tariff.validTo);
 
-        item.tariffStatus =
-          tariff.status ?? null;
+        item.tariffStatus = tariff.status ?? null;
 
         if (tariffResult.reason) {
-          flag(
-            item,
-            'TARIFF_PERIOD_REVIEW',
-            tariffResult.reason,
-          );
+          flag(item, 'TARIFF_PERIOD_REVIEW', tariffResult.reason);
         }
 
         if (
           item.cost !== null &&
           item.tariffAmount !== null &&
-          Math.abs(
-            item.cost - item.tariffAmount,
-          ) > 0.009
+          Math.abs(item.cost - item.tariffAmount) > 0.009
         ) {
           flag(
             item,
@@ -1856,29 +1361,20 @@ function enrichItemsWithDatabase(
           );
         }
       } else {
-        flag(
-          item,
-          'TARIFF_NOT_FOUND',
-          tariffResult.reason,
-        );
+        flag(item, 'TARIFF_NOT_FOUND', tariffResult.reason);
       }
 
       const chargeMatches =
-        chargesByEnrollmentPeriod.get(
-          `${enrollment.id}|${item.chargePeriod}`,
-        ) ?? [];
+        chargesByEnrollmentPeriod.get(`${enrollment.id}|${item.chargePeriod}`) ?? [];
 
       if (chargeMatches.length === 1) {
         const charge = chargeMatches[0];
 
-        item.existingChargeId =
-          charge.id;
+        item.existingChargeId = charge.id;
 
-        item.existingChargeStatus =
-          charge.status;
+        item.existingChargeStatus = charge.status;
 
-        item.existingChargeFinalAmount =
-          parseMoney(charge.finalAmount);
+        item.existingChargeFinalAmount = parseMoney(charge.finalAmount);
       } else if (chargeMatches.length > 1) {
         flag(
           item,
@@ -1887,12 +1383,9 @@ function enrichItemsWithDatabase(
         );
       } else {
         item.existingChargeId = null;
-        item.existingChargeStatus =
-          'NOT_FOUND';
+        item.existingChargeStatus = 'NOT_FOUND';
       }
-    } else if (
-      item.periodType === 'WEEKLY'
-    ) {
+    } else if (item.periodType === 'WEEKLY') {
       flag(
         item,
         'MONTHLY_CHARGE_NOT_APPLICABLE',
@@ -1907,61 +1400,37 @@ function enrichItemsWithDatabase(
 
     const reportDate = item.paymentDate;
 
-    const existingPaymentCandidates =
-      db.payments.filter((payment) => {
-        if (
-          payment.status === 'VOID' ||
-          payment.studentId !== student.id
-        ) {
-          return false;
-        }
+    const existingPaymentCandidates = db.payments.filter((payment) => {
+      if (payment.status === 'VOID' || payment.studentId !== student.id) {
+        return false;
+      }
 
-        const sameDate =
-          isoDateInBusinessZone(
-            payment.paidAt,
-          ) === reportDate;
+      const sameDate = isoDateInBusinessZone(payment.paidAt) === reportDate;
 
-        const sameAmount =
-          item.total !== null &&
-          Math.abs(
-            parseMoney(payment.amount) -
-              item.total,
-          ) < 0.009;
+      const sameAmount =
+        item.total !== null && Math.abs(parseMoney(payment.amount) - item.total) < 0.009;
 
-        if (!sameDate || !sameAmount) {
-          return false;
-        }
+      if (!sameDate || !sameAmount) {
+        return false;
+      }
 
-        const paymentTenders =
-          tendersByPayment.get(
-            payment.id,
-          ) ?? [];
+      const paymentTenders = tendersByPayment.get(payment.id) ?? [];
 
-        if (item.paymentMethodSupported) {
-          return paymentTenders.some(
-            (tender) =>
-              tender.method ===
-                item.paymentMethod &&
-              Math.abs(
-                parseMoney(tender.amount) -
-                  item.total,
-              ) < 0.009,
-          );
-        }
-
-        return true;
-      });
-
-    item.possibleExistingPaymentCount =
-      existingPaymentCandidates.length;
-
-    if (
-      existingPaymentCandidates.length > 0
-    ) {
-      item.possibleExistingPaymentIds =
-        existingPaymentCandidates.map(
-          (payment) => payment.id,
+      if (item.paymentMethodSupported) {
+        return paymentTenders.some(
+          (tender) =>
+            tender.method === item.paymentMethod &&
+            Math.abs(parseMoney(tender.amount) - item.total) < 0.009,
         );
+      }
+
+      return true;
+    });
+
+    item.possibleExistingPaymentCount = existingPaymentCandidates.length;
+
+    if (existingPaymentCandidates.length > 0) {
+      item.possibleExistingPaymentIds = existingPaymentCandidates.map((payment) => payment.id);
 
       flag(
         item,
@@ -1970,10 +1439,7 @@ function enrichItemsWithDatabase(
       );
     }
 
-    item.classification =
-      item.flags.length === 0
-        ? 'CANDIDATE_NO_ALERTS'
-        : 'REVIEW';
+    item.classification = item.flags.length === 0 ? 'CANDIDATE_NO_ALERTS' : 'REVIEW';
   }
 }
 
@@ -1982,47 +1448,29 @@ function enrichItemsWithDatabase(
  * ========================================================= */
 
 function addDuplicateFlags(items) {
-  const quotaItems = items.filter(
-    (item) =>
-      item.movementType === 'QUOTA',
-  );
+  const quotaItems = items.filter((item) => item.movementType === 'QUOTA');
 
-  const byStudentActivityPeriod =
-    new Map();
+  const byStudentActivityPeriod = new Map();
 
   const exactRows = new Map();
 
   for (const item of quotaItems) {
-    const personKey =
-      item.studentId ??
-      item.dniNormalized ??
-      'NO_DNI';
+    const personKey = item.studentId ?? item.dniNormalized ?? 'NO_DNI';
 
-    const classKey =
-      item.classId ??
-      item.activityKey;
+    const classKey = item.classId ?? item.activityKey;
 
     const periodKey =
-      item.periodStart &&
-      item.periodEnd
+      item.periodStart && item.periodEnd
         ? `${item.periodStart}|${item.periodEnd}`
-        : item.periodRaw ?? 'NO_PERIOD';
+        : (item.periodRaw ?? 'NO_PERIOD');
 
-    const key =
-      `${personKey}|${classKey}|${periodKey}`;
+    const key = `${personKey}|${classKey}|${periodKey}`;
 
-    if (
-      !byStudentActivityPeriod.has(key)
-    ) {
-      byStudentActivityPeriod.set(
-        key,
-        [],
-      );
+    if (!byStudentActivityPeriod.has(key)) {
+      byStudentActivityPeriod.set(key, []);
     }
 
-    byStudentActivityPeriod
-      .get(key)
-      .push(item);
+    byStudentActivityPeriod.get(key).push(item);
 
     const exactKey = [
       item.dniNormalized,
@@ -2043,10 +1491,7 @@ function addDuplicateFlags(items) {
 
   const duplicateGroups = [];
 
-  for (
-    const [key, group] of
-      byStudentActivityPeriod
-  ) {
+  for (const [key, group] of byStudentActivityPeriod) {
     if (group.length <= 1) {
       continue;
     }
@@ -2066,56 +1511,25 @@ function addDuplicateFlags(items) {
       key,
       count: group.length,
 
-      movementNumbers:
-        group.map(
-          (item) => item.movementNumber,
-        ),
+      movementNumbers: group.map((item) => item.movementNumber),
 
-      dnis: [
-        ...new Set(
-          group.map(
-            (item) => item.dniRaw,
-          ),
-        ),
-      ].join(', '),
+      dnis: [...new Set(group.map((item) => item.dniRaw))].join(', '),
 
       studentNames: [
         ...new Set(
           group.map(
-            (item) =>
-              item.studentNameDatabase ??
-              `${item.lastName} ${item.firstName}`.trim(),
+            (item) => item.studentNameDatabase ?? `${item.lastName} ${item.firstName}`.trim(),
           ),
         ),
       ].join(' / '),
 
-      activities: [
-        ...new Set(
-          group.map(
-            (item) => item.activityName,
-          ),
-        ),
-      ].join(' / '),
+      activities: [...new Set(group.map((item) => item.activityName))].join(' / '),
 
-      periods: [
-        ...new Set(
-          group.map(
-            (item) =>
-              item.periodRaw ??
-              'Sin período',
-          ),
-        ),
-      ].join(' / '),
+      periods: [...new Set(group.map((item) => item.periodRaw ?? 'Sin período'))].join(' / '),
 
-      paymentDates:
-        group.map(
-          (item) => item.paymentDate,
-        ).join(', '),
+      paymentDates: group.map((item) => item.paymentDate).join(', '),
 
-      totals:
-        group.map(
-          (item) => item.total,
-        ).join(', '),
+      totals: group.map((item) => item.total).join(', '),
     });
   }
 
@@ -2139,56 +1553,25 @@ function addDuplicateFlags(items) {
       key: group[0].dniNormalized,
       count: group.length,
 
-      movementNumbers:
-        group.map(
-          (item) => item.movementNumber,
-        ),
+      movementNumbers: group.map((item) => item.movementNumber),
 
-      dnis: [
-        ...new Set(
-          group.map(
-            (item) => item.dniRaw,
-          ),
-        ),
-      ].join(', '),
+      dnis: [...new Set(group.map((item) => item.dniRaw))].join(', '),
 
       studentNames: [
         ...new Set(
           group.map(
-            (item) =>
-              item.studentNameDatabase ??
-              `${item.lastName} ${item.firstName}`.trim(),
+            (item) => item.studentNameDatabase ?? `${item.lastName} ${item.firstName}`.trim(),
           ),
         ),
       ].join(' / '),
 
-      activities: [
-        ...new Set(
-          group.map(
-            (item) => item.activityName,
-          ),
-        ),
-      ].join(' / '),
+      activities: [...new Set(group.map((item) => item.activityName))].join(' / '),
 
-      periods: [
-        ...new Set(
-          group.map(
-            (item) =>
-              item.periodRaw ??
-              'Sin período',
-          ),
-        ),
-      ].join(' / '),
+      periods: [...new Set(group.map((item) => item.periodRaw ?? 'Sin período'))].join(' / '),
 
-      paymentDates:
-        group.map(
-          (item) => item.paymentDate,
-        ).join(', '),
+      paymentDates: group.map((item) => item.paymentDate).join(', '),
 
-      totals:
-        group.map(
-          (item) => item.total,
-        ).join(', '),
+      totals: group.map((item) => item.total).join(', '),
     });
   }
 
@@ -2199,21 +1582,9 @@ function addDuplicateFlags(items) {
  * RESUMEN DEL ANÁLISIS
  * ========================================================= */
 
-function summarize(
-  items,
-  footerTotal,
-) {
-  const total = (
-    field,
-    subset = items,
-  ) =>
-    roundMoney(
-      subset.reduce(
-        (sum, item) =>
-          sum + (Number(item[field]) || 0),
-        0,
-      ),
-    );
+function summarize(items, footerTotal) {
+  const total = (field, subset = items) =>
+    roundMoney(subset.reduce((sum, item) => sum + (Number(item[field]) || 0), 0));
 
   const dates = items
     .map((item) => item.paymentDate)
@@ -2224,38 +1595,29 @@ function summarize(
 
   for (const item of items) {
     if (!typeMap.has(item.movementType)) {
-      typeMap.set(
-        item.movementType,
-        {
-          movementType: item.movementType,
-          label: item.movementTypeLabel,
-          count: 0,
-          cost: 0,
-          total: 0,
-        },
-      );
+      typeMap.set(item.movementType, {
+        movementType: item.movementType,
+        label: item.movementTypeLabel,
+        count: 0,
+        cost: 0,
+        total: 0,
+      });
     }
 
-    const entry =
-      typeMap.get(item.movementType);
+    const entry = typeMap.get(item.movementType);
 
     entry.count += 1;
     entry.cost += Number(item.cost) || 0;
     entry.total += Number(item.total) || 0;
   }
 
-  const byType = [
-    ...typeMap.values(),
-  ].map((entry) => ({
+  const byType = [...typeMap.values()].map((entry) => ({
     ...entry,
     cost: roundMoney(entry.cost),
     total: roundMoney(entry.total),
   }));
 
-  const quota = items.filter(
-    (item) =>
-      item.movementType === 'QUOTA',
-  );
+  const quota = items.filter((item) => item.movementType === 'QUOTA');
 
   const reportSum = total('total');
 
@@ -2274,43 +1636,21 @@ function summarize(
 
       quotaPayments: quota.length,
 
-      nonQuotaMovements:
-        items.length - quota.length,
+      nonQuotaMovements: items.length - quota.length,
 
-      uniqueQuotaDnis: new Set(
-        quota
-          .map(
-            (item) => item.dniNormalized,
-          )
-          .filter(Boolean),
-      ).size,
+      uniqueQuotaDnis: new Set(quota.map((item) => item.dniNormalized).filter(Boolean)).size,
 
-      candidateNoAlerts: quota.filter(
-        (item) =>
-          item.classification ===
-          'CANDIDATE_NO_ALERTS',
-      ).length,
+      candidateNoAlerts: quota.filter((item) => item.classification === 'CANDIDATE_NO_ALERTS')
+        .length,
 
-      needsReview: quota.filter(
-        (item) =>
-          item.classification === 'REVIEW',
-      ).length,
+      needsReview: quota.filter((item) => item.classification === 'REVIEW').length,
 
-      weeklyQuotaRows: quota.filter(
-        (item) =>
-          item.periodType === 'WEEKLY',
-      ).length,
+      weeklyQuotaRows: quota.filter((item) => item.periodType === 'WEEKLY').length,
 
-      missingPeriodRows: quota.filter(
-        (item) =>
-          !item.periodStart ||
-          !item.periodEnd,
-      ).length,
+      missingPeriodRows: quota.filter((item) => !item.periodStart || !item.periodEnd).length,
 
-      possibleExistingPayments: quota.filter(
-        (item) =>
-          (item.possibleExistingPaymentCount ?? 0) > 0,
-      ).length,
+      possibleExistingPayments: quota.filter((item) => (item.possibleExistingPaymentCount ?? 0) > 0)
+        .length,
 
       duplicateGroups: 0,
     },
@@ -2319,27 +1659,13 @@ function summarize(
       reportRowsTotal: reportSum,
       reportFooterTotal: footerTotal,
 
-      footerDifference:
-        footerTotal === null
-          ? null
-          : roundMoney(
-              reportSum - footerTotal,
-            ),
+      footerDifference: footerTotal === null ? null : roundMoney(reportSum - footerTotal),
 
-      quotaCostTotal: total(
-        'cost',
-        quota,
-      ),
+      quotaCostTotal: total('cost', quota),
 
-      quotaCollectedTotal: total(
-        'total',
-        quota,
-      ),
+      quotaCollectedTotal: total('total', quota),
 
-      quotaTotalMinusCost: roundMoney(
-        total('total', quota) -
-          total('cost', quota),
-      ),
+      quotaTotalMinusCost: roundMoney(total('total', quota) - total('cost', quota)),
     },
 
     byType,
@@ -2350,11 +1676,7 @@ function summarize(
  * PREPARACIÓN DE HOJAS DEL EXCEL
  * ========================================================= */
 
-function makeSummaryRows(
-  summary,
-  duplicateGroups,
-  dbSummary,
-) {
+function makeSummaryRows(summary, duplicateGroups, dbSummary) {
   const rows = [
     {
       Indicador: 'Archivo',
@@ -2362,15 +1684,11 @@ function makeSummaryRows(
     },
     {
       Indicador: 'Período de movimientos desde',
-      Valor:
-        summary.reportRange.from ??
-        'No identificado',
+      Valor: summary.reportRange.from ?? 'No identificado',
     },
     {
       Indicador: 'Período de movimientos hasta',
-      Valor:
-        summary.reportRange.to ??
-        'No identificado',
+      Valor: summary.reportRange.to ?? 'No identificado',
     },
     {
       Indicador: 'Total de movimientos',
@@ -2418,15 +1736,11 @@ function makeSummaryRows(
     },
     {
       Indicador: 'Total indicado en el pie del reporte',
-      Valor:
-        summary.amounts.reportFooterTotal ??
-        'No encontrado',
+      Valor: summary.amounts.reportFooterTotal ?? 'No encontrado',
     },
     {
       Indicador: 'Diferencia entre suma de filas y pie',
-      Valor:
-        summary.amounts.footerDifference ??
-        'No calculable',
+      Valor: summary.amounts.footerDifference ?? 'No calculable',
     },
     {
       Indicador: 'Costo total de pagos de cuota',
@@ -2522,14 +1836,10 @@ function toWorkbookRows(items) {
     'ID cuota existente': item.existingChargeId ?? '',
     'Estado cuota existente': item.existingChargeStatus ?? '',
     'Importe cuota existente': item.existingChargeFinalAmount ?? null,
-    'Cantidad posibles pagos existentes':
-      item.possibleExistingPaymentCount ?? 0,
+    'Cantidad posibles pagos existentes': item.possibleExistingPaymentCount ?? 0,
     Clasificación: item.classification ?? '',
     Alertas: item.flags
-      .map(
-        (entry) =>
-          `${entry.code}${entry.detail ? `: ${entry.detail}` : ''}`,
-      )
+      .map((entry) => `${entry.code}${entry.detail ? `: ${entry.detail}` : ''}`)
       .join(' | '),
   }));
 }
@@ -2537,21 +1847,13 @@ function toWorkbookRows(items) {
 function toReviewRows(items) {
   return toWorkbookRows(
     items.filter(
-      (item) =>
-        item.movementType === 'QUOTA' &&
-        item.classification !==
-          'CANDIDATE_NO_ALERTS',
+      (item) => item.movementType === 'QUOTA' && item.classification !== 'CANDIDATE_NO_ALERTS',
     ),
   );
 }
 
 function toOtherMovementRows(items) {
-  return toWorkbookRows(
-    items.filter(
-      (item) =>
-        item.movementType !== 'QUOTA',
-    ),
-  );
+  return toWorkbookRows(items.filter((item) => item.movementType !== 'QUOTA'));
 }
 
 /* =========================================================
@@ -2559,22 +1861,11 @@ function toOtherMovementRows(items) {
  * ========================================================= */
 
 async function readDatabase(prisma) {
-  const from = new Date(
-    '2026-06-01T00:00:00.000Z',
-  );
+  const from = new Date('2026-06-01T00:00:00.000Z');
 
-  const to = new Date(
-    '2026-10-24T00:00:00.000Z',
-  );
+  const to = new Date('2026-10-24T00:00:00.000Z');
 
-  const [
-    students,
-    classes,
-    enrollments,
-    tariffs,
-    charges,
-    payments,
-  ] = await Promise.all([
+  const [students, classes, enrollments, tariffs, charges, payments] = await Promise.all([
     prisma.student.findMany({
       select: {
         id: true,
@@ -2640,9 +1931,7 @@ async function readDatabase(prisma) {
     ? await prisma.paymentTender.findMany({
         where: {
           paymentId: {
-            in: payments.map(
-              (payment) => payment.id,
-            ),
+            in: payments.map((payment) => payment.id),
           },
         },
         select: {
@@ -2678,17 +1967,11 @@ async function readDatabase(prisma) {
  * ========================================================= */
 
 async function main() {
-  console.log(
-    '\n=========================================================',
-  );
+  console.log('\n=========================================================');
 
-  console.log(
-    ' ANÁLISIS DE MOVIMIENTOS DE CAJA JUNIO-OCTUBRE 2026',
-  );
+  console.log(' ANÁLISIS DE MOVIMIENTOS DE CAJA JUNIO-OCTUBRE 2026');
 
-  console.log(
-    '=========================================================\n',
-  );
+  console.log('=========================================================\n');
 
   console.log(`📄 Reporte: ${INPUT_FILE}`);
 
@@ -2698,18 +1981,12 @@ async function main() {
   const items = report.items;
 
   if (!items.length) {
-    throw new Error(
-      'No se encontraron movimientos con número de fila en el reporte.',
-    );
+    throw new Error('No se encontraron movimientos con número de fila en el reporte.');
   }
 
-  console.log(
-    `📊 Movimientos leídos: ${items.length}`,
-  );
+  console.log(`📊 Movimientos leídos: ${items.length}`);
 
-  console.log(
-    `📅 Hoja: ${report.sheetName}; fila de encabezados: ${report.headerRow}`,
-  );
+  console.log(`📅 Hoja: ${report.sheetName}; fila de encabezados: ${report.headerRow}`);
 
   let db = null;
   let dbSummary = null;
@@ -2722,9 +1999,7 @@ async function main() {
       addDataQualityFlags(item);
 
       item.classification =
-        item.movementType === 'QUOTA'
-          ? 'REPORT_ONLY_NOT_MATCHED_TO_DATABASE'
-          : 'OTHER_MOVEMENT';
+        item.movementType === 'QUOTA' ? 'REPORT_ONLY_NOT_MATCHED_TO_DATABASE' : 'OTHER_MOVEMENT';
     }
   } else {
     if (!process.env.DATABASE_URL) {
@@ -2745,56 +2020,36 @@ async function main() {
       `🔎 Base de datos: ${dbSummary.students} alumnos, ${dbSummary.enrollments} inscripciones, ${dbSummary.tariffs} tarifas, ${dbSummary.charges} cuotas y ${dbSummary.payments} pagos en el rango.`,
     );
 
-    enrichItemsWithDatabase(
-      items,
-      db,
-    );
+    enrichItemsWithDatabase(items, db);
   }
 
-  const duplicateGroups =
-    addDuplicateFlags(items);
+  const duplicateGroups = addDuplicateFlags(items);
 
-  const summary = summarize(
-    items,
-    report.footerTotal,
-  );
+  const summary = summarize(items, report.footerTotal);
 
   summary.sheetName = report.sheetName;
 
-  summary.counts.duplicateGroups =
-    duplicateGroups.length;
+  summary.counts.duplicateGroups = duplicateGroups.length;
 
   summary.database = dbSummary;
   summary.warnings = [];
 
   if (
     summary.amounts.footerDifference !== null &&
-    Math.abs(
-      summary.amounts.footerDifference,
-    ) > 0.009
+    Math.abs(summary.amounts.footerDifference) > 0.009
   ) {
     summary.warnings.push(
       `La suma de la columna Total difiere del total impreso al pie por $${summary.amounts.footerDifference.toFixed(2)}.`,
     );
   }
 
-  if (
-    db &&
-    !db.tariffs.some(
-      (tariff) =>
-        tariff.classId ||
-        tariff.academyClassId,
-    )
-  ) {
+  if (db && !db.tariffs.some((tariff) => tariff.classId || tariff.academyClassId)) {
     summary.warnings.push(
       'La consulta de tarifas no devolvió classId; la validación automática de tarifa por clase puede quedar limitada.',
     );
   }
 
-  await fs.mkdir(
-    OUTPUT_DIR,
-    { recursive: true },
-  );
+  await fs.mkdir(OUTPUT_DIR, { recursive: true });
 
   const output = {
     ...summary,
@@ -2810,23 +2065,13 @@ async function main() {
     items,
   };
 
-  await fs.writeFile(
-    OUTPUT_JSON,
-    JSON.stringify(output, null, 2),
-    'utf8',
-  );
+  await fs.writeFile(OUTPUT_JSON, JSON.stringify(output, null, 2), 'utf8');
 
   const workbook = utils.book_new();
 
   utils.book_append_sheet(
     workbook,
-    utils.json_to_sheet(
-      makeSummaryRows(
-        summary,
-        duplicateGroups,
-        dbSummary,
-      ),
-    ),
+    utils.json_to_sheet(makeSummaryRows(summary, duplicateGroups, dbSummary)),
     'Resumen',
   );
 
@@ -2843,27 +2088,13 @@ async function main() {
     'Por tipo',
   );
 
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      toWorkbookRows(items),
-    ),
-    'Movimientos',
-  );
+  utils.book_append_sheet(workbook, utils.json_to_sheet(toWorkbookRows(items)), 'Movimientos');
+
+  utils.book_append_sheet(workbook, utils.json_to_sheet(toReviewRows(items)), 'Revisar');
 
   utils.book_append_sheet(
     workbook,
-    utils.json_to_sheet(
-      toReviewRows(items),
-    ),
-    'Revisar',
-  );
-
-  utils.book_append_sheet(
-    workbook,
-    utils.json_to_sheet(
-      toOtherMovementRows(items),
-    ),
+    utils.json_to_sheet(toOtherMovementRows(items)),
     'Otros movimientos',
   );
 
@@ -2873,8 +2104,7 @@ async function main() {
       duplicateGroups.map((group) => ({
         Tipo: group.type,
         Cantidad: group.count,
-        'Números de movimiento':
-          group.movementNumbers.join(', '),
+        'Números de movimiento': group.movementNumbers.join(', '),
         DNI: group.dnis,
         Alumnos: group.studentNames,
         Actividades: group.activities,
@@ -2886,38 +2116,21 @@ async function main() {
     'Posibles duplicados',
   );
 
-  writeFile(
-    workbook,
-    OUTPUT_XLSX,
-  );
+  writeFile(workbook, OUTPUT_XLSX);
 
-  console.log(
-    '\n---------------- RESULTADO ----------------',
-  );
+  console.log('\n---------------- RESULTADO ----------------');
 
-  console.log(
-    `Movimientos: ${summary.counts.allMovements}`,
-  );
+  console.log(`Movimientos: ${summary.counts.allMovements}`);
 
-  console.log(
-    `Pagos de cuota: ${summary.counts.quotaPayments}`,
-  );
+  console.log(`Pagos de cuota: ${summary.counts.quotaPayments}`);
 
-  console.log(
-    `Candidatos sin alertas detectadas: ${summary.counts.candidateNoAlerts}`,
-  );
+  console.log(`Candidatos sin alertas detectadas: ${summary.counts.candidateNoAlerts}`);
 
-  console.log(
-    `Pagos de cuota para revisar: ${summary.counts.needsReview}`,
-  );
+  console.log(`Pagos de cuota para revisar: ${summary.counts.needsReview}`);
 
-  console.log(
-    `Otros movimientos: ${summary.counts.nonQuotaMovements}`,
-  );
+  console.log(`Otros movimientos: ${summary.counts.nonQuotaMovements}`);
 
-  console.log(
-    `Grupos repetidos: ${duplicateGroups.length}`,
-  );
+  console.log(`Grupos repetidos: ${duplicateGroups.length}`);
 
   console.log(
     `Suma de Total: $${summary.amounts.reportRowsTotal?.toLocaleString('es-AR') ?? 'N/D'}`,
@@ -2930,9 +2143,7 @@ async function main() {
   console.log(`\n📄 JSON: ${OUTPUT_JSON}`);
   console.log(`📊 Excel: ${OUTPUT_XLSX}`);
 
-  console.log(
-    '\nEste script no escribe en la base de datos.',
-  );
+  console.log('\nEste script no escribe en la base de datos.');
 
   if (prisma) {
     await prisma.$disconnect();
@@ -2941,13 +2152,9 @@ async function main() {
 }
 
 main().catch(async (error) => {
-  console.error(
-    '\n❌ No se pudo completar el análisis.',
-  );
+  console.error('\n❌ No se pudo completar el análisis.');
 
-  console.error(
-    error?.stack ?? error,
-  );
+  console.error(error?.stack ?? error);
 
   if (activePrismaClient) {
     try {
