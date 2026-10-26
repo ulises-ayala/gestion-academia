@@ -416,3 +416,7 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 165. **Inicio de inscripción anterior por evidencia de pago:** si ControlFit registra un período abonado anterior al inicio de la inscripción, el inicio se adelanta a ese período, con auditoría.
 166. **Tarifas históricas de clases inactivas:** una clase inactiva con pagos en un mes sin tarifa recibe una tarifa histórica inactiva de ese mes, con la misma regla de la decisión 160.
 167. **Pendientes de definición de la PO:** pagos mayores al valor de la cuota, recargos distintos de $1.000, criterio de los descuentos y su efecto en la liquidación, pagos semanales, pagos dobles para la misma cuota, pagos de clases sin inscripción, transferencias, deudas de meses anteriores a octubre, recargo de la deuda de octubre, alumnos activos fuera de la lista de socios y cobros que no son cuotas. Hasta definirlos, esos movimientos quedan excluidos y listados en el reporte de importación.
+
+## Entorno de desarrollo — octubre 2026
+
+168. **Configuración compartida en desarrollo:** `npm run dev` carga el `.env` raíz, si existe, antes de iniciar API y panel. Ambos procesos heredan la configuración, respetando variables ya definidas en el entorno. Esto permite usar Neon sin Docker y evita depender de la carga implícita de Prisma para configurar los servicios.
