@@ -15,6 +15,7 @@ import type {
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../components/auth-provider';
+import { GenerateChargePanel } from '../../components/generate-charge-panel';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { formatDate } from '../../lib/dates';
@@ -805,6 +806,11 @@ export default function PaymentsPage() {
           tenders={tenders}
           totalCents={totalCents}
           canVoid={can('payments:void')}
+          canGenerate={can('charges:generate')}
+          canBackfill={can('charges:manage')}
+          onChargeGenerated={() => {
+            if (location.studentId) void loadStudent(location.studentId);
+          }}
           onCollect={() => void collect()}
           onRetry={() => location.studentId && void loadStudent(location.studentId)}
           onTender={(method, amount) => setTenders((current) => ({ ...current, [method]: amount }))}
@@ -936,6 +942,9 @@ function StudentAccount({
   tenders,
   totalCents,
   canVoid,
+  canGenerate,
+  canBackfill,
+  onChargeGenerated,
   onCollect,
   onRetry,
   onTender,
@@ -955,11 +964,15 @@ function StudentAccount({
   tenders: TenderAmounts;
   totalCents: bigint;
   canVoid: boolean;
+  canGenerate: boolean;
+  canBackfill: boolean;
+  onChargeGenerated(): void;
   onCollect(): void;
   onRetry(): void;
   onTender(method: keyof TenderAmounts, amount: string): void;
   onVoid(payment: PaymentDto): void;
 }>) {
+  const [generating, setGenerating] = useState(false);
   if (loading)
     return (
       <section className="card module-state" role="status">
@@ -1015,12 +1028,36 @@ function StudentAccount({
             <h2>Estado de cuenta</h2>
             <p className="subtitle">La imputación se realiza primero sobre la cuota más antigua.</p>
           </div>
-          <strong>Saldo pendiente: {money(outstandingTotal(charges))}</strong>
+          <div className="account-heading-actions">
+            <strong>Saldo pendiente: {money(outstandingTotal(charges))}</strong>
+            {canGenerate && !generating && (
+              <button className="secondary" type="button" onClick={() => setGenerating(true)}>
+                Generar cuota
+              </button>
+            )}
+          </div>
         </div>
-        {charges.length === 0 ? (
-          <p className="empty-state">No hay cuotas registradas para este alumno.</p>
-        ) : pending.length === 0 ? (
-          <p className="empty-state">Este alumno no tiene cuotas pendientes.</p>
+        {generating && (
+          <GenerateChargePanel
+            studentId={student.id}
+            charges={charges}
+            canBackfill={canBackfill}
+            onClose={() => setGenerating(false)}
+            onGenerated={() => {
+              setGenerating(false);
+              onChargeGenerated();
+            }}
+          />
+        )}
+        {charges.length === 0 || pending.length === 0 ? (
+          <p className="empty-state">
+            {charges.length === 0
+              ? 'No hay cuotas registradas para este alumno.'
+              : 'Este alumno no tiene cuotas pendientes.'}
+            {canGenerate &&
+              !generating &&
+              ' Si viene a pagar un mes que todavía no tiene cuota, usá “Generar cuota”.'}
+          </p>
         ) : (
           <div className="payment-charge-list">
             {pending.map((charge) => (

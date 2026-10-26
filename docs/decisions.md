@@ -420,3 +420,12 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 ## Entorno de desarrollo — octubre 2026
 
 168. **Configuración compartida en desarrollo:** `npm run dev` carga el `.env` raíz, si existe, antes de iniciar API y panel. Ambos procesos heredan la configuración, respetando variables ya definidas en el entorno. Esto permite usar Neon sin Docker y evita depender de la carga implícita de Prisma para configurar los servicios.
+
+## Generación manual de cuotas — octubre 2026
+
+Surge del primer día de uso: alumnos que vienen a pagar un mes sin cuota generada (Gladys Acosta), pagos adelantados de noviembre y deudas anteriores a octubre que no se importaron (Brunella Gauna). Las cuotas siguen sin generarse solas.
+
+169. **Cuota suelta desde el estado de cuenta:** en Pagos → alumno, "Generar cuota" crea la cuota de una inscripción activa para un mes elegido. La tarifa no se elige: es la de la clase que cubre ese mes (la activa; para meses pasados se acepta la histórica inactiva de la decisión 160). Si no hay o hay más de una, no se genera y se pide revisar Tarifas. Becas y descuentos vigentes se aplican igual que en cualquier cuota.
+170. **Qué meses y quién:** nuevo permiso `charges:generate` para Admisión y superiores, que permite el mes actual y hasta dos meses adelantados. Los meses anteriores (carga de deuda vieja) requieren `charges:manage` (Administración y Dirección). Siempre dentro de las fechas de la inscripción y sin duplicar inscripción + mes. *Supuesto a confirmar con la PO.*
+171. **Vencimiento y recargo:** por defecto el día 10 del mes, editable entre el 1 y el 10 como en el resto de las cuotas. Una cuota generada con el vencimiento ya pasado nace vencida y, al cobrarla, suma el recargo de ARS 1.000 de la decisión 133; la vista previa lo avisa antes de generar. *Supuesto a confirmar con la PO.*
+172. **Vista previa y auditoría:** antes de crear se muestra clase, mes, tarifa, ajustes e importe a pagar, y si la cuota ya existe. Cada cuota generada así deja una auditoría `CREATE` sobre `MONTHLY_CHARGE` con el responsable, en la misma transacción.

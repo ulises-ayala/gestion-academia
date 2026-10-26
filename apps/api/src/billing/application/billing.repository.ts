@@ -25,16 +25,19 @@ export interface BillingRepository {
   ): Promise<TariffDto>;
   deleteTariff(id: string): Promise<void>;
   findEnrollment(id: string): Promise<EnrollmentForCharge | null>;
-  createCharge(data: {
-    studentId: string;
-    enrollmentId: string;
-    tariffId: string;
-    period: string;
-    baseAmount: string;
-    discountAmount: string;
-    finalAmount: string;
-    dueDate: string;
-  }): Promise<MonthlyChargeDto>;
+  createCharge(
+    data: {
+      studentId: string;
+      enrollmentId: string;
+      tariffId: string;
+      period: string;
+      baseAmount: string;
+      discountAmount: string;
+      finalAmount: string;
+      dueDate: string;
+    },
+    actorId?: string,
+  ): Promise<MonthlyChargeDto>;
   findCharge(id: string): Promise<MonthlyChargeDto | null>;
   listCharges(query: ChargeQuery): Promise<{ items: MonthlyChargeDto[]; total: number }>;
 }

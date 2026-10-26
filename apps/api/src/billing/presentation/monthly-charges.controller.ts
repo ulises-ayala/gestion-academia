@@ -1,4 +1,8 @@
-import type { CreateMonthlyChargeDto } from '@academy/contracts';
+import type { CreateMonthlyChargeDto, GenerateMonthlyChargeDto } from '@academy/contracts';
+import type { PublicAuthUser } from '../../auth/application/auth.repository';
+import { hasPermissions } from '../../auth/domain/permissions';
+import { CurrentUser } from '../../auth/presentation/current-user.decorator';
+import { ChargeGenerationService } from '../application/charge-generation.service';
 import { Body, Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { parseUuid } from '../../shared/presentation/request-validation';
 import { BillingService } from '../application/billing.service';
@@ -8,7 +12,41 @@ import { DomainError } from '../../shared/domain/domain-error';
 
 @Controller('monthly-charges')
 export class MonthlyChargesController {
-  constructor(@Inject(BillingService) private readonly service: BillingService) {}
+  constructor(
+    @Inject(BillingService) private readonly service: BillingService,
+    @Inject(ChargeGenerationService) private readonly generation: ChargeGenerationService,
+  ) {}
+  private actor(user: PublicAuthUser) {
+    return { id: user.id, canBackfill: hasPermissions(user, ['charges:manage']) };
+  }
+  @Get('generation-preview') @Permissions('charges:generate') preview(
+    @Query('enrollmentId') enrollmentId: string | undefined,
+    @Query('period') period: string | undefined,
+    @Query('dueDate') dueDate: string | undefined,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.generation.preview(
+      {
+        enrollmentId: parseUuid(enrollmentId ?? '', 'enrollmentId'),
+        period: period ?? '',
+        ...(dueDate ? { dueDate } : {}),
+      },
+      this.actor(user),
+    );
+  }
+  @Post('generate') @Permissions('charges:generate') generate(
+    @Body() input: GenerateMonthlyChargeDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.generation.generate(
+      {
+        enrollmentId: parseUuid(input?.enrollmentId ?? '', 'enrollmentId'),
+        period: input?.period ?? '',
+        ...(input?.dueDate ? { dueDate: input.dueDate } : {}),
+      },
+      this.actor(user),
+    );
+  }
   @Get() @Permissions('charges:read') list(
     @Query('studentId') studentId?: string,
     @Query('period') period?: string,

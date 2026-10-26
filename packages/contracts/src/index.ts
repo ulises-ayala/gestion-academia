@@ -487,6 +487,23 @@ export type CreateMonthlyChargeDto = Readonly<{
   period: string;
   dueDate: string;
 }>;
+/** Generación manual: la tarifa la resuelve el sistema. `period` es AAAA-MM. */
+export type GenerateMonthlyChargeDto = Readonly<{
+  enrollmentId: string;
+  period: string;
+  dueDate?: string;
+}>;
+export type MonthlyChargePreviewDto = Readonly<{
+  enrollmentId: string;
+  className: string;
+  period: string;
+  dueDate: string;
+  tariff: Readonly<{ id: string; name: string; amount: string }>;
+  studentDueAmount: string;
+  adjustments: readonly BillingAdjustmentTypeDto[];
+  alreadyExists: boolean;
+  lateFeeOnCollect: boolean;
+}>;
 export type MonthlyChargeListDto = Readonly<{
   items: readonly MonthlyChargeDto[];
   total: number;

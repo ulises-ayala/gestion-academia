@@ -9,6 +9,7 @@ export type Permission =
   | 'tariffs:read'
   | 'tariffs:manage'
   | 'charges:read'
+  | 'charges:generate'
   | 'charges:manage'
   | 'payments:read'
   | 'payments:collect'
@@ -35,6 +36,7 @@ const admissionPermissions: readonly Permission[] = [
   'offering:read',
   'tariffs:read',
   'charges:read',
+  'charges:generate',
   'payments:read',
   'payments:collect',
   'cash:manage',

@@ -12,6 +12,9 @@ import { PaymentsController } from './presentation/payments.controller';
 import { ReceivablesService } from './application/receivables.service';
 import { BillingAdjustmentsService } from './application/billing-adjustments.service';
 import { BillingAdjustmentsController } from './presentation/billing-adjustments.controller';
+import { CHARGE_GENERATION_REPOSITORY } from './application/charge-generation.repository';
+import { ChargeGenerationService } from './application/charge-generation.service';
+import { PrismaChargeGenerationRepository } from './infrastructure/prisma-charge-generation.repository';
 
 @Module({
   imports: [DatabaseModule],
@@ -26,6 +29,8 @@ import { BillingAdjustmentsController } from './presentation/billing-adjustments
     PaymentsService,
     ReceivablesService,
     BillingAdjustmentsService,
+    ChargeGenerationService,
+    { provide: CHARGE_GENERATION_REPOSITORY, useClass: PrismaChargeGenerationRepository },
     { provide: BILLING_REPOSITORY, useClass: PrismaBillingRepository },
     { provide: PAYMENTS_REPOSITORY, useClass: PrismaPaymentsRepository },
   ],

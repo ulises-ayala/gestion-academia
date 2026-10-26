@@ -16,6 +16,7 @@ export const auditEntityOptions = [
   ['ATTENDANCE', 'Asistencia'],
   ['ENROLLMENT', 'Inscripción'],
   ['BILLING_CONDITION', 'Condición de facturación'],
+  ['MONTHLY_CHARGE', 'Cuota'],
   ['MONTHLY_CHARGE_ADJUSTMENT', 'Ajuste de cuota'],
   ['CASH_SHIFT', 'Turno de caja'],
 ] as const;

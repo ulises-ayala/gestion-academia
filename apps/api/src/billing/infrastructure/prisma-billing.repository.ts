@@ -26,7 +26,7 @@ const chargeInclude = {
 };
 type IncludedCharge = Prisma.MonthlyChargeGetPayload<{ include: typeof chargeInclude }>;
 const isoDate = (date: Date) => date.toISOString().slice(0, 10);
-const mapTariff = (item: {
+export const mapTariff = (item: {
   id: string;
   classId: string;
   name: string;
@@ -217,16 +217,19 @@ export class PrismaBillingRepository implements BillingRepository {
       select: { id: true, studentId: true, status: true, classId: true },
     });
   }
-  async createCharge(data: {
-    studentId: string;
-    enrollmentId: string;
-    tariffId: string;
-    period: string;
-    baseAmount: string;
-    discountAmount: string;
-    finalAmount: string;
-    dueDate: string;
-  }) {
+  async createCharge(
+    data: {
+      studentId: string;
+      enrollmentId: string;
+      tariffId: string;
+      period: string;
+      baseAmount: string;
+      discountAmount: string;
+      finalAmount: string;
+      dueDate: string;
+    },
+    actorId?: string,
+  ) {
     try {
       const period = new Date(`${data.period}T00:00:00.000Z`);
       return await this.prisma.$transaction(async (tx) => {
@@ -265,6 +268,24 @@ export class PrismaBillingRepository implements BillingRepository {
           },
           include: chargeInclude,
         });
+        if (actorId)
+          await tx.auditLog.create({
+            data: {
+              actorUserId: actorId,
+              action: 'CREATE',
+              entityType: 'MONTHLY_CHARGE',
+              entityId: created.id,
+              after: {
+                enrollmentId: data.enrollmentId,
+                tariffId: data.tariffId,
+                period: data.period.slice(0, 7),
+                baseAmount: base.toFixed(2),
+                studentDueAmount: due.studentDue.toFixed(2),
+                dueDate: data.dueDate,
+              },
+              metadata: { source: 'MANUAL_GENERATION' },
+            },
+          });
         return mapCharge(created, currentBusinessDate());
       });
     } catch (error) {
