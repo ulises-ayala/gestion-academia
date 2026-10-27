@@ -12,6 +12,7 @@ import type {
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { dayLabels } from '../lib/offering';
+import { withCurrentOption } from '../lib/class-form-options';
 import { notifyError } from '../lib/notify';
 
 type UiSchedule = ClassScheduleInputDto & { branchId: string };
@@ -69,6 +70,19 @@ export function ClassForm({
       setDraft((s) => ({ ...s, branchId: s.branchId || b[0]?.id || '' }));
     });
   }, []);
+  const danceOptions = withCurrentOption(
+    danceTypes.map((item) => ({ id: item.id, label: item.name })),
+    academicClass ? { id: academicClass.danceType.id, label: academicClass.danceType.name } : null,
+  );
+  const teacherOptions = withCurrentOption(
+    teachers.map((item) => ({ id: item.id, label: `${item.lastName}, ${item.firstName}` })),
+    academicClass
+      ? {
+          id: academicClass.teacher.id,
+          label: `${academicClass.teacher.lastName}, ${academicClass.teacher.firstName}`,
+        }
+      : null,
+  );
   const branchRooms = useMemo(
     () => rooms.filter((room) => room.branchId === draft.branchId),
     [rooms, draft.branchId],
@@ -129,9 +143,9 @@ export function ClassForm({
             value={form.danceTypeId}
             onChange={(e) => setForm({ ...form, danceTypeId: e.target.value })}
           >
-            {danceTypes.map((item) => (
+            {danceOptions.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.name}
+                {item.label}
               </option>
             ))}
           </select>
@@ -142,9 +156,9 @@ export function ClassForm({
             value={form.teacherId}
             onChange={(e) => setForm({ ...form, teacherId: e.target.value })}
           >
-            {teachers.map((item) => (
+            {teacherOptions.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.lastName}, {item.firstName}
+                {item.label}
               </option>
             ))}
           </select>

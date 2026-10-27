@@ -450,3 +450,8 @@ Casos del primer día: Brunella Gauna debía $210.000 según ControlFit pero el 
 181. **Deuda anterior al inicio de la inscripción:** como la importación fijó el inicio en el primer mes abonado, Administración puede generar meses previos; en ese caso el inicio de la inscripción se adelanta al primer día del primer mes generado, con auditoría `UPDATE` sobre `ENROLLMENT`. No se adelanta si se superpone con otra inscripción del alumno a la misma clase.
 182. **Recargo de la deuda cargada tarde:** cada mes generado ya vencido suma el recargo de $1.000 al cobrarlo (decisión 133); la vista previa lo informa por cantidad. *Supuesto a confirmar con la PO junto con la decisión 171: para la deuda vieja de ControlFit podría corresponder no aplicar recargo.*
 183. **Ayuda en el cobro:** si el importe cargado supera la deuda del alumno, el estado de cuenta lo explica y ofrece "Generar cuota" para cargar los meses adelantados o adeudados antes de registrar el cobro.
+
+## Edición de clases visible — octubre 2026
+
+184. **Editar sin recrear:** la edición de clases ya existía (nombre, tipo de danza, profesor, nivel, cupo y horarios, con auditoría y sin tocar inscripciones), pero estaba escondida dentro de "Ver". El listado ofrece "Editar", que abre la clase directamente en edición (`?editar=1`), con el formulario arriba y aviso de éxito. Sigue reservada a `offering:manage` (Administración y Dirección). El precio se mantiene en Tarifas.
+185. **Profesor o danza desactivados:** si la clase tiene un profesor o tipo de danza que se desactivó, el formulario lo muestra marcado "(inactivo)" en lugar de aparentar otro valor; para guardar hay que elegir uno activo, como ya exigía la API.

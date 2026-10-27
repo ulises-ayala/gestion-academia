@@ -997,6 +997,11 @@ p {
   min-height: var(--control-height-sm);
   white-space: nowrap;
 }
+.classes-table-actions {
+  display: inline-flex;
+  gap: var(--space-3);
+  white-space: nowrap;
+}
 .class-form {
   display: grid;
   gap: var(--space-6);

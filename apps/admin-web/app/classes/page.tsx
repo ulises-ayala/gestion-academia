@@ -242,9 +242,19 @@ export default function Page() {
                     </span>
                   </td>
                   <td data-label="Acción">
-                    <Link className="text-link classes-table-action" href={`/classes/${item.id}`}>
-                      Ver
-                    </Link>
+                    <span className="classes-table-actions">
+                      <Link className="text-link classes-table-action" href={`/classes/${item.id}`}>
+                        Ver
+                      </Link>
+                      <PermissionGate permission="offering:manage">
+                        <Link
+                          className="text-link classes-table-action"
+                          href={`/classes/${item.id}?editar=1`}
+                        >
+                          Editar
+                        </Link>
+                      </PermissionGate>
+                    </span>
                   </td>
                 </tr>
               ))}

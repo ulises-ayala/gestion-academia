@@ -2,13 +2,15 @@
 import type { ClassDto, EnrollmentListDto } from '@academy/contracts';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ClassForm } from '../../../components/class-form';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { formatDate } from '../../../lib/dates';
 import { dayLabels } from '../../../lib/offering';
 import { resolveClassOccupancy } from '../../../lib/class-occupancy';
 import { PermissionGate } from '../../../components/permission-gate';
+import { opensInEditMode } from '../../../lib/class-form-options';
+import { notifySuccess } from '../../../lib/notify';
 const pageSize = 25;
 export default function ClassDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +24,7 @@ export default function ClassDetailPage() {
   const [page, setPage] = useState(1);
   const [edit, setEdit] = useState(false);
   const [message, setMessage] = useState('');
+  const editCard = useRef<HTMLElement>(null);
   const load = useCallback(async () => {
     try {
       const [classData, enrollmentData] = await Promise.all([
@@ -39,6 +42,17 @@ export default function ClassDetailPage() {
   useEffect(() => {
     void load();
   }, [load]);
+  useEffect(() => {
+    if (opensInEditMode(window.location.search)) setEdit(true);
+  }, []);
+  useEffect(() => {
+    if (edit) editCard.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [edit, item?.id]);
+  const closeEdit = () => {
+    setEdit(false);
+    if (opensInEditMode(window.location.search))
+      window.history.replaceState({}, '', window.location.pathname);
+  };
   if (!item) return <p>{message || 'Cargando…'}</p>;
   const occupancy = resolveClassOccupancy(item.activeEnrollmentCount, enrollments.total);
   const totalPages = Math.max(1, Math.ceil(enrollments.total / enrollments.pageSize));
@@ -70,10 +84,13 @@ export default function ClassDetailPage() {
         </div>
         <PermissionGate permission="offering:manage">
           <div className="actions">
-            <button className="secondary" onClick={() => setEdit(!edit)}>
-              Editar
+            <button
+              className={edit ? 'secondary' : ''}
+              onClick={() => (edit ? closeEdit() : setEdit(true))}
+            >
+              {edit ? 'Cerrar edición' : 'Editar clase'}
             </button>
-            <button onClick={() => void toggle()}>
+            <button className="secondary" onClick={() => void toggle()}>
               {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
             </button>
           </div>
@@ -82,14 +99,21 @@ export default function ClassDetailPage() {
       {message && <p className="message">{message}</p>}
       <PermissionGate permission="offering:manage">
         {edit && (
-          <section className="card">
+          <section className="card" ref={editCard} aria-labelledby="class-edit-title">
+            <h2 id="class-edit-title">Editar clase</h2>
+            <p className="subtitle">
+              Nombre, tipo de danza, profesor, nivel, cupo y horarios. Los alumnos inscriptos y su
+              historial se conservan. El precio se cambia en Tarifas.
+            </p>
             <ClassForm
               academicClass={item}
               onSaved={(value) => {
                 setItem(value);
-                setEdit(false);
+                closeEdit();
+                notifySuccess('Clase actualizada', value.name);
+                void load();
               }}
-              onCancel={() => setEdit(false)}
+              onCancel={closeEdit}
             />
           </section>
         )}
