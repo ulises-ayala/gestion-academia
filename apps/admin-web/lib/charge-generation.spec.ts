@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   addMonths,
   businessPeriod,
+  collectNowAmount,
   periodLabel,
   periodRange,
   suggestedPeriod,
@@ -32,6 +33,14 @@ describe('generar cuota', () => {
     expect(suggestedPeriod(range, '2026-10', new Set(['2026-10']))).toBe('2026-11');
     expect(suggestedPeriod(range, '2026-10', new Set(['2026-10', '2026-11', '2026-12']))).toBe(
       '2026-12',
+    );
+  });
+  it('al cobrar en el momento suma el recargo si la cuota ya venció', () => {
+    expect(collectNowAmount({ studentDueAmount: '40000.00', lateFeeOnCollect: false })).toBe(
+      '40000.00',
+    );
+    expect(collectNowAmount({ studentDueAmount: '40000.00', lateFeeOnCollect: true })).toBe(
+      '41000.00',
     );
   });
   it('nombra el mes en castellano', () => {

@@ -16,6 +16,7 @@ import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { StudentForm } from '../../../components/student-form';
 import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';
+import { GenerateChargeDialog } from '../../../components/generate-charge-dialog';
 import { FollowUpIndicator } from '../../../components/student-follow-up';
 import { enrollmentEndLabel } from '../../../lib/enrollment-end';
 import { useAuth } from '../../../components/auth-provider';
@@ -435,6 +436,7 @@ export default function StudentDetailPage() {
   const [student, setStudent] = useState<StudentDto | null>(null);
   const [enrollments, setEnrollments] = useState<EnrollmentListDto['items']>([]);
   const [charges, setCharges] = useState<MonthlyChargeListDto['items']>([]);
+  const [generatingCharge, setGeneratingCharge] = useState(false);
   const [payments, setPayments] = useState<PaymentListDto['items']>([]);
   const [paymentTotal, setPaymentTotal] = useState('0.00');
   const [attendances, setAttendances] = useState<AttendanceListDto['items']>([]);
@@ -592,9 +594,9 @@ export default function StudentDetailPage() {
             </Link>
           )}
           {canGenerateCharge && (
-            <Link className="button" href={`/payments?studentId=${id}&action=generate`}>
+            <button type="button" onClick={() => setGeneratingCharge(true)}>
               Generar cuota
-            </Link>
+            </button>
           )}
           {can('enrollments:manage') && student.status === 'ACTIVE' && (
             <Link
@@ -972,6 +974,22 @@ export default function StudentDetailPage() {
           )}
         </aside>
       </div>
+      {generatingCharge && (
+        <GenerateChargeDialog
+          studentId={id}
+          studentName={`${student.firstName} ${student.lastName}`}
+          charges={charges}
+          canBackfill={can('charges:manage')}
+          canCollect={can('payments:collect')}
+          onClose={() => setGeneratingCharge(false)}
+          onDone={(result) => {
+            setGeneratingCharge(false);
+            void load().then(() =>
+              setMessage(result.warning ?? `${result.title}: ${result.detail}`),
+            );
+          }}
+        />
+      )}
       {endTarget && (
         <EndEnrollmentModal
           target={{

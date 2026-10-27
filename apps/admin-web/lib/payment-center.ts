@@ -9,7 +9,7 @@ export type PaymentTab = 'accounts' | 'history';
 export type PaymentLocation = Readonly<{
   tab: PaymentTab;
   studentId: string;
-  action: '' | 'collect' | 'generate';
+  action: '' | 'collect';
   scope: ReceivablesScopeDto;
   q: string;
   sort: ReceivablesSortDto;
@@ -35,10 +35,7 @@ export const paymentLocationFromSearch = (search: string): PaymentLocation => {
   return {
     tab: params.get('tab') === 'history' ? 'history' : 'accounts',
     studentId: params.get('studentId') ?? '',
-    action:
-      params.get('action') === 'collect' || params.get('action') === 'generate'
-        ? (params.get('action') as 'collect' | 'generate')
-        : '',
+    action: params.get('action') === 'collect' ? 'collect' : '',
     scope: (['pending', 'overdue', 'partial', 'unpaid'].includes(view ?? '')
       ? view
       : 'pending') as ReceivablesScopeDto,

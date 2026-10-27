@@ -15,7 +15,11 @@ import type {
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../components/auth-provider';
-import { GenerateChargePanel } from '../../components/generate-charge-panel';
+import {
+  GenerateChargeDialog,
+  type GenerateChargeResult,
+} from '../../components/generate-charge-dialog';
+import { notifySuccess } from '../../lib/notify';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { formatDate } from '../../lib/dates';
@@ -808,9 +812,11 @@ export default function PaymentsPage() {
           canVoid={can('payments:void')}
           canGenerate={can('charges:generate')}
           canBackfill={can('charges:manage')}
-          openGenerate={location.action === 'generate'}
-          onChargeGenerated={() => {
-            if (location.studentId) void loadStudent(location.studentId);
+          canCollectNow={can('payments:collect')}
+          onChargeGenerated={(result) => {
+            notifySuccess(result.title, result.detail);
+            if (location.studentId)
+              void loadStudent(location.studentId).then(() => setMessage(result.warning ?? ''));
           }}
           onCollect={() => void collect()}
           onRetry={() => location.studentId && void loadStudent(location.studentId)}
@@ -945,7 +951,7 @@ function StudentAccount({
   canVoid,
   canGenerate,
   canBackfill,
-  openGenerate,
+  canCollectNow,
   onChargeGenerated,
   onCollect,
   onRetry,
@@ -968,14 +974,14 @@ function StudentAccount({
   canVoid: boolean;
   canGenerate: boolean;
   canBackfill: boolean;
-  openGenerate: boolean;
-  onChargeGenerated(): void;
+  canCollectNow: boolean;
+  onChargeGenerated(result: GenerateChargeResult): void;
   onCollect(): void;
   onRetry(): void;
   onTender(method: keyof TenderAmounts, amount: string): void;
   onVoid(payment: PaymentDto): void;
 }>) {
-  const [generating, setGenerating] = useState(openGenerate && canGenerate);
+  const [generating, setGenerating] = useState(false);
   if (loading)
     return (
       <section className="card module-state" role="status">
@@ -1033,7 +1039,7 @@ function StudentAccount({
           </div>
           <div className="account-heading-actions">
             <strong>Saldo pendiente: {money(outstandingTotal(charges))}</strong>
-            {canGenerate && !generating && (
+            {canGenerate && (
               <button className="secondary" type="button" onClick={() => setGenerating(true)}>
                 Generar cuota
               </button>
@@ -1041,14 +1047,16 @@ function StudentAccount({
           </div>
         </div>
         {generating && (
-          <GenerateChargePanel
+          <GenerateChargeDialog
             studentId={student.id}
+            studentName={`${student.firstName} ${student.lastName}`}
             charges={charges}
             canBackfill={canBackfill}
+            canCollect={canCollectNow}
             onClose={() => setGenerating(false)}
-            onGenerated={() => {
+            onDone={(result) => {
               setGenerating(false);
-              onChargeGenerated();
+              onChargeGenerated(result);
             }}
           />
         )}
@@ -1058,7 +1066,6 @@ function StudentAccount({
               ? 'No hay cuotas registradas para este alumno.'
               : 'Este alumno no tiene cuotas pendientes.'}
             {canGenerate &&
-              !generating &&
               ' Si viene a pagar un mes que todavía no tiene cuota, usá “Generar cuota”.'}
           </p>
         ) : (

@@ -45,6 +45,15 @@ export const suggestedPeriod = (
 
 export const defaultDueDate = (period: string) => `${period}-10`;
 
+/** Lo que se cobra al generar y cobrar en el momento: la cuota más el recargo si ya venció. */
+export const collectNowAmount = (
+  preview: Readonly<{ studentDueAmount: string; lateFeeOnCollect: boolean }>,
+) => {
+  const cents =
+    Math.round(Number(preview.studentDueAmount) * 100) + (preview.lateFeeOnCollect ? 100000 : 0);
+  return (cents / 100).toFixed(2);
+};
+
 export const periodLabel = (period: string) => {
   const label = new Intl.DateTimeFormat('es-AR', {
     month: 'long',

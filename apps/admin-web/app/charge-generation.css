@@ -6,30 +6,38 @@
   gap: var(--space-3);
 }
 
+dialog.generate-charge-dialog {
+  width: min(40rem, calc(100% - 2rem));
+  margin: auto;
+  border-top: 3px solid var(--brand);
+  color: var(--text);
+}
+
+dialog.generate-charge-dialog:not([open]) {
+  display: none;
+}
+
+dialog.generate-charge-dialog::backdrop {
+  background: var(--overlay);
+}
+
 .generate-charge {
   display: grid;
   gap: var(--space-4);
-  margin: var(--space-2) 0 var(--space-5);
-  padding: var(--space-5);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--brand);
-  border-radius: var(--radius-md);
-  background: var(--surface-muted);
 }
 
-.generate-charge h3 {
+.generate-charge h2 {
   margin: 0 0 var(--space-1);
-}
-
-.generate-charge .subtitle,
-.generate-charge .empty-state {
-  margin: 0;
 }
 
 .generate-charge-fields {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-4);
+}
+
+.generate-charge-fields .wide {
+  grid-column: 1 / -1;
 }
 
 .generate-charge-fields label {
@@ -44,7 +52,7 @@
   padding: var(--space-4);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--surface);
+  background: var(--surface-muted);
 }
 
 .generate-charge-preview p {
@@ -79,13 +87,54 @@
   background: var(--destructive-soft);
 }
 
-.generate-charge .form-actions {
+.generate-charge-payment {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
 }
 
-@media (max-width: 48rem) {
+.generate-charge-payment legend {
+  padding: 0 var(--space-2);
+  color: var(--text-muted);
+  font-weight: var(--font-weight-semibold);
+}
+
+.modal .generate-charge-payment > label:not(.generate-charge-method) {
+  display: inline-flex;
+  width: auto;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+}
+
+.generate-charge-payment input[type='radio'] {
+  width: auto;
+  min-height: auto;
+}
+
+.modal .generate-charge-method {
+  display: grid;
+  flex: 1 1 12rem;
+  gap: var(--space-2);
+}
+
+.generate-charge-payment > p {
+  flex-basis: 100%;
+}
+
+.generate-charge-collect {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--success-soft);
+  color: var(--text);
+}
+
+@media (max-width: 36rem) {
   .generate-charge-fields {
     grid-template-columns: 1fr;
   }
