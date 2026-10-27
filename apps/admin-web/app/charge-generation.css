@@ -73,7 +73,7 @@ dialog.generate-charge-dialog::backdrop {
   font-size: 1.05rem;
 }
 
-.generate-charge-preview .generate-charge-note {
+.generate-charge .generate-charge-note {
   display: block;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--warning-border);
@@ -82,7 +82,7 @@ dialog.generate-charge-dialog::backdrop {
   color: var(--text);
 }
 
-.generate-charge-preview .generate-charge-note.is-blocked {
+.generate-charge .generate-charge-note.is-blocked {
   border-color: var(--destructive-border);
   background: var(--destructive-soft);
 }

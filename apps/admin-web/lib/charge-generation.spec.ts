@@ -1,9 +1,13 @@
+import type { TariffDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import {
   addMonths,
   businessPeriod,
   collectNowAmount,
+  formatTariffRange,
   inactiveTariffsFrom,
+  overlappingTariff,
+  tariffDraft,
   periodLabel,
   periodRange,
   suggestedPeriod,
@@ -55,6 +59,42 @@ describe('generar cuota', () => {
     expect(inactiveTariffsFrom({ code: 'TARIFF_NOT_FOUND_FOR_PERIOD', details: {} })).toEqual([]);
     expect(inactiveTariffsFrom({ code: 'OTRO', details: { inactiveTariffs: [tariff] } })).toEqual(
       [],
+    );
+  });
+  it('propone una tarifa nueva que cubre el mes sin pisar la siguiente', () => {
+    const tariff = (over: Partial<TariffDto>): TariffDto => ({
+      id: 't',
+      classId: 'c',
+      name: 'Zumba mensual',
+      amount: '40000.00',
+      validFrom: '2026-11-01',
+      validTo: null,
+      status: 'ACTIVE',
+      createdAt: '',
+      updatedAt: '',
+      ...over,
+    });
+    expect(tariffDraft([tariff({})], '2026-10', 'Zumba')).toEqual({
+      name: 'Zumba mensual',
+      amount: '40000.00',
+      validFrom: '2026-10-01',
+      validTo: '2026-10-31',
+    });
+    expect(tariffDraft([], '2026-10', 'Zumba')).toEqual({
+      name: 'Zumba mensual',
+      amount: '',
+      validFrom: '2026-10-01',
+      validTo: '',
+    });
+    expect(
+      overlappingTariff([tariff({})], { validFrom: '2026-10-01', validTo: '2026-10-31' }),
+    ).toBeNull();
+    expect(overlappingTariff([tariff({})], { validFrom: '2026-10-01', validTo: '' })?.id).toBe('t');
+    expect(
+      overlappingTariff([tariff({ status: 'INACTIVE' })], { validFrom: '2026-10-01', validTo: '' }),
+    ).toBeNull();
+    expect(formatTariffRange({ validFrom: '2026-09-01', validTo: null })).toBe(
+      'desde el 01/09/2026',
     );
   });
   it('nombra el mes en castellano', () => {

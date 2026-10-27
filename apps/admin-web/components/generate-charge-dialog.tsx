@@ -6,15 +6,18 @@ import type {
   MonthlyChargeDto,
   MonthlyChargePreviewDto,
   PaymentMethodDto,
+  TariffDto,
 } from '@academy/contracts';
 import Link from 'next/link';
 import React, { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
+import { TariffQuickForm } from './tariff-quick-form';
 import {
   adjustmentLabels,
   businessPeriod,
   collectNowAmount,
   defaultDueDate,
+  formatTariffRange,
   inactiveTariffsFrom,
   periodLabel,
   type InactiveTariff,
@@ -62,6 +65,9 @@ export function GenerateChargeDialog({
   const [inactiveTariffs, setInactiveTariffs] = useState<InactiveTariff[]>([]);
   const [activating, setActivating] = useState('');
   const [previewVersion, setPreviewVersion] = useState(0);
+  const [missingTariff, setMissingTariff] = useState(false);
+  const [view, setView] = useState<'charge' | 'tariff' | 'tariff-created'>('charge');
+  const [createdTariff, setCreatedTariff] = useState<TariffDto | null>(null);
   const [cashOpen, setCashOpen] = useState<boolean | null>(null);
   const [collectNow, setCollectNow] = useState(false);
   const [method, setMethod] = useState<PaymentMethodDto>('CASH');
@@ -145,6 +151,7 @@ export function GenerateChargeDialog({
     setLoadingPreview(true);
     setPreviewError('');
     setInactiveTariffs([]);
+    setMissingTariff(false);
     const params = new URLSearchParams({ enrollmentId, period });
     if (dueDate) params.set('dueDate', dueDate);
     apiRequest<MonthlyChargePreviewDto>(`/monthly-charges/generation-preview?${params}`)
@@ -155,7 +162,10 @@ export function GenerateChargeDialog({
         setPreviewError(
           caught instanceof ApiClientError ? caught.message : 'No se pudo calcular la cuota.',
         );
-        if (caught instanceof ApiClientError) setInactiveTariffs(inactiveTariffsFrom(caught.error));
+        if (caught instanceof ApiClientError) {
+          setInactiveTariffs(inactiveTariffsFrom(caught.error));
+          setMissingTariff(caught.error.code === 'TARIFF_NOT_FOUND_FOR_PERIOD');
+        }
       })
       .finally(() => active && setLoadingPreview(false));
     return () => {
@@ -230,204 +240,267 @@ export function GenerateChargeDialog({
         if (!saving) onClose();
       }}
     >
-      <form onSubmit={(event) => void submit(event)} className="generate-charge">
-        <div>
-          <h2 id="generate-charge-title">Generar cuota</h2>
-          <p className="modal-copy">
-            Alumno: <strong>{studentName}</strong>
-          </p>
+      {view === 'tariff' && enrollment ? (
+        <TariffQuickForm
+          classId={enrollment.classId}
+          className={enrollment.academicClass.name}
+          period={period}
+          onBack={() => setView('charge')}
+          onCreated={(tariff) => {
+            setCreatedTariff(tariff);
+            setView('tariff-created');
+          }}
+        />
+      ) : view === 'tariff-created' && createdTariff ? (
+        <div className="generate-charge">
+          <div>
+            <h2 id="generate-charge-title">Tarifa creada</h2>
+            <p className="modal-copy">
+              Clase: <strong>{enrollment?.academicClass.name}</strong>
+            </p>
+          </div>
+          <div className="generate-charge-preview">
+            <p>
+              <span>
+                {createdTariff.name}
+                <small>{formatTariffRange(createdTariff)} · Activa</small>
+              </span>
+              <strong>{money(createdTariff.amount)}</strong>
+            </p>
+          </div>
+          <div className="modal-actions">
+            <button className="secondary" type="button" onClick={onClose}>
+              Cerrar
+            </button>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => {
+                setView('charge');
+                setPreviewVersion((version) => version + 1);
+              }}
+            >
+              Volver a la cuota de {studentName}
+            </button>
+          </div>
         </div>
-        {enrollments === null ? (
-          <p className="modal-copy" role="status">
-            Cargando clases…
-          </p>
-        ) : enrollments.length === 0 ? (
-          <p className="modal-copy">
-            El alumno no tiene inscripciones activas.{' '}
-            <Link className="text-link" href={`/students/${studentId}/enrollments/new`}>
-              Inscribirlo a una clase
-            </Link>
-          </p>
-        ) : (
-          <>
-            <div className="generate-charge-fields">
-              <label className="wide">
-                Clase
-                <select
-                  value={enrollmentId}
-                  disabled={saving}
-                  onChange={(event) => choose(event.target.value, enrollments)}
-                >
-                  {enrollments.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.academicClass.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Mes
-                <input
-                  type="month"
-                  required
-                  value={period}
-                  min={range?.min}
-                  max={range?.max}
-                  disabled={saving}
-                  onChange={(event) => {
-                    setPeriod(event.target.value);
-                    if (event.target.value) setDueDate(defaultDueDate(event.target.value));
-                  }}
-                />
-              </label>
-              <label>
-                Vencimiento
-                <input
-                  type="date"
-                  required
-                  value={dueDate}
-                  min={period ? `${period}-01` : undefined}
-                  max={period ? `${period}-10` : undefined}
-                  disabled={saving}
-                  onChange={(event) => setDueDate(event.target.value)}
-                />
-              </label>
-            </div>
-            <div className="generate-charge-preview" aria-live="polite">
-              {loadingPreview && !preview ? (
-                <p className="modal-copy">Calculando…</p>
-              ) : previewError ? (
-                <>
-                  <p className="field-error">{previewError}</p>
-                  {inactiveTariffs.map((tariff) => (
-                    <p className="generate-charge-tariff" key={tariff.id}>
-                      <span>
-                        {tariff.name}
-                        <small>Desactivada · {money(tariff.amount)}</small>
-                      </span>
-                      {canManageTariffs && (
-                        <button
-                          className="secondary"
-                          type="button"
-                          disabled={Boolean(activating) || saving}
-                          onClick={() => void activateTariff(tariff)}
-                        >
-                          {activating === tariff.id ? 'Activando…' : 'Activar tarifa'}
-                        </button>
-                      )}
-                    </p>
-                  ))}
-                  {inactiveTariffs.length > 0 && !canManageTariffs && (
-                    <p className="modal-copy">
-                      Pedile a Administración que la active desde Tarifas.
-                    </p>
-                  )}
-                </>
-              ) : preview ? (
-                <>
-                  <p>
-                    <span>
-                      {preview.className} · {periodLabel(preview.period)}
-                      <small>{preview.tariff.name}</small>
-                    </span>
-                    <span>{money(preview.tariff.amount)}</span>
-                  </p>
-                  {preview.adjustments.length > 0 && (
-                    <p>
-                      <span>
-                        {preview.adjustments.map((type) => adjustmentLabels[type]).join(' · ')}
-                      </span>
-                    </p>
-                  )}
-                  <p className="generate-charge-total">
-                    <span>Importe de la cuota</span>
-                    <strong>{money(preview.studentDueAmount)}</strong>
-                  </p>
-                  {preview.alreadyExists ? (
-                    <p className="generate-charge-note is-blocked" role="status">
-                      Ya existe la cuota de {periodLabel(preview.period).toLowerCase()} para esta
-                      clase.
-                    </p>
-                  ) : preview.lateFeeOnCollect ? (
-                    <p className="generate-charge-note" role="status">
-                      Esta cuota ya está vencida: al cobrarla se suma el recargo de $1.000.
-                    </p>
-                  ) : null}
-                </>
-              ) : null}
-            </div>
-            <fieldset className="generate-charge-payment" disabled={saving}>
-              <legend>Pago</legend>
-              <label>
-                <input
-                  type="radio"
-                  name="generate-collect"
-                  checked={!collectNow}
-                  onChange={() => setCollectNow(false)}
-                />
-                Dejar pendiente
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="generate-collect"
-                  checked={collectNow}
-                  disabled={Boolean(collectBlocked) || cashOpen === null}
-                  onChange={() => setCollectNow(true)}
-                />
-                Cobrar ahora
-              </label>
-              {collectNow && (
-                <label className="generate-charge-method">
-                  Medio de pago
+      ) : (
+        <form onSubmit={(event) => void submit(event)} className="generate-charge">
+          <div>
+            <h2 id="generate-charge-title">Generar cuota</h2>
+            <p className="modal-copy">
+              Alumno: <strong>{studentName}</strong>
+            </p>
+          </div>
+          {enrollments === null ? (
+            <p className="modal-copy" role="status">
+              Cargando clases…
+            </p>
+          ) : enrollments.length === 0 ? (
+            <p className="modal-copy">
+              El alumno no tiene inscripciones activas.{' '}
+              <Link className="text-link" href={`/students/${studentId}/enrollments/new`}>
+                Inscribirlo a una clase
+              </Link>
+            </p>
+          ) : (
+            <>
+              <div className="generate-charge-fields">
+                <label className="wide">
+                  Clase
                   <select
-                    value={method}
-                    onChange={(event) => setMethod(event.target.value as PaymentMethodDto)}
+                    value={enrollmentId}
+                    disabled={saving}
+                    onChange={(event) => choose(event.target.value, enrollments)}
                   >
-                    {Object.entries(methodLabels).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
+                    {enrollments.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.academicClass.name}
                       </option>
                     ))}
                   </select>
                 </label>
-              )}
-              {collectBlocked === 'caja' ? (
-                <p className="modal-copy">
-                  Para cobrar ahora necesitás{' '}
-                  <Link className="text-link" href="/cash">
-                    abrir tu turno de caja
-                  </Link>
-                  .
-                </p>
-              ) : collectBlocked && collectBlocked !== 'sin-cuota' ? (
-                <p className="modal-copy">{collectBlocked}</p>
-              ) : collectNow && preview ? (
-                <p className="generate-charge-collect">
-                  Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}
-                  {preview.lateFeeOnCollect ? ' (incluye el recargo)' : ''}.
-                </p>
-              ) : null}
-            </fieldset>
-          </>
-        )}
-        {error && (
-          <p role="alert" className="error">
-            {error}
-          </p>
-        )}
-        <div className="modal-actions">
-          <button className="secondary" type="button" disabled={saving} onClick={onClose}>
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={!preview || preview.alreadyExists || loadingPreview || saving}
-          >
-            {saving ? 'Guardando…' : collectNow ? 'Generar y cobrar' : 'Generar cuota'}
-          </button>
-        </div>
-      </form>
+                <label>
+                  Mes
+                  <input
+                    type="month"
+                    required
+                    value={period}
+                    min={range?.min}
+                    max={range?.max}
+                    disabled={saving}
+                    onChange={(event) => {
+                      setPeriod(event.target.value);
+                      if (event.target.value) setDueDate(defaultDueDate(event.target.value));
+                    }}
+                  />
+                </label>
+                <label>
+                  Vencimiento
+                  <input
+                    type="date"
+                    required
+                    value={dueDate}
+                    min={period ? `${period}-01` : undefined}
+                    max={period ? `${period}-10` : undefined}
+                    disabled={saving}
+                    onChange={(event) => setDueDate(event.target.value)}
+                  />
+                </label>
+              </div>
+              <div className="generate-charge-preview" aria-live="polite">
+                {loadingPreview && !preview ? (
+                  <p className="modal-copy">Calculando…</p>
+                ) : previewError ? (
+                  <>
+                    <p className="field-error">{previewError}</p>
+                    {inactiveTariffs.map((tariff) => (
+                      <p className="generate-charge-tariff" key={tariff.id}>
+                        <span>
+                          {tariff.name}
+                          <small>Desactivada · {money(tariff.amount)}</small>
+                        </span>
+                        {canManageTariffs && (
+                          <button
+                            className="secondary"
+                            type="button"
+                            disabled={Boolean(activating) || saving}
+                            onClick={() => void activateTariff(tariff)}
+                          >
+                            {activating === tariff.id ? 'Activando…' : 'Activar tarifa'}
+                          </button>
+                        )}
+                      </p>
+                    ))}
+                    {missingTariff && canManageTariffs && (
+                      <p className="generate-charge-tariff">
+                        <span>
+                          {inactiveTariffs.length ? 'O cargá una tarifa nueva' : 'Cargá la tarifa'}
+                          <small>Para {enrollment?.academicClass.name ?? 'la clase'}</small>
+                        </span>
+                        <button
+                          className="secondary"
+                          type="button"
+                          disabled={Boolean(activating) || saving}
+                          onClick={() => setView('tariff')}
+                        >
+                          Crear tarifa
+                        </button>
+                      </p>
+                    )}
+                    {missingTariff && !canManageTariffs && (
+                      <p className="modal-copy">
+                        Pedile a Administración que{' '}
+                        {inactiveTariffs.length ? 'la active' : 'la cargue'} desde Tarifas.
+                      </p>
+                    )}
+                  </>
+                ) : preview ? (
+                  <>
+                    <p>
+                      <span>
+                        {preview.className} · {periodLabel(preview.period)}
+                        <small>{preview.tariff.name}</small>
+                      </span>
+                      <span>{money(preview.tariff.amount)}</span>
+                    </p>
+                    {preview.adjustments.length > 0 && (
+                      <p>
+                        <span>
+                          {preview.adjustments.map((type) => adjustmentLabels[type]).join(' · ')}
+                        </span>
+                      </p>
+                    )}
+                    <p className="generate-charge-total">
+                      <span>Importe de la cuota</span>
+                      <strong>{money(preview.studentDueAmount)}</strong>
+                    </p>
+                    {preview.alreadyExists ? (
+                      <p className="generate-charge-note is-blocked" role="status">
+                        Ya existe la cuota de {periodLabel(preview.period).toLowerCase()} para esta
+                        clase.
+                      </p>
+                    ) : preview.lateFeeOnCollect ? (
+                      <p className="generate-charge-note" role="status">
+                        Esta cuota ya está vencida: al cobrarla se suma el recargo de $1.000.
+                      </p>
+                    ) : null}
+                  </>
+                ) : null}
+              </div>
+              <fieldset className="generate-charge-payment" disabled={saving}>
+                <legend>Pago</legend>
+                <label>
+                  <input
+                    type="radio"
+                    name="generate-collect"
+                    checked={!collectNow}
+                    onChange={() => setCollectNow(false)}
+                  />
+                  Dejar pendiente
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="generate-collect"
+                    checked={collectNow}
+                    disabled={Boolean(collectBlocked) || cashOpen === null}
+                    onChange={() => setCollectNow(true)}
+                  />
+                  Cobrar ahora
+                </label>
+                {collectNow && (
+                  <label className="generate-charge-method">
+                    Medio de pago
+                    <select
+                      value={method}
+                      onChange={(event) => setMethod(event.target.value as PaymentMethodDto)}
+                    >
+                      {Object.entries(methodLabels).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                {collectBlocked === 'caja' ? (
+                  <p className="modal-copy">
+                    Para cobrar ahora necesitás{' '}
+                    <Link className="text-link" href="/cash">
+                      abrir tu turno de caja
+                    </Link>
+                    .
+                  </p>
+                ) : collectBlocked && collectBlocked !== 'sin-cuota' ? (
+                  <p className="modal-copy">{collectBlocked}</p>
+                ) : collectNow && preview ? (
+                  <p className="generate-charge-collect">
+                    Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}
+                    {preview.lateFeeOnCollect ? ' (incluye el recargo)' : ''}.
+                  </p>
+                ) : null}
+              </fieldset>
+            </>
+          )}
+          {error && (
+            <p role="alert" className="error">
+              {error}
+            </p>
+          )}
+          <div className="modal-actions">
+            <button className="secondary" type="button" disabled={saving} onClick={onClose}>
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={!preview || preview.alreadyExists || loadingPreview || saving}
+            >
+              {saving ? 'Guardando…' : collectNow ? 'Generar y cobrar' : 'Generar cuota'}
+            </button>
+          </div>
+        </form>
+      )}
     </dialog>
   );
 }

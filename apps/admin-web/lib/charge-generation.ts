@@ -1,4 +1,4 @@
-import type { BillingAdjustmentTypeDto } from '@academy/contracts';
+import type { BillingAdjustmentTypeDto, TariffDto } from '@academy/contracts';
 
 /** Igual que en la API: hasta dos meses por adelantado. */
 export const GENERATION_MONTHS_AHEAD = 2;
@@ -46,6 +46,60 @@ export const suggestedPeriod = (
 export const defaultDueDate = (period: string) => `${period}-10`;
 
 export type InactiveTariff = Readonly<{ id: string; name: string; amount: string }>;
+
+export type TariffDraft = { name: string; amount: string; validFrom: string; validTo: string };
+
+const dayBefore = (date: string) => {
+  const value = new Date(`${date}T00:00:00.000Z`);
+  value.setUTCDate(value.getUTCDate() - 1);
+  return value.toISOString().slice(0, 10);
+};
+
+/**
+ * Propuesta de tarifa nueva para cubrir el mes: copia nombre e importe de la tarifa más
+ * reciente de la clase y, si hay una activa que empieza después, termina el día anterior
+ * para no superponerse.
+ */
+export const tariffDraft = (
+  classTariffs: readonly TariffDto[],
+  period: string,
+  className: string,
+): TariffDraft => {
+  const validFrom = `${period}-01`;
+  const base = [...classTariffs].sort((a, b) =>
+    a.status === b.status ? b.validFrom.localeCompare(a.validFrom) : a.status === 'ACTIVE' ? -1 : 1,
+  )[0];
+  const next = classTariffs
+    .filter((tariff) => tariff.status === 'ACTIVE' && tariff.validFrom > validFrom)
+    .sort((a, b) => a.validFrom.localeCompare(b.validFrom))[0];
+  return {
+    name: base?.name ?? `${className} mensual`,
+    amount: base?.amount ?? '',
+    validFrom,
+    validTo: next ? dayBefore(next.validFrom) : '',
+  };
+};
+
+/** Tarifa activa de la clase cuyas fechas se pisan con las propuestas. */
+export const overlappingTariff = (
+  classTariffs: readonly TariffDto[],
+  range: Readonly<{ validFrom: string; validTo: string }>,
+) =>
+  classTariffs.find(
+    (tariff) =>
+      tariff.status === 'ACTIVE' &&
+      (!range.validTo || tariff.validFrom <= range.validTo) &&
+      (!tariff.validTo || !range.validFrom || tariff.validTo >= range.validFrom),
+  ) ?? null;
+
+export const formatTariffRange = (
+  tariff: Readonly<{ validFrom: string; validTo: string | null }>,
+) => {
+  const date = (value: string) => `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
+  return tariff.validTo
+    ? `del ${date(tariff.validFrom)} al ${date(tariff.validTo)}`
+    : `desde el ${date(tariff.validFrom)}`;
+};
 
 /** Tarifas desactivadas que la API ofrece reactivar cuando no hay una vigente para el mes. */
 export const inactiveTariffsFrom = (
