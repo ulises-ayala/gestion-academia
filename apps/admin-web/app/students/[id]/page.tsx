@@ -512,6 +512,12 @@ export default function StudentDetailPage() {
   const canCollect =
     can('payments:collect') &&
     charges.some((item) => item.status === 'PENDING' || item.status === 'PARTIAL');
+  // Sin deuda no hay qué cobrar: se ofrece generar la cuota del mes que viene a pagar.
+  const canGenerateCharge =
+    !canCollect &&
+    can('charges:generate') &&
+    student?.status === 'ACTIVE' &&
+    enrollments.some((item) => item.status === 'ACTIVE');
   const age = student ? calculateAge(student.birthDate) : null;
   const classByEnrollment = new Map(enrollments.map((item) => [item.id, item.academicClass.name]));
 
@@ -585,9 +591,14 @@ export default function StudentDetailPage() {
               Registrar pago
             </Link>
           )}
+          {canGenerateCharge && (
+            <Link className="button" href={`/payments?studentId=${id}&action=generate`}>
+              Generar cuota
+            </Link>
+          )}
           {can('enrollments:manage') && student.status === 'ACTIVE' && (
             <Link
-              className={`button ${canCollect ? 'secondary' : ''}`}
+              className={`button ${canCollect || canGenerateCharge ? 'secondary' : ''}`}
               href={`/students/${id}/enrollments/new`}
             >
               Inscribir a otra clase

@@ -11,6 +11,12 @@ describe('payment center URL state', () => {
     });
   });
 
+  it('reconoce las acciones de cobrar y generar cuota', () => {
+    expect(paymentLocationFromSearch('?studentId=s&action=collect').action).toBe('collect');
+    expect(paymentLocationFromSearch('?studentId=s&action=generate').action).toBe('generate');
+    expect(paymentLocationFromSearch('?studentId=s&action=otra').action).toBe('');
+  });
+
   it.each(['overdue', 'partial', 'unpaid'] as const)('consumes the %s deep link', (scope) => {
     expect(paymentLocationFromSearch(`?view=${scope}`).scope).toBe(scope);
   });

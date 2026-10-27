@@ -808,6 +808,7 @@ export default function PaymentsPage() {
           canVoid={can('payments:void')}
           canGenerate={can('charges:generate')}
           canBackfill={can('charges:manage')}
+          openGenerate={location.action === 'generate'}
           onChargeGenerated={() => {
             if (location.studentId) void loadStudent(location.studentId);
           }}
@@ -944,6 +945,7 @@ function StudentAccount({
   canVoid,
   canGenerate,
   canBackfill,
+  openGenerate,
   onChargeGenerated,
   onCollect,
   onRetry,
@@ -966,13 +968,14 @@ function StudentAccount({
   canVoid: boolean;
   canGenerate: boolean;
   canBackfill: boolean;
+  openGenerate: boolean;
   onChargeGenerated(): void;
   onCollect(): void;
   onRetry(): void;
   onTender(method: keyof TenderAmounts, amount: string): void;
   onVoid(payment: PaymentDto): void;
 }>) {
-  const [generating, setGenerating] = useState(false);
+  const [generating, setGenerating] = useState(openGenerate && canGenerate);
   if (loading)
     return (
       <section className="card module-state" role="status">
