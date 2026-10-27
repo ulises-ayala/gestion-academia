@@ -1,4 +1,5 @@
 import type {
+  CreateOtherPaymentDto,
   CreatePaymentDto,
   PaymentMethodDto,
   PaymentStatusDto,
@@ -108,6 +109,21 @@ export class PaymentsController {
       throw new DomainError('VALIDATION_ERROR', 'El cuerpo del pago es obligatorio');
     return this.service.create(
       { ...input, studentId: parseUuid(input.studentId, 'studentId') },
+      user.id,
+    );
+  }
+
+  @Post('other')
+  @Permissions('payments:collect')
+  createOther(@Body() input: CreateOtherPaymentDto | null, @CurrentUser() user: PublicAuthUser) {
+    if (!input || typeof input !== 'object')
+      throw new DomainError('VALIDATION_ERROR', 'El cuerpo del cobro es obligatorio');
+    return this.service.createOther(
+      {
+        ...input,
+        studentId: parseUuid(input.studentId, 'studentId'),
+        classId: input.classId ? parseUuid(input.classId, 'classId') : null,
+      },
       user.id,
     );
   }

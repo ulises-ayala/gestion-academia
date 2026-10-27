@@ -20,6 +20,7 @@ import {
   type GenerateChargeResult,
 } from '../../components/generate-charge-dialog';
 import { notifySuccess } from '../../lib/notify';
+import { OtherPaymentDialog } from '../../components/other-payment-dialog';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { formatDate } from '../../lib/dates';
@@ -985,6 +986,7 @@ function StudentAccount({
   onVoid(payment: PaymentDto): void;
 }>) {
   const [generating, setGenerating] = useState(false);
+  const [otherPayment, setOtherPayment] = useState(false);
   if (loading)
     return (
       <section className="card module-state" role="status">
@@ -1047,8 +1049,24 @@ function StudentAccount({
                 Generar cuota
               </button>
             )}
+            {canCollectNow && (
+              <button className="secondary" type="button" onClick={() => setOtherPayment(true)}>
+                Otro cobro
+              </button>
+            )}
           </div>
         </div>
+        {otherPayment && (
+          <OtherPaymentDialog
+            studentId={student.id}
+            studentName={`${student.firstName} ${student.lastName}`}
+            onClose={() => setOtherPayment(false)}
+            onDone={(result) => {
+              setOtherPayment(false);
+              onChargeGenerated(result);
+            }}
+          />
+        )}
         {generating && (
           <GenerateChargeDialog
             studentId={student.id}

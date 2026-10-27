@@ -1,8 +1,9 @@
-import type { CreatePaymentDto, PaymentMethodDto } from '@academy/contracts';
+import type { CreateOtherPaymentDto, CreatePaymentDto, PaymentMethodDto } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
 import { DomainError } from '../../shared/domain/domain-error';
+import { validateOtherPayment } from '../domain/other-payment';
 import {
   PAYMENTS_REPOSITORY,
   type PaymentQuery,
@@ -16,10 +17,28 @@ export class PaymentsService {
   constructor(@Inject(PAYMENTS_REPOSITORY) private readonly repository: PaymentsRepository) {}
 
   async create(input: CreatePaymentDto, actorId: string) {
-    if (!Array.isArray(input.tenders) || input.tenders.length === 0)
+    return this.repository.create(input.studentId, this.tenders(input.tenders), actorId);
+  }
+
+  async createOther(input: CreateOtherPaymentDto, actorId: string) {
+    const tenders = this.tenders(input.tenders);
+    const other = validateOtherPayment(input);
+    if (other.classId) {
+      const status = await this.repository.findClassStatus(other.classId);
+      if (!status) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
+      if (status !== 'ACTIVE')
+        throw new DomainError('CLASS_INACTIVE', 'La clase elegida está desactivada', {
+          field: 'classId',
+        });
+    }
+    return this.repository.createOther({ studentId: input.studentId, ...other }, tenders, actorId);
+  }
+
+  private tenders(input: CreatePaymentDto['tenders']) {
+    if (!Array.isArray(input) || input.length === 0)
       throw new DomainError('PAYMENT_NO_TENDERS', 'Ingresá al menos un medio de pago');
     const seenMethods = new Set<PaymentMethodDto>();
-    const tenders = input.tenders.map((tender, index) => {
+    const tenders = input.map((tender, index) => {
       if (!tender || typeof tender !== 'object' || !methods.includes(tender.method))
         throw new DomainError('VALIDATION_ERROR', 'Medio de pago inválido', {
           field: `tenders.${index}.method`,
@@ -46,7 +65,7 @@ export class PaymentsService {
       throw new DomainError('VALIDATION_ERROR', 'El importe total supera el máximo permitido', {
         field: 'tenders',
       });
-    return this.repository.create(input.studentId, tenders, actorId);
+    return tenders;
   }
 
   async get(id: string) {

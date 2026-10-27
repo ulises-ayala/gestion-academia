@@ -145,3 +145,13 @@ dialog.generate-charge-dialog::backdrop {
   padding-top: var(--space-2);
   border-top: 1px solid var(--border);
 }
+
+.other-payment-tenders .generate-charge-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 36rem) {
+  .other-payment-tenders .generate-charge-fields {
+    grid-template-columns: 1fr;
+  }
+}

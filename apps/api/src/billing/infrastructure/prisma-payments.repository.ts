@@ -1,4 +1,4 @@
-import type { PaymentDto, PaymentMethodDto } from '@academy/contracts';
+import type { OtherPaymentConceptDto, PaymentDto, PaymentMethodDto } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
@@ -21,6 +21,7 @@ const include = {
   student: { select: { id: true, dni: true, firstName: true, lastName: true } },
   createdBy: { select: { id: true, username: true } },
   voidedBy: { select: { id: true, username: true } },
+  academicClass: { select: { id: true, name: true } },
   tenders: { orderBy: [{ method: 'asc' as const }, { id: 'asc' as const }] },
   allocations: {
     include: {
@@ -62,6 +63,11 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
       monthlyCharge.adjustments,
     ).studentDue.toFixed(2),
   })),
+  kind: item.kind,
+  otherConcept:
+    item.kind === 'OTHER' && item.concept
+      ? { concept: item.concept, detail: item.conceptDetail, academicClass: item.academicClass }
+      : null,
   createdAt: item.createdAt.toISOString(),
   updatedAt: item.updatedAt.toISOString(),
 });
@@ -232,6 +238,96 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     );
   }
 
+  async createOther(
+    data: Readonly<{
+      studentId: string;
+      concept: OtherPaymentConceptDto;
+      classId: string | null;
+      detail: string | null;
+    }>,
+    tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
+    actorId: string,
+  ) {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        // Mismo resguardo que un cobro de cuotas: el turno propio abierto, bloqueado.
+        const [cashShift] = await tx.$queryRaw<readonly { id: string }[]>`
+          SELECT id FROM cash_shifts
+          WHERE user_id = ${actorId}::uuid AND status = 'OPEN'
+          FOR UPDATE
+        `;
+        if (!cashShift)
+          throw new DomainError(
+            'CASH_SHIFT_REQUIRED',
+            'Necesitás abrir tu turno de caja antes de registrar un cobro.',
+          );
+        const amount = tenders.reduce(
+          (sum, tender) => sum.plus(tender.amount),
+          new Prisma.Decimal(0),
+        );
+        const payment = await tx.payment.create({
+          data: {
+            studentId: data.studentId,
+            amount,
+            kind: 'OTHER',
+            concept: data.concept,
+            conceptDetail: data.detail,
+            classId: data.classId,
+            createdByUserId: actorId,
+            tenders: {
+              create: tenders.map((tender) => ({ method: tender.method, amount: tender.amount })),
+            },
+          },
+          include,
+        });
+        await tx.cashMovement.createMany({
+          data: payment.tenders.map((tender) => ({
+            cashShiftId: cashShift.id,
+            type: 'COLLECTION',
+            method: tender.method,
+            amount: tender.amount,
+            sourcePaymentId: payment.id,
+            sourcePaymentTenderId: tender.id,
+            actorUserId: actorId,
+          })),
+        });
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: 'CREATE',
+            entityType: 'PAYMENT',
+            entityId: payment.id,
+            after: {
+              kind: 'OTHER',
+              concept: data.concept,
+              detail: data.detail,
+              classId: data.classId,
+              amount: amount.toFixed(2),
+              tenders: tenders.map((tender) => ({ method: tender.method, amount: tender.amount })),
+            },
+            metadata: { studentId: data.studentId },
+          },
+        });
+        return mapPayment(payment);
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003')
+        throw new DomainError(
+          'PAYMENT_RELATION_NOT_FOUND',
+          'El alumno o la clase indicada no existe',
+        );
+      throw error;
+    }
+  }
+
+  async findClassStatus(classId: string) {
+    const item = await this.prisma.academyClass.findUnique({
+      where: { id: classId },
+      select: { status: true },
+    });
+    return item?.status ?? null;
+  }
+
   async findById(id: string) {
     const item = await this.prisma.payment.findUnique({ where: { id }, include });
     return item ? mapPayment(item) : null;
@@ -307,7 +403,9 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             const chargeIds = [
               ...new Set(current.allocations.map(({ monthlyChargeId }) => monthlyChargeId)),
             ].sort();
-            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE id IN (${Prisma.join(chargeIds.map((chargeId) => Prisma.sql`${chargeId}::uuid`))}) ORDER BY id FOR UPDATE`;
+            // Un cobro de otro concepto no tiene cuotas que bloquear (IN () sería inválido).
+            if (chargeIds.length > 0)
+              await tx.$queryRaw`SELECT id FROM monthly_charges WHERE id IN (${Prisma.join(chargeIds.map((chargeId) => Prisma.sql`${chargeId}::uuid`))}) ORDER BY id FOR UPDATE`;
             await tx.payment.update({
               where: { id },
               data: { status: 'VOID', voidedAt: new Date(), voidedByUserId: actorId },

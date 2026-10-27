@@ -29,6 +29,8 @@ const payment: PaymentDto = {
       studentDueAmount: '80000.00',
     },
   ],
+  kind: 'CHARGES',
+  otherConcept: null,
   createdAt: '2026-08-31T15:00:00.000Z',
   updatedAt: '2026-08-31T15:00:00.000Z',
 };
@@ -51,6 +53,28 @@ describe('PaymentHistory', () => {
     expect(markup).toContain('Bachata 2026-08');
     expect(markup).toContain('studentId=student-id');
     expect(markup).not.toContain('Anular</button>');
+  });
+
+  it('muestra a qué corresponde un cobro que no es de cuotas', () => {
+    const markup = renderToStaticMarkup(
+      <PaymentHistory
+        canVoid={false}
+        payments={[
+          {
+            ...payment,
+            allocations: [],
+            kind: 'OTHER',
+            otherConcept: {
+              concept: 'SINGLE_CLASS',
+              detail: null,
+              academicClass: { id: 'class-id', name: 'Zumba' },
+            },
+          },
+        ]}
+        onVoid={() => undefined}
+      />,
+    );
+    expect(markup).toContain('Clase suelta · Zumba');
   });
 
   it('shows VOID only to an authorized user and only for confirmed payments', () => {

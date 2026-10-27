@@ -1,5 +1,6 @@
 import type { PaymentDto } from '@academy/contracts';
 import React from 'react';
+import { describeOtherPayment } from '../lib/other-payment';
 import { paymentMethodLabels } from '../lib/payments';
 
 const money = (value: string | number) =>
@@ -65,6 +66,9 @@ export function PaymentHistory({
               </td>
               <td data-label="Aplicación">
                 <ul className="payment-breakdown">
+                  {payment.kind === 'OTHER' && (
+                    <li>{describeOtherPayment(payment.otherConcept)}</li>
+                  )}
                   {payment.allocations.map((allocation) => (
                     <li key={allocation.monthlyChargeId}>
                       {allocation.academicClass.name} {allocation.period}:{' '}

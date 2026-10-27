@@ -28,6 +28,8 @@ const payment = (): PaymentDto => ({
       studentDueAmount: '40000.00',
     },
   ],
+  kind: 'CHARGES',
+  otherConcept: null,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 });
@@ -52,6 +54,26 @@ class MemoryPayments implements PaymentsRepository {
         .toFixed(2),
       tenders: tenders.map((tender) => ({ id: crypto.randomUUID(), ...tender })),
     };
+  }
+  other: {
+    data: { studentId: string; concept: string; classId: string | null; detail: string | null };
+    tenders: readonly { method: PaymentMethodDto; amount: string }[];
+  } | null = null;
+  classStatus: 'ACTIVE' | 'INACTIVE' | null = 'ACTIVE';
+  async createOther(
+    data: {
+      studentId: string;
+      concept: 'SINGLE_CLASS' | 'OTHER';
+      classId: string | null;
+      detail: string | null;
+    },
+    tenders: readonly { method: PaymentMethodDto; amount: string }[],
+  ) {
+    this.other = { data, tenders };
+    return { ...this.item, allocations: [], kind: 'OTHER' as const, otherConcept: null };
+  }
+  async findClassStatus() {
+    return this.classStatus;
   }
   async findById(id: string) {
     return id === this.item.id ? this.item : null;
@@ -149,6 +171,77 @@ describe('PaymentsService', () => {
     await expect(
       new PaymentsService(new MemoryPayments()).create(input, actorId),
     ).rejects.toMatchObject({ code });
+  });
+
+  it('registra una clase suelta con su clase y normaliza el detalle', async () => {
+    const repository = new MemoryPayments();
+    const classId = crypto.randomUUID();
+    await new PaymentsService(repository).createOther(
+      {
+        studentId,
+        concept: 'SINGLE_CLASS',
+        classId,
+        detail: '  vino a probar  ',
+        tenders: [{ method: 'CASH', amount: '8000' }],
+      },
+      actorId,
+    );
+    expect(repository.other).toEqual({
+      data: { studentId, concept: 'SINGLE_CLASS', classId, detail: 'vino a probar' },
+      tenders: [{ method: 'CASH', amount: '8000.00' }],
+    });
+  });
+
+  it('“Otro” exige detalle y no guarda clase', async () => {
+    const repository = new MemoryPayments();
+    const service = new PaymentsService(repository);
+    await expect(
+      service.createOther(
+        { studentId, concept: 'OTHER', detail: ' ', tenders: [{ method: 'CASH', amount: '1' }] },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'detail' } });
+    await service.createOther(
+      {
+        studentId,
+        concept: 'OTHER',
+        classId: crypto.randomUUID(),
+        detail: 'Remera del show',
+        tenders: [{ method: 'MERCADO_PAGO', amount: '15000' }],
+      },
+      actorId,
+    );
+    expect(repository.other?.data).toMatchObject({ classId: null, detail: 'Remera del show' });
+  });
+
+  it('la clase suelta exige una clase existente y activa', async () => {
+    const repository = new MemoryPayments();
+    const service = new PaymentsService(repository);
+    const tenders = [{ method: 'CASH' as const, amount: '8000' }];
+    await expect(
+      service.createOther({ studentId, concept: 'SINGLE_CLASS', tenders }, actorId),
+    ).rejects.toMatchObject({ details: { field: 'classId' } });
+    repository.classStatus = 'INACTIVE';
+    await expect(
+      service.createOther(
+        { studentId, concept: 'SINGLE_CLASS', classId: crypto.randomUUID(), tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ code: 'CLASS_INACTIVE' });
+    repository.classStatus = null;
+    await expect(
+      service.createOther(
+        { studentId, concept: 'SINGLE_CLASS', classId: crypto.randomUUID(), tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ code: 'CLASS_NOT_FOUND' });
+    await expect(
+      service.createOther(
+        { studentId, concept: 'PROMO' as 'OTHER', detail: 'x', tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ details: { field: 'concept' } });
+    expect(repository.other).toBeNull();
   });
 
   it('rejects an unsupported method', async () => {

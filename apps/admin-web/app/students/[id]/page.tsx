@@ -17,6 +17,8 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react
 import { StudentForm } from '../../../components/student-form';
 import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';
 import { GenerateChargeDialog } from '../../../components/generate-charge-dialog';
+import { OtherPaymentDialog } from '../../../components/other-payment-dialog';
+import { describeOtherPayment } from '../../../lib/other-payment';
 import { FollowUpIndicator } from '../../../components/student-follow-up';
 import { enrollmentEndLabel } from '../../../lib/enrollment-end';
 import { useAuth } from '../../../components/auth-provider';
@@ -437,6 +439,7 @@ export default function StudentDetailPage() {
   const [enrollments, setEnrollments] = useState<EnrollmentListDto['items']>([]);
   const [charges, setCharges] = useState<MonthlyChargeListDto['items']>([]);
   const [generatingCharge, setGeneratingCharge] = useState(false);
+  const [otherPayment, setOtherPayment] = useState(false);
   const [payments, setPayments] = useState<PaymentListDto['items']>([]);
   const [paymentTotal, setPaymentTotal] = useState('0.00');
   const [attendances, setAttendances] = useState<AttendanceListDto['items']>([]);
@@ -596,6 +599,11 @@ export default function StudentDetailPage() {
           {canGenerateCharge && (
             <button type="button" onClick={() => setGeneratingCharge(true)}>
               Generar cuota
+            </button>
+          )}
+          {can('payments:collect') && (
+            <button className="secondary" type="button" onClick={() => setOtherPayment(true)}>
+              Otro cobro
             </button>
           )}
           {can('enrollments:manage') && student.status === 'ACTIVE' && (
@@ -952,12 +960,14 @@ export default function StudentDetailPage() {
                       </div>
                       <div>
                         <span>
-                          {payment.allocations
-                            .map(
-                              (allocation) =>
-                                `${allocation.academicClass.name} ${allocation.period}: ${money(allocation.amount)}`,
-                            )
-                            .join(', ')}
+                          {payment.kind === 'OTHER'
+                            ? describeOtherPayment(payment.otherConcept)
+                            : payment.allocations
+                                .map(
+                                  (allocation) =>
+                                    `${allocation.academicClass.name} ${allocation.period}: ${money(allocation.amount)}`,
+                                )
+                                .join(', ')}
                         </span>
                         <small>Registrado por {payment.createdBy.username}</small>
                       </div>
@@ -974,6 +984,17 @@ export default function StudentDetailPage() {
           )}
         </aside>
       </div>
+      {otherPayment && (
+        <OtherPaymentDialog
+          studentId={id}
+          studentName={`${student.firstName} ${student.lastName}`}
+          onClose={() => setOtherPayment(false)}
+          onDone={(result) => {
+            setOtherPayment(false);
+            void load().then(() => setMessage(`${result.title}: ${result.detail}`));
+          }}
+        />
+      )}
       {generatingCharge && (
         <GenerateChargeDialog
           studentId={id}

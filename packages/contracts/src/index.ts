@@ -515,6 +515,16 @@ export type CreatePaymentDto = Readonly<{
   studentId: string;
   tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
 }>;
+export type PaymentKindDto = 'CHARGES' | 'OTHER';
+export type OtherPaymentConceptDto = 'SINGLE_CLASS' | 'OTHER';
+/** Cobro que no se imputa a cuotas: clase suelta (con su clase) u otro concepto (con detalle). */
+export type CreateOtherPaymentDto = Readonly<{
+  studentId: string;
+  concept: OtherPaymentConceptDto;
+  classId?: string | null;
+  detail?: string | null;
+  tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
+}>;
 export type PaymentTenderDto = Readonly<{
   id: string;
   method: PaymentMethodDto;
@@ -540,6 +550,13 @@ export type PaymentDto = Readonly<{
   voidedAt: string | null;
   voidedBy: Readonly<{ id: string; username: string }> | null;
   allocations: readonly PaymentAllocationDto[];
+  kind: PaymentKindDto;
+  /** Solo en cobros OTHER. */
+  otherConcept: Readonly<{
+    concept: OtherPaymentConceptDto;
+    detail: string | null;
+    academicClass: Readonly<{ id: string; name: string }> | null;
+  }> | null;
   createdAt: string;
   updatedAt: string;
 }>;

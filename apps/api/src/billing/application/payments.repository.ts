@@ -1,4 +1,9 @@
-import type { PaymentDto, PaymentMethodDto, PaymentStatusDto } from '@academy/contracts';
+import type {
+  OtherPaymentConceptDto,
+  PaymentDto,
+  PaymentMethodDto,
+  PaymentStatusDto,
+} from '@academy/contracts';
 
 export const PAYMENTS_REPOSITORY = Symbol('PAYMENTS_REPOSITORY');
 
@@ -19,6 +24,19 @@ export interface PaymentsRepository {
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
   ): Promise<PaymentDto>;
+  /** Cobro que no se imputa a cuotas; igual exige turno de caja abierto. */
+  createOther(
+    data: Readonly<{
+      studentId: string;
+      concept: OtherPaymentConceptDto;
+      classId: string | null;
+      detail: string | null;
+    }>,
+    tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
+    actorId: string,
+  ): Promise<PaymentDto>;
+  /** Estado de la clase de una clase suelta, o null si no existe. */
+  findClassStatus(classId: string): Promise<'ACTIVE' | 'INACTIVE' | null>;
   findById(id: string): Promise<PaymentDto | null>;
   findPage(
     query: PaymentQuery,

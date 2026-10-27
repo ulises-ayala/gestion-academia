@@ -71,6 +71,17 @@ enum PaymentOrigin {
   CONTROLFIT_IMPORT
 }
 
+/// Un cobro de cuotas se imputa a cuotas; uno OTHER no (clase suelta u otro concepto).
+enum PaymentKind {
+  CHARGES
+  OTHER
+}
+
+enum OtherPaymentConcept {
+  SINGLE_CLASS
+  OTHER
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -225,7 +236,8 @@ model AcademyClass {
   teacher     Teacher         @relation(fields: [teacherId], references: [id])
   schedules   ClassSchedule[]
   enrollments Enrollment[]
-  tariffs Tariff[]
+  tariffs     Tariff[]
+  payments    Payment[]
 
   @@index([danceTypeId, status])
   @@index([teacherId, status])
@@ -265,15 +277,15 @@ model Enrollment {
 }
 
 model Tariff {
-  id             String          @id @default(uuid()) @db.Uuid
-  classId        String          @map("class_id") @db.Uuid
-  name           String          @db.VarChar(120)
-  amount         Decimal         @db.Decimal(12, 2)
-  validFrom      DateTime        @map("valid_from") @db.Date
-  validTo        DateTime?       @map("valid_to") @db.Date
-  status         RecordStatus    @default(ACTIVE)
-  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id        String       @id @default(uuid()) @db.Uuid
+  classId   String       @map("class_id") @db.Uuid
+  name      String       @db.VarChar(120)
+  amount    Decimal      @db.Decimal(12, 2)
+  validFrom DateTime     @map("valid_from") @db.Date
+  validTo   DateTime?    @map("valid_to") @db.Date
+  status    RecordStatus @default(ACTIVE)
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   class          AcademyClass    @relation(fields: [classId], references: [id], onDelete: Restrict)
   monthlyCharges MonthlyCharge[]
@@ -374,27 +386,33 @@ model MonthlyChargeAdjustment {
 }
 
 model Payment {
-  id              String              @id @default(uuid()) @db.Uuid
-  studentId       String              @map("student_id") @db.Uuid
-  amount          Decimal             @db.Decimal(12, 2)
-  status          PaymentStatus       @default(CONFIRMED)
-  origin          PaymentOrigin       @default(CASH_DESK)
-  legacyReference String?             @unique @map("legacy_reference") @db.VarChar(80)
-  paidAt          DateTime            @default(now()) @map("paid_at") @db.Timestamptz(3)
-  createdByUserId String              @map("created_by_user_id") @db.Uuid
-  voidedAt        DateTime?           @map("voided_at") @db.Timestamptz(3)
-  voidedByUserId  String?             @map("voided_by_user_id") @db.Uuid
-  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
-  student         Student             @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  createdBy       AdminUser           @relation("PaymentCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
-  voidedBy        AdminUser?          @relation("PaymentVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
+  id              String               @id @default(uuid()) @db.Uuid
+  studentId       String               @map("student_id") @db.Uuid
+  amount          Decimal              @db.Decimal(12, 2)
+  status          PaymentStatus        @default(CONFIRMED)
+  origin          PaymentOrigin        @default(CASH_DESK)
+  legacyReference String?              @unique @map("legacy_reference") @db.VarChar(80)
+  kind            PaymentKind          @default(CHARGES)
+  concept         OtherPaymentConcept?
+  conceptDetail   String?              @map("concept_detail") @db.VarChar(200)
+  classId         String?              @map("class_id") @db.Uuid
+  paidAt          DateTime             @default(now()) @map("paid_at") @db.Timestamptz(3)
+  createdByUserId String               @map("created_by_user_id") @db.Uuid
+  voidedAt        DateTime?            @map("voided_at") @db.Timestamptz(3)
+  voidedByUserId  String?              @map("voided_by_user_id") @db.Uuid
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  student         Student              @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  createdBy       AdminUser            @relation("PaymentCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  voidedBy        AdminUser?           @relation("PaymentVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
+  academicClass   AcademyClass?        @relation(fields: [classId], references: [id], onDelete: Restrict)
   allocations     PaymentAllocation[]
   tenders         PaymentTender[]
   cashMovements   CashMovement[]
 
   @@index([studentId, paidAt])
   @@index([status, paidAt])
+  @@index([kind, paidAt])
   @@map("payments")
 }
 
