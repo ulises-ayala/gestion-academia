@@ -155,3 +155,21 @@ dialog.generate-charge-dialog::backdrop {
     grid-template-columns: 1fr;
   }
 }
+
+.modal .generate-charge-multi {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+.generate-charge-multi input[type='checkbox'] {
+  width: auto;
+  min-height: auto;
+  margin-top: 0.2rem;
+}
+
+.generate-charge-preview .is-skipped {
+  color: var(--text-muted);
+}

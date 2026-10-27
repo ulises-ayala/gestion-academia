@@ -21,32 +21,28 @@ describe('generar cuota', () => {
   it('suma meses cruzando el año', () => {
     expect(addMonths('2026-12', 1)).toBe('2027-01');
   });
-  it('Admisión elige desde el mes actual; Administración desde el inicio de la inscripción', () => {
+  it('Admisión elige desde el mes actual; Administración hasta 12 meses atrás', () => {
     const base = { currentPeriod: '2026-10', enrollmentStart: '2026-03-02' };
     expect(periodRange({ ...base, canBackfill: false })).toEqual({
       min: '2026-10',
       max: '2026-12',
     });
-    expect(periodRange({ ...base, canBackfill: true })).toEqual({ min: '2026-03', max: '2026-12' });
+    expect(periodRange({ ...base, canBackfill: true })).toEqual({ min: '2025-10', max: '2026-12' });
     expect(
       periodRange({ currentPeriod: '2026-10', enrollmentStart: '2026-11-01', canBackfill: false }),
     ).toEqual({ min: '2026-11', max: '2026-12' });
   });
   it('sugiere el primer mes sin cuota desde el actual', () => {
-    const range = { min: '2026-03', max: '2026-12' };
+    const range = { min: '2025-10', max: '2026-12' };
     expect(suggestedPeriod(range, '2026-10', new Set())).toBe('2026-10');
     expect(suggestedPeriod(range, '2026-10', new Set(['2026-10']))).toBe('2026-11');
     expect(suggestedPeriod(range, '2026-10', new Set(['2026-10', '2026-11', '2026-12']))).toBe(
       '2026-12',
     );
   });
-  it('al cobrar en el momento suma el recargo si la cuota ya venció', () => {
-    expect(collectNowAmount({ studentDueAmount: '40000.00', lateFeeOnCollect: false })).toBe(
-      '40000.00',
-    );
-    expect(collectNowAmount({ studentDueAmount: '40000.00', lateFeeOnCollect: true })).toBe(
-      '41000.00',
-    );
+  it('al cobrar en el momento suma un recargo por cada cuota vencida', () => {
+    expect(collectNowAmount({ newTotal: '40000.00', lateFeeCount: 0 })).toBe('40000.00');
+    expect(collectNowAmount({ newTotal: '120000.00', lateFeeCount: 2 })).toBe('122000.00');
   });
   it('lee las tarifas desactivadas que se pueden activar', () => {
     const tariff = { id: 't1', name: 'Zumba mensual', amount: '40000.00' };

@@ -487,15 +487,17 @@ export type CreateMonthlyChargeDto = Readonly<{
   period: string;
   dueDate: string;
 }>;
-/** Generación manual: la tarifa la resuelve el sistema. `period` es AAAA-MM. */
+/**
+ * Generación manual: la tarifa la resuelve el sistema. `period` es AAAA-MM; con `untilPeriod`
+ * se generan todos los meses del rango (vencimiento el día 10 de cada uno).
+ */
 export type GenerateMonthlyChargeDto = Readonly<{
   enrollmentId: string;
   period: string;
+  untilPeriod?: string;
   dueDate?: string;
 }>;
-export type MonthlyChargePreviewDto = Readonly<{
-  enrollmentId: string;
-  className: string;
+export type MonthlyChargePreviewMonthDto = Readonly<{
   period: string;
   dueDate: string;
   tariff: Readonly<{ id: string; name: string; amount: string }>;
@@ -503,6 +505,22 @@ export type MonthlyChargePreviewDto = Readonly<{
   adjustments: readonly BillingAdjustmentTypeDto[];
   alreadyExists: boolean;
   lateFeeOnCollect: boolean;
+}>;
+export type MonthlyChargePreviewDto = Readonly<{
+  enrollmentId: string;
+  className: string;
+  months: readonly MonthlyChargePreviewMonthDto[];
+  /** Cuotas que se van a crear (las que ya existen se saltean) y su importe. */
+  newCount: number;
+  newTotal: string;
+  /** Cuotas a crear que ya vencieron: cada una suma el recargo al cobrarla. */
+  lateFeeCount: number;
+  /** Si la deuda es anterior al inicio, la inscripción se adelanta a esa fecha. */
+  enrollmentStartChange: Readonly<{ from: string; to: string }> | null;
+}>;
+export type GeneratedMonthlyChargesDto = Readonly<{
+  created: readonly MonthlyChargeDto[];
+  skippedPeriods: readonly string[];
 }>;
 export type MonthlyChargeListDto = Readonly<{
   items: readonly MonthlyChargeDto[];

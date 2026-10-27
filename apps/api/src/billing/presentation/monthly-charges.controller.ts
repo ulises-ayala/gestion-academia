@@ -22,6 +22,7 @@ export class MonthlyChargesController {
   @Get('generation-preview') @Permissions('charges:generate') preview(
     @Query('enrollmentId') enrollmentId: string | undefined,
     @Query('period') period: string | undefined,
+    @Query('untilPeriod') untilPeriod: string | undefined,
     @Query('dueDate') dueDate: string | undefined,
     @CurrentUser() user: PublicAuthUser,
   ) {
@@ -29,6 +30,7 @@ export class MonthlyChargesController {
       {
         enrollmentId: parseUuid(enrollmentId ?? '', 'enrollmentId'),
         period: period ?? '',
+        ...(untilPeriod ? { untilPeriod } : {}),
         ...(dueDate ? { dueDate } : {}),
       },
       this.actor(user),
@@ -42,6 +44,7 @@ export class MonthlyChargesController {
       {
         enrollmentId: parseUuid(input?.enrollmentId ?? '', 'enrollmentId'),
         period: input?.period ?? '',
+        ...(input?.untilPeriod ? { untilPeriod: input.untilPeriod } : {}),
         ...(input?.dueDate ? { dueDate: input.dueDate } : {}),
       },
       this.actor(user),

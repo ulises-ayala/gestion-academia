@@ -3,6 +3,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { BILLING_REPOSITORY, type BillingRepository } from '../application/billing.repository';
 import type {
   ChargeGenerationRepository,
+  EnrollmentForGeneration,
   GeneratedChargeData,
 } from '../application/charge-generation.repository';
 import { mapTariff } from './prisma-billing.repository';
@@ -72,6 +73,41 @@ export class PrismaChargeGenerationRepository implements ChargeGenerationReposit
       where: { enrollmentId, period: periodDate(period) },
     });
     return count > 0;
+  }
+
+  async overlapsOtherEnrollment(enrollment: EnrollmentForGeneration, newStart: string) {
+    // Otra inscripción a la misma clase que estuvo vigente entre el nuevo inicio y el actual.
+    const count = await this.prisma.enrollment.count({
+      where: {
+        id: { not: enrollment.id },
+        studentId: enrollment.studentId,
+        classId: enrollment.classId,
+        startDate: { lt: new Date(`${enrollment.startDate}T00:00:00.000Z`) },
+        OR: [{ endDate: null }, { endDate: { gte: new Date(`${newStart}T00:00:00.000Z`) } }],
+      },
+    });
+    return count > 0;
+  }
+
+  async moveEnrollmentStart(enrollmentId: string, newStart: string, actorId: string) {
+    await this.prisma.$transaction(async (tx) => {
+      const before = await tx.enrollment.findUniqueOrThrow({ where: { id: enrollmentId } });
+      await tx.enrollment.update({
+        where: { id: enrollmentId },
+        data: { startDate: new Date(`${newStart}T00:00:00.000Z`) },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actorId,
+          action: 'UPDATE',
+          entityType: 'ENROLLMENT',
+          entityId: enrollmentId,
+          reason: 'Inicio adelantado para cargar cuotas adeudadas',
+          before: { startDate: isoDate(before.startDate) },
+          after: { startDate: newStart },
+        },
+      });
+    });
   }
 
   create(data: GeneratedChargeData, actorId: string) {

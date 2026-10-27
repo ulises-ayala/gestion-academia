@@ -3,6 +3,7 @@
 import type {
   CashShiftDto,
   EnrollmentListDto,
+  GeneratedMonthlyChargesDto,
   MonthlyChargeDto,
   MonthlyChargePreviewDto,
   PaymentMethodDto,
@@ -21,7 +22,9 @@ import {
   inactiveTariffsFrom,
   periodLabel,
   type InactiveTariff,
+  addMonths,
   periodRange,
+  shortDate,
   suggestedPeriod,
 } from '../lib/charge-generation';
 
@@ -59,6 +62,8 @@ export function GenerateChargeDialog({
   const [enrollmentId, setEnrollmentId] = useState('');
   const [period, setPeriod] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [multi, setMulti] = useState(false);
+  const [untilPeriod, setUntilPeriod] = useState('');
   const [preview, setPreview] = useState<MonthlyChargePreviewDto | null>(null);
   const [previewError, setPreviewError] = useState('');
   const [loadingPreview, setLoadingPreview] = useState(false);
@@ -90,8 +95,9 @@ export function GenerateChargeDialog({
         : cashOpen === false
           ? 'caja'
           : preview && Number(collectAmount) === 0
-            ? 'Esta cuota no tiene importe a pagar.'
+            ? 'No hay importe a pagar.'
             : '';
+  const single = preview?.months.length === 1 ? preview.months[0]! : null;
 
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
@@ -117,6 +123,7 @@ export function GenerateChargeDialog({
     );
     setPeriod(next);
     setDueDate(defaultDueDate(next));
+    setUntilPeriod((current) => (current && current >= next ? current : next));
   };
 
   useEffect(() => {
@@ -147,13 +154,15 @@ export function GenerateChargeDialog({
 
   useEffect(() => {
     if (!enrollmentId || !/^\d{4}-\d{2}$/.test(period)) return;
+    if (multi && !/^\d{4}-\d{2}$/.test(untilPeriod)) return;
     let active = true;
     setLoadingPreview(true);
     setPreviewError('');
     setInactiveTariffs([]);
     setMissingTariff(false);
     const params = new URLSearchParams({ enrollmentId, period });
-    if (dueDate) params.set('dueDate', dueDate);
+    if (multi) params.set('untilPeriod', untilPeriod);
+    else if (dueDate) params.set('dueDate', dueDate);
     apiRequest<MonthlyChargePreviewDto>(`/monthly-charges/generation-preview?${params}`)
       .then((result) => active && setPreview(result))
       .catch((caught) => {
@@ -171,7 +180,7 @@ export function GenerateChargeDialog({
     return () => {
       active = false;
     };
-  }, [enrollmentId, period, dueDate, previewVersion]);
+  }, [enrollmentId, period, dueDate, multi, untilPeriod, previewVersion]);
 
   async function activateTariff(tariff: InactiveTariff) {
     setActivating(tariff.id);
@@ -192,22 +201,32 @@ export function GenerateChargeDialog({
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    if (!preview || preview.alreadyExists || saving) return;
+    if (!preview || preview.newCount === 0 || saving) return;
     setSaving(true);
     setError('');
-    const label = `${preview.className} · ${periodLabel(preview.period)}`;
+    let label = '';
     try {
-      await apiRequest<MonthlyChargeDto>('/monthly-charges/generate', {
+      const result = await apiRequest<GeneratedMonthlyChargesDto>('/monthly-charges/generate', {
         method: 'POST',
-        body: JSON.stringify({ enrollmentId, period, dueDate }),
+        body: JSON.stringify(
+          multi ? { enrollmentId, period, untilPeriod } : { enrollmentId, period, dueDate },
+        ),
       });
+      const months = result.created.map((charge) => periodLabel(charge.period).toLowerCase());
+      label =
+        months.length === 1
+          ? `${preview.className} · ${months[0]}`
+          : `${preview.className} · ${months.length} cuotas (${months.join(', ')})`;
     } catch (caught) {
       setError(caught instanceof ApiClientError ? caught.message : 'No se pudo generar la cuota.');
       setSaving(false);
       return;
     }
     if (!collectNow) {
-      onDone({ title: 'Cuota generada', detail: `${label}. Quedó pendiente de pago.` });
+      onDone({
+        title: preview.newCount === 1 ? 'Cuota generada' : 'Cuotas generadas',
+        detail: `${label}. ${preview.newCount === 1 ? 'Quedó pendiente' : 'Quedaron pendientes'} de pago.`,
+      });
       return;
     }
     try {
@@ -216,12 +235,12 @@ export function GenerateChargeDialog({
         body: JSON.stringify({ studentId, tenders: [{ method, amount: collectAmount }] }),
       });
       onDone({
-        title: 'Cuota generada y cobrada',
+        title: preview.newCount === 1 ? 'Cuota generada y cobrada' : 'Cuotas generadas y cobradas',
         detail: `${label}. Cobro de ${money(collectAmount)} en ${methodLabels[method]}.`,
       });
     } catch (caught) {
       onDone({
-        title: 'Cuota generada',
+        title: preview.newCount === 1 ? 'Cuota generada' : 'Cuotas generadas',
         detail: `${label}.`,
         warning: `No se pudo registrar el cobro: ${
           caught instanceof ApiClientError ? caught.message : 'error de conexión'
@@ -321,7 +340,7 @@ export function GenerateChargeDialog({
                   </select>
                 </label>
                 <label>
-                  Mes
+                  {multi ? 'Desde' : 'Mes'}
                   <input
                     type="month"
                     required
@@ -330,22 +349,55 @@ export function GenerateChargeDialog({
                     max={range?.max}
                     disabled={saving}
                     onChange={(event) => {
-                      setPeriod(event.target.value);
-                      if (event.target.value) setDueDate(defaultDueDate(event.target.value));
+                      const next = event.target.value;
+                      setPeriod(next);
+                      if (next) setDueDate(defaultDueDate(next));
+                      if (next && untilPeriod < next) setUntilPeriod(next);
                     }}
                   />
                 </label>
-                <label>
-                  Vencimiento
+                {multi ? (
+                  <label>
+                    Hasta
+                    <input
+                      type="month"
+                      required
+                      value={untilPeriod}
+                      min={period}
+                      max={range?.max}
+                      disabled={saving}
+                      onChange={(event) => setUntilPeriod(event.target.value)}
+                    />
+                  </label>
+                ) : (
+                  <label>
+                    Vencimiento
+                    <input
+                      type="date"
+                      required
+                      value={dueDate}
+                      min={period ? `${period}-01` : undefined}
+                      max={period ? `${period}-10` : undefined}
+                      disabled={saving}
+                      onChange={(event) => setDueDate(event.target.value)}
+                    />
+                  </label>
+                )}
+                <label className="wide generate-charge-multi">
                   <input
-                    type="date"
-                    required
-                    value={dueDate}
-                    min={period ? `${period}-01` : undefined}
-                    max={period ? `${period}-10` : undefined}
+                    type="checkbox"
+                    checked={multi}
                     disabled={saving}
-                    onChange={(event) => setDueDate(event.target.value)}
+                    onChange={(event) => {
+                      setMulti(event.target.checked);
+                      if (event.target.checked && range && period)
+                        setUntilPeriod(
+                          addMonths(period, 1) <= range.max ? addMonths(period, 1) : period,
+                        );
+                    }}
                   />
+                  Varios meses (deuda de meses anteriores o pago adelantado). Cada cuota vence el 10
+                  de su mes.
                 </label>
               </div>
               <div className="generate-charge-preview" aria-live="polite">
@@ -395,38 +447,85 @@ export function GenerateChargeDialog({
                       </p>
                     )}
                   </>
-                ) : preview ? (
+                ) : preview && single ? (
                   <>
                     <p>
                       <span>
-                        {preview.className} · {periodLabel(preview.period)}
-                        <small>{preview.tariff.name}</small>
+                        {preview.className} · {periodLabel(single.period)}
+                        <small>{single.tariff.name}</small>
                       </span>
-                      <span>{money(preview.tariff.amount)}</span>
+                      <span>{money(single.tariff.amount)}</span>
                     </p>
-                    {preview.adjustments.length > 0 && (
+                    {single.adjustments.length > 0 && (
                       <p>
                         <span>
-                          {preview.adjustments.map((type) => adjustmentLabels[type]).join(' · ')}
+                          {single.adjustments.map((type) => adjustmentLabels[type]).join(' · ')}
                         </span>
                       </p>
                     )}
                     <p className="generate-charge-total">
                       <span>Importe de la cuota</span>
-                      <strong>{money(preview.studentDueAmount)}</strong>
+                      <strong>{money(single.studentDueAmount)}</strong>
                     </p>
-                    {preview.alreadyExists ? (
+                    {single.alreadyExists ? (
                       <p className="generate-charge-note is-blocked" role="status">
-                        Ya existe la cuota de {periodLabel(preview.period).toLowerCase()} para esta
+                        Ya existe la cuota de {periodLabel(single.period).toLowerCase()} para esta
                         clase.
                       </p>
-                    ) : preview.lateFeeOnCollect ? (
+                    ) : single.lateFeeOnCollect ? (
                       <p className="generate-charge-note" role="status">
                         Esta cuota ya está vencida: al cobrarla se suma el recargo de $1.000.
                       </p>
                     ) : null}
                   </>
+                ) : preview ? (
+                  <>
+                    <p className="modal-copy">{preview.className}</p>
+                    {preview.months.map((month) => (
+                      <p key={month.period} className={month.alreadyExists ? 'is-skipped' : ''}>
+                        <span>
+                          {periodLabel(month.period)}
+                          <small>
+                            {month.alreadyExists
+                              ? 'Ya tiene cuota: se saltea'
+                              : `${month.tariff.name} · vence ${shortDate(month.dueDate)}${
+                                  month.lateFeeOnCollect ? ' · vencida' : ''
+                                }${
+                                  month.adjustments.length
+                                    ? ` · ${month.adjustments.map((type) => adjustmentLabels[type]).join(', ')}`
+                                    : ''
+                                }`}
+                          </small>
+                        </span>
+                        <span>{month.alreadyExists ? '—' : money(month.studentDueAmount)}</span>
+                      </p>
+                    ))}
+                    <p className="generate-charge-total">
+                      <span>
+                        A generar: {preview.newCount} cuota{preview.newCount === 1 ? '' : 's'}
+                      </span>
+                      <strong>{money(preview.newTotal)}</strong>
+                    </p>
+                    {preview.newCount === 0 ? (
+                      <p className="generate-charge-note is-blocked" role="status">
+                        Todos esos meses ya tienen cuota para esta clase.
+                      </p>
+                    ) : preview.lateFeeCount > 0 ? (
+                      <p className="generate-charge-note" role="status">
+                        {preview.lateFeeCount === 1
+                          ? 'Una cuota ya está vencida: al cobrarla se suma el recargo de $1.000.'
+                          : `${preview.lateFeeCount} cuotas ya están vencidas: al cobrarlas se suma el recargo de $1.000 por cada una.`}
+                      </p>
+                    ) : null}
+                  </>
                 ) : null}
+                {preview?.enrollmentStartChange && (
+                  <p className="generate-charge-note" role="status">
+                    La inscripción empieza el {shortDate(preview.enrollmentStartChange.from)}. Para
+                    cargar esta deuda, su inicio se adelanta al{' '}
+                    {shortDate(preview.enrollmentStartChange.to)} (queda registrado).
+                  </p>
+                )}
               </div>
               <fieldset className="generate-charge-payment" disabled={saving}>
                 <legend>Pago</legend>
@@ -477,7 +576,12 @@ export function GenerateChargeDialog({
                 ) : collectNow && preview ? (
                   <p className="generate-charge-collect">
                     Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}
-                    {preview.lateFeeOnCollect ? ' (incluye el recargo)' : ''}.
+                    {preview.lateFeeCount === 1
+                      ? ' (incluye el recargo)'
+                      : preview.lateFeeCount > 1
+                        ? ` (incluye ${preview.lateFeeCount} recargos)`
+                        : ''}
+                    .
                   </p>
                 ) : null}
               </fieldset>
@@ -494,9 +598,15 @@ export function GenerateChargeDialog({
             </button>
             <button
               type="submit"
-              disabled={!preview || preview.alreadyExists || loadingPreview || saving}
+              disabled={!preview || preview.newCount === 0 || loadingPreview || saving}
             >
-              {saving ? 'Guardando…' : collectNow ? 'Generar y cobrar' : 'Generar cuota'}
+              {saving
+                ? 'Guardando…'
+                : collectNow
+                  ? 'Generar y cobrar'
+                  : preview && preview.newCount > 1
+                    ? `Generar ${preview.newCount} cuotas`
+                    : 'Generar cuota'}
             </button>
           </div>
         </form>

@@ -17,7 +17,13 @@ export const addMonths = (period: string, months: number) => {
   return `${Math.floor(index / 12)}-${String((index % 12) + 1).padStart(2, '0')}`;
 };
 
-/** Meses que se pueden elegir: de los anteriores solo con permiso de Administración. */
+/** Hasta cuántos meses hacia atrás Administración puede cargar deuda desde la ventana. */
+export const GENERATION_MONTHS_BACK = 12;
+
+/**
+ * Meses que se pueden elegir. Admisión: desde el mes actual (o el inicio de la inscripción).
+ * Administración: también deuda anterior, aunque sea previa al inicio (la inscripción se adelanta).
+ */
 export const periodRange = (input: {
   currentPeriod: string;
   canBackfill: boolean;
@@ -25,7 +31,11 @@ export const periodRange = (input: {
 }) => {
   const start = input.enrollmentStart.slice(0, 7);
   const max = addMonths(input.currentPeriod, GENERATION_MONTHS_AHEAD);
-  const min = input.canBackfill ? start : start > input.currentPeriod ? start : input.currentPeriod;
+  const min = input.canBackfill
+    ? addMonths(input.currentPeriod, -GENERATION_MONTHS_BACK)
+    : start > input.currentPeriod
+      ? start
+      : input.currentPeriod;
   return { min, max };
 };
 
@@ -117,14 +127,14 @@ export const inactiveTariffsFrom = (
   );
 };
 
-/** Lo que se cobra al generar y cobrar en el momento: la cuota más el recargo si ya venció. */
-export const collectNowAmount = (
-  preview: Readonly<{ studentDueAmount: string; lateFeeOnCollect: boolean }>,
-) => {
-  const cents =
-    Math.round(Number(preview.studentDueAmount) * 100) + (preview.lateFeeOnCollect ? 100000 : 0);
+/** Lo que se cobra al generar y cobrar en el momento: las cuotas más un recargo por cada vencida. */
+export const collectNowAmount = (preview: Readonly<{ newTotal: string; lateFeeCount: number }>) => {
+  const cents = Math.round(Number(preview.newTotal) * 100) + preview.lateFeeCount * 100000;
   return (cents / 100).toFixed(2);
 };
+
+export const shortDate = (value: string) =>
+  `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
 
 export const periodLabel = (period: string) => {
   const label = new Intl.DateTimeFormat('es-AR', {

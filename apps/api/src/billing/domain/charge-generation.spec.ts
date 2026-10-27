@@ -4,6 +4,7 @@ import {
   addMonths,
   assertGenerationPeriod,
   assertPeriodAllowed,
+  periodsBetween,
   pickTariff,
 } from './charge-generation';
 
@@ -37,6 +38,24 @@ describe('generación de cuotas', () => {
   it('suma meses cruzando el año', () => {
     expect(addMonths('2026-11', 2)).toBe('2027-01');
     expect(addMonths('2026-01', -1)).toBe('2025-12');
+  });
+  it('lista los meses de un rango, con un máximo de 12', () => {
+    expect(periodsBetween('2026-11', '2027-01')).toEqual(['2026-11', '2026-12', '2027-01']);
+    expect(periodsBetween('2026-10', '2026-10')).toEqual(['2026-10']);
+    expect(() => periodsBetween('2026-10', '2026-09')).toThrow(/anterior al inicial/);
+    expect(() => periodsBetween('2025-10', '2026-10')).toThrow(/hasta 12 meses/);
+  });
+  it('Administración puede generar antes del inicio de la inscripción si se pide', () => {
+    expect(() =>
+      assertPeriodAllowed({
+        period: '2026-08',
+        currentPeriod: '2026-10',
+        canBackfill: true,
+        enrollmentStart: '2026-10-01',
+        enrollmentEnd: null,
+        allowBeforeStart: true,
+      }),
+    ).not.toThrow();
   });
   it('valida el formato del mes', () => {
     expect(assertGenerationPeriod('2026-11')).toBe('2026-11');

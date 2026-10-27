@@ -1156,7 +1156,24 @@ function StudentAccount({
                 <p className="field-error">Usá importes positivos con hasta dos decimales.</p>
               )}
               {exceedsOutstanding && (
-                <p className="field-error">El pago no puede superar el saldo pendiente.</p>
+                <div className="payment-exceeds" role="status">
+                  <p className="field-error">
+                    El pago supera la deuda cargada ({money(centsToDecimal(debtCents))}).
+                  </p>
+                  {canGenerate && (
+                    <p className="subtitle">
+                      Si paga meses que todavía no tienen cuota (adelantados o deuda anterior),
+                      generalos primero y después registrá el cobro.{' '}
+                      <button
+                        className="link-button"
+                        type="button"
+                        onClick={() => setGenerating(true)}
+                      >
+                        Generar cuota
+                      </button>
+                    </p>
+                  )}
+                </div>
               )}
             </div>
             <div className="payment-allocation-preview">

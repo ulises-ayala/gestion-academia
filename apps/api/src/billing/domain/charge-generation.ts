@@ -30,6 +30,25 @@ const monthLabel = (period: string) =>
 
 export const defaultDueDate = (period: string) => `${period}-${DEFAULT_DUE_DAY}`;
 
+/** Máximo de meses que se generan de una vez (por ejemplo, para cargar deuda vieja). */
+export const MAX_GENERATION_MONTHS = 12;
+
+/** Meses de `from` a `until`, ambos incluidos. */
+export const periodsBetween = (from: string, until: string) => {
+  if (until < from)
+    throw new DomainError('VALIDATION_ERROR', 'El mes final no puede ser anterior al inicial', {
+      field: 'untilPeriod',
+    });
+  const count = toIndex(until) - toIndex(from) + 1;
+  if (count > MAX_GENERATION_MONTHS)
+    throw new DomainError(
+      'VALIDATION_ERROR',
+      `Se pueden generar hasta ${MAX_GENERATION_MONTHS} meses de una vez`,
+      { field: 'untilPeriod' },
+    );
+  return Array.from({ length: count }, (_, index) => addMonths(from, index));
+};
+
 /**
  * Qué meses se pueden generar. Todos pueden el mes actual y hasta dos adelantados;
  * los meses anteriores (deuda vieja) quedan para quien gestiona cuotas.
@@ -40,6 +59,8 @@ export const assertPeriodAllowed = (input: {
   canBackfill: boolean;
   enrollmentStart: string;
   enrollmentEnd: string | null;
+  /** Administración puede generar deuda anterior al inicio: la inscripción se adelanta. */
+  allowBeforeStart?: boolean;
 }) => {
   const { period, currentPeriod, canBackfill } = input;
   const latest = addMonths(currentPeriod, GENERATION_MONTHS_AHEAD);
@@ -56,7 +77,7 @@ export const assertPeriodAllowed = (input: {
       { field: 'period' },
     );
   const startPeriod = input.enrollmentStart.slice(0, 7);
-  if (period < startPeriod)
+  if (period < startPeriod && !input.allowBeforeStart)
     throw new DomainError(
       'CHARGE_PERIOD_BEFORE_ENROLLMENT',
       `La inscripción empieza en ${monthLabel(startPeriod)}`,
