@@ -82,8 +82,18 @@ describe('generación de cuotas', () => {
       details: { inactiveTariffs: [{ id: 't-off', name: 'Zumba mensual', amount: '40000.00' }] },
     });
   });
-  it('sin ninguna tarifa para el mes pide revisar Tarifas', () => {
-    expect(() => pickTariff([], '2026-10', '2026-10')).toThrow(/no tiene una tarifa vigente/);
+  it('sin ninguna tarifa cargada pide crearla', () => {
+    expect(() => pickTariff([], '2026-10', '2026-10')).toThrow(/ninguna tarifa cargada/);
+  });
+  it('si la tarifa no cubre el mes dice desde cuándo rige', () => {
+    const november = tariff({ name: 'Zumba mensual', validFrom: '2026-11-01' });
+    expect(() => pickTariff([november], '2026-10', '2026-10')).toThrow(
+      'La clase no tiene una tarifa para octubre de 2026: “Zumba mensual” rige desde el 01/11/2026. Revisá las fechas en Tarifas.',
+    );
+    const ended = tariff({ name: 'Zumba vieja', validTo: '2026-09-30', status: 'INACTIVE' });
+    expect(() => pickTariff([ended], '2026-10', '2026-10')).toThrow(
+      /“Zumba vieja” rige del 01\/09\/2026 al 30\/09\/2026 y está desactivada/,
+    );
   });
   it('si hay dos tarifas posibles no elige: pide revisar', () => {
     expect(() => pickTariff([tariff({}), tariff({})], '2026-10', '2026-10')).toThrow(/más de una/);

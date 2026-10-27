@@ -70,6 +70,13 @@ export const assertPeriodAllowed = (input: {
     );
 };
 
+const shortDate = (value: string) =>
+  `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
+const tariffRange = (tariff: TariffDto) =>
+  tariff.validTo
+    ? `del ${shortDate(tariff.validFrom)} al ${shortDate(tariff.validTo)}`
+    : `desde el ${shortDate(tariff.validFrom)}`;
+
 const coversPeriod = (tariff: TariffDto, period: string) =>
   tariff.validFrom.slice(0, 7) <= period &&
   (!tariff.validTo || tariff.validTo.slice(0, 7) >= period);
@@ -92,11 +99,21 @@ export const pickTariff = (
     const inactiveTariffs = covering
       .filter((tariff) => tariff.status === 'INACTIVE')
       .map(({ id, name, amount }) => ({ id, name, amount }));
+    // Si la clase tiene tarifas pero ninguna cubre el mes, se dice cuál es y desde cuándo rige.
+    const nearest = [...tariffs].sort((a, b) =>
+      a.status === b.status
+        ? b.validFrom.localeCompare(a.validFrom)
+        : a.status === 'ACTIVE'
+          ? -1
+          : 1,
+    )[0];
     throw new DomainError(
       'TARIFF_NOT_FOUND_FOR_PERIOD',
       inactiveTariffs.length
         ? `La tarifa de la clase para ${monthLabel(period)} está desactivada.`
-        : `La clase no tiene una tarifa vigente para ${monthLabel(period)}. Revisá Tarifas.`,
+        : nearest
+          ? `La clase no tiene una tarifa para ${monthLabel(period)}: “${nearest.name}” rige ${tariffRange(nearest)}${nearest.status === 'INACTIVE' ? ' y está desactivada' : ''}. Revisá las fechas en Tarifas.`
+          : `La clase no tiene ninguna tarifa cargada. Creala en Tarifas.`,
       { field: 'period', inactiveTariffs },
     );
   }

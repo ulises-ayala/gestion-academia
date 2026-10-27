@@ -75,15 +75,17 @@ export function GenerateChargeDialog({
     ? periodRange({ currentPeriod, canBackfill, enrollmentStart: enrollment.startDate })
     : null;
   const collectAmount = preview ? collectNowAmount(preview) : '0.00';
-  const collectBlocked = !canCollect
-    ? 'Tu usuario no puede registrar cobros.'
-    : hasOtherDebt
-      ? 'El alumno tiene otra deuda: generá la cuota y cobrá desde su estado de cuenta, así el pago se aplica en orden.'
-      : cashOpen === false
-        ? 'caja'
-        : preview && Number(collectAmount) === 0
-          ? 'Esta cuota no tiene importe a pagar.'
-          : '';
+  const collectBlocked = !preview
+    ? 'sin-cuota'
+    : !canCollect
+      ? 'Tu usuario no puede registrar cobros.'
+      : hasOtherDebt
+        ? 'El alumno tiene otra deuda: generá la cuota y cobrá desde su estado de cuenta, así el pago se aplica en orden.'
+        : cashOpen === false
+          ? 'caja'
+          : preview && Number(collectAmount) === 0
+            ? 'Esta cuota no tiene importe a pagar.'
+            : '';
 
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
@@ -398,7 +400,7 @@ export function GenerateChargeDialog({
                   </Link>
                   .
                 </p>
-              ) : collectBlocked ? (
+              ) : collectBlocked && collectBlocked !== 'sin-cuota' ? (
                 <p className="modal-copy">{collectBlocked}</p>
               ) : collectNow && preview ? (
                 <p className="generate-charge-collect">
