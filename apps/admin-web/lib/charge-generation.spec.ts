@@ -3,6 +3,7 @@ import {
   addMonths,
   businessPeriod,
   collectNowAmount,
+  inactiveTariffsFrom,
   periodLabel,
   periodRange,
   suggestedPeriod,
@@ -41,6 +42,19 @@ describe('generar cuota', () => {
     );
     expect(collectNowAmount({ studentDueAmount: '40000.00', lateFeeOnCollect: true })).toBe(
       '41000.00',
+    );
+  });
+  it('lee las tarifas desactivadas que se pueden activar', () => {
+    const tariff = { id: 't1', name: 'Zumba mensual', amount: '40000.00' };
+    expect(
+      inactiveTariffsFrom({
+        code: 'TARIFF_NOT_FOUND_FOR_PERIOD',
+        details: { inactiveTariffs: [tariff, { id: 3 }] },
+      }),
+    ).toEqual([tariff]);
+    expect(inactiveTariffsFrom({ code: 'TARIFF_NOT_FOUND_FOR_PERIOD', details: {} })).toEqual([]);
+    expect(inactiveTariffsFrom({ code: 'OTRO', details: { inactiveTariffs: [tariff] } })).toEqual(
+      [],
     );
   });
   it('nombra el mes en castellano', () => {

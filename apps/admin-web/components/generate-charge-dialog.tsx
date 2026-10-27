@@ -15,7 +15,9 @@ import {
   businessPeriod,
   collectNowAmount,
   defaultDueDate,
+  inactiveTariffsFrom,
   periodLabel,
+  type InactiveTariff,
   periodRange,
   suggestedPeriod,
 } from '../lib/charge-generation';
@@ -36,6 +38,7 @@ export function GenerateChargeDialog({
   charges,
   canBackfill,
   canCollect,
+  canManageTariffs,
   onClose,
   onDone,
 }: Readonly<{
@@ -44,6 +47,7 @@ export function GenerateChargeDialog({
   charges: readonly MonthlyChargeDto[];
   canBackfill: boolean;
   canCollect: boolean;
+  canManageTariffs: boolean;
   onClose(): void;
   onDone(result: GenerateChargeResult): void;
 }>) {
@@ -55,6 +59,9 @@ export function GenerateChargeDialog({
   const [preview, setPreview] = useState<MonthlyChargePreviewDto | null>(null);
   const [previewError, setPreviewError] = useState('');
   const [loadingPreview, setLoadingPreview] = useState(false);
+  const [inactiveTariffs, setInactiveTariffs] = useState<InactiveTariff[]>([]);
+  const [activating, setActivating] = useState('');
+  const [previewVersion, setPreviewVersion] = useState(0);
   const [cashOpen, setCashOpen] = useState<boolean | null>(null);
   const [collectNow, setCollectNow] = useState(false);
   const [method, setMethod] = useState<PaymentMethodDto>('CASH');
@@ -135,6 +142,7 @@ export function GenerateChargeDialog({
     let active = true;
     setLoadingPreview(true);
     setPreviewError('');
+    setInactiveTariffs([]);
     const params = new URLSearchParams({ enrollmentId, period });
     if (dueDate) params.set('dueDate', dueDate);
     apiRequest<MonthlyChargePreviewDto>(`/monthly-charges/generation-preview?${params}`)
@@ -145,12 +153,26 @@ export function GenerateChargeDialog({
         setPreviewError(
           caught instanceof ApiClientError ? caught.message : 'No se pudo calcular la cuota.',
         );
+        if (caught instanceof ApiClientError) setInactiveTariffs(inactiveTariffsFrom(caught.error));
       })
       .finally(() => active && setLoadingPreview(false));
     return () => {
       active = false;
     };
-  }, [enrollmentId, period, dueDate]);
+  }, [enrollmentId, period, dueDate, previewVersion]);
+
+  async function activateTariff(tariff: InactiveTariff) {
+    setActivating(tariff.id);
+    setError('');
+    try {
+      await apiRequest(`/tariffs/${tariff.id}/reactivate`, { method: 'POST' });
+      setPreviewVersion((version) => version + 1);
+    } catch (caught) {
+      setError(caught instanceof ApiClientError ? caught.message : 'No se pudo activar la tarifa.');
+    } finally {
+      setActivating('');
+    }
+  }
 
   useEffect(() => {
     if (collectBlocked) setCollectNow(false);
@@ -273,7 +295,32 @@ export function GenerateChargeDialog({
               {loadingPreview && !preview ? (
                 <p className="modal-copy">Calculando…</p>
               ) : previewError ? (
-                <p className="field-error">{previewError}</p>
+                <>
+                  <p className="field-error">{previewError}</p>
+                  {inactiveTariffs.map((tariff) => (
+                    <p className="generate-charge-tariff" key={tariff.id}>
+                      <span>
+                        {tariff.name}
+                        <small>Desactivada · {money(tariff.amount)}</small>
+                      </span>
+                      {canManageTariffs && (
+                        <button
+                          className="secondary"
+                          type="button"
+                          disabled={Boolean(activating) || saving}
+                          onClick={() => void activateTariff(tariff)}
+                        >
+                          {activating === tariff.id ? 'Activando…' : 'Activar tarifa'}
+                        </button>
+                      )}
+                    </p>
+                  ))}
+                  {inactiveTariffs.length > 0 && !canManageTariffs && (
+                    <p className="modal-copy">
+                      Pedile a Administración que la active desde Tarifas.
+                    </p>
+                  )}
+                </>
               ) : preview ? (
                 <>
                   <p>

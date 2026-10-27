@@ -67,11 +67,23 @@ describe('generación de cuotas', () => {
     const august = tariff({ validFrom: '2026-08-01', validTo: '2026-08-31', status: 'INACTIVE' });
     expect(pickTariff([current, august], '2026-08', '2026-10')).toBe(august);
   });
-  it('no usa una tarifa inactiva para el mes actual o adelantado', () => {
-    const inactive = tariff({ status: 'INACTIVE' });
-    expect(() => pickTariff([inactive], '2026-10', '2026-10')).toThrow(
-      /no tiene una tarifa vigente/,
-    );
+  it('no usa una tarifa inactiva para el mes actual o adelantado: la ofrece para activar', () => {
+    const inactive = tariff({ id: 't-off', name: 'Zumba mensual', status: 'INACTIVE' });
+    const outdated = tariff({ validTo: '2026-08-31', status: 'INACTIVE' });
+    let caught: unknown;
+    try {
+      pickTariff([inactive, outdated], '2026-10', '2026-10');
+    } catch (error) {
+      caught = error;
+    }
+    expect(caught).toMatchObject({
+      code: 'TARIFF_NOT_FOUND_FOR_PERIOD',
+      message: 'La tarifa de la clase para octubre de 2026 está desactivada.',
+      details: { inactiveTariffs: [{ id: 't-off', name: 'Zumba mensual', amount: '40000.00' }] },
+    });
+  });
+  it('sin ninguna tarifa para el mes pide revisar Tarifas', () => {
+    expect(() => pickTariff([], '2026-10', '2026-10')).toThrow(/no tiene una tarifa vigente/);
   });
   it('si hay dos tarifas posibles no elige: pide revisar', () => {
     expect(() => pickTariff([tariff({}), tariff({})], '2026-10', '2026-10')).toThrow(/más de una/);

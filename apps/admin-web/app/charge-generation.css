@@ -139,3 +139,9 @@ dialog.generate-charge-dialog::backdrop {
     grid-template-columns: 1fr;
   }
 }
+
+.generate-charge-preview .generate-charge-tariff {
+  align-items: center;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+}

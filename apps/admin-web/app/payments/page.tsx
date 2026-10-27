@@ -813,6 +813,7 @@ export default function PaymentsPage() {
           canGenerate={can('charges:generate')}
           canBackfill={can('charges:manage')}
           canCollectNow={can('payments:collect')}
+          canManageTariffs={can('tariffs:manage')}
           onChargeGenerated={(result) => {
             notifySuccess(result.title, result.detail);
             if (location.studentId)
@@ -952,6 +953,7 @@ function StudentAccount({
   canGenerate,
   canBackfill,
   canCollectNow,
+  canManageTariffs,
   onChargeGenerated,
   onCollect,
   onRetry,
@@ -975,6 +977,7 @@ function StudentAccount({
   canGenerate: boolean;
   canBackfill: boolean;
   canCollectNow: boolean;
+  canManageTariffs: boolean;
   onChargeGenerated(result: GenerateChargeResult): void;
   onCollect(): void;
   onRetry(): void;
@@ -1053,6 +1056,7 @@ function StudentAccount({
             charges={charges}
             canBackfill={canBackfill}
             canCollect={canCollectNow}
+            canManageTariffs={canManageTariffs}
             onClose={() => setGenerating(false)}
             onDone={(result) => {
               setGenerating(false);

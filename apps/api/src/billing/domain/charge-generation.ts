@@ -87,12 +87,19 @@ export const pickTariff = (
   const covering = tariffs.filter((tariff) => coversPeriod(tariff, period));
   const active = covering.filter((tariff) => tariff.status === 'ACTIVE');
   const candidates = active.length || period >= currentPeriod ? active : covering;
-  if (candidates.length === 0)
+  if (candidates.length === 0) {
+    // Tarifas que cubren el mes pero están desactivadas: se pueden reactivar desde la ventana.
+    const inactiveTariffs = covering
+      .filter((tariff) => tariff.status === 'INACTIVE')
+      .map(({ id, name, amount }) => ({ id, name, amount }));
     throw new DomainError(
       'TARIFF_NOT_FOUND_FOR_PERIOD',
-      `La clase no tiene una tarifa vigente para ${monthLabel(period)}. Revisá Tarifas.`,
-      { field: 'period' },
+      inactiveTariffs.length
+        ? `La tarifa de la clase para ${monthLabel(period)} está desactivada.`
+        : `La clase no tiene una tarifa vigente para ${monthLabel(period)}. Revisá Tarifas.`,
+      { field: 'period', inactiveTariffs },
     );
+  }
   if (candidates.length > 1)
     throw new DomainError(
       'TARIFF_AMBIGUOUS_FOR_PERIOD',

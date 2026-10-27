@@ -45,6 +45,24 @@ export const suggestedPeriod = (
 
 export const defaultDueDate = (period: string) => `${period}-10`;
 
+export type InactiveTariff = Readonly<{ id: string; name: string; amount: string }>;
+
+/** Tarifas desactivadas que la API ofrece reactivar cuando no hay una vigente para el mes. */
+export const inactiveTariffsFrom = (
+  error: Readonly<{ code: string; details?: Readonly<Record<string, unknown>> }>,
+): InactiveTariff[] => {
+  const list = error.code === 'TARIFF_NOT_FOUND_FOR_PERIOD' ? error.details?.inactiveTariffs : null;
+  if (!Array.isArray(list)) return [];
+  return list.filter(
+    (item): item is InactiveTariff =>
+      typeof item === 'object' &&
+      item !== null &&
+      typeof (item as InactiveTariff).id === 'string' &&
+      typeof (item as InactiveTariff).name === 'string' &&
+      typeof (item as InactiveTariff).amount === 'string',
+  );
+};
+
 /** Lo que se cobra al generar y cobrar en el momento: la cuota más el recargo si ya venció. */
 export const collectNowAmount = (
   preview: Readonly<{ studentDueAmount: string; lateFeeOnCollect: boolean }>,

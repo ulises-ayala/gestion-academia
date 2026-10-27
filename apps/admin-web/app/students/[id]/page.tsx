@@ -981,6 +981,7 @@ export default function StudentDetailPage() {
           charges={charges}
           canBackfill={can('charges:manage')}
           canCollect={can('payments:collect')}
+          canManageTariffs={can('tariffs:manage')}
           onClose={() => setGeneratingCharge(false)}
           onDone={(result) => {
             setGeneratingCharge(false);
