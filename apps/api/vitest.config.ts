@@ -19,7 +19,9 @@ export default defineConfig({
         test: {
           name: 'integration',
           include: ['src/**/*.integration.spec.ts'],
-          fileParallelism: false,
+          // `fileParallelism` solo se respeta en la raíz; un único fork sí serializa este proyecto.
+          pool: 'forks',
+          poolOptions: { forks: { singleFork: true } },
           sequence: { groupOrder: 1 },
         },
       },
