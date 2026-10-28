@@ -56,7 +56,9 @@ const mapCharge = (item: IncludedCharge, today: Date): MonthlyChargeDto => {
   );
   const amounts = adjustedAmounts(item.baseAmount, item.adjustments);
   const hasLateFee = item.adjustments.some(({ type }) => type === 'LATE_FEE');
+  // La deuda histórica no lleva recargo por vencimiento.
   const virtualLateFee =
+    item.kind === 'MONTHLY' &&
     item.status !== 'VOID' &&
     !hasLateFee &&
     item.dueDate < today &&
@@ -71,6 +73,8 @@ const mapCharge = (item: IncludedCharge, today: Date): MonthlyChargeDto => {
     id: item.id,
     studentId: item.studentId,
     enrollmentId: item.enrollmentId,
+    kind: item.kind,
+    description: item.description,
     tariffId: item.tariffId,
     period: isoDate(item.period).slice(0, 7),
     baseAmount: item.baseAmount.toFixed(2),
@@ -217,6 +221,55 @@ export class PrismaBillingRepository implements BillingRepository {
       select: { id: true, studentId: true, status: true, classId: true },
     });
   }
+  async createHistoricalDebt(
+    data: Readonly<{
+      studentId: string;
+      enrollmentId: string;
+      amount: string;
+      description: string;
+      period: string;
+      dueDate: string;
+    }>,
+    actorId: string,
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const created = await tx.monthlyCharge.create({
+        data: {
+          studentId: data.studentId,
+          enrollmentId: data.enrollmentId,
+          kind: 'HISTORICAL_DEBT',
+          description: data.description,
+          tariffId: null,
+          period: new Date(`${data.period}T00:00:00.000Z`),
+          dueDate: new Date(`${data.dueDate}T00:00:00.000Z`),
+          baseAmount: data.amount,
+          discountAmount: '0.00',
+          finalAmount: data.amount,
+          status: 'PENDING',
+        },
+        include: chargeInclude,
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actorId,
+          action: 'CREATE',
+          entityType: 'MONTHLY_CHARGE',
+          entityId: created.id,
+          reason: data.description,
+          after: {
+            kind: 'HISTORICAL_DEBT',
+            enrollmentId: data.enrollmentId,
+            description: data.description,
+            amount: data.amount,
+            dueDate: data.dueDate,
+          },
+          metadata: { source: 'HISTORICAL_DEBT' },
+        },
+      });
+      return mapCharge(created, currentBusinessDate());
+    });
+  }
+
   async createCharge(
     data: {
       studentId: string;

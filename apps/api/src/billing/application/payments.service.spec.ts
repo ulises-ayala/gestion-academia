@@ -21,6 +21,8 @@ const payment = (): PaymentDto => ({
     {
       monthlyChargeId: chargeId,
       amount: '40000.00',
+      kind: 'MONTHLY',
+      description: null,
       period: '2026-08',
       dueDate: '2026-08-10',
       academicClass: { id: crypto.randomUUID(), name: 'Bachata' },

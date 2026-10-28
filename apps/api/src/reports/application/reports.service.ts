@@ -39,7 +39,7 @@ const debtCtes = (businessDate: string) => Prisma.sql`
       GREATEST(
         GREATEST(mc.base_amount + COALESCE(a.delta, 0), 0)
         + CASE WHEN mc.due_date < ${businessDate}::date AND NOT COALESCE(a.has_late_fee, false)
-          AND GREATEST(mc.base_amount + COALESCE(a.delta, 0), 0) - COALESCE(c.paid, 0) > 0
+          AND mc.kind = 'MONTHLY' AND GREATEST(mc.base_amount + COALESCE(a.delta, 0), 0) - COALESCE(c.paid, 0) > 0
           THEN 1000 ELSE 0 END
         - COALESCE(c.paid, 0), 0
       ) AS outstanding

@@ -2,6 +2,7 @@ import type { PaymentDto } from '@academy/contracts';
 import React from 'react';
 import { describeOtherPayment } from '../lib/other-payment';
 import { paymentMethodLabels } from '../lib/payments';
+import { chargeLabel } from '../lib/collect-payment';
 
 const money = (value: string | number) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
@@ -71,7 +72,7 @@ export function PaymentHistory({
                   )}
                   {payment.allocations.map((allocation) => (
                     <li key={allocation.monthlyChargeId}>
-                      {allocation.academicClass.name} {allocation.period}:{' '}
+                      {allocation.academicClass.name} {chargeLabel(allocation)}:{' '}
                       {money(allocation.amount)}
                     </li>
                   ))}

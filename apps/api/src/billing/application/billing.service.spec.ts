@@ -19,6 +19,9 @@ class MemoryBillingRepository implements BillingRepository {
   async listTariffs(status?: 'ACTIVE' | 'INACTIVE') {
     return this.tariffs.filter((item) => !status || item.status === status);
   }
+  async createHistoricalDebt(): Promise<MonthlyChargeDto> {
+    throw new Error('no usado en estas pruebas');
+  }
   async findTariff(id: string) {
     return this.tariffs.find((item) => item.id === id) ?? null;
   }
@@ -71,6 +74,8 @@ class MemoryBillingRepository implements BillingRepository {
     const tariff = this.tariffs.find((item) => item.id === data.tariffId);
     const item: MonthlyChargeDto = {
       ...data,
+      kind: 'MONTHLY',
+      description: null,
       id: crypto.randomUUID(),
       period: data.period.slice(0, 7),
       status: 'PENDING',

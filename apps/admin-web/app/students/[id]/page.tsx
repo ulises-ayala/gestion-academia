@@ -19,7 +19,8 @@ import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';
 import { ChangeEnrollmentClassModal } from '../../../components/change-enrollment-class-modal';
 import { EnrollmentStartDateModal } from '../../../components/enrollment-start-date-modal';
 import { GenerateChargeDialog } from '../../../components/generate-charge-dialog';
-import { OtherPaymentDialog } from '../../../components/other-payment-dialog';
+import { CollectPaymentDialog } from '../../../components/collect-payment-dialog';
+import { chargeLabel } from '../../../lib/collect-payment';
 import { describeOtherPayment } from '../../../lib/other-payment';
 import { FollowUpIndicator } from '../../../components/student-follow-up';
 import { enrollmentEndLabel } from '../../../lib/enrollment-end';
@@ -441,7 +442,7 @@ export default function StudentDetailPage() {
   const [enrollments, setEnrollments] = useState<EnrollmentListDto['items']>([]);
   const [charges, setCharges] = useState<MonthlyChargeListDto['items']>([]);
   const [generatingCharge, setGeneratingCharge] = useState(false);
-  const [otherPayment, setOtherPayment] = useState(false);
+  const [collecting, setCollecting] = useState(false);
   const [payments, setPayments] = useState<PaymentListDto['items']>([]);
   const [paymentTotal, setPaymentTotal] = useState('0.00');
   const [attendances, setAttendances] = useState<AttendanceListDto['items']>([]);
@@ -518,10 +519,9 @@ export default function StudentDetailPage() {
   );
   const attendanceSummary = useMemo(() => attendanceCounts(attendances), [attendances]);
   const hasDebt = summary.pendingDebt !== '0.00';
-  const canCollect =
-    can('payments:collect') &&
-    charges.some((item) => item.status === 'PENDING' || item.status === 'PARTIAL');
-  // Sin deuda no hay qué cobrar: se ofrece generar la cuota del mes que viene a pagar.
+  // "Registrar pago" abre el popup de cobro: cuotas (o generar la que viene a pagar), clase
+  // suelta u otro, y deuda anterior. Generar cuota suelta queda solo para quien no cobra.
+  const canCollect = can('payments:collect');
   const canGenerateCharge =
     !canCollect &&
     can('charges:generate') &&
@@ -596,18 +596,13 @@ export default function StudentDetailPage() {
         </div>
         <div className="student-primary-actions">
           {canCollect && (
-            <Link className="button" href={`/payments?studentId=${id}`}>
+            <button type="button" onClick={() => setCollecting(true)}>
               Registrar pago
-            </Link>
+            </button>
           )}
           {canGenerateCharge && (
             <button type="button" onClick={() => setGeneratingCharge(true)}>
               Generar cuota
-            </button>
-          )}
-          {can('payments:collect') && (
-            <button className="secondary" type="button" onClick={() => setOtherPayment(true)}>
-              Otro cobro
             </button>
           )}
           {can('enrollments:manage') && student.status === 'ACTIVE' && (
@@ -797,7 +792,7 @@ export default function StudentDetailPage() {
                         const overdue = isOverdueCharge(charge, today);
                         return (
                           <tr key={charge.id}>
-                            <td data-label="Período">{charge.period}</td>
+                            <td data-label="Período">{chargeLabel(charge)}</td>
                             <td data-label="Clase">{charge.academicClass.name}</td>
                             <td data-label="Importe">
                               {money(charge.studentDueAmount)}
@@ -986,7 +981,7 @@ export default function StudentDetailPage() {
                             : payment.allocations
                                 .map(
                                   (allocation) =>
-                                    `${allocation.academicClass.name} ${allocation.period}: ${money(allocation.amount)}`,
+                                    `${allocation.academicClass.name} ${chargeLabel(allocation)}: ${money(allocation.amount)}`,
                                 )
                                 .join(', ')}
                         </span>
@@ -1005,14 +1000,12 @@ export default function StudentDetailPage() {
           )}
         </aside>
       </div>
-      {otherPayment && (
-        <OtherPaymentDialog
-          studentId={id}
-          studentName={`${student.firstName} ${student.lastName}`}
-          onClose={() => setOtherPayment(false)}
-          onDone={(result) => {
-            setOtherPayment(false);
-            void load().then(() => setMessage(`${result.title}: ${result.detail}`));
+      {collecting && (
+        <CollectPaymentDialog
+          initialStudent={student}
+          onClose={(changed) => {
+            setCollecting(false);
+            if (changed) void load();
           }}
         />
       )}

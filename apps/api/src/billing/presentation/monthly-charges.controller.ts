@@ -1,4 +1,8 @@
-import type { CreateMonthlyChargeDto, GenerateMonthlyChargeDto } from '@academy/contracts';
+import type {
+  CreateHistoricalDebtDto,
+  CreateMonthlyChargeDto,
+  GenerateMonthlyChargeDto,
+} from '@academy/contracts';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
 import { hasPermissions } from '../../auth/domain/permissions';
 import { CurrentUser } from '../../auth/presentation/current-user.decorator';
@@ -48,6 +52,19 @@ export class MonthlyChargesController {
         ...(input?.dueDate ? { dueDate: input.dueDate } : {}),
       },
       this.actor(user),
+    );
+  }
+  @Post('historical-debt') @Permissions('charges:generate') historicalDebt(
+    @Body() input: CreateHistoricalDebtDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.generation.createHistoricalDebt(
+      {
+        enrollmentId: parseUuid(input?.enrollmentId ?? '', 'enrollmentId'),
+        amount: input?.amount ?? '',
+        description: input?.description ?? '',
+      },
+      user.id,
     );
   }
   @Get() @Permissions('charges:read') list(

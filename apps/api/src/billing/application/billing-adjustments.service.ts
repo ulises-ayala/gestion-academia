@@ -115,6 +115,8 @@ export class BillingAdjustmentsService {
       const charges = await tx.monthlyCharge.findMany({
         where: {
           enrollmentId,
+          // Becas y descuentos son de las cuotas mensuales, no de la deuda histórica.
+          kind: 'MONTHLY',
           status: { in: ['PENDING', 'PARTIAL'] },
           period: { gte: effectiveFrom, ...(effectiveUntil ? { lte: effectiveUntil } : {}) },
         },

@@ -1,4 +1,5 @@
 import type {
+  CreateHistoricalDebtDto,
   GenerateMonthlyChargeDto,
   GeneratedMonthlyChargesDto,
   MonthlyChargeDto,
@@ -10,6 +11,7 @@ import { DomainError } from '../../shared/domain/domain-error';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { validateChargeDates } from '../domain/billing';
 import { adjustedAmounts, conditionDeltas } from '../domain/billing-adjustments';
+import { historicalDebtDates, validateHistoricalDebt } from '../domain/historical-debt';
 import {
   assertGenerationPeriod,
   assertPeriodAllowed,
@@ -170,5 +172,27 @@ export class ChargeGenerationService {
       created,
       skippedPeriods: months.filter((month) => month.alreadyExists).map(({ period }) => period),
     };
+  }
+
+  /**
+   * Deuda anterior al sistema (la que no trajo la importación): monto único con detalle, ligado
+   * a una inscripción del alumno (activa o finalizada) para que el reporte la atribuya a la clase.
+   */
+  async createHistoricalDebt(input: CreateHistoricalDebtDto, actorId: string) {
+    const { amount, description } = validateHistoricalDebt(input);
+    const enrollment = await this.repository.findEnrollment(input.enrollmentId);
+    if (!enrollment) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada');
+    const { period, dueDate } = historicalDebtDates(enrollment.startDate);
+    return this.repository.createHistoricalDebt(
+      {
+        studentId: enrollment.studentId,
+        enrollmentId: enrollment.id,
+        amount,
+        description,
+        period,
+        dueDate,
+      },
+      actorId,
+    );
   }
 }

@@ -67,6 +67,17 @@ class MemoryRepository implements ChargeGenerationRepository {
     this.existing.add(data.period);
     return { id: 'm-' + data.period, period: data.period } as MonthlyChargeDto;
   }
+  debts: {
+    data: Parameters<ChargeGenerationRepository['createHistoricalDebt']>[0];
+    actorId: string;
+  }[] = [];
+  async createHistoricalDebt(
+    data: Parameters<ChargeGenerationRepository['createHistoricalDebt']>[0],
+    actor: string,
+  ) {
+    this.debts.push({ data, actorId: actor });
+    return { id: 'deuda', kind: 'HISTORICAL_DEBT', ...data } as unknown as MonthlyChargeDto;
+  }
 }
 
 const setup = () => {
@@ -221,5 +232,67 @@ describe('ChargeGenerationService', () => {
       service.generate({ enrollmentId, period: '2026-11' }, reception, now),
     ).rejects.toMatchObject({ code: 'ENROLLMENT_INACTIVE_FOR_CHARGE' });
     expect(repository.created).toHaveLength(0);
+  });
+
+  describe('deuda histórica', () => {
+    it('carga un monto único con detalle, anterior a todas las cuotas de la inscripción', async () => {
+      const { repository, service } = setup();
+      repository.enrollment = { ...repository.enrollment, startDate: '2026-10-01' };
+      await service.createHistoricalDebt(
+        { enrollmentId, amount: '210000', description: '  Deuda anterior ControlFit  ' },
+        'u1',
+      );
+      expect(repository.debts).toEqual([
+        {
+          data: {
+            studentId: 's1',
+            enrollmentId,
+            amount: '210000.00',
+            description: 'Deuda anterior ControlFit',
+            period: '2026-09-01',
+            dueDate: '2026-09-01',
+          },
+          actorId: 'u1',
+        },
+      ]);
+    });
+
+    it('acepta una inscripción finalizada (la deuda puede ser de una clase que ya dejó)', async () => {
+      const { repository, service } = setup();
+      repository.enrollment = {
+        ...repository.enrollment,
+        status: 'ENDED',
+        startDate: '2026-01-15',
+      };
+      await service.createHistoricalDebt(
+        { enrollmentId, amount: '5000.50', description: 'Saldo de 2025' },
+        'u1',
+      );
+      expect(repository.debts[0]?.data).toMatchObject({ period: '2025-12-01', amount: '5000.50' });
+    });
+
+    it('exige monto mayor a cero y detalle', async () => {
+      const { repository, service } = setup();
+      for (const [amount, description, field] of [
+        ['0', 'Deuda vieja', 'amount'],
+        ['-10', 'Deuda vieja', 'amount'],
+        ['abc', 'Deuda vieja', 'amount'],
+        ['1000', ' ', 'description'],
+      ] as const)
+        await expect(
+          service.createHistoricalDebt({ enrollmentId, amount, description }, 'u1'),
+        ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field } });
+      expect(repository.debts).toEqual([]);
+    });
+
+    it('rechaza una inscripción inexistente', async () => {
+      const { service } = setup();
+      await expect(
+        service.createHistoricalDebt(
+          { enrollmentId: crypto.randomUUID(), amount: '1000', description: 'Deuda vieja' },
+          'u1',
+        ),
+      ).rejects.toMatchObject({ code: 'ENROLLMENT_NOT_FOUND' });
+    });
   });
 });

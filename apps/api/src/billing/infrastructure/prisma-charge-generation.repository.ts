@@ -70,7 +70,7 @@ export class PrismaChargeGenerationRepository implements ChargeGenerationReposit
 
   async chargeExists(enrollmentId: string, period: string) {
     const count = await this.prisma.monthlyCharge.count({
-      where: { enrollmentId, period: periodDate(period) },
+      where: { enrollmentId, period: periodDate(period), kind: 'MONTHLY' },
     });
     return count > 0;
   }
@@ -108,6 +108,13 @@ export class PrismaChargeGenerationRepository implements ChargeGenerationReposit
         },
       });
     });
+  }
+
+  createHistoricalDebt(
+    data: Parameters<ChargeGenerationRepository['createHistoricalDebt']>[0],
+    actorId: string,
+  ) {
+    return this.billing.createHistoricalDebt(data, actorId);
   }
 
   create(data: GeneratedChargeData, actorId: string) {

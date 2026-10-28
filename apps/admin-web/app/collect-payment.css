@@ -1,0 +1,356 @@
+/* Popup "Registrar pago": buscar al alumno y cobrarle sin cambiar de pantalla. */
+dialog.collect-dialog {
+  width: min(38rem, calc(100% - 2rem));
+  margin: auto;
+  border-top: 3px solid var(--brand);
+  color: var(--text);
+  align-content: start;
+}
+dialog.collect-dialog:not([open]) {
+  display: none;
+}
+dialog.collect-dialog::backdrop {
+  background: var(--overlay);
+}
+
+.collect-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.collect-header h2 {
+  font-size: var(--font-size-title);
+}
+
+/* Paso 1: buscador */
+.collect-search {
+  display: grid;
+  gap: var(--space-3);
+}
+.modal .collect-search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-muted);
+}
+.modal .collect-search-field:focus-within {
+  border-color: var(--brand);
+  box-shadow: var(--focus-ring);
+}
+.collect-search-field input {
+  flex: 1;
+  min-height: 3rem;
+  border: 0;
+  background: transparent;
+  font-size: 1.0625rem;
+  box-shadow: none;
+  outline: none;
+}
+.collect-results {
+  display: grid;
+  gap: var(--space-1);
+  min-height: 8rem;
+  align-content: start;
+}
+.collect-result {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 3rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+.collect-result span {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+.collect-result.is-highlighted {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+/* Paso 2: alumno y qué paga */
+.collect-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.collect-student {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.collect-student > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+.collect-student strong {
+  font-size: var(--font-size-heading);
+}
+.collect-student span {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.collect-student-links {
+  display: flex;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.collect-tabs {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+.collect-tabs button {
+  flex: 1;
+  min-height: 2.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+.collect-tabs button.is-selected {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.collect-panel {
+  display: grid;
+  gap: var(--space-3);
+}
+.collect-panel select,
+.collect-panel input {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+.collect-empty,
+.collect-notice {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--info-soft);
+  color: var(--text);
+}
+.collect-notice {
+  background: var(--success-soft);
+}
+
+.collect-charges {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.collect-charges li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+.collect-charges li + li {
+  border-top: 1px solid var(--border);
+}
+.collect-charges li.is-applied {
+  box-shadow: inset 3px 0 var(--brand);
+}
+.collect-charges li > span:first-child {
+  display: grid;
+  gap: 2px;
+}
+.collect-charges small {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.collect-charge-amount {
+  display: grid;
+  justify-items: end;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+.collect-generate {
+  justify-self: start;
+}
+
+.collect-concepts {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.modal .collect-concepts label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: auto;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  color: var(--text);
+  cursor: pointer;
+}
+.modal .collect-concepts label.is-selected {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+.collect-concepts input {
+  width: auto;
+  margin: 0;
+}
+
+/* Importe y medio de pago */
+.collect-amount-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.375rem;
+  font-weight: var(--font-weight-semibold);
+}
+.collect-amount-input:focus-within {
+  border-color: var(--brand);
+  box-shadow: var(--focus-ring);
+}
+.collect-panel .collect-amount-input input {
+  margin: 0;
+  min-height: 3rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  box-shadow: none;
+  outline: none;
+}
+.collect-tenders {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.collect-tenders legend {
+  margin-bottom: var(--space-2);
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+.collect-methods {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.collect-methods button {
+  min-height: 2.75rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+.collect-methods button:hover:not(:disabled):not(.is-selected),
+.collect-tabs button:hover:not(:disabled):not(.is-selected) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+.collect-methods button.is-selected {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-weight: var(--font-weight-semibold);
+}
+.collect-split {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.collect-cash {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius-sm);
+  background: var(--warning-soft);
+}
+.collect-actions .collect-submit {
+  min-width: 12rem;
+  min-height: 3rem;
+  font-size: 1.0625rem;
+}
+
+/* Paso 3: comprobante */
+.collect-done {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) 0 0;
+  text-align: center;
+}
+.collect-done h3 {
+  margin: 0;
+}
+.collect-done-icon {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var(--radius-full);
+  background: var(--success-soft);
+  color: var(--success);
+}
+.collect-done-amount {
+  font-size: var(--font-size-metric);
+  font-weight: var(--font-weight-semibold);
+}
+.collect-done-balance {
+  font-weight: var(--font-weight-medium);
+}
+.collect-done-actions {
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--space-3);
+}
+
+@media (max-width: 36rem) {
+  .collect-methods {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .collect-split {
+    grid-template-columns: 1fr;
+  }
+  .collect-tabs button {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+    line-height: 1.2;
+  }
+  .collect-actions .collect-submit {
+    width: 100%;
+  }
+}

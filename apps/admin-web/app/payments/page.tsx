@@ -23,6 +23,7 @@ import { notifySuccess } from '../../lib/notify';
 import { OtherPaymentDialog } from '../../components/other-payment-dialog';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
+import { chargeLabel } from '../../lib/collect-payment';
 import { formatDate } from '../../lib/dates';
 import {
   paymentBackHref,
@@ -1097,7 +1098,8 @@ function StudentAccount({
                 <span>
                   <strong>{charge.academicClass.name}</strong>
                   <br />
-                  {charge.period} · vence {formatDate(charge.dueDate)}{' '}
+                  {chargeLabel(charge)}
+                  {charge.kind === 'MONTHLY' ? ` · vence ${formatDate(charge.dueDate)}` : ''}{' '}
                   {charge.overdue && <span className="status void">Vencida</span>}{' '}
                   <span className={`status ${charge.status.toLowerCase()}`}>
                     {charge.status === 'PARTIAL' ? 'Parcial' : 'Pendiente'}
@@ -1186,7 +1188,7 @@ function StudentAccount({
                     {allocationPreview.map(({ charge, amount }) => (
                       <li key={charge.id}>
                         <span>
-                          {charge.academicClass.name} · {charge.period}
+                          {charge.academicClass.name} · {chargeLabel(charge)}
                         </span>
                         <strong>{money(amount)}</strong>
                       </li>

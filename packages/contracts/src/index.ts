@@ -418,6 +418,8 @@ export type CreateTariffDto = Readonly<{
 export type UpdateTariffDto = Readonly<Partial<CreateTariffDto> & { status?: RecordStatusDto }>;
 
 export type MonthlyChargeStatusDto = 'PENDING' | 'PARTIAL' | 'PAID' | 'VOID';
+/** MONTHLY = cuota de un mes. HISTORICAL_DEBT = deuda anterior cargada como monto único. */
+export type MonthlyChargeKindDto = 'MONTHLY' | 'HISTORICAL_DEBT';
 export type BillingAdjustmentTypeDto =
   | 'DIRECTION_SCHOLARSHIP'
   | 'TEACHER_SCHOLARSHIP'
@@ -444,7 +446,11 @@ export type MonthlyChargeDto = Readonly<{
   id: string;
   studentId: string;
   enrollmentId: string;
-  tariffId: string;
+  kind: MonthlyChargeKindDto;
+  /** Detalle de la deuda histórica; null en cuotas mensuales. */
+  description: string | null;
+  /** Null en deuda histórica. */
+  tariffId: string | null;
   period: string;
   baseAmount: string;
   discountAmount: string;
@@ -457,7 +463,7 @@ export type MonthlyChargeDto = Readonly<{
   overdue: boolean;
   status: MonthlyChargeStatusDto;
   academicClass: Readonly<{ id: string; name: string }>;
-  tariff: Readonly<{ id: string; name: string }>;
+  tariff: Readonly<{ id: string; name: string }> | null;
   adjustments: readonly MonthlyChargeAdjustmentDto[];
   createdAt: string;
   updatedAt: string;
@@ -503,6 +509,12 @@ export type CreateMonthlyChargeDto = Readonly<{
  * Generación manual: la tarifa la resuelve el sistema. `period` es AAAA-MM; con `untilPeriod`
  * se generan todos los meses del rango (vencimiento el día 10 de cada uno).
  */
+/** Deuda anterior al sistema: monto único con detalle, sin tarifa ni recargo. */
+export type CreateHistoricalDebtDto = Readonly<{
+  enrollmentId: string;
+  amount: string;
+  description: string;
+}>;
 export type GenerateMonthlyChargeDto = Readonly<{
   enrollmentId: string;
   period: string;
@@ -563,6 +575,8 @@ export type PaymentTenderDto = Readonly<{
 export type PaymentAllocationDto = Readonly<{
   monthlyChargeId: string;
   amount: string;
+  kind: MonthlyChargeKindDto;
+  description: string | null;
   period: string;
   dueDate: string;
   academicClass: Readonly<{ id: string; name: string }>;

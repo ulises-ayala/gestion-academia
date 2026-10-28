@@ -22,6 +22,8 @@ const payment: PaymentDto = {
     {
       monthlyChargeId: 'charge-id',
       amount: '50000.00',
+      kind: 'MONTHLY',
+      description: null,
       period: '2026-08',
       dueDate: '2026-08-10',
       academicClass: { id: 'class-id', name: 'Bachata' },
@@ -50,7 +52,7 @@ describe('PaymentHistory', () => {
     expect(markup).toContain('DNI 30100100');
     expect(markup).toContain('Efectivo');
     expect(markup).toContain('Mercado Pago');
-    expect(markup).toContain('Bachata 2026-08');
+    expect(markup).toContain('Bachata Agosto de 2026');
     expect(markup).toContain('studentId=student-id');
     expect(markup).not.toContain('Anular</button>');
   });

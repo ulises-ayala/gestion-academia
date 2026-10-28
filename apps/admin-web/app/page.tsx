@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { AdminShell } from '../components/admin-shell';
+import { CollectPaymentDialog } from '../components/collect-payment-dialog';
 import { useAuth } from '../components/auth-provider';
 import { FollowUpPanel } from '../components/dashboard/follow-up-panel';
 import { ManagementSection } from '../components/dashboard/management-section';
@@ -74,6 +75,7 @@ function Dashboard() {
   const { user, can } = useAuth();
   const now = useMinuteClock();
   const [state, setState] = useState<LoadState>({ data: null, error: '', refreshing: true });
+  const [collecting, setCollecting] = useState(false);
 
   const load = useCallback(async () => {
     setState((current) => ({ ...current, error: '', refreshing: true }));
@@ -165,6 +167,19 @@ function Dashboard() {
             <div className="frequent-actions-list">
               {quickActions.map(([label, href]) => {
                 const Icon = quickActionIcons[label];
+                // Registrar pago abre el popup de cobro en el inicio, sin ir a Pagos.
+                if (label === 'Registrar pago')
+                  return (
+                    <button
+                      className="secondary frequent-action"
+                      key={label}
+                      type="button"
+                      onClick={() => setCollecting(true)}
+                    >
+                      {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.6} />}
+                      {label}
+                    </button>
+                  );
                 return (
                   <Link className="button secondary frequent-action" href={href} key={label}>
                     {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.6} />}
@@ -174,6 +189,15 @@ function Dashboard() {
               })}
             </div>
           </section>
+        )}
+
+        {collecting && (
+          <CollectPaymentDialog
+            onClose={(changed) => {
+              setCollecting(false);
+              if (changed) void load();
+            }}
+          />
         )}
 
         <NowPanel

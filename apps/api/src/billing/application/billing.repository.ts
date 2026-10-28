@@ -38,6 +38,18 @@ export interface BillingRepository {
     },
     actorId?: string,
   ): Promise<MonthlyChargeDto>;
+  /** Deuda histórica: sin tarifa, ajustes ni recargo; deja auditoría CREATE en la misma transacción. */
+  createHistoricalDebt(
+    data: Readonly<{
+      studentId: string;
+      enrollmentId: string;
+      amount: string;
+      description: string;
+      period: string;
+      dueDate: string;
+    }>,
+    actorId: string,
+  ): Promise<MonthlyChargeDto>;
   findCharge(id: string): Promise<MonthlyChargeDto | null>;
   listCharges(query: ChargeQuery): Promise<{ items: MonthlyChargeDto[]; total: number }>;
 }

@@ -39,4 +39,16 @@ export interface ChargeGenerationRepository {
   moveEnrollmentStart(enrollmentId: string, newStart: string, actorId: string): Promise<void>;
   /** Crea la cuota con sus ajustes y deja la auditoría en la misma transacción. */
   create(data: GeneratedChargeData, actorId: string): Promise<MonthlyChargeDto>;
+  /** Crea una deuda histórica (monto único, sin tarifa ni recargo) con su auditoría. */
+  createHistoricalDebt(
+    data: Readonly<{
+      studentId: string;
+      enrollmentId: string;
+      amount: string;
+      description: string;
+      period: string;
+      dueDate: string;
+    }>,
+    actorId: string,
+  ): Promise<MonthlyChargeDto>;
 }

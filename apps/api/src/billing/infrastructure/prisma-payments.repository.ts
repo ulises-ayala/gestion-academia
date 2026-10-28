@@ -54,6 +54,8 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   allocations: item.allocations.map(({ monthlyCharge, amount }) => ({
     monthlyChargeId: monthlyCharge.id,
     amount: amount.toFixed(2),
+    kind: monthlyCharge.kind,
+    description: monthlyCharge.description,
     period: isoDate(monthlyCharge.period).slice(0, 7),
     dueDate: isoDate(monthlyCharge.dueDate),
     academicClass: monthlyCharge.enrollment.class,
@@ -117,6 +119,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             ).dateValue;
             for (const charge of lockedCharges) {
               if (
+                charge.kind !== 'MONTHLY' ||
                 charge.dueDate >= today ||
                 charge.adjustments.some(({ type }) => type === 'LATE_FEE')
               )

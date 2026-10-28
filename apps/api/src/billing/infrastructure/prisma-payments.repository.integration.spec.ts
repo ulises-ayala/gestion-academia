@@ -121,9 +121,7 @@ describe.runIf(enabled)(
         const paymentIds = (
           await tx.payment.findMany({
             where: {
-              allocations: {
-                some: { monthlyChargeId: { in: [fixture.charge.id, fixture.secondCharge.id] } },
-              },
+              allocations: { some: { monthlyCharge: { enrollmentId: fixture.enrollment.id } } },
             },
             select: { id: true },
           })
@@ -135,11 +133,9 @@ describe.runIf(enabled)(
           await tx.payment.deleteMany({ where: { id: { in: paymentIds } } });
         }
         await tx.monthlyChargeAdjustment.deleteMany({
-          where: { monthlyChargeId: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+          where: { monthlyCharge: { enrollmentId: fixture.enrollment.id } },
         });
-        await tx.monthlyCharge.deleteMany({
-          where: { id: { in: [fixture.charge.id, fixture.secondCharge.id] } },
-        });
+        await tx.monthlyCharge.deleteMany({ where: { enrollmentId: fixture.enrollment.id } });
         await tx.tariff.delete({ where: { id: fixture.tariff.id } });
         await tx.enrollment.delete({ where: { id: fixture.enrollment.id } });
         await tx.academyClass.delete({ where: { id: fixture.academicClass.id } });
@@ -385,6 +381,66 @@ describe.runIf(enabled)(
             select: { status: true },
           }),
         ).toEqual([{ status: 'PAID' }, { status: 'PARTIAL' }]);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('cobra primero la deuda histórica y no le suma recargo', async () => {
+      const fixture = await createFixture();
+      try {
+        const debt = await billing.createHistoricalDebt(
+          {
+            studentId: fixture.student.id,
+            enrollmentId: fixture.enrollment.id,
+            amount: '100000.00',
+            description: 'Deuda anterior ControlFit',
+            period: '2026-07-01',
+            dueDate: '2026-07-01',
+          },
+          fixture.actor.id,
+        );
+        // Vencida desde julio, pero sin recargo proyectado.
+        expect(debt).toMatchObject({
+          kind: 'HISTORICAL_DEBT',
+          tariff: null,
+          outstandingAmount: '100000.00',
+          overdue: true,
+        });
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '120000.00' }],
+          fixture.actor.id,
+        );
+        expect(
+          payment.allocations.map(({ monthlyChargeId, amount, kind }) => ({
+            monthlyChargeId,
+            amount,
+            kind,
+          })),
+        ).toEqual([
+          { monthlyChargeId: debt.id, amount: '100000.00', kind: 'HISTORICAL_DEBT' },
+          { monthlyChargeId: fixture.charge.id, amount: '20000.00', kind: 'MONTHLY' },
+        ]);
+        expect(
+          await prisma.monthlyChargeAdjustment.count({ where: { monthlyChargeId: debt.id } }),
+        ).toBe(0);
+        // Agosto sí lleva su recargo: 41.000 - 20.000 + septiembre 40.000.
+        await expect(
+          receivables.list({
+            scope: 'pending',
+            q: fixture.student.dni,
+            sort: 'oldest',
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({ summary: { totalOutstanding: '61000.00' } });
+        expect(
+          await prisma.auditLog.findFirst({
+            where: { entityId: debt.id, action: 'CREATE' },
+            select: { metadata: true },
+          }),
+        ).toEqual({ metadata: { source: 'HISTORICAL_DEBT' } });
       } finally {
         await cleanupFixture(fixture);
       }

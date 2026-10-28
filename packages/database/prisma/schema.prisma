@@ -41,6 +41,12 @@ enum MonthlyChargeStatus {
   VOID
 }
 
+/// MONTHLY = cuota de un mes con su tarifa. HISTORICAL_DEBT = deuda anterior cargada como monto único.
+enum MonthlyChargeKind {
+  MONTHLY
+  HISTORICAL_DEBT
+}
+
 enum BillingAdjustmentType {
   DIRECTION_SCHOLARSHIP
   TEACHER_SCHOLARSHIP
@@ -300,7 +306,10 @@ model MonthlyCharge {
   id             String                    @id @default(uuid()) @db.Uuid
   studentId      String                    @map("student_id") @db.Uuid
   enrollmentId   String                    @map("enrollment_id") @db.Uuid
-  tariffId       String                    @map("tariff_id") @db.Uuid
+  tariffId       String?                   @map("tariff_id") @db.Uuid
+  kind           MonthlyChargeKind         @default(MONTHLY)
+  /// Detalle de la deuda histórica (obligatorio en HISTORICAL_DEBT, null en MONTHLY).
+  description    String?                   @db.VarChar(200)
   period         DateTime                  @db.Date
   baseAmount     Decimal                   @map("base_amount") @db.Decimal(12, 2)
   discountAmount Decimal                   @default(0) @map("discount_amount") @db.Decimal(12, 2)
@@ -311,11 +320,12 @@ model MonthlyCharge {
   updatedAt      DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
   student        Student                   @relation(fields: [studentId], references: [id], onDelete: Restrict)
   enrollment     Enrollment                @relation(fields: [enrollmentId], references: [id], onDelete: Restrict)
-  tariff         Tariff                    @relation(fields: [tariffId], references: [id], onDelete: Restrict)
+  tariff         Tariff?                   @relation(fields: [tariffId], references: [id], onDelete: Restrict)
   allocations    PaymentAllocation[]
   adjustments    MonthlyChargeAdjustment[]
 
-  @@unique([enrollmentId, period])
+  // Única por inscripción y mes solo para MONTHLY: índice parcial
+  // "monthly_charges_enrollment_id_period_key" creado en la migración (Prisma no lo expresa).
   @@index([studentId, period, status])
   @@index([enrollmentId, period, status])
   @@index([period, status])

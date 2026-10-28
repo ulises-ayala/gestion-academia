@@ -45,6 +45,7 @@ export function GenerateChargeDialog({
   canBackfill,
   canCollect,
   canManageTariffs,
+  paymentStep = true,
   onClose,
   onDone,
 }: Readonly<{
@@ -54,6 +55,8 @@ export function GenerateChargeDialog({
   canBackfill: boolean;
   canCollect: boolean;
   canManageTariffs: boolean;
+  /** false cuando el cobro se hace después en otra pantalla (el popup Registrar pago). */
+  paymentStep?: boolean;
   onClose(): void;
   onDone(result: GenerateChargeResult): void;
 }>) {
@@ -114,7 +117,9 @@ export function GenerateChargeDialog({
     setEnrollmentId(id);
     if (!selected) return;
     const existing = new Set(
-      charges.filter((charge) => charge.enrollmentId === id).map((charge) => charge.period),
+      charges
+        .filter((charge) => charge.enrollmentId === id && charge.kind === 'MONTHLY')
+        .map((charge) => charge.period),
     );
     const next = suggestedPeriod(
       periodRange({ currentPeriod, canBackfill, enrollmentStart: selected.startDate }),
@@ -527,64 +532,66 @@ export function GenerateChargeDialog({
                   </p>
                 )}
               </div>
-              <fieldset className="generate-charge-payment" disabled={saving}>
-                <legend>Pago</legend>
-                <label>
-                  <input
-                    type="radio"
-                    name="generate-collect"
-                    checked={!collectNow}
-                    onChange={() => setCollectNow(false)}
-                  />
-                  Dejar pendiente
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="generate-collect"
-                    checked={collectNow}
-                    disabled={Boolean(collectBlocked) || cashOpen === null}
-                    onChange={() => setCollectNow(true)}
-                  />
-                  Cobrar ahora
-                </label>
-                {collectNow && (
-                  <label className="generate-charge-method">
-                    Medio de pago
-                    <select
-                      value={method}
-                      onChange={(event) => setMethod(event.target.value as PaymentMethodDto)}
-                    >
-                      {Object.entries(methodLabels).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
+              {paymentStep && (
+                <fieldset className="generate-charge-payment" disabled={saving}>
+                  <legend>Pago</legend>
+                  <label>
+                    <input
+                      type="radio"
+                      name="generate-collect"
+                      checked={!collectNow}
+                      onChange={() => setCollectNow(false)}
+                    />
+                    Dejar pendiente
                   </label>
-                )}
-                {collectBlocked === 'caja' ? (
-                  <p className="modal-copy">
-                    Para cobrar ahora necesitás{' '}
-                    <Link className="text-link" href="/cash">
-                      abrir tu turno de caja
-                    </Link>
-                    .
-                  </p>
-                ) : collectBlocked && collectBlocked !== 'sin-cuota' ? (
-                  <p className="modal-copy">{collectBlocked}</p>
-                ) : collectNow && preview ? (
-                  <p className="generate-charge-collect">
-                    Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}
-                    {preview.lateFeeCount === 1
-                      ? ' (incluye el recargo)'
-                      : preview.lateFeeCount > 1
-                        ? ` (incluye ${preview.lateFeeCount} recargos)`
-                        : ''}
-                    .
-                  </p>
-                ) : null}
-              </fieldset>
+                  <label>
+                    <input
+                      type="radio"
+                      name="generate-collect"
+                      checked={collectNow}
+                      disabled={Boolean(collectBlocked) || cashOpen === null}
+                      onChange={() => setCollectNow(true)}
+                    />
+                    Cobrar ahora
+                  </label>
+                  {collectNow && (
+                    <label className="generate-charge-method">
+                      Medio de pago
+                      <select
+                        value={method}
+                        onChange={(event) => setMethod(event.target.value as PaymentMethodDto)}
+                      >
+                        {Object.entries(methodLabels).map(([value, label]) => (
+                          <option key={value} value={value}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                  {collectBlocked === 'caja' ? (
+                    <p className="modal-copy">
+                      Para cobrar ahora necesitás{' '}
+                      <Link className="text-link" href="/cash">
+                        abrir tu turno de caja
+                      </Link>
+                      .
+                    </p>
+                  ) : collectBlocked && collectBlocked !== 'sin-cuota' ? (
+                    <p className="modal-copy">{collectBlocked}</p>
+                  ) : collectNow && preview ? (
+                    <p className="generate-charge-collect">
+                      Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}
+                      {preview.lateFeeCount === 1
+                        ? ' (incluye el recargo)'
+                        : preview.lateFeeCount > 1
+                          ? ` (incluye ${preview.lateFeeCount} recargos)`
+                          : ''}
+                      .
+                    </p>
+                  ) : null}
+                </fieldset>
+              )}
             </>
           )}
           {error && (
