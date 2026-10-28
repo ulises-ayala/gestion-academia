@@ -129,4 +129,52 @@ describe('SelfCheckInService', () => {
   it('rechaza un DNI que no tenga 8 dígitos', async () => {
     await expect(service.checkIn('123', now)).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
   });
+
+  it('una noche con varias clases: cada DNI marca el horario que corresponde', async () => {
+    // Viernes 16/10: Salsa 19 h, Bachata 20 h y otra vez Salsa 21 h (misma inscripción).
+    const turns = [
+      { enrollmentId: 'e-salsa', scheduleId: 'h19', name: 'Salsa', start: '19:00', end: '20:00' },
+      {
+        enrollmentId: 'e-bachata',
+        scheduleId: 'h20',
+        name: 'Bachata',
+        start: '20:00',
+        end: '21:00',
+      },
+      { enrollmentId: 'e-salsa', scheduleId: 'h21', name: 'Salsa', start: '21:00', end: '22:00' },
+    ];
+    const present = new Set<string>();
+    repository.candidates = vi.fn(async () =>
+      turns.map((turn) => ({
+        enrollmentId: turn.enrollmentId,
+        scheduleId: turn.scheduleId,
+        className: turn.name,
+        teacherName: 'José Barrios',
+        roomName: 'Salón principal',
+        startTime: turn.start,
+        endTime: turn.end,
+        attendanceStatus: present.has(`${turn.enrollmentId}|${turn.scheduleId}`)
+          ? ('PRESENT' as const)
+          : null,
+      })),
+    );
+    repository.markPresent = vi.fn(async (enrollmentId: string, scheduleId: string) => {
+      present.add(`${enrollmentId}|${scheduleId}`);
+    });
+    const at = async (localTime: string) => {
+      const [hours, minutes] = localTime.split(':').map(Number);
+      const result = await service.checkIn(
+        '40111222',
+        new Date(Date.UTC(2026, 9, 16, hours! + 3, minutes!)),
+      );
+      return `${result.outcome} ${result.class?.name ?? '-'} ${result.class?.startTime ?? ''}`;
+    };
+
+    expect(await at('18:45')).toBe('CHECKED_IN Salsa 19:00');
+    expect(await at('18:50')).toBe('ALREADY_CHECKED_IN Salsa 19:00');
+    expect(await at('19:50')).toBe('CHECKED_IN Bachata 20:00');
+    expect(await at('20:45')).toBe('CHECKED_IN Salsa 21:00');
+    expect(await at('21:05')).toBe('ALREADY_CHECKED_IN Salsa 21:00');
+    expect([...present]).toEqual(['e-salsa|h19', 'e-bachata|h20', 'e-salsa|h21']);
+  });
 });
