@@ -13,10 +13,24 @@ describe('otros cobros', () => {
         concept: 'SINGLE_CLASS',
         detail: null,
         academicClass: { id: 'c', name: 'Zumba' },
+        teacher: null,
       }),
     ).toBe('Clase suelta · Zumba');
     expect(
-      describeOtherPayment({ concept: 'OTHER', detail: 'Remera del show', academicClass: null }),
+      describeOtherPayment({
+        concept: 'SINGLE_CLASS',
+        detail: null,
+        academicClass: { id: 'c', name: 'Zumba' },
+        teacher: { id: 't', firstName: 'Jose Luis', lastName: 'Barrios' },
+      }),
+    ).toBe('Clase suelta · Zumba · Prof. Jose Luis Barrios');
+    expect(
+      describeOtherPayment({
+        concept: 'OTHER',
+        detail: 'Remera del show',
+        academicClass: null,
+        teacher: null,
+      }),
     ).toBe('Otro: Remera del show');
     expect(describeOtherPayment(null)).toBe('');
   });
@@ -37,6 +51,15 @@ describe('otros cobros', () => {
       ),
     ).toBeNull();
   });
+  it('la clase suelta lleva el profesor que la dictó', () => {
+    expect(
+      buildOtherPaymentPayload(
+        's',
+        { concept: 'SINGLE_CLASS', classId: 'c', teacherId: 't2', detail: '' },
+        { ...none, CASH: '8000' },
+      ),
+    ).toMatchObject({ concept: 'SINGLE_CLASS', classId: 'c', teacherId: 't2' });
+  });
   it('arma el cobro: la clase solo viaja en la clase suelta', () => {
     expect(
       buildOtherPaymentPayload(
@@ -48,6 +71,7 @@ describe('otros cobros', () => {
       studentId: 's',
       concept: 'OTHER',
       classId: null,
+      teacherId: null,
       detail: 'Remera',
       tenders: [
         { method: 'CASH', amount: '5000.00' },

@@ -47,6 +47,26 @@ describe('ReportsService', () => {
           justified: 1n,
         },
       ],
+      [
+        {
+          classId: 'class-2',
+          className: 'Zumba',
+          teacherId: 'teacher-2',
+          teacherName: 'Jose Luis Barrios',
+          count: 2n,
+          amount: decimal('16000.00'),
+        },
+      ],
+      [
+        {
+          teacherId: 'teacher-2',
+          teacherName: 'Jose Luis Barrios',
+          charges: decimal('34000.00'),
+          historicalDebt: decimal('0'),
+          singleClass: decimal('16000.00'),
+          singleClassCount: 2n,
+        },
+      ],
     ];
     const paymentAggregate = vi.fn().mockResolvedValue({
       _count: { id: 1 },
@@ -57,7 +77,14 @@ describe('ReportsService', () => {
         groupBy: vi.fn().mockResolvedValue([{ status: 'ACTIVE', _count: { id: 1 } }]),
         count: vi.fn().mockResolvedValue(1),
       },
-      payment: { aggregate: paymentAggregate, findMany: vi.fn().mockResolvedValue([]) },
+      payment: {
+        aggregate: paymentAggregate,
+        findMany: vi.fn().mockResolvedValue([]),
+        groupBy: vi.fn().mockResolvedValue([
+          { kind: 'CHARGES', concept: null, _sum: { amount: decimal('34000.00') } },
+          { kind: 'OTHER', concept: 'SINGLE_CLASS', _sum: { amount: decimal('16000.00') } },
+        ]),
+      },
       paymentTender: {
         groupBy: vi.fn().mockResolvedValue([
           { method: 'CASH', _sum: { amount: decimal('30000.00') } },
@@ -85,6 +112,32 @@ describe('ReportsService', () => {
       { method: 'CASH', amount: '30000.00' },
       { method: 'MERCADO_PAGO', amount: '20000.00' },
       { method: 'CARD', amount: '0.00' },
+    ]);
+    expect(report.collections.byConcept).toEqual({
+      charges: '34000.00',
+      singleClass: '16000.00',
+      other: '0.00',
+    });
+    expect(report.collections.singleClasses).toEqual([
+      {
+        classId: 'class-2',
+        className: 'Zumba',
+        teacherId: 'teacher-2',
+        teacherName: 'Jose Luis Barrios',
+        count: 2,
+        amount: '16000.00',
+      },
+    ]);
+    expect(report.collections.byTeacher).toEqual([
+      {
+        teacherId: 'teacher-2',
+        teacherName: 'Jose Luis Barrios',
+        charges: '34000.00',
+        historicalDebt: '0.00',
+        singleClass: '16000.00',
+        singleClassCount: 2,
+        total: '50000.00',
+      },
     ]);
     expect(report.summary.pendingDebt).toBe('15.00');
     expect(report.debtors.items[0]).toMatchObject({ totalDebt: '15.00', overdueDebt: '15.00' });

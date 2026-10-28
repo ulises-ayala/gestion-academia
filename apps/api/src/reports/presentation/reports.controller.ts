@@ -12,7 +12,14 @@ const validDate = (value: string) => {
   const parsed = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
 };
-const reportKinds = ['students', 'collections', 'debtors', 'attendance', 'cash'] as const;
+const reportKinds = [
+  'students',
+  'collections',
+  'teachers',
+  'debtors',
+  'attendance',
+  'cash',
+] as const;
 
 @Controller('reports')
 @Permissions('reports:operational')

@@ -143,6 +143,13 @@ dialog.collect-dialog::backdrop {
   width: 100%;
   margin-top: var(--space-1);
 }
+.collect-hint {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+}
 .collect-empty,
 .collect-notice {
   margin: 0;

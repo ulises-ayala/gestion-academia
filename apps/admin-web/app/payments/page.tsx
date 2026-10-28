@@ -20,7 +20,7 @@ import {
   type GenerateChargeResult,
 } from '../../components/generate-charge-dialog';
 import { notifySuccess } from '../../lib/notify';
-import { OtherPaymentDialog } from '../../components/other-payment-dialog';
+import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { chargeLabel } from '../../lib/collect-payment';
@@ -1052,19 +1052,22 @@ function StudentAccount({
             )}
             {canCollectNow && (
               <button className="secondary" type="button" onClick={() => setOtherPayment(true)}>
-                Otro cobro
+                Clase suelta u otro
               </button>
             )}
           </div>
         </div>
         {otherPayment && (
-          <OtherPaymentDialog
-            studentId={student.id}
-            studentName={`${student.firstName} ${student.lastName}`}
-            onClose={() => setOtherPayment(false)}
-            onDone={(result) => {
+          <CollectPaymentDialog
+            initialStudent={student}
+            initialTab="other"
+            onClose={(changed) => {
               setOtherPayment(false);
-              onChargeGenerated(result);
+              if (changed)
+                onChargeGenerated({
+                  title: 'Cobro registrado',
+                  detail: 'Se actualizó el estado de cuenta.',
+                });
             }}
           />
         )}

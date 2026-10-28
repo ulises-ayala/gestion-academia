@@ -70,13 +70,14 @@ describe('PaymentHistory', () => {
               concept: 'SINGLE_CLASS',
               detail: null,
               academicClass: { id: 'class-id', name: 'Zumba' },
+              teacher: { id: 'teacher-id', firstName: 'Jose Luis', lastName: 'Barrios' },
             },
           },
         ]}
         onVoid={() => undefined}
       />,
     );
-    expect(markup).toContain('Clase suelta · Zumba');
+    expect(markup).toContain('Clase suelta · Zumba · Prof. Jose Luis Barrios');
   });
 
   it('shows VOID only to an authorized user and only for confirmed payments', () => {

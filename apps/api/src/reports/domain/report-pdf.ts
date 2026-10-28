@@ -253,6 +253,47 @@ export function renderOperationalReportPdf(
       (item) => [METHOD_LABELS[item.method], formatMoney(item.amount)] as const,
     ),
   ]);
+  metrics([
+    ['Cuotas', formatMoney(collections.byConcept.charges)],
+    ['Clases sueltas', formatMoney(collections.byConcept.singleClass)],
+    ['Otros cobros', formatMoney(collections.byConcept.other)],
+  ]);
+  if (collections.byTeacher.length > 0) {
+    subheading('Ingresos por profesor');
+    table(
+      [
+        { header: 'Profesor', width: 0.3 },
+        { header: 'Cuotas', width: 0.18, align: 'right' },
+        { header: 'Deuda anterior', width: 0.18, align: 'right' },
+        { header: 'Clases sueltas', width: 0.16, align: 'right' },
+        { header: 'Total', width: 0.18, align: 'right' },
+      ],
+      collections.byTeacher.map((item) => [
+        item.teacherName,
+        formatMoney(item.charges),
+        formatMoney(item.historicalDebt),
+        formatMoney(item.singleClass),
+        formatMoney(item.total),
+      ]),
+    );
+  }
+  if (collections.singleClasses.length > 0) {
+    subheading('Clases sueltas por profesor');
+    table(
+      [
+        { header: 'Profesor', width: 0.32 },
+        { header: 'Clase', width: 0.36 },
+        { header: 'Clases', width: 0.12, align: 'right' },
+        { header: 'Monto', width: 0.2, align: 'right' },
+      ],
+      collections.singleClasses.map((item) => [
+        item.teacherName,
+        item.className,
+        item.count,
+        formatMoney(item.amount),
+      ]),
+    );
+  }
   const paidDays = collections.byDay.filter((item) => Number(item.amount) > 0);
   if (paidDays.length === 0) paragraph('No hubo cobros en este período.');
   else {

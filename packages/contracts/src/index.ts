@@ -181,6 +181,28 @@ export type ReportCashDifferenceDto = Readonly<{
   difference: string;
   correctedDifference: string;
 }>;
+/**
+ * Lo cobrado en el período atribuido a cada profesor: cuotas y deuda anterior de sus clases
+ * (profesor actual de la clase) y clases sueltas (profesor que la dictó, guardado en el cobro).
+ */
+export type ReportTeacherIncomeDto = Readonly<{
+  teacherId: string;
+  teacherName: string;
+  charges: string;
+  historicalDebt: string;
+  singleClass: string;
+  singleClassCount: number;
+  total: string;
+}>;
+/** Clases sueltas cobradas en el período, por clase y profesor que la dictó. */
+export type ReportSingleClassDto = Readonly<{
+  classId: string;
+  className: string;
+  teacherId: string;
+  teacherName: string;
+  count: number;
+  amount: string;
+}>;
 export type OperationalReportsDto = Readonly<{
   generatedAt: string;
   businessDate: string;
@@ -193,6 +215,10 @@ export type OperationalReportsDto = Readonly<{
     count: number;
     byMethod: readonly ReportMoneyByMethodDto[];
     byDay: readonly Readonly<{ date: string; amount: string }>[];
+    /** Lo cobrado separado por concepto: cuotas, clases sueltas y otros cobros. */
+    byConcept: Readonly<{ charges: string; singleClass: string; other: string }>;
+    singleClasses: readonly ReportSingleClassDto[];
+    byTeacher: readonly ReportTeacherIncomeDto[];
   }>;
   debtors: PageDto<ReportDebtorDto>;
   attendance: Readonly<{
@@ -564,6 +590,8 @@ export type CreateOtherPaymentDto = Readonly<{
   studentId: string;
   concept: OtherPaymentConceptDto;
   classId?: string | null;
+  /** Profesor que dictó la clase suelta; si falta se usa el de la clase. */
+  teacherId?: string | null;
   detail?: string | null;
   tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
 }>;
@@ -600,6 +628,7 @@ export type PaymentDto = Readonly<{
     concept: OtherPaymentConceptDto;
     detail: string | null;
     academicClass: Readonly<{ id: string; name: string }> | null;
+    teacher: Readonly<{ id: string; firstName: string; lastName: string }> | null;
   }> | null;
   createdAt: string;
   updatedAt: string;

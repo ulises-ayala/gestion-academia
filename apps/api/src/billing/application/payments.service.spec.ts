@@ -58,15 +58,24 @@ class MemoryPayments implements PaymentsRepository {
     };
   }
   other: {
-    data: { studentId: string; concept: string; classId: string | null; detail: string | null };
+    data: {
+      studentId: string;
+      concept: string;
+      classId: string | null;
+      teacherId: string | null;
+      detail: string | null;
+    };
     tenders: readonly { method: PaymentMethodDto; amount: string }[];
   } | null = null;
   classStatus: 'ACTIVE' | 'INACTIVE' | null = 'ACTIVE';
+  classTeacherId = 'teacher-of-class';
+  teacherStatus: 'ACTIVE' | 'INACTIVE' | null = 'ACTIVE';
   async createOther(
     data: {
       studentId: string;
       concept: 'SINGLE_CLASS' | 'OTHER';
       classId: string | null;
+      teacherId: string | null;
       detail: string | null;
     },
     tenders: readonly { method: PaymentMethodDto; amount: string }[],
@@ -74,8 +83,11 @@ class MemoryPayments implements PaymentsRepository {
     this.other = { data, tenders };
     return { ...this.item, allocations: [], kind: 'OTHER' as const, otherConcept: null };
   }
-  async findClassStatus() {
-    return this.classStatus;
+  async findClass() {
+    return this.classStatus ? { status: this.classStatus, teacherId: this.classTeacherId } : null;
+  }
+  async findTeacherStatus() {
+    return this.teacherStatus;
   }
   async findById(id: string) {
     return id === this.item.id ? this.item : null;
@@ -189,7 +201,13 @@ describe('PaymentsService', () => {
       actorId,
     );
     expect(repository.other).toEqual({
-      data: { studentId, concept: 'SINGLE_CLASS', classId, detail: 'vino a probar' },
+      data: {
+        studentId,
+        concept: 'SINGLE_CLASS',
+        classId,
+        teacherId: 'teacher-of-class',
+        detail: 'vino a probar',
+      },
       tenders: [{ method: 'CASH', amount: '8000.00' }],
     });
   });
@@ -213,7 +231,38 @@ describe('PaymentsService', () => {
       },
       actorId,
     );
-    expect(repository.other?.data).toMatchObject({ classId: null, detail: 'Remera del show' });
+    expect(repository.other?.data).toMatchObject({
+      classId: null,
+      teacherId: null,
+      detail: 'Remera del show',
+    });
+  });
+
+  it('la clase suelta queda con el profesor que la dictó: el de la clase o un reemplazo activo', async () => {
+    const repository = new MemoryPayments();
+    const service = new PaymentsService(repository);
+    const classId = crypto.randomUUID();
+    const substitute = crypto.randomUUID();
+    const tenders = [{ method: 'CASH' as const, amount: '8000' }];
+    await service.createOther(
+      { studentId, concept: 'SINGLE_CLASS', classId, teacherId: substitute, tenders },
+      actorId,
+    );
+    expect(repository.other?.data.teacherId).toBe(substitute);
+    repository.teacherStatus = 'INACTIVE';
+    await expect(
+      service.createOther(
+        { studentId, concept: 'SINGLE_CLASS', classId, teacherId: crypto.randomUUID(), tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ code: 'TEACHER_INACTIVE' });
+    repository.teacherStatus = null;
+    await expect(
+      service.createOther(
+        { studentId, concept: 'SINGLE_CLASS', classId, teacherId: crypto.randomUUID(), tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ code: 'TEACHER_NOT_FOUND' });
   });
 
   it('la clase suelta exige una clase existente y activa', async () => {

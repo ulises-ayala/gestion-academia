@@ -87,6 +87,22 @@ type AttendanceRow = {
   justified: bigint;
 };
 type DayRow = { date: Date; amount: Prisma.Decimal };
+type TeacherIncomeRow = {
+  teacherId: string;
+  teacherName: string;
+  charges: Prisma.Decimal;
+  historicalDebt: Prisma.Decimal;
+  singleClass: Prisma.Decimal;
+  singleClassCount: bigint;
+};
+type SingleClassRow = {
+  classId: string;
+  className: string;
+  teacherId: string;
+  teacherName: string;
+  count: bigint;
+  amount: Prisma.Decimal;
+};
 
 @Injectable()
 export class ReportsService {
@@ -126,6 +142,9 @@ export class ReportsService {
       attendance,
       shifts,
       openShifts,
+      byConcept,
+      singleClasses,
+      byTeacher,
     ] = await Promise.all([
       this.prisma.student.groupBy({ by: ['status'], _count: { id: true } }),
       this.prisma.student.count({
@@ -190,7 +209,55 @@ export class ReportsService {
         orderBy: { closedAt: 'desc' },
       }),
       this.prisma.cashShift.count({ where: { status: 'OPEN' } }),
+      this.prisma.payment.groupBy({
+        by: ['kind', 'concept'],
+        where: { status: 'CONFIRMED', paidAt: { gte: input.from, lt: input.toExclusive } },
+        _sum: { amount: true },
+      }),
+      // Clases sueltas por clase y por el profesor que la dictó (foto guardada en el cobro).
+      this.prisma.$queryRaw<SingleClassRow[]>(Prisma.sql`
+          SELECT c.id AS "classId", c.name AS "className", t.id AS "teacherId",
+            CONCAT(t.first_name, ' ', t.last_name) AS "teacherName",
+            COUNT(*)::bigint AS count, SUM(p.amount) AS amount
+          FROM payments p JOIN classes c ON c.id = p.class_id JOIN teachers t ON t.id = p.teacher_id
+          WHERE p.status = 'CONFIRMED' AND p.concept = 'SINGLE_CLASS'
+            AND p.paid_at >= ${input.from} AND p.paid_at < ${input.toExclusive}
+          GROUP BY c.id, t.id ORDER BY t.last_name, t.first_name, c.name`),
+      // Ingresos por profesor: lo imputado a cuotas de sus clases (profesor actual de la clase)
+      // y las clases sueltas que dictó. Base para la futura liquidación docente.
+      this.prisma.$queryRaw<TeacherIncomeRow[]>(Prisma.sql`
+          WITH charge_income AS (
+            SELECT c.teacher_id,
+              COALESCE(SUM(pa.amount) FILTER (WHERE mc.kind = 'MONTHLY'), 0) AS charges,
+              COALESCE(SUM(pa.amount) FILTER (WHERE mc.kind = 'HISTORICAL_DEBT'), 0) AS historical
+            FROM payment_allocations pa
+            JOIN payments p ON p.id = pa.payment_id AND p.status = 'CONFIRMED'
+              AND p.paid_at >= ${input.from} AND p.paid_at < ${input.toExclusive}
+            JOIN monthly_charges mc ON mc.id = pa.monthly_charge_id
+            JOIN enrollments e ON e.id = mc.enrollment_id
+            JOIN classes c ON c.id = e.class_id
+            GROUP BY c.teacher_id
+          ), single_income AS (
+            SELECT p.teacher_id, SUM(p.amount) AS amount, COUNT(*)::bigint AS count
+            FROM payments p
+            WHERE p.status = 'CONFIRMED' AND p.concept = 'SINGLE_CLASS'
+              AND p.paid_at >= ${input.from} AND p.paid_at < ${input.toExclusive}
+            GROUP BY p.teacher_id
+          )
+          SELECT t.id AS "teacherId", CONCAT(t.first_name, ' ', t.last_name) AS "teacherName",
+            COALESCE(ci.charges, 0) AS charges, COALESCE(ci.historical, 0) AS "historicalDebt",
+            COALESCE(si.amount, 0) AS "singleClass", COALESCE(si.count, 0)::bigint AS "singleClassCount"
+          FROM teachers t
+          LEFT JOIN charge_income ci ON ci.teacher_id = t.id
+          LEFT JOIN single_income si ON si.teacher_id = t.id
+          WHERE ci.teacher_id IS NOT NULL OR si.teacher_id IS NOT NULL
+          ORDER BY t.last_name, t.first_name`),
     ]);
+    const conceptTotal = (match: (row: (typeof byConcept)[number]) => boolean) =>
+      byConcept
+        .filter(match)
+        .reduce((sum, row) => sum.plus(row._sum.amount ?? 0), zero())
+        .toFixed(2);
 
     const cash = this.cashReport(shifts);
     const debt = debtRows[0]!;
@@ -245,6 +312,30 @@ export class ReportsService {
           date: item.date.toISOString().slice(0, 10),
           amount: item.amount.toFixed(2),
         })),
+        byConcept: {
+          charges: conceptTotal((row) => row.kind === 'CHARGES'),
+          singleClass: conceptTotal((row) => row.concept === 'SINGLE_CLASS'),
+          other: conceptTotal((row) => row.kind === 'OTHER' && row.concept !== 'SINGLE_CLASS'),
+        },
+        singleClasses: singleClasses.map((item) => ({
+          ...item,
+          count: Number(item.count),
+          amount: item.amount.toFixed(2),
+        })),
+        byTeacher: byTeacher.map((item) => {
+          const charges = new Prisma.Decimal(item.charges);
+          const historicalDebt = new Prisma.Decimal(item.historicalDebt);
+          const singleClass = new Prisma.Decimal(item.singleClass);
+          return {
+            teacherId: item.teacherId,
+            teacherName: item.teacherName,
+            charges: charges.toFixed(2),
+            historicalDebt: historicalDebt.toFixed(2),
+            singleClass: singleClass.toFixed(2),
+            singleClassCount: Number(item.singleClassCount),
+            total: charges.plus(historicalDebt).plus(singleClass).toFixed(2),
+          };
+        }),
       },
       debtors: {
         items: debtors.map((item) => ({
@@ -284,7 +375,7 @@ export class ReportsService {
   }
 
   async export(
-    kind: 'students' | 'collections' | 'debtors' | 'attendance' | 'cash',
+    kind: 'students' | 'collections' | 'teachers' | 'debtors' | 'attendance' | 'cash',
     input: Parameters<ReportsService['operational']>[0],
   ) {
     const report = await this.operational({ ...input, page: 1, pageSize: 100000 });
@@ -299,6 +390,29 @@ export class ReportsService {
           item.joinedAt,
           item.activeEnrollments,
           item.currentDebt,
+        ]),
+      );
+    if (kind === 'teachers')
+      return toCsv(
+        [
+          'Profesor',
+          'Cuotas',
+          'Deuda anterior',
+          'Clases sueltas (cantidad)',
+          'Clases sueltas',
+          'Total',
+          'Desde',
+          'Hasta',
+        ],
+        report.collections.byTeacher.map((item) => [
+          item.teacherName,
+          item.charges,
+          item.historicalDebt,
+          item.singleClassCount,
+          item.singleClass,
+          item.total,
+          report.from,
+          report.to,
         ]),
       );
     if (kind === 'debtors')
@@ -370,15 +484,35 @@ export class ReportsService {
       );
     const payments = await this.prisma.payment.findMany({
       where: { status: 'CONFIRMED', paidAt: { gte: input.from, lt: input.toExclusive } },
-      include: { student: true, tenders: true },
+      include: { student: true, tenders: true, academicClass: true, teacher: true },
       orderBy: [{ paidAt: 'asc' }, { id: 'asc' }],
     });
+    const concept = (payment: (typeof payments)[number]) =>
+      payment.kind === 'CHARGES'
+        ? 'Cuotas'
+        : payment.concept === 'SINGLE_CLASS'
+          ? 'Clase suelta'
+          : `Otro: ${payment.conceptDetail ?? ''}`;
     return toCsv(
-      ['Fecha', 'Alumno', 'DNI', 'Monto total', 'Efectivo', 'Mercado Pago', 'Tarjeta'],
+      [
+        'Fecha',
+        'Alumno',
+        'DNI',
+        'Concepto',
+        'Clase',
+        'Profesor',
+        'Monto total',
+        'Efectivo',
+        'Mercado Pago',
+        'Tarjeta',
+      ],
       payments.map((payment) => [
         payment.paidAt.toISOString(),
         `${payment.student.firstName} ${payment.student.lastName}`,
         payment.student.dni,
+        concept(payment),
+        payment.academicClass?.name ?? '',
+        payment.teacher ? `${payment.teacher.firstName} ${payment.teacher.lastName}` : '',
         payment.amount.toFixed(2),
         payment.tenders.find((item) => item.method === 'CASH')?.amount.toFixed(2) ?? '0.00',
         payment.tenders.find((item) => item.method === 'MERCADO_PAGO')?.amount.toFixed(2) ?? '0.00',

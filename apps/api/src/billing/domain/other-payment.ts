@@ -11,6 +11,7 @@ export const OTHER_PAYMENT_DETAIL_MAX = 200;
 export const validateOtherPayment = (input: {
   concept: unknown;
   classId?: unknown;
+  teacherId?: unknown;
   detail?: unknown;
 }) => {
   if (
@@ -37,10 +38,12 @@ export const validateOtherPayment = (input: {
   const classId = typeof input.classId === 'string' && input.classId ? input.classId : null;
   if (concept === 'SINGLE_CLASS' && !classId)
     throw new DomainError('VALIDATION_ERROR', 'Elegí la clase suelta', { field: 'classId' });
+  const teacherId = typeof input.teacherId === 'string' && input.teacherId ? input.teacherId : null;
   return {
     concept,
     detail: detail || null,
-    // La clase solo se registra en la clase suelta.
+    // Clase y profesor solo se registran en la clase suelta.
     classId: concept === 'SINGLE_CLASS' ? classId : null,
+    teacherId: concept === 'SINGLE_CLASS' ? teacherId : null,
   };
 };

@@ -376,6 +376,7 @@ function Collections({
           </div>
         )}
       </section>
+      <TeacherIncome data={data} exportHref={exportHref('teachers')} />
       <section className="card reports-panel">
         <div className="reports-panel-heading">
           <div>
@@ -533,6 +534,111 @@ function Attendance({
       )}
       <p className="reports-note">
         Sólo se cuentan asistencias registradas; no se estiman sesiones ni concurrencia esperada.
+      </p>
+    </section>
+  );
+}
+
+/** Lo cobrado en el período por profesor: base para la liquidación docente. */
+function TeacherIncome({ data, exportHref }: { data: OperationalReportsDto; exportHref: string }) {
+  const { byConcept, byTeacher, singleClasses } = data.collections;
+  return (
+    <section className="card reports-panel">
+      <div className="reports-panel-heading">
+        <div>
+          <p className="eyebrow">BASE PARA LIQUIDACIONES</p>
+          <h2>Ingresos por profesor</h2>
+        </div>
+        <a className="button secondary" href={exportHref}>
+          Exportar por profesor CSV
+        </a>
+      </div>
+      <div className="reports-metrics compact">
+        <article>
+          <span>Cuotas</span>
+          <strong>{amount(byConcept.charges)}</strong>
+        </article>
+        <article>
+          <span>Clases sueltas</span>
+          <strong>{amount(byConcept.singleClass)}</strong>
+        </article>
+        <article>
+          <span>Otros cobros</span>
+          <strong>{amount(byConcept.other)}</strong>
+        </article>
+      </div>
+      {byTeacher.length === 0 ? (
+        <p className="empty-state">No hubo cobros de clases en este período.</p>
+      ) : (
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Profesor</th>
+                <th>Cuotas</th>
+                <th>Deuda anterior</th>
+                <th>Clases sueltas</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {byTeacher.map((item) => (
+                <tr key={item.teacherId}>
+                  <td data-label="Profesor">
+                    <Link href={`/teachers/${item.teacherId}`}>{item.teacherName}</Link>
+                  </td>
+                  <td data-label="Cuotas">{amount(item.charges)}</td>
+                  <td data-label="Deuda anterior">{amount(item.historicalDebt)}</td>
+                  <td data-label="Clases sueltas">
+                    {amount(item.singleClass)}
+                    {item.singleClassCount > 0 && (
+                      <small className="table-subline">
+                        {item.singleClassCount === 1
+                          ? '1 clase'
+                          : `${item.singleClassCount} clases`}
+                      </small>
+                    )}
+                  </td>
+                  <td data-label="Total">
+                    <strong>{amount(item.total)}</strong>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {singleClasses.length > 0 && (
+        <details className="reports-details">
+          <summary>Clases sueltas por clase</summary>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Profesor</th>
+                  <th>Clase</th>
+                  <th>Clases</th>
+                  <th>Monto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {singleClasses.map((item) => (
+                  <tr key={`${item.teacherId}-${item.classId}`}>
+                    <td data-label="Profesor">{item.teacherName}</td>
+                    <td data-label="Clase">{item.className}</td>
+                    <td data-label="Clases">{item.count}</td>
+                    <td data-label="Monto">{amount(item.amount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      )}
+      <p className="reports-note">
+        Lo efectivamente cobrado en el período. Las cuotas y la deuda anterior se asignan al
+        profesor actual de la clase; la clase suelta, al profesor que la dictó (queda guardado en el
+        cobro). Todavía no calcula cuánto le corresponde a cada profesor.
       </p>
     </section>
   );

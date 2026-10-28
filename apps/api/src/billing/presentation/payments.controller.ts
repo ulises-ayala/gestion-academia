@@ -123,6 +123,7 @@ export class PaymentsController {
         ...input,
         studentId: parseUuid(input.studentId, 'studentId'),
         classId: input.classId ? parseUuid(input.classId, 'classId') : null,
+        teacherId: input.teacherId ? parseUuid(input.teacherId, 'teacherId') : null,
       },
       user.id,
     );

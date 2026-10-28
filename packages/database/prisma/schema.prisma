@@ -180,6 +180,7 @@ model Teacher {
   classes           AcademyClass[]
   billingConditions EnrollmentBillingCondition[]
   chargeAdjustments MonthlyChargeAdjustment[]
+  payments          Payment[]
 
   @@index([lastName, firstName])
   @@map("teachers")
@@ -406,6 +407,8 @@ model Payment {
   concept         OtherPaymentConcept?
   conceptDetail   String?              @map("concept_detail") @db.VarChar(200)
   classId         String?              @map("class_id") @db.Uuid
+  /// Profesor que dictó la clase suelta (foto al cobrar, para liquidaciones).
+  teacherId       String?              @map("teacher_id") @db.Uuid
   paidAt          DateTime             @default(now()) @map("paid_at") @db.Timestamptz(3)
   createdByUserId String               @map("created_by_user_id") @db.Uuid
   voidedAt        DateTime?            @map("voided_at") @db.Timestamptz(3)
@@ -416,6 +419,7 @@ model Payment {
   createdBy       AdminUser            @relation("PaymentCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
   voidedBy        AdminUser?           @relation("PaymentVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
   academicClass   AcademyClass?        @relation(fields: [classId], references: [id], onDelete: Restrict)
+  teacher         Teacher?             @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   allocations     PaymentAllocation[]
   tenders         PaymentTender[]
   cashMovements   CashMovement[]
@@ -423,6 +427,7 @@ model Payment {
   @@index([studentId, paidAt])
   @@index([status, paidAt])
   @@index([kind, paidAt])
+  @@index([teacherId, paidAt])
   @@map("payments")
 }
 

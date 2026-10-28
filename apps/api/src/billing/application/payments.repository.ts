@@ -30,13 +30,15 @@ export interface PaymentsRepository {
       studentId: string;
       concept: OtherPaymentConceptDto;
       classId: string | null;
+      teacherId: string | null;
       detail: string | null;
     }>,
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
   ): Promise<PaymentDto>;
-  /** Estado de la clase de una clase suelta, o null si no existe. */
-  findClassStatus(classId: string): Promise<'ACTIVE' | 'INACTIVE' | null>;
+  /** Estado y profesor actual de la clase de una clase suelta, o null si no existe. */
+  findClass(classId: string): Promise<{ status: 'ACTIVE' | 'INACTIVE'; teacherId: string } | null>;
+  findTeacherStatus(teacherId: string): Promise<'ACTIVE' | 'INACTIVE' | null>;
   findById(id: string): Promise<PaymentDto | null>;
   findPage(
     query: PaymentQuery,

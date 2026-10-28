@@ -9,6 +9,8 @@ export const otherConceptLabels: Readonly<Record<OtherPaymentConceptDto, string>
 export type OtherPaymentForm = Readonly<{
   concept: OtherPaymentConceptDto;
   classId: string;
+  /** Profesor que dictó la clase suelta; vacío = el de la clase. */
+  teacherId?: string;
   detail: string;
 }>;
 
@@ -17,8 +19,8 @@ export const describeOtherPayment = (other: PaymentDto['otherConcept']) => {
   if (!other) return '';
   if (other.concept === 'SINGLE_CLASS')
     return `Clase suelta${other.academicClass ? ` · ${other.academicClass.name}` : ''}${
-      other.detail ? ` (${other.detail})` : ''
-    }`;
+      other.teacher ? ` · Prof. ${other.teacher.firstName} ${other.teacher.lastName}` : ''
+    }${other.detail ? ` (${other.detail})` : ''}`;
   return `Otro: ${other.detail ?? ''}`.trim();
 };
 
@@ -39,5 +41,6 @@ export const buildOtherPaymentPayload = (
   ...createPaymentPayload(studentId, tenders),
   concept: form.concept,
   classId: form.concept === 'SINGLE_CLASS' ? form.classId : null,
+  teacherId: form.concept === 'SINGLE_CLASS' && form.teacherId ? form.teacherId : null,
   detail: form.detail.trim() || null,
 });

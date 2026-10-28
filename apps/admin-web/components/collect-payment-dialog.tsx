@@ -10,6 +10,7 @@ import type {
   PaymentDto,
   StudentDto,
   StudentListDto,
+  TeacherListDto,
 } from '@academy/contracts';
 import { Check, Search } from 'lucide-react';
 import Link from 'next/link';
@@ -65,8 +66,13 @@ const errorText = (error: unknown, fallback: string) =>
  */
 export function CollectPaymentDialog({
   initialStudent = null,
+  initialTab = 'charges',
   onClose,
-}: Readonly<{ initialStudent?: StudentDto | null; onClose(changed: boolean): void }>) {
+}: Readonly<{
+  initialStudent?: StudentDto | null;
+  initialTab?: CollectTab;
+  onClose(changed: boolean): void;
+}>) {
   const { can } = useAuth();
   const dialog = useRef<HTMLDialogElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -82,11 +88,13 @@ export function CollectPaymentDialog({
   const [classes, setClasses] = useState<ClassListDto['items'] | null>(null);
   const [cashOpen, setCashOpen] = useState<boolean | null>(null);
   const [openingCash, setOpeningCash] = useState(false);
-  const [tab, setTab] = useState<CollectTab>('charges');
+  const [tab, setTab] = useState<CollectTab>(initialTab);
   const [pick, setPick] = useState<TenderPick>(freshPick());
   const [amountTouched, setAmountTouched] = useState(false);
   const [concept, setConcept] = useState<OtherPaymentConceptDto>('SINGLE_CLASS');
   const [classId, setClassId] = useState('');
+  const [teachers, setTeachers] = useState<TeacherListDto['items'] | null>(null);
+  const [teacherId, setTeacherId] = useState('');
   const [detail, setDetail] = useState('');
   const [debtForm, setDebtForm] = useState({ enrollmentId: '', amount: '', description: '' });
   const [generating, setGenerating] = useState(false);
@@ -181,6 +189,9 @@ export function CollectPaymentDialog({
     apiRequest<ClassListDto>('/classes?status=ACTIVE&pageSize=100')
       .then((result) => setClasses(result.items))
       .catch(() => setClasses([]));
+    apiRequest<TeacherListDto>('/teachers?status=ACTIVE&pageSize=100')
+      .then((result) => setTeachers(result.items))
+      .catch(() => setTeachers([]));
   }, [classes, tab]);
 
   const pending = useMemo(
@@ -214,7 +225,8 @@ export function CollectPaymentDialog({
   const totalCents = pickTotalCents(pick);
   const preview = previewAllocations(pending, totalCents);
   const tenders: TenderAmounts = tendersFrom(pick);
-  const otherForm = { concept, classId, detail };
+  const otherForm = { concept, classId, teacherId, detail };
+  const selectedClass = classes?.find((item) => item.id === classId) ?? null;
   const problem =
     tab === 'charges'
       ? chargesProblem(pick, debtCents)
@@ -253,6 +265,7 @@ export function CollectPaymentDialog({
     setAmountTouched(false);
     setDetail('');
     setClassId('');
+    setTeacherId('');
     setTried(false);
     setNotice('');
     void loadCharges(student.id).catch(() => undefined);
@@ -678,7 +691,12 @@ export function CollectPaymentDialog({
                     value={classId}
                     disabled={saving || classes === null}
                     aria-invalid={tried && !classId}
-                    onChange={(event) => setClassId(event.target.value)}
+                    onChange={(event) => {
+                      const next = classes?.find((item) => item.id === event.target.value);
+                      setClassId(event.target.value);
+                      // El profesor de la clase por defecto; si la dio un reemplazo, se cambia.
+                      setTeacherId(next?.teacher.id ?? '');
+                    }}
                   >
                     <option value="">
                       {classes === null ? 'Cargando clases…' : 'Elegí la clase'}
@@ -689,6 +707,31 @@ export function CollectPaymentDialog({
                       </option>
                     ))}
                   </select>
+                </label>
+              )}
+              {concept === 'SINGLE_CLASS' && selectedClass && (
+                <label>
+                  Profesor que la dictó
+                  <select
+                    value={teacherId}
+                    disabled={saving}
+                    onChange={(event) => setTeacherId(event.target.value)}
+                  >
+                    {!teachers?.some((item) => item.id === selectedClass.teacher.id) && (
+                      <option value={selectedClass.teacher.id}>
+                        {selectedClass.teacher.firstName} {selectedClass.teacher.lastName}
+                      </option>
+                    )}
+                    {teachers?.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.firstName} {item.lastName}
+                        {item.id === selectedClass.teacher.id ? ' (profesor de la clase)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <small className="collect-hint">
+                    El cobro queda a nombre de este profesor en ingresos y liquidaciones.
+                  </small>
                 </label>
               )}
               <label>

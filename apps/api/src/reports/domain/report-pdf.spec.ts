@@ -46,6 +46,28 @@ const report = (overrides: Partial<OperationalReportsDto> = {}): OperationalRepo
       { date: '2026-10-01', amount: '120000.00' },
       { date: '2026-10-02', amount: '0.00' },
     ],
+    byConcept: { charges: '1800500.50', singleClass: '24000.00', other: '6000.00' },
+    singleClasses: [
+      {
+        classId: 'c1',
+        className: 'Zumba',
+        teacherId: 't1',
+        teacherName: 'Jose Luis Barrios',
+        count: 3,
+        amount: '24000.00',
+      },
+    ],
+    byTeacher: [
+      {
+        teacherId: 't1',
+        teacherName: 'Jose Luis Barrios',
+        charges: '520000.00',
+        historicalDebt: '100000.00',
+        singleClass: '24000.00',
+        singleClassCount: 3,
+        total: '644000.00',
+      },
+    ],
   },
   debtors: page([
     {
@@ -145,7 +167,15 @@ describe('renderOperationalReportPdf', () => {
 
   it('soporta un período sin movimientos', async () => {
     const empty = report({
-      collections: { total: '0.00', count: 0, byMethod: [], byDay: [] },
+      collections: {
+        total: '0.00',
+        count: 0,
+        byMethod: [],
+        byDay: [],
+        byConcept: { charges: '0.00', singleClass: '0.00', other: '0.00' },
+        singleClasses: [],
+        byTeacher: [],
+      },
       debtors: page([]),
       attendance: { records: 0, present: 0, absent: 0, justified: 0, byClass: [] },
       cash: { closedShifts: 0, openShifts: 0, byMethod: [], byOperator: [], differences: [] },

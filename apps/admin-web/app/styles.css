@@ -114,6 +114,14 @@
   background: var(--brand-soft);
   color: var(--text-muted);
 }
+.reports-details summary {
+  cursor: pointer;
+  color: var(--brand);
+  font-weight: var(--font-weight-medium);
+}
+.reports-details[open] summary {
+  margin-bottom: var(--space-3);
+}
 .reports-inline-filters {
   align-items: flex-end;
   margin-bottom: var(--space-4);

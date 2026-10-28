@@ -22,6 +22,7 @@ const include = {
   createdBy: { select: { id: true, username: true } },
   voidedBy: { select: { id: true, username: true } },
   academicClass: { select: { id: true, name: true } },
+  teacher: { select: { id: true, firstName: true, lastName: true } },
   tenders: { orderBy: [{ method: 'asc' as const }, { id: 'asc' as const }] },
   allocations: {
     include: {
@@ -68,7 +69,12 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   kind: item.kind,
   otherConcept:
     item.kind === 'OTHER' && item.concept
-      ? { concept: item.concept, detail: item.conceptDetail, academicClass: item.academicClass }
+      ? {
+          concept: item.concept,
+          detail: item.conceptDetail,
+          academicClass: item.academicClass,
+          teacher: item.teacher,
+        }
       : null,
   createdAt: item.createdAt.toISOString(),
   updatedAt: item.updatedAt.toISOString(),
@@ -246,6 +252,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
       studentId: string;
       concept: OtherPaymentConceptDto;
       classId: string | null;
+      teacherId: string | null;
       detail: string | null;
     }>,
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
@@ -276,6 +283,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             concept: data.concept,
             conceptDetail: data.detail,
             classId: data.classId,
+            teacherId: data.teacherId,
             createdByUserId: actorId,
             tenders: {
               create: tenders.map((tender) => ({ method: tender.method, amount: tender.amount })),
@@ -305,6 +313,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               concept: data.concept,
               detail: data.detail,
               classId: data.classId,
+              teacherId: data.teacherId,
               amount: amount.toFixed(2),
               tenders: tenders.map((tender) => ({ method: tender.method, amount: tender.amount })),
             },
@@ -323,9 +332,16 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     }
   }
 
-  async findClassStatus(classId: string) {
-    const item = await this.prisma.academyClass.findUnique({
+  findClass(classId: string) {
+    return this.prisma.academyClass.findUnique({
       where: { id: classId },
+      select: { status: true, teacherId: true },
+    });
+  }
+
+  async findTeacherStatus(teacherId: string) {
+    const item = await this.prisma.teacher.findUnique({
+      where: { id: teacherId },
       select: { status: true },
     });
     return item?.status ?? null;

@@ -23,15 +23,30 @@ export class PaymentsService {
   async createOther(input: CreateOtherPaymentDto, actorId: string) {
     const tenders = this.tenders(input.tenders);
     const other = validateOtherPayment(input);
+    let teacherId = other.teacherId;
     if (other.classId) {
-      const status = await this.repository.findClassStatus(other.classId);
-      if (!status) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
-      if (status !== 'ACTIVE')
+      const academicClass = await this.repository.findClass(other.classId);
+      if (!academicClass) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
+      if (academicClass.status !== 'ACTIVE')
         throw new DomainError('CLASS_INACTIVE', 'La clase elegida está desactivada', {
           field: 'classId',
         });
+      // Por defecto, el profesor de la clase; se puede indicar otro (por ejemplo, un reemplazo).
+      if (!teacherId) teacherId = academicClass.teacherId;
+      else if (teacherId !== academicClass.teacherId) {
+        const status = await this.repository.findTeacherStatus(teacherId);
+        if (!status) throw new DomainError('TEACHER_NOT_FOUND', 'Profesor no encontrado');
+        if (status !== 'ACTIVE')
+          throw new DomainError('TEACHER_INACTIVE', 'El profesor elegido está inactivo', {
+            field: 'teacherId',
+          });
+      }
     }
-    return this.repository.createOther({ studentId: input.studentId, ...other }, tenders, actorId);
+    return this.repository.createOther(
+      { studentId: input.studentId, ...other, teacherId },
+      tenders,
+      actorId,
+    );
   }
 
   private tenders(input: CreatePaymentDto['tenders']) {
