@@ -6,9 +6,11 @@ import type {
   CashShiftListDto,
   PaymentMethodDto,
 } from '@academy/contracts';
+import { CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../components/auth-provider';
+import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { safePaymentReturnTo } from '../../lib/contextual-filters';
 
@@ -37,6 +39,7 @@ export default function CashPage() {
     CARD: '',
   });
   const [closing, setClosing] = useState(false);
+  const [collecting, setCollecting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [from, setFrom] = useState(today());
@@ -194,7 +197,7 @@ export default function CashPage() {
       ) : (
         <section className="panel cash-current">
           <div className="cash-heading">
-            <div>
+            <div className="cash-heading-title">
               <span className="status active">Turno abierto</span>
               <h2>Mi turno</h2>
               <p>Desde {new Date(current.openedAt).toLocaleString('es-AR')}</p>
@@ -208,7 +211,19 @@ export default function CashPage() {
                   Volver al cobro
                 </Link>
               )}
-              <button onClick={() => setClosing(true)}>Cerrar turno</button>
+              {can('payments:collect') && (
+                <button
+                  className="cash-collect-button"
+                  type="button"
+                  onClick={() => setCollecting(true)}
+                >
+                  <CreditCard aria-hidden="true" size={20} strokeWidth={1.8} />
+                  Registrar pago
+                </button>
+              )}
+              <button className="secondary" type="button" onClick={() => setClosing(true)}>
+                Cerrar turno
+              </button>
             </div>
           </div>
           <div className="cash-totals">
@@ -225,6 +240,14 @@ export default function CashPage() {
           </p>
           <MovementList shift={current} />
         </section>
+      )}
+      {collecting && (
+        <CollectPaymentDialog
+          onClose={(changed) => {
+            setCollecting(false);
+            if (changed) void load();
+          }}
+        />
       )}
       {closing && current && (
         <section className="panel cash-close">
