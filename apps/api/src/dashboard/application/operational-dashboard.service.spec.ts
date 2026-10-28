@@ -107,8 +107,15 @@ describe('OperationalDashboardService', () => {
         teacher: { firstName: 'Valentina', lastName: 'Ruiz' },
         schedules: [
           {
+            id: 'ballet-10',
             startTime: new Date('1970-01-01T10:00:00.000Z'),
             endTime: new Date('1970-01-01T11:00:00.000Z'),
+            room: { name: 'Sala 2', branch: { name: 'Centro' } },
+          },
+          {
+            id: 'ballet-19',
+            startTime: new Date('1970-01-01T19:00:00.000Z'),
+            endTime: new Date('1970-01-01T20:00:00.000Z'),
             room: { name: 'Sala 2', branch: { name: 'Centro' } },
           },
         ],
@@ -119,6 +126,7 @@ describe('OperationalDashboardService', () => {
         teacher: { firstName: 'Mariana', lastName: 'Gómez' },
         schedules: [
           {
+            id: 'contemporaneo-17',
             startTime: new Date('1970-01-01T17:00:00.000Z'),
             endTime: new Date('1970-01-01T18:00:00.000Z'),
             room: { name: 'Sala 1', branch: { name: 'Centro' } },
@@ -130,7 +138,7 @@ describe('OperationalDashboardService', () => {
     prisma.studentAttendance.findMany.mockImplementation((args: { where: object }) =>
       Promise.resolve(
         'enrollment' in args.where
-          ? [{ enrollment: { classId: 'class-1' } }, { enrollment: { classId: 'class-1' } }]
+          ? [{ scheduleId: 'ballet-10' }, { scheduleId: 'ballet-10' }, { scheduleId: 'ballet-19' }]
           : [],
       ),
     );
@@ -139,10 +147,12 @@ describe('OperationalDashboardService', () => {
       new Date('2026-08-30T15:00:00.000Z'),
     );
 
-    expect(result.classes?.scheduledToday).toBe(2);
+    expect(result.classes?.scheduledToday).toBe(3);
+    // Cada horario cuenta su propia asistencia, aunque sea la misma clase.
     expect(result.classes?.today).toEqual([
       expect.objectContaining({ id: 'class-1', enrolledStudents: 18, attendanceRecords: 2 }),
       expect.objectContaining({ id: 'class-2', enrolledStudents: 0, attendanceRecords: 0 }),
+      expect.objectContaining({ id: 'class-1', startTime: '19:00', attendanceRecords: 1 }),
     ]);
     expect(prisma.enrollment.groupBy).toHaveBeenCalledWith(
       expect.objectContaining({

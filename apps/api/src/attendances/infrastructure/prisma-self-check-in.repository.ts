@@ -35,30 +35,40 @@ export class PrismaSelfCheckInRepository implements SelfCheckInRepository {
             teacher: { select: { firstName: true, lastName: true } },
             schedules: {
               where: { status: 'ACTIVE', dayOfWeek },
-              select: { startTime: true, endTime: true, room: { select: { name: true } } },
+              select: {
+                id: true,
+                startTime: true,
+                endTime: true,
+                room: { select: { name: true } },
+              },
             },
           },
         },
-        attendances: { where: { attendanceDate }, select: { status: true }, take: 1 },
+        attendances: { where: { attendanceDate }, select: { status: true, scheduleId: true } },
       },
     });
     return enrollments.flatMap((enrollment) =>
       enrollment.class.schedules.map((schedule) => ({
         enrollmentId: enrollment.id,
+        scheduleId: schedule.id,
         className: enrollment.class.name,
         teacherName: `${enrollment.class.teacher.firstName} ${enrollment.class.teacher.lastName}`,
         roomName: schedule.room.name,
         startTime: isoTime(schedule.startTime),
         endTime: isoTime(schedule.endTime),
-        attendanceStatus: enrollment.attendances[0]?.status ?? null,
+        attendanceStatus:
+          enrollment.attendances.find((attendance) => attendance.scheduleId === schedule.id)
+            ?.status ?? null,
       })),
     );
   }
 
-  async markPresent(enrollmentId: string, attendanceDate: Date) {
+  async markPresent(enrollmentId: string, scheduleId: string, attendanceDate: Date) {
     await this.prisma.studentAttendance.upsert({
-      where: { enrollmentId_attendanceDate: { enrollmentId, attendanceDate } },
-      create: { enrollmentId, attendanceDate, status: 'PRESENT' },
+      where: {
+        enrollmentId_attendanceDate_scheduleId: { enrollmentId, attendanceDate, scheduleId },
+      },
+      create: { enrollmentId, attendanceDate, scheduleId, status: 'PRESENT' },
       update: { status: 'PRESENT' },
     });
   }

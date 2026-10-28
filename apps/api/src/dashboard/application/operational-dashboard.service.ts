@@ -60,6 +60,7 @@ export class OperationalDashboardService {
               schedules: {
                 where: { status: 'ACTIVE', dayOfWeek: day.dayOfWeek },
                 select: {
+                  id: true,
                   startTime: true,
                   endTime: true,
                   room: { select: { name: true, branch: { select: { name: true } } } },
@@ -89,17 +90,18 @@ export class OperationalDashboardService {
                     attendanceDate: day.dateValue,
                     enrollment: { classId: { in: classIds } },
                   },
-                  select: { enrollment: { select: { classId: true } } },
+                  select: { scheduleId: true },
                 })
               : null,
           ]);
           const enrolledByClass = new Map(
             enrolled.map((group) => [group.classId, group._count.id] as const),
           );
-          const recordsFor = (classId: string) =>
+          // Cada horario del día tiene su propia asistencia.
+          const recordsFor = (scheduleId: string) =>
             records === null
               ? null
-              : records.filter((record) => record.enrollment.classId === classId).length;
+              : records.filter((record) => record.scheduleId === scheduleId).length;
           const today = classes
             .flatMap((item) =>
               item.schedules.map((schedule) => ({
@@ -111,7 +113,7 @@ export class OperationalDashboardService {
                 room: schedule.room.name,
                 branch: schedule.room.branch.name,
                 enrolledStudents: enrolledByClass.get(item.id) ?? 0,
-                attendanceRecords: recordsFor(item.id),
+                attendanceRecords: recordsFor(schedule.id),
               })),
             )
             .sort((left, right) => left.startTime.localeCompare(right.startTime));

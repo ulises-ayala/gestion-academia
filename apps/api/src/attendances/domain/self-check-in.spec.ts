@@ -12,6 +12,7 @@ const candidate = (
   overrides: Partial<SelfCheckInCandidate> = {},
 ): SelfCheckInCandidate => ({
   enrollmentId: `${startTime}-${endTime}`,
+  scheduleId: `horario-${startTime}`,
   className: `Clase ${startTime}`,
   teacherName: 'Profesora',
   roomName: 'Salón principal',
@@ -68,6 +69,17 @@ describe('pickSelfCheckInClass', () => {
       candidate('19:00', '20:00'),
     ];
     expect(pickSelfCheckInClass(classes, at('18:50'))).toEqual({
+      candidate: classes[1],
+      alreadyPresent: false,
+    });
+  });
+
+  it('dos horarios de la misma clase (misma inscripción) se marcan por separado', () => {
+    const classes = [
+      candidate('18:00', '19:00', { enrollmentId: 'salsa', attendanceStatus: 'PRESENT' }),
+      candidate('19:00', '20:00', { enrollmentId: 'salsa' }),
+    ];
+    expect(pickSelfCheckInClass(classes, at('19:05'))).toEqual({
       candidate: classes[1],
       alreadyPresent: false,
     });

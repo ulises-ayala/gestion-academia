@@ -521,17 +521,18 @@ model PaymentAllocation {
 }
 
 model ClassSchedule {
-  id        String       @id @default(uuid()) @db.Uuid
-  classId   String       @map("class_id") @db.Uuid
-  dayOfWeek DayOfWeek    @map("day_of_week")
-  startTime DateTime     @map("start_time") @db.Time(0)
-  endTime   DateTime     @map("end_time") @db.Time(0)
-  roomId    String       @map("room_id") @db.Uuid
-  status    RecordStatus @default(ACTIVE)
-  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
-  class     AcademyClass @relation(fields: [classId], references: [id])
-  room      Room         @relation(fields: [roomId], references: [id])
+  id          String              @id @default(uuid()) @db.Uuid
+  classId     String              @map("class_id") @db.Uuid
+  dayOfWeek   DayOfWeek           @map("day_of_week")
+  startTime   DateTime            @map("start_time") @db.Time(0)
+  endTime     DateTime            @map("end_time") @db.Time(0)
+  roomId      String              @map("room_id") @db.Uuid
+  status      RecordStatus        @default(ACTIVE)
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  class       AcademyClass        @relation(fields: [classId], references: [id])
+  room        Room                @relation(fields: [roomId], references: [id])
+  attendances StudentAttendance[]
 
   @@index([classId, status])
   @@index([roomId, dayOfWeek, status, startTime, endTime])
@@ -542,14 +543,19 @@ model StudentAttendance {
   id             String           @id @default(uuid()) @db.Uuid
   enrollmentId   String           @map("enrollment_id") @db.Uuid
   attendanceDate DateTime         @map("attendance_date") @db.Date
+  /// Horario de la clase al que corresponde. Null = asistencia fuera de horario (otro día).
+  scheduleId     String?          @map("schedule_id") @db.Uuid
   status         AttendanceStatus
   notes          String?
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
   enrollment     Enrollment       @relation(fields: [enrollmentId], references: [id], onDelete: Restrict)
+  schedule       ClassSchedule?   @relation(fields: [scheduleId], references: [id], onDelete: Restrict)
 
-  @@unique([enrollmentId, attendanceDate])
+  // La migración crea este índice con NULLS NOT DISTINCT: una sola asistencia fuera de horario por día.
+  @@unique([enrollmentId, attendanceDate, scheduleId], map: "student_attendances_enrollment_date_schedule_key")
   @@index([attendanceDate])
+  @@index([scheduleId, attendanceDate])
   @@map("student_attendances")
 }
 

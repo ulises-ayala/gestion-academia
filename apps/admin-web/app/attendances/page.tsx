@@ -15,6 +15,7 @@ import { RequirePermission } from '../../components/permission-gate';
 import { apiRequest, ApiClientError } from '../../lib/api-client';
 import { businessToday } from '../../lib/dates';
 import { attendanceDateFromSearch } from '../../lib/contextual-filters';
+import { attendanceSlotKey, rosterPath, withSavedAttendance } from '../../lib/attendance-sessions';
 
 type AttendanceRow = {
   enrollmentId: string;
@@ -58,7 +59,7 @@ export default function AttendancesPage() {
   const [searchOutsideDay, setSearchOutsideDay] = useState(false);
   const [quickResults, setQuickResults] = useState<AttendanceQuickSearchDto['items']>([]);
   const [quickLoading, setQuickLoading] = useState(false);
-  const [savingEnrollmentId, setSavingEnrollmentId] = useState<string | null>(null);
+  const [savingSlot, setSavingSlot] = useState<string | null>(null);
   const searchSequence = useRef(0);
   const [selectedClass, setSelectedClass] = useState<AttendanceDayClassDto | null>(null);
   const [rows, setRows] = useState<AttendanceRow[]>([]);
@@ -129,8 +130,12 @@ export default function AttendancesPage() {
     return () => window.clearTimeout(timeout);
   }, [date, query, searchOutsideDay]);
 
-  const updateQuickAttendance = async (enrollmentId: string, attendance: AttendanceDto | null) => {
-    setSavingEnrollmentId(enrollmentId);
+  const updateQuickAttendance = async (
+    enrollmentId: string,
+    scheduleId: string | null,
+    attendance: AttendanceDto | null,
+  ) => {
+    setSavingSlot(attendanceSlotKey(enrollmentId, scheduleId));
     setMessage(null);
     setSuccess(false);
     try {
@@ -141,26 +146,41 @@ export default function AttendancesPage() {
           })
         : await apiRequest<AttendanceDto>('/attendances', {
             method: 'POST',
-            body: JSON.stringify({ enrollmentId, attendanceDate: date, status: 'PRESENT' }),
+            body: JSON.stringify({
+              enrollmentId,
+              scheduleId,
+              attendanceDate: date,
+              status: 'PRESENT',
+            }),
           });
-      setQuickResults((students) =>
-        students.map((student) => ({
-          ...student,
-          enrollments: student.enrollments.map((enrollment) =>
-            enrollment.enrollmentId === enrollmentId
-              ? { ...enrollment, attendance: saved }
-              : enrollment,
-          ),
-        })),
-      );
+      setQuickResults((students) => withSavedAttendance(students, saved));
       await loadDay();
       setSuccess(true);
       setMessage('Presente registrada correctamente.');
     } catch (error) {
       setMessage(errorMessage(error, 'No se pudo guardar la asistencia.'));
     } finally {
-      setSavingEnrollmentId(null);
+      setSavingSlot(null);
     }
+  };
+
+  const presentAction = (
+    enrollmentId: string,
+    scheduleId: string | null,
+    attendance: AttendanceDto | null,
+  ) => {
+    const slot = attendanceSlotKey(enrollmentId, scheduleId);
+    return attendance?.status === 'PRESENT' ? (
+      <strong className="attendance-status present">Presente</strong>
+    ) : (
+      <button
+        type="button"
+        disabled={savingSlot === slot}
+        onClick={() => void updateQuickAttendance(enrollmentId, scheduleId, attendance)}
+      >
+        {savingSlot === slot ? 'Registrando...' : '✓ Registrar presente'}
+      </button>
+    );
   };
 
   const loadRoster = useCallback(
@@ -171,7 +191,7 @@ export default function AttendancesPage() {
       setMessage(null);
       try {
         const result = await apiRequest<AttendanceRosterDto>(
-          `/attendances/roster?classId=${encodeURIComponent(dayClass.classId)}&date=${encodeURIComponent(date)}`,
+          rosterPath(dayClass.classId, dayClass.scheduleId, date),
         );
         setRows(
           result.items.map((item) => ({
@@ -207,6 +227,7 @@ export default function AttendancesPage() {
         method: 'PUT',
         body: JSON.stringify({
           classId: selectedClass.classId,
+          scheduleId: selectedClass.scheduleId,
           date,
           attendances: rows.map(({ enrollmentId, status, notes }) => ({
             enrollmentId,
@@ -318,38 +339,43 @@ export default function AttendancesPage() {
                               <p>
                                 Prof. {enrollment.teacher.firstName} {enrollment.teacher.lastName}
                               </p>
-                              {enrollment.schedules
-                                .filter(
-                                  (schedule) =>
-                                    searchOutsideDay ||
-                                    schedule.dayOfWeek === selectedDayOfWeek(date),
-                                )
-                                .map((schedule) => (
-                                  <p key={schedule.id}>
-                                    {schedule.startTime}–{schedule.endTime} · {schedule.roomName}
-                                  </p>
-                                ))}
+                              {enrollment.daySessions.length === 0 &&
+                                enrollment.schedules
+                                  .filter(
+                                    (schedule) =>
+                                      searchOutsideDay ||
+                                      schedule.dayOfWeek === selectedDayOfWeek(date),
+                                  )
+                                  .map((schedule) => (
+                                    <p key={schedule.id}>
+                                      {schedule.startTime}–{schedule.endTime} · {schedule.roomName}
+                                    </p>
+                                  ))}
                             </div>
-                            <div className="attendance-quick-action">
-                              {enrollment.attendance?.status === 'PRESENT' ? (
-                                <strong className="attendance-status present">Presente</strong>
-                              ) : (
-                                <button
-                                  type="button"
-                                  disabled={savingEnrollmentId === enrollment.enrollmentId}
-                                  onClick={() =>
-                                    void updateQuickAttendance(
+                            {enrollment.daySessions.length > 0 ? (
+                              <ul className="attendance-session-list">
+                                {enrollment.daySessions.map((session) => (
+                                  <li className="attendance-session" key={session.scheduleId}>
+                                    <span>
+                                      {session.startTime}–{session.endTime} · {session.roomName}
+                                    </span>
+                                    {presentAction(
                                       enrollment.enrollmentId,
-                                      enrollment.attendance,
-                                    )
-                                  }
-                                >
-                                  {savingEnrollmentId === enrollment.enrollmentId
-                                    ? 'Registrando...'
-                                    : '✓ Registrar presente'}
-                                </button>
-                              )}
-                            </div>
+                                      session.scheduleId,
+                                      session.attendance,
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <div className="attendance-quick-action">
+                                {presentAction(
+                                  enrollment.enrollmentId,
+                                  null,
+                                  enrollment.attendance,
+                                )}
+                              </div>
+                            )}
                           </article>
                         ))}
                       </div>
@@ -371,10 +397,7 @@ export default function AttendancesPage() {
               )}
               <div className="attendance-day-list">
                 {dayClasses.map((dayClass) => (
-                  <article
-                    className="attendance-day-card"
-                    key={`${dayClass.classId}-${dayClass.startTime}-${dayClass.room.id}`}
-                  >
+                  <article className="attendance-day-card" key={dayClass.scheduleId}>
                     <time>{dayClass.startTime}</time>
                     <div>
                       <h3>{dayClass.className}</h3>

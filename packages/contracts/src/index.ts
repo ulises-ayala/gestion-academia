@@ -749,6 +749,8 @@ export type AttendanceDto = Readonly<{
   id: string;
   enrollmentId: string;
   attendanceDate: string;
+  /** Horario de la clase. Null = asistencia fuera de horario (la clase no se dicta ese día). */
+  scheduleId: string | null;
   status: AttendanceStatusDto;
   notes: string | null;
   createdAt: string;
@@ -758,6 +760,8 @@ export type AttendanceDto = Readonly<{
 export type CreateAttendanceDto = Readonly<{
   enrollmentId: string;
   attendanceDate: string;
+  /** Obligatorio solo si la clase tiene varios horarios ese día. */
+  scheduleId?: string | null;
   status: AttendanceStatusDto;
   notes?: string | null;
 }>;
@@ -780,12 +784,14 @@ export type AttendanceRosterItemDto = Readonly<{
 
 export type AttendanceRosterDto = Readonly<{
   classId: string;
+  scheduleId: string | null;
   date: string;
   items: readonly AttendanceRosterItemDto[];
 }>;
 
 export type AttendanceDayClassDto = Readonly<{
   classId: string;
+  scheduleId: string;
   className: string;
   danceType: string;
   teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
@@ -824,6 +830,8 @@ export type AttendanceDayDto = Readonly<{
 
 export type SaveAttendanceRosterDto = Readonly<{
   classId: string;
+  /** Obligatorio solo si la clase tiene varios horarios ese día. */
+  scheduleId?: string | null;
   date: string;
   attendances: readonly Readonly<{
     enrollmentId: string;
@@ -834,6 +842,7 @@ export type SaveAttendanceRosterDto = Readonly<{
 
 export type SaveAttendanceRosterResultDto = Readonly<{
   classId: string;
+  scheduleId: string | null;
   date: string;
   items: readonly AttendanceDto[];
 }>;
@@ -851,6 +860,15 @@ export type AttendanceQuickSearchEnrollmentDto = Readonly<{
     roomName: string;
   }>[];
   scheduledOnSelectedDay: boolean;
+  /** Horarios de la clase en el día elegido, cada uno con su asistencia. */
+  daySessions: readonly Readonly<{
+    scheduleId: string;
+    startTime: string;
+    endTime: string;
+    roomName: string;
+    attendance: AttendanceDto | null;
+  }>[];
+  /** Asistencia fuera de horario (la clase no se dicta ese día). */
   attendance: AttendanceDto | null;
 }>;
 

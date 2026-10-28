@@ -20,7 +20,7 @@ export interface SelfCheckInRepository {
     dayOfWeek: DayOfWeekDto,
   ): Promise<readonly SelfCheckInCandidate[]>;
 
-  markPresent(enrollmentId: string, attendanceDate: Date): Promise<void>;
+  markPresent(enrollmentId: string, scheduleId: string, attendanceDate: Date): Promise<void>;
 
   /** Cuotas con saldo pendiente y vencimiento anterior al día operativo. */
   hasOverdueCharges(studentId: string, businessDate: Date): Promise<boolean>;

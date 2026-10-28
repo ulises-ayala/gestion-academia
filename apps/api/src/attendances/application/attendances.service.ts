@@ -15,9 +15,12 @@ import {
   type AttendanceRepository,
 } from './attendance.repository';
 import {
+  attendanceAlreadyExists,
+  attendanceDayOfWeek,
   normalizeAttendanceNotes,
   parseAttendanceDate,
   parseAttendanceStatus,
+  resolveAttendanceSchedule,
 } from '../domain/attendance';
 
 @Injectable()
@@ -45,14 +48,13 @@ export class AttendancesService {
         'La fecha de asistencia está fuera de la vigencia de la inscripción',
         { field: 'attendanceDate' },
       );
-    if (await this.attendanceRepository.findByEnrollmentAndDate(input.enrollmentId, attendanceDate))
-      throw new DomainError(
-        'ATTENDANCE_ALREADY_EXISTS',
-        'Ya existe una asistencia para esta inscripción y fecha',
-      );
+    const scheduleId = await this.scheduleFor(enrollment.classId, attendanceDate, input.scheduleId);
+    if (await this.attendanceRepository.findSlot(input.enrollmentId, attendanceDate, scheduleId))
+      throw attendanceAlreadyExists(scheduleId);
     return this.attendanceRepository.create({
       enrollmentId: input.enrollmentId,
       attendanceDate,
+      scheduleId,
       status: parseAttendanceStatus(input.status),
       notes: normalizeAttendanceNotes(input.notes) ?? null,
     });
@@ -85,8 +87,12 @@ export class AttendancesService {
     return this.attendanceRepository.list(filters);
   }
 
-  roster(classId: string, attendanceDate: Date) {
-    return this.attendanceRepository.roster(classId, attendanceDate);
+  async roster(classId: string, attendanceDate: Date, requestedScheduleId?: string | null) {
+    const scheduleId = await this.scheduleFor(classId, attendanceDate, requestedScheduleId);
+    return {
+      scheduleId,
+      items: await this.attendanceRepository.roster(classId, attendanceDate, scheduleId),
+    };
   }
 
   dayClasses(attendanceDate: Date) {
@@ -103,20 +109,37 @@ export class AttendancesService {
     return this.attendanceRepository.quickSearch(normalizedQuery, attendanceDate, includeOtherDays);
   }
 
-  saveRoster(input: SaveAttendanceRosterDto, attendanceDate: Date) {
+  async saveRoster(input: SaveAttendanceRosterDto, attendanceDate: Date) {
     const enrollmentIds = input.attendances.map((item) => item.enrollmentId);
     if (new Set(enrollmentIds).size !== enrollmentIds.length)
       throw new DomainError('VALIDATION_ERROR', 'No puede repetir una inscripción en la lista', {
         field: 'attendances',
       });
-    return this.attendanceRepository.saveRoster(
+    const scheduleId = await this.scheduleFor(input.classId, attendanceDate, input.scheduleId);
+    const items = await this.attendanceRepository.saveRoster(
       input.classId,
       attendanceDate,
+      scheduleId,
       input.attendances.map((item) => ({
         enrollmentId: item.enrollmentId,
         status: parseAttendanceStatus(item.status),
         notes: normalizeAttendanceNotes(item.notes) ?? null,
       })),
+    );
+    return { scheduleId, items };
+  }
+
+  private async scheduleFor(
+    classId: string,
+    attendanceDate: Date,
+    requested: string | null | undefined,
+  ) {
+    return resolveAttendanceSchedule(
+      await this.attendanceRepository.classDaySchedules(
+        classId,
+        attendanceDayOfWeek(attendanceDate),
+      ),
+      requested,
     );
   }
 }

@@ -11,12 +11,14 @@ import type {
   AttendanceRosterSaveItem,
   AttendanceUpdateInput,
 } from '../application/attendance.repository';
-import type { AttendanceData } from '../domain/attendance';
+import type { DayOfWeekDto } from '@academy/contracts';
+import { attendanceAlreadyExists, type AttendanceData } from '../domain/attendance';
 
 const toDomain = (attendance: StudentAttendance): AttendanceData => ({
   id: attendance.id,
   enrollmentId: attendance.enrollmentId,
   attendanceDate: attendance.attendanceDate,
+  scheduleId: attendance.scheduleId,
   status: attendance.status,
   notes: attendance.notes,
   createdAt: attendance.createdAt,
@@ -42,10 +44,7 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
       return toDomain(await this.prisma.studentAttendance.create({ data: input }));
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
-        throw new DomainError(
-          'ATTENDANCE_ALREADY_EXISTS',
-          'Ya existe una asistencia para esta inscripción y fecha',
-        );
+        throw attendanceAlreadyExists(input.scheduleId);
       throw error;
     }
   }
@@ -55,11 +54,24 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
     return attendance ? toDomain(attendance) : null;
   }
 
-  async findByEnrollmentAndDate(enrollmentId: string, attendanceDate: Date) {
-    const attendance = await this.prisma.studentAttendance.findUnique({
-      where: { enrollmentId_attendanceDate: { enrollmentId, attendanceDate } },
+  async findSlot(enrollmentId: string, attendanceDate: Date, scheduleId: string | null) {
+    const attendance = await this.prisma.studentAttendance.findFirst({
+      where: { enrollmentId, attendanceDate, scheduleId },
     });
     return attendance ? toDomain(attendance) : null;
+  }
+
+  async classDaySchedules(classId: string, dayOfWeek: DayOfWeekDto) {
+    const schedules = await this.prisma.classSchedule.findMany({
+      where: { classId, dayOfWeek, status: 'ACTIVE' },
+      select: { id: true, startTime: true, endTime: true },
+      orderBy: [{ startTime: 'asc' }, { id: 'asc' }],
+    });
+    return schedules.map((schedule) => ({
+      id: schedule.id,
+      startTime: isoTime(schedule.startTime),
+      endTime: isoTime(schedule.endTime),
+    }));
   }
 
   async update(id: string, input: AttendanceUpdateInput, actorId?: string) {
@@ -100,7 +112,7 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
     return attendances.map(toDomain);
   }
 
-  async roster(classId: string, attendanceDate: Date) {
+  async roster(classId: string, attendanceDate: Date, scheduleId: string | null) {
     const enrollments = await this.prisma.enrollment.findMany({
       where: {
         classId,
@@ -110,7 +122,7 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
       select: {
         id: true,
         student: { select: { id: true, dni: true, firstName: true, lastName: true } },
-        attendances: { where: { attendanceDate }, take: 1 },
+        attendances: { where: { attendanceDate, scheduleId }, take: 1 },
       },
       orderBy: [{ student: { lastName: 'asc' } }, { student: { firstName: 'asc' } }],
     });
@@ -135,6 +147,7 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
         schedules: {
           where: { status: 'ACTIVE', dayOfWeek: selectedDay },
           select: {
+            id: true,
             startTime: true,
             endTime: true,
             room: {
@@ -154,9 +167,8 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
           },
           select: {
             attendances: {
-              where: { attendanceDate, status: 'PRESENT' },
-              select: { id: true },
-              take: 1,
+              where: { attendanceDate, status: 'PRESENT', scheduleId: { not: null } },
+              select: { scheduleId: true },
             },
           },
         },
@@ -167,6 +179,7 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
       .flatMap((academyClass) =>
         academyClass.schedules.map((schedule) => ({
           classId: academyClass.id,
+          scheduleId: schedule.id,
           className: academyClass.name,
           danceType: academyClass.danceType.name,
           teacher: academyClass.teacher,
@@ -175,8 +188,8 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
           startTime: isoTime(schedule.startTime),
           endTime: isoTime(schedule.endTime),
           enrolledCount: academyClass.enrollments.length,
-          presentCount: academyClass.enrollments.filter(
-            (enrollment) => enrollment.attendances.length > 0,
+          presentCount: academyClass.enrollments.filter((enrollment) =>
+            enrollment.attendances.some((attendance) => attendance.scheduleId === schedule.id),
           ).length,
         })),
       )
@@ -233,7 +246,7 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
                 },
               },
             },
-            attendances: { where: { attendanceDate }, take: 1 },
+            attendances: { where: { attendanceDate } },
           },
         },
       },
@@ -264,7 +277,24 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
           scheduledOnSelectedDay: enrollment.class.schedules.some(
             (schedule) => schedule.dayOfWeek === selectedDay,
           ),
-          attendance: enrollment.attendances[0] ? toDomain(enrollment.attendances[0]) : null,
+          daySessions: enrollment.class.schedules
+            .filter((schedule) => schedule.dayOfWeek === selectedDay)
+            .map((schedule) => {
+              const attendance = enrollment.attendances.find(
+                (item) => item.scheduleId === schedule.id,
+              );
+              return {
+                scheduleId: schedule.id,
+                startTime: isoTime(schedule.startTime),
+                endTime: isoTime(schedule.endTime),
+                roomName: schedule.room.name,
+                attendance: attendance ? toDomain(attendance) : null,
+              };
+            }),
+          attendance: (() => {
+            const outside = enrollment.attendances.find((item) => item.scheduleId === null);
+            return outside ? toDomain(outside) : null;
+          })(),
         }))
         .sort(
           (left, right) =>
@@ -277,6 +307,7 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
   async saveRoster(
     classId: string,
     attendanceDate: Date,
+    scheduleId: string | null,
     items: readonly AttendanceRosterSaveItem[],
   ) {
     return this.prisma.$transaction(async (transaction) => {
@@ -298,20 +329,38 @@ export class PrismaAttendanceRepository implements AttendanceRepository {
         );
 
       return Promise.all(
-        items.map(async (item) =>
-          toDomain(
-            await transaction.studentAttendance.upsert({
-              where: {
-                enrollmentId_attendanceDate: {
-                  enrollmentId: item.enrollmentId,
-                  attendanceDate,
+        items.map(async (item) => {
+          const values = { status: item.status, notes: item.notes };
+          if (scheduleId)
+            return toDomain(
+              await transaction.studentAttendance.upsert({
+                where: {
+                  enrollmentId_attendanceDate_scheduleId: {
+                    enrollmentId: item.enrollmentId,
+                    attendanceDate,
+                    scheduleId,
+                  },
                 },
-              },
-              create: { ...item, attendanceDate },
-              update: { status: item.status, notes: item.notes },
-            }),
-          ),
-        ),
+                create: { ...item, attendanceDate, scheduleId },
+                update: values,
+              }),
+            );
+          // Con schedule_id null el índice único no sirve de clave para upsert.
+          const existing = await transaction.studentAttendance.findFirst({
+            where: { enrollmentId: item.enrollmentId, attendanceDate, scheduleId: null },
+            select: { id: true },
+          });
+          return toDomain(
+            existing
+              ? await transaction.studentAttendance.update({
+                  where: { id: existing.id },
+                  data: values,
+                })
+              : await transaction.studentAttendance.create({
+                  data: { ...item, attendanceDate, scheduleId: null },
+                }),
+          );
+        }),
       );
     });
   }

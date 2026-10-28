@@ -23,6 +23,7 @@ const attendance = (overrides = {}) => ({
   id: id(),
   enrollmentId: id(),
   attendanceDate: date('2026-08-15'),
+  scheduleId: null as string | null,
   status: 'PRESENT' as const,
   notes: null,
   createdAt: new Date(),
@@ -39,7 +40,8 @@ describe('AttendancesService', () => {
     attendanceRepository = {
       create: vi.fn(async (input: AttendancePersistenceInput) => attendance(input)),
       findById: vi.fn(async () => null),
-      findByEnrollmentAndDate: vi.fn(async () => null),
+      findSlot: vi.fn(async () => null),
+      classDaySchedules: vi.fn(async () => []),
       update: vi.fn(async (attendanceId: string, input: AttendanceUpdateInput) =>
         attendance({ id: attendanceId, ...input }),
       ),
@@ -73,7 +75,7 @@ describe('AttendancesService', () => {
   });
 
   it('rechaza el duplicado detectado antes de persistir', async () => {
-    attendanceRepository.findByEnrollmentAndDate = vi.fn(async () => attendance());
+    attendanceRepository.findSlot = vi.fn(async () => attendance());
     await expect(
       service.create({ enrollmentId: id(), attendanceDate: '2026-08-15', status: 'PRESENT' }),
     ).rejects.toMatchObject({ code: 'ATTENDANCE_ALREADY_EXISTS' } satisfies Partial<DomainError>);
@@ -160,7 +162,7 @@ describe('AttendancesService', () => {
 
   it('rechaza inscripciones repetidas antes de guardar un roster', async () => {
     const enrollmentId = id();
-    expect(() =>
+    await expect(
       service.saveRoster(
         {
           classId: id(),
@@ -172,7 +174,109 @@ describe('AttendancesService', () => {
         },
         date('2026-08-15'),
       ),
-    ).toThrowError(expect.objectContaining({ code: 'VALIDATION_ERROR' }));
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
     expect(attendanceRepository.saveRoster).not.toHaveBeenCalled();
+  });
+
+  describe('varios horarios el mismo día', () => {
+    const early = { id: id(), startTime: '18:00', endTime: '19:00' };
+    const late = { id: id(), startTime: '20:00', endTime: '21:00' };
+    const classId = id();
+
+    beforeEach(() => {
+      enrollmentRepository.findById = vi.fn(async () => enrollment({ classId }));
+      attendanceRepository.classDaySchedules = vi.fn(async () => [early, late]);
+    });
+
+    it('registra la asistencia del segundo horario aunque ya haya una en el primero', async () => {
+      attendanceRepository.findSlot = vi.fn(async (_enrollmentId, _date, scheduleId) =>
+        scheduleId === early.id ? attendance({ scheduleId: early.id }) : null,
+      );
+      await expect(
+        service.create({
+          enrollmentId: id(),
+          attendanceDate: '2026-08-15',
+          scheduleId: late.id,
+          status: 'PRESENT',
+        }),
+      ).resolves.toMatchObject({ scheduleId: late.id, status: 'PRESENT' });
+      expect(attendanceRepository.classDaySchedules).toHaveBeenCalledWith(classId, 'SATURDAY');
+    });
+
+    it('rechaza repetir la asistencia del mismo horario', async () => {
+      attendanceRepository.findSlot = vi.fn(async () => attendance({ scheduleId: early.id }));
+      await expect(
+        service.create({
+          enrollmentId: id(),
+          attendanceDate: '2026-08-15',
+          scheduleId: early.id,
+          status: 'PRESENT',
+        }),
+      ).rejects.toMatchObject({
+        code: 'ATTENDANCE_ALREADY_EXISTS',
+        message: 'Ya existe una asistencia para esta inscripción en ese horario y fecha',
+      });
+    });
+
+    it('pide elegir el horario cuando la clase tiene varios ese día', async () => {
+      await expect(
+        service.create({ enrollmentId: id(), attendanceDate: '2026-08-15', status: 'PRESENT' }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'scheduleId' } });
+      expect(attendanceRepository.create).not.toHaveBeenCalled();
+    });
+
+    it('rechaza un horario de otra clase o de otro día', async () => {
+      await expect(
+        service.create({
+          enrollmentId: id(),
+          attendanceDate: '2026-08-15',
+          scheduleId: id(),
+          status: 'PRESENT',
+        }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'scheduleId' } });
+    });
+
+    it('la planilla y su guardado son por horario', async () => {
+      await expect(service.roster(classId, date('2026-08-15'), late.id)).resolves.toEqual({
+        scheduleId: late.id,
+        items: [],
+      });
+      expect(attendanceRepository.roster).toHaveBeenCalledWith(
+        classId,
+        date('2026-08-15'),
+        late.id,
+      );
+      await service.saveRoster(
+        {
+          classId,
+          scheduleId: early.id,
+          date: '2026-08-15',
+          attendances: [{ enrollmentId: id(), status: 'PRESENT' }],
+        },
+        date('2026-08-15'),
+      );
+      expect(attendanceRepository.saveRoster).toHaveBeenCalledWith(
+        classId,
+        date('2026-08-15'),
+        early.id,
+        [expect.objectContaining({ status: 'PRESENT' })],
+      );
+    });
+  });
+
+  it('sin horario indicado usa el único horario del día', async () => {
+    const only = { id: id(), startTime: '19:00', endTime: '20:00' };
+    attendanceRepository.classDaySchedules = vi.fn(async () => [only]);
+    await service.create({ enrollmentId: id(), attendanceDate: '2026-08-15', status: 'PRESENT' });
+    expect(attendanceRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ scheduleId: only.id }),
+    );
+  });
+
+  it('si la clase no se dicta ese día la asistencia queda fuera de horario', async () => {
+    await service.create({ enrollmentId: id(), attendanceDate: '2026-08-15', status: 'PRESENT' });
+    expect(attendanceRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ scheduleId: null }),
+    );
   });
 });

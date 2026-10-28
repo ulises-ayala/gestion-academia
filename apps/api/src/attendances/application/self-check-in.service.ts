@@ -30,7 +30,11 @@ export class SelfCheckInService {
     if (!pick) return { outcome: 'NO_CLASS_NOW', student: studentName, class: null, paymentStatus };
 
     if (!pick.alreadyPresent)
-      await this.repository.markPresent(pick.candidate.enrollmentId, day.dateValue);
+      await this.repository.markPresent(
+        pick.candidate.enrollmentId,
+        pick.candidate.scheduleId,
+        day.dateValue,
+      );
     return {
       outcome: pick.alreadyPresent ? 'ALREADY_CHECKED_IN' : 'CHECKED_IN',
       student: studentName,

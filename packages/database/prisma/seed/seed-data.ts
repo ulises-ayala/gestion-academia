@@ -536,17 +536,27 @@ export const applySeedData = async (
           status,
           notes,
         };
-        const occupiedAttendance = await tx.studentAttendance.findUnique({
+        // Cada asistencia va al horario de su clase en ese día; si no se dicta, queda fuera de horario.
+        const schedule = await tx.classSchedule.findFirst({
           where: {
-            enrollmentId_attendanceDate: {
-              enrollmentId: data.enrollmentId,
-              attendanceDate: data.attendanceDate,
-            },
+            class: { enrollments: { some: { id: data.enrollmentId } } },
+            dayOfWeek: dayOfWeekFor(data.attendanceDate),
+            status: RecordStatus.ACTIVE,
+          },
+          orderBy: { startTime: 'asc' },
+          select: { id: true },
+        });
+        const slot = { ...data, scheduleId: schedule?.id ?? null };
+        const occupiedAttendance = await tx.studentAttendance.findFirst({
+          where: {
+            enrollmentId: slot.enrollmentId,
+            attendanceDate: slot.attendanceDate,
+            scheduleId: slot.scheduleId,
           },
           select: { id: true },
         });
         if (occupiedAttendance && occupiedAttendance.id !== id) continue;
-        await tx.studentAttendance.upsert({ where: { id }, create: { id, ...data }, update: data });
+        await tx.studentAttendance.upsert({ where: { id }, create: { id, ...slot }, update: slot });
       }
 
       return {

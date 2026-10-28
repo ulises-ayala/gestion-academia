@@ -1,5 +1,5 @@
 import type { DayOfWeekDto } from '@academy/contracts';
-import type { AttendanceData } from '../domain/attendance';
+import type { AttendanceData, ClassDaySchedule } from '../domain/attendance';
 
 export const ATTENDANCE_REPOSITORY = Symbol('ATTENDANCE_REPOSITORY');
 
@@ -35,12 +35,22 @@ export type AttendanceQuickSearchItem = Readonly<{
       roomName: string;
     }>[];
     scheduledOnSelectedDay: boolean;
+    /** Horarios de la clase en el día elegido, cada uno con su asistencia. */
+    daySessions: readonly Readonly<{
+      scheduleId: string;
+      startTime: string;
+      endTime: string;
+      roomName: string;
+      attendance: AttendanceData | null;
+    }>[];
+    /** Asistencia fuera de horario (la clase no se dicta ese día). */
     attendance: AttendanceData | null;
   }>[];
 }>;
 
 export type AttendanceDayClass = Readonly<{
   classId: string;
+  scheduleId: string;
   className: string;
   danceType: string;
   teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
@@ -63,16 +73,24 @@ export interface AttendanceRepository {
 
   findById(id: string): Promise<AttendanceData | null>;
 
-  findByEnrollmentAndDate(
+  findSlot(
     enrollmentId: string,
     attendanceDate: Date,
+    scheduleId: string | null,
   ): Promise<AttendanceData | null>;
+
+  /** Horarios activos de la clase en ese día de la semana, del más temprano al más tarde. */
+  classDaySchedules(classId: string, dayOfWeek: DayOfWeekDto): Promise<readonly ClassDaySchedule[]>;
 
   update(id: string, input: AttendanceUpdateInput, actorId?: string): Promise<AttendanceData>;
 
   list(filters: AttendanceListFilters): Promise<readonly AttendanceData[]>;
 
-  roster(classId: string, attendanceDate: Date): Promise<readonly AttendanceRosterItem[]>;
+  roster(
+    classId: string,
+    attendanceDate: Date,
+    scheduleId: string | null,
+  ): Promise<readonly AttendanceRosterItem[]>;
 
   dayClasses(attendanceDate: Date): Promise<readonly AttendanceDayClass[]>;
 
@@ -85,6 +103,7 @@ export interface AttendanceRepository {
   saveRoster(
     classId: string,
     attendanceDate: Date,
+    scheduleId: string | null,
     items: readonly AttendanceRosterSaveItem[],
   ): Promise<readonly AttendanceData[]>;
 }

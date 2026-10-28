@@ -13,6 +13,7 @@ const student: SelfCheckInStudent = {
 };
 const salsa: SelfCheckInCandidate = {
   enrollmentId: 'e1',
+  scheduleId: 'h1',
   className: 'Salsa inicial',
   teacherName: 'José Barrios',
   roomName: 'Salón principal',
@@ -49,11 +50,30 @@ describe('SelfCheckInService', () => {
       },
       paymentStatus: 'UP_TO_DATE',
     });
-    expect(repository.markPresent).toHaveBeenCalledWith('e1', new Date('2026-10-16T00:00:00.000Z'));
+    expect(repository.markPresent).toHaveBeenCalledWith(
+      'e1',
+      'h1',
+      new Date('2026-10-16T00:00:00.000Z'),
+    );
     expect(repository.candidates).toHaveBeenCalledWith(
       's1',
       new Date('2026-10-16T00:00:00.000Z'),
       'FRIDAY',
+    );
+  });
+
+  it('en el segundo horario de la misma clase marca ese horario aunque ya tenga el primero', async () => {
+    vi.mocked(repository.candidates).mockResolvedValue([
+      { ...salsa, startTime: '17:00', endTime: '18:00', attendanceStatus: 'PRESENT' },
+      { ...salsa, scheduleId: 'h2' },
+    ]);
+    const result = await service.checkIn('40111222', now);
+    expect(result.outcome).toBe('CHECKED_IN');
+    expect(result.class?.startTime).toBe('18:00');
+    expect(repository.markPresent).toHaveBeenCalledWith(
+      'e1',
+      'h2',
+      new Date('2026-10-16T00:00:00.000Z'),
     );
   });
 

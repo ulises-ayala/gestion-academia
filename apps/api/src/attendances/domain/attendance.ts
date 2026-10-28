@@ -31,10 +31,63 @@ export const normalizeAttendanceNotes = (value: unknown) => {
   return notes || null;
 };
 
+const weekdays = [
+  'SUNDAY',
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+] as const;
+
+/** Día de la semana de una fecha de asistencia (guardada a medianoche UTC). */
+export const attendanceDayOfWeek = (attendanceDate: Date) => weekdays[attendanceDate.getUTCDay()]!;
+
+export type ClassDaySchedule = Readonly<{ id: string; startTime: string; endTime: string }>;
+
+/**
+ * Decide a qué horario corresponde una asistencia. Cada horario del día tiene su propia
+ * asistencia, así un alumno que cursa dos turnos de la misma clase queda presente en los dos.
+ * Sin horario indicado: si la clase se dicta una sola vez ese día va a ese horario; si no se
+ * dicta, queda como asistencia fuera de horario (null); si se dicta varias veces, hay que
+ * elegir.
+ */
+export const resolveAttendanceSchedule = (
+  daySchedules: readonly ClassDaySchedule[],
+  requested: string | null | undefined,
+): string | null => {
+  if (requested) {
+    if (!daySchedules.some((schedule) => schedule.id === requested))
+      throw new DomainError(
+        'VALIDATION_ERROR',
+        'El horario no corresponde a esta clase en ese día',
+        { field: 'scheduleId' },
+      );
+    return requested;
+  }
+  if (daySchedules.length === 0) return null;
+  if (daySchedules.length === 1) return daySchedules[0]!.id;
+  throw new DomainError(
+    'VALIDATION_ERROR',
+    'La clase tiene varios horarios ese día: indicá a cuál corresponde la asistencia',
+    { field: 'scheduleId' },
+  );
+};
+
+export const attendanceAlreadyExists = (scheduleId: string | null) =>
+  new DomainError(
+    'ATTENDANCE_ALREADY_EXISTS',
+    scheduleId
+      ? 'Ya existe una asistencia para esta inscripción en ese horario y fecha'
+      : 'Ya existe una asistencia fuera de horario para esta inscripción y fecha',
+  );
+
 export type AttendanceData = Readonly<{
   id: string;
   enrollmentId: string;
   attendanceDate: Date;
+  scheduleId: string | null;
   status: AttendanceStatus;
   notes: string | null;
   createdAt: Date;

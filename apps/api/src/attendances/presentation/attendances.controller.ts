@@ -23,11 +23,17 @@ const toDto = (attendance: AttendanceData): AttendanceDto => ({
   id: attendance.id,
   enrollmentId: attendance.enrollmentId,
   attendanceDate: attendance.attendanceDate.toISOString().slice(0, 10),
+  scheduleId: attendance.scheduleId,
   status: attendance.status,
   notes: attendance.notes,
   createdAt: attendance.createdAt.toISOString(),
   updatedAt: attendance.updatedAt.toISOString(),
 });
+
+const optionalScheduleId = (value: unknown) =>
+  value === undefined || value === null || value === ''
+    ? null
+    : parseUuid(value as string, 'scheduleId');
 
 @Controller('attendances')
 @Permissions('attendance:manage')
@@ -40,6 +46,7 @@ export class AttendancesController {
       await this.service.create({
         ...input,
         enrollmentId: parseUuid(input.enrollmentId, 'enrollmentId'),
+        scheduleId: optionalScheduleId(input.scheduleId),
       }),
     );
   }
@@ -48,13 +55,19 @@ export class AttendancesController {
   async roster(
     @Query('classId') classId: string,
     @Query('date') date: string,
+    @Query('scheduleId') scheduleId?: string,
   ): Promise<AttendanceRosterDto> {
     const attendanceDate = parseAttendanceDate(date, 'date');
-    const items = await this.service.roster(parseUuid(classId, 'classId'), attendanceDate);
+    const roster = await this.service.roster(
+      parseUuid(classId, 'classId'),
+      attendanceDate,
+      optionalScheduleId(scheduleId),
+    );
     return {
       classId,
+      scheduleId: roster.scheduleId,
       date,
-      items: items.map((item) => ({
+      items: roster.items.map((item) => ({
         enrollmentId: item.enrollmentId,
         student: item.student,
         attendance: item.attendance ? toDto(item.attendance) : null,
@@ -70,10 +83,11 @@ export class AttendancesController {
       });
     const classId = parseUuid(input.classId, 'classId');
     const attendanceDate = parseAttendanceDate(input.date, 'date');
-    const attendances = await this.service.saveRoster(
+    const saved = await this.service.saveRoster(
       {
         ...input,
         classId,
+        scheduleId: optionalScheduleId(input.scheduleId),
         attendances: input.attendances.map((item) => ({
           ...item,
           enrollmentId: parseUuid(item.enrollmentId, 'enrollmentId'),
@@ -83,8 +97,9 @@ export class AttendancesController {
     );
     return {
       classId,
+      scheduleId: saved.scheduleId,
       date: input.date,
-      items: attendances.map(toDto),
+      items: saved.items.map(toDto),
     };
   }
 
@@ -114,6 +129,10 @@ export class AttendancesController {
         student: item.student,
         enrollments: item.enrollments.map((enrollment) => ({
           ...enrollment,
+          daySessions: enrollment.daySessions.map((session) => ({
+            ...session,
+            attendance: session.attendance ? toDto(session.attendance) : null,
+          })),
           attendance: enrollment.attendance ? toDto(enrollment.attendance) : null,
         })),
       })),
