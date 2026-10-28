@@ -14,6 +14,7 @@ import {
 import { DomainError } from '../../shared/domain/domain-error';
 import { parsePage, parseStatus, parseUuid } from '../../shared/presentation/request-validation';
 import { ClassesService } from '../application/classes.service';
+import { hasPermissions } from '../../auth/domain/permissions';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
 import { CurrentUser } from '../../auth/presentation/current-user.decorator';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
@@ -52,11 +53,14 @@ export class ClassesController {
   @Post() @Permissions('offering:manage') create(@Body() input: CreateClassDto) {
     return this.service.create(input);
   }
-  @Patch(':id') @Permissions('offering:manage') update(
+  @Patch(':id') @Permissions('classes:update') update(
     @Param('id') id: string,
     @Body() input: UpdateClassDto,
     @CurrentUser() user: PublicAuthUser,
   ) {
+    // Editar no incluye cambiar el estado: desactivar y reactivar siguen en offering:manage.
+    if (input?.status !== undefined && !hasPermissions(user, ['offering:manage']))
+      throw new DomainError('FORBIDDEN', 'Acción no permitida');
     return this.service.update(parseUuid(id), input, user.id);
   }
   @Delete(':id') @HttpCode(200) @Permissions('offering:manage') deactivate(

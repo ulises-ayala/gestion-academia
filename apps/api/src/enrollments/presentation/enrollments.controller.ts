@@ -1,7 +1,9 @@
 import type {
+  ChangeEnrollmentClassDto,
   CreateEnrollmentDto,
   EndEnrollmentDto,
   EnrollmentStatusDto,
+  UpdateEnrollmentStartDateDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { parsePage, parseUuid } from '../../shared/presentation/request-validation';
@@ -40,8 +42,24 @@ export class EnrollmentsController {
     });
   }
   @Patch(':id')
-  updateStartDate(@Param('id') id: string, @Body() body: { startDate: string }) {
-    return this.service.updateStartDate(parseUuid(id), body.startDate);
+  updateStartDate(
+    @Param('id') id: string,
+    @Body() body: UpdateEnrollmentStartDateDto,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.updateStartDate(parseUuid(id), body?.startDate, user.id);
+  }
+
+  @Post(':id/change-class') changeClass(
+    @Param('id') id: string,
+    @Body() body: ChangeEnrollmentClassDto,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.changeClass(
+      parseUuid(id),
+      { ...body, classId: parseUuid(body?.classId, 'classId') },
+      user.id,
+    );
   }
 
   @Post('historical')

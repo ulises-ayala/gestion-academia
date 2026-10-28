@@ -356,6 +356,18 @@ export type EndEnrollmentDto = Readonly<{
   endReason: EnrollmentEndReasonDto;
   endNote?: string | null;
 }>;
+export type UpdateEnrollmentStartDateDto = Readonly<{ startDate: string }>;
+/** Finaliza la inscripción actual el día anterior a `changeDate` e inscribe en `classId` desde esa fecha. */
+export type ChangeEnrollmentClassDto = Readonly<{
+  classId: string;
+  changeDate: string;
+  endReason: EnrollmentEndReasonDto;
+  endNote?: string | null;
+}>;
+export type ChangeEnrollmentClassResultDto = Readonly<{
+  ended: EnrollmentDto;
+  created: EnrollmentDto;
+}>;
 export type StudentFollowUpItemDto = Readonly<{
   studentId: string;
   studentName: string;

@@ -16,6 +16,8 @@ import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { StudentForm } from '../../../components/student-form';
 import { EndEnrollmentModal } from '../../../components/end-enrollment-modal';
+import { ChangeEnrollmentClassModal } from '../../../components/change-enrollment-class-modal';
+import { EnrollmentStartDateModal } from '../../../components/enrollment-start-date-modal';
 import { GenerateChargeDialog } from '../../../components/generate-charge-dialog';
 import { OtherPaymentDialog } from '../../../components/other-payment-dialog';
 import { describeOtherPayment } from '../../../lib/other-payment';
@@ -448,6 +450,8 @@ export default function StudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [endTarget, setEndTarget] = useState<EnrollmentDto | null>(null);
+  const [changeTarget, setChangeTarget] = useState<EnrollmentDto | null>(null);
+  const [startDateTarget, setStartDateTarget] = useState<EnrollmentDto | null>(null);
   const [followUp, setFollowUp] = useState<readonly StudentFollowUpItemDto[]>([]);
   const [statusConfirmation, setStatusConfirmation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -703,9 +707,14 @@ export default function StudentDetailPage() {
                         </p>
                       </div>
                       {can('enrollments:manage') && (
-                        <button className="secondary" onClick={() => openEnd(item)}>
-                          Finalizar inscripción
-                        </button>
+                        <div className="student-class-actions">
+                          <button className="secondary" onClick={() => setChangeTarget(item)}>
+                            Cambiar de clase
+                          </button>
+                          <button className="secondary" onClick={() => openEnd(item)}>
+                            Finalizar inscripción
+                          </button>
+                        </div>
                       )}
                     </div>
                     <ul className="student-schedule-chips" aria-label="Horarios">
@@ -722,6 +731,18 @@ export default function StudentDetailPage() {
                     </ul>
                     <p className="student-class-since">
                       Inscripto desde {formatDate(item.startDate)}
+                      {can('enrollments:manage') && (
+                        <>
+                          {' · '}
+                          <button
+                            type="button"
+                            className="link-button"
+                            onClick={() => setStartDateTarget(item)}
+                          >
+                            Cambiar fecha
+                          </button>
+                        </>
+                      )}
                     </p>
                     <FollowUpIndicator
                       item={followUp.find((follow) => follow.enrollmentId === item.id)}
@@ -1024,6 +1045,35 @@ export default function StudentDetailPage() {
           onEnded={() => {
             setEndTarget(null);
             void load().then(() => setMessage('Inscripción finalizada.'));
+          }}
+        />
+      )}
+      {changeTarget && (
+        <ChangeEnrollmentClassModal
+          target={{
+            enrollmentId: changeTarget.id,
+            classId: changeTarget.classId,
+            className: changeTarget.academicClass.name,
+            startDate: changeTarget.startDate,
+          }}
+          onClose={() => setChangeTarget(null)}
+          onChanged={(newClassName) => {
+            setChangeTarget(null);
+            void load().then(() => setMessage(`Cambio de clase registrado: ${newClassName}.`));
+          }}
+        />
+      )}
+      {startDateTarget && (
+        <EnrollmentStartDateModal
+          target={{
+            enrollmentId: startDateTarget.id,
+            className: startDateTarget.academicClass.name,
+            startDate: startDateTarget.startDate,
+          }}
+          onClose={() => setStartDateTarget(null)}
+          onSaved={() => {
+            setStartDateTarget(null);
+            void load().then(() => setMessage('Fecha de inicio actualizada.'));
           }}
         />
       )}

@@ -26,6 +26,13 @@ describe('role permissions', () => {
     expect(hasPermissions(reception, ['leads:manage'])).toBe(true);
     expect(hasPermissions(reception, ['reports:operational'])).toBe(false);
   });
+  it('Admisión edita clases e inscripciones sin administrar la oferta', () => {
+    const reception = user('RECEPTION');
+
+    expect(hasPermissions(reception, ['classes:update', 'enrollments:manage'])).toBe(true);
+    expect(hasPermissions(reception, ['offering:manage'])).toBe(false);
+    expect(hasPermissions(user('MANAGER'), ['classes:update', 'offering:manage'])).toBe(true);
+  });
   it('Administración gestiona tarifas, cuotas, pagos y caja', () => {
     const manager = user('MANAGER');
 

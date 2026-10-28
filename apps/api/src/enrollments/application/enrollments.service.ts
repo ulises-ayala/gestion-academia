@@ -1,4 +1,8 @@
-import type { CreateEnrollmentDto, EndEnrollmentDto } from '@academy/contracts';
+import type {
+  ChangeEnrollmentClassDto,
+  CreateEnrollmentDto,
+  EndEnrollmentDto,
+} from '@academy/contracts';
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../shared/domain/domain-error';
 import { parseEnrollmentDate, validateEndDate, validateEndReason } from '../domain/enrollment';
@@ -45,7 +49,7 @@ export class EnrollmentsService {
     });
   }
 
-  async updateStartDate(id: string, startDateValue: string) {
+  async updateStartDate(id: string, startDateValue: string, actorId?: string) {
     const enrollment = await this.get(id);
 
     const startDate = parseEnrollmentDate(startDateValue, 'startDate');
@@ -60,7 +64,21 @@ export class EnrollmentsService {
       );
     }
 
-    return this.repository.updateStartDate(id, startDate);
+    return this.repository.updateStartDate(id, startDate, actorId);
+  }
+  async changeClass(id: string, input: ChangeEnrollmentClassDto, actorId?: string) {
+    const enrollment = await this.get(id);
+    if (enrollment.status === 'ENDED')
+      throw new DomainError('ENROLLMENT_ALREADY_ENDED', 'La inscripción ya está finalizada');
+    return this.repository.changeClass(
+      id,
+      {
+        classId: input.classId,
+        startDate: parseEnrollmentDate(input.changeDate, 'startDate'),
+        ...validateEndReason(input.endReason, input.endNote),
+      },
+      actorId,
+    );
   }
   async end(id: string, input: EndEnrollmentDto, actorId?: string) {
     const enrollment = await this.get(id);

@@ -282,7 +282,7 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 - Tolerancias, pausas y horas docentes liquidables.
 - Método de acceso y conducta ante deuda o vencimiento.
 - Relación entre cupo de clase y capacidad de los salones.
-- Recuperos y cambios de clase.
+- Recuperos (el cambio de clase quedó definido en la decisión 189).
 - Relación entre frecuencia semanal y tarifa.
 - Promociones 2x1 y reglas concretas de Formación.
 - Efectos de la cancelación general de una clase.
@@ -462,3 +462,10 @@ Caso de la noche del 26/10: alumnos que hacen dos turnos el mismo día no podía
 
 186. **Una asistencia por horario:** `StudentAttendance.scheduleId` liga cada asistencia al horario de la clase (`ClassSchedule`). La clave única pasa a ser inscripción + fecha + horario, con `NULLS NOT DISTINCT`: la asistencia sin horario (la clase no se dicta ese día, búsqueda "fuera de este día") sigue siendo una sola por inscripción y día. La planilla, el contador de presentes de cada clase del día, la búsqueda rápida (un botón por horario), el autoregistro con DNI y el panel de inicio trabajan por horario. Un horario usado por asistencias no se puede borrar (al editar una clase los horarios se desactivan, no se borran).
 187. **Horario por defecto y datos existentes:** si no se indica horario, se usa el único que tiene la clase ese día; si tiene varios, la API pide elegirlo; si no tiene ninguno, queda fuera de horario. La migración asigna cada asistencia existente al horario de su clase en ese día de la semana (el activo y, si hay varios, el más temprano); las que no coinciden con ninguno quedan fuera de horario. No se borra ni se cambia ningún estado. En reportes, un alumno presente en dos turnos cuenta dos asistencias.
+
+## Admisión edita clases e inscripciones — octubre 2026
+
+188. **Editar clases sin administrar la oferta:** nuevo permiso `classes:update` para Admisión y superiores. Permite editar una clase existente (nombre, tipo de danza, profesor, nivel, cupo y horarios) con la misma validación y auditoría de siempre. Crear, desactivar y reactivar clases, y gestionar profesores, tipos de danza, sucursales y salones, siguen con `offering:manage` (Administración y Dirección). La edición rechaza `status` sin `offering:manage`, porque desactivar por esa vía salteaba el control de inscripciones activas. Reemplaza lo que decía la decisión 184 sobre el permiso.
+189. **Cambio de clase confirmado:** Admisión (`enrollments:manage`) cambia a un alumno de clase en una sola transacción serializable. Finaliza la inscripción actual el día anterior a la fecha del cambio, con motivo de finalización obligatorio, y crea la nueva desde esa fecha con las mismas reglas del alta (alumno y clase activos, cupo, sin duplicados ni superposición horaria). La fecha del cambio debe ser posterior al inicio de la inscripción actual. Las cuotas ya generadas quedan en la inscripción anterior; becas y descuentos no se trasladan. Se audita como `CLASS_CHANGE` sobre la inscripción anterior. _Supuesto a confirmar con la PO:_ si el cambio es a mitad de mes, la cuota de ese mes en la clase nueva no se genera sola y queda a criterio de quien la genere.
+190. **Fecha de inicio editable y auditada:** la ficha del alumno ofrece "Cambiar fecha" en cada clase activa (`enrollments:manage`). El cambio se registra en la auditoría con la fecha anterior y la nueva. No modifica cuotas ya generadas.
+191. **Condiciones económicas sin cambios:** becas, descuentos y ajustes siguen reservados a Administración y Dirección (decisión 135).

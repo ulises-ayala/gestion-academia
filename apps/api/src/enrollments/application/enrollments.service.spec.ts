@@ -1,7 +1,9 @@
 import type { EnrollmentDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import { DomainError } from '../../shared/domain/domain-error';
+import { classChangeEndDate } from '../domain/enrollment';
 import type {
+  EnrollmentClassChangeData,
   EnrollmentQuery,
   EnrollmentRepository,
   EnrollmentEndData,
@@ -100,6 +102,20 @@ class MemoryEnrollments implements EnrollmentRepository {
     };
     this.items[this.items.indexOf(current)] = ended;
     return ended;
+  }
+  async changeClass(id: string, data: EnrollmentClassChangeData) {
+    const current = this.items.find((x) => x.id === id)!;
+    const endDate = classChangeEndDate(
+      { classId: current.classId, startDate: new Date(`${current.startDate}T00:00:00.000Z`) },
+      data,
+    );
+    const ended = await this.end(id, { ...data, endDate });
+    const created = await this.create({
+      studentId: current.studentId,
+      classId: data.classId,
+      startDate: data.startDate,
+    });
+    return { ended, created };
   }
   async createHistorical(input: {
     studentId: string;
@@ -248,6 +264,44 @@ describe('EnrollmentsService', () => {
       endReason: null,
       endNote: null,
     });
+  });
+  it('cambia de clase finalizando la actual el día previo e inscribiendo desde la fecha', async () => {
+    const repo = new MemoryEnrollments();
+    const service = new EnrollmentsService(repo);
+    const target = crypto.randomUUID();
+    repo.classes.set(target, { status: 'ACTIVE', capacity: 5 });
+    const item = await service.create({ studentId, classId, startDate: '2026-08-01' });
+    await expect(
+      service.changeClass(item.id, {
+        classId: target,
+        changeDate: '2026-10-15',
+        endReason: 'SCHEDULE_CHANGE',
+      }),
+    ).resolves.toMatchObject({
+      ended: { status: 'ENDED', endDate: '2026-10-14', endReason: 'SCHEDULE_CHANGE' },
+      created: { status: 'ACTIVE', classId: target, startDate: '2026-10-15' },
+    });
+  });
+  it.each([
+    ['ENROLLMENT_SAME_CLASS', 'same', '2026-10-15'],
+    ['INVALID_CLASS_CHANGE_DATE', 'other', '2026-08-01'],
+    ['ENROLLMENT_END_REASON_REQUIRED', 'other', '2026-10-15'],
+  ])('rechaza el cambio de clase con %s', async (code, kind, changeDate) => {
+    const repo = new MemoryEnrollments();
+    const service = new EnrollmentsService(repo);
+    const target = crypto.randomUUID();
+    repo.classes.set(target, { status: 'ACTIVE', capacity: 5 });
+    const item = await service.create({ studentId, classId, startDate: '2026-08-01' });
+    await expect(
+      service.changeClass(item.id, {
+        classId: kind === 'same' ? classId : target,
+        changeDate,
+        endReason: (code === 'ENROLLMENT_END_REASON_REQUIRED'
+          ? undefined
+          : 'SCHEDULE_CHANGE') as never,
+      }),
+    ).rejects.toMatchObject({ code });
+    expect(repo.items.filter((x) => x.status === 'ACTIVE')).toHaveLength(1);
   });
   it('rechaza mover el inicio después de la finalización', async () => {
     const repo = new MemoryEnrollments();

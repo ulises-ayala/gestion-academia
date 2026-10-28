@@ -9,11 +9,12 @@ import {
 } from '../../database/serializable-retry';
 import { DomainError } from '../../shared/domain/domain-error';
 import type {
+  EnrollmentClassChangeData,
   EnrollmentQuery,
   EnrollmentRepository,
   EnrollmentEndData,
 } from '../application/enrollment.repository';
-import { validateEndDate, validateEndReason } from '../domain/enrollment';
+import { classChangeEndDate, validateEndDate, validateEndReason } from '../domain/enrollment';
 import { findEnrollmentScheduleConflict } from '../domain/enrollment-schedule-conflict';
 
 const include = {
@@ -99,98 +100,154 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
     classId: string;
     startDate: Date;
   }): Promise<EnrollmentDto> {
+    return this.serializable(async (tx) => {
+      const lockKeys = [input.classId, `student:${input.studentId}`].sort();
+      for (const lockKey of lockKeys)
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
+      return this.createWithin(tx, input);
+    });
+  }
+  async changeClass(id: string, data: EnrollmentClassChangeData, actorId?: string) {
+    return this.serializable(async (tx) => {
+      const current = await tx.enrollment.findUnique({ where: { id } });
+      if (!current) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada.');
+      const lockKeys = [current.classId, data.classId, `student:${current.studentId}`].sort();
+      for (const lockKey of lockKeys)
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
+      await tx.$queryRaw`SELECT id FROM enrollments WHERE id = ${id}::uuid FOR UPDATE`;
+      const before = await tx.enrollment.findUnique({ where: { id } });
+      if (!before) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada.');
+      if (before.status !== 'ACTIVE')
+        throw new DomainError('ENROLLMENT_ALREADY_ENDED', 'La inscripción ya está finalizada.');
+      const endDate = classChangeEndDate(before, data);
+      const reason = validateEndReason(data.endReason, data.endNote);
+      const ended = await tx.enrollment.update({
+        where: { id },
+        data: { status: 'ENDED', endDate, ...reason },
+        include,
+      });
+      const created = await this.createWithin(tx, {
+        studentId: before.studentId,
+        classId: data.classId,
+        startDate: data.startDate,
+      });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: 'CLASS_CHANGE',
+            entityType: 'ENROLLMENT',
+            entityId: id,
+            before: { classId: before.classId, status: before.status, endDate: null },
+            after: {
+              classId: created.classId,
+              status: ended.status,
+              endDate: isoDate(endDate),
+              endReason: ended.endReason,
+              endNote: ended.endNote,
+            },
+            metadata: {
+              studentId: before.studentId,
+              studentName: `${ended.student.firstName} ${ended.student.lastName}`,
+              fromClassName: ended.class.name,
+              toClassName: created.academicClass.name,
+              newEnrollmentId: created.id,
+            },
+          },
+        });
+      return { ended: map(ended), created };
+    });
+  }
+  private async createWithin(
+    tx: Prisma.TransactionClient,
+    input: { studentId: string; classId: string; startDate: Date },
+  ): Promise<EnrollmentDto> {
+    const student = await tx.student.findUnique({
+      where: { id: input.studentId },
+      select: { status: true },
+    });
+    if (!student) throw new DomainError('STUDENT_NOT_FOUND', 'Alumno no encontrado');
+    if (student.status !== 'ACTIVE')
+      throw new DomainError('STUDENT_INACTIVE', 'No se puede inscribir un alumno inactivo.');
+    const academicClass = await tx.academyClass.findUnique({
+      where: { id: input.classId },
+      select: {
+        status: true,
+        capacity: true,
+        schedules: {
+          where: { status: 'ACTIVE' },
+          select: { dayOfWeek: true, startTime: true, endTime: true },
+        },
+      },
+    });
+    if (!academicClass) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
+    if (academicClass.status !== 'ACTIVE')
+      throw new DomainError(
+        'CLASS_INACTIVE',
+        'No se puede inscribir un alumno en una clase inactiva.',
+      );
+    if (
+      await tx.enrollment.findFirst({
+        where: { studentId: input.studentId, classId: input.classId, status: 'ACTIVE' },
+      })
+    )
+      throw new DomainError(
+        'ENROLLMENT_ALREADY_ACTIVE',
+        'El alumno ya tiene una inscripción activa en esta clase.',
+      );
+    const potentiallyConcurrentEnrollments = await tx.enrollment.findMany({
+      where: {
+        studentId: input.studentId,
+        OR: [{ endDate: null }, { endDate: { gte: input.startDate } }],
+      },
+      select: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+            schedules: {
+              where: { status: 'ACTIVE' },
+              select: { dayOfWeek: true, startTime: true, endTime: true },
+            },
+          },
+        },
+      },
+    });
+    const conflict = findEnrollmentScheduleConflict(
+      academicClass.schedules.map((schedule) => ({
+        dayOfWeek: schedule.dayOfWeek,
+        startTime: time(schedule.startTime),
+        endTime: time(schedule.endTime),
+      })),
+      potentiallyConcurrentEnrollments.map((enrollment) => ({
+        classId: enrollment.class.id,
+        className: enrollment.class.name,
+        schedules: enrollment.class.schedules.map((schedule) => ({
+          dayOfWeek: schedule.dayOfWeek,
+          startTime: time(schedule.startTime),
+          endTime: time(schedule.endTime),
+        })),
+      })),
+    );
+    if (conflict)
+      throw new DomainError(
+        'ENROLLMENT_SCHEDULE_CONFLICT',
+        `El alumno ya está inscripto en ${conflict.className}, que se superpone con este horario.`,
+        conflict,
+      );
+    const activeCount = await tx.enrollment.count({
+      where: { classId: input.classId, status: 'ACTIVE' },
+    });
+    if (activeCount >= academicClass.capacity)
+      throw new DomainError('CLASS_FULL', 'La clase alcanzó su cupo máximo.');
+    return map(await tx.enrollment.create({ data: input, include }));
+  }
+  private async serializable<T>(work: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
     for (let attempt = 0; attempt < SERIALIZABLE_TRANSACTION_ATTEMPTS; attempt++) {
       try {
-        return await this.prisma.$transaction(
-          async (tx) => {
-            const lockKeys = [input.classId, `student:${input.studentId}`].sort();
-            for (const lockKey of lockKeys)
-              await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
-            const student = await tx.student.findUnique({
-              where: { id: input.studentId },
-              select: { status: true },
-            });
-            if (!student) throw new DomainError('STUDENT_NOT_FOUND', 'Alumno no encontrado');
-            if (student.status !== 'ACTIVE')
-              throw new DomainError(
-                'STUDENT_INACTIVE',
-                'No se puede inscribir un alumno inactivo.',
-              );
-            const academicClass = await tx.academyClass.findUnique({
-              where: { id: input.classId },
-              select: {
-                status: true,
-                capacity: true,
-                schedules: {
-                  where: { status: 'ACTIVE' },
-                  select: { dayOfWeek: true, startTime: true, endTime: true },
-                },
-              },
-            });
-            if (!academicClass) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
-            if (academicClass.status !== 'ACTIVE')
-              throw new DomainError(
-                'CLASS_INACTIVE',
-                'No se puede inscribir un alumno en una clase inactiva.',
-              );
-            if (
-              await tx.enrollment.findFirst({
-                where: { studentId: input.studentId, classId: input.classId, status: 'ACTIVE' },
-              })
-            )
-              throw new DomainError(
-                'ENROLLMENT_ALREADY_ACTIVE',
-                'El alumno ya tiene una inscripción activa en esta clase.',
-              );
-            const potentiallyConcurrentEnrollments = await tx.enrollment.findMany({
-              where: {
-                studentId: input.studentId,
-                OR: [{ endDate: null }, { endDate: { gte: input.startDate } }],
-              },
-              select: {
-                class: {
-                  select: {
-                    id: true,
-                    name: true,
-                    schedules: {
-                      where: { status: 'ACTIVE' },
-                      select: { dayOfWeek: true, startTime: true, endTime: true },
-                    },
-                  },
-                },
-              },
-            });
-            const conflict = findEnrollmentScheduleConflict(
-              academicClass.schedules.map((schedule) => ({
-                dayOfWeek: schedule.dayOfWeek,
-                startTime: time(schedule.startTime),
-                endTime: time(schedule.endTime),
-              })),
-              potentiallyConcurrentEnrollments.map((enrollment) => ({
-                classId: enrollment.class.id,
-                className: enrollment.class.name,
-                schedules: enrollment.class.schedules.map((schedule) => ({
-                  dayOfWeek: schedule.dayOfWeek,
-                  startTime: time(schedule.startTime),
-                  endTime: time(schedule.endTime),
-                })),
-              })),
-            );
-            if (conflict)
-              throw new DomainError(
-                'ENROLLMENT_SCHEDULE_CONFLICT',
-                `El alumno ya está inscripto en ${conflict.className}, que se superpone con este horario.`,
-                conflict,
-              );
-            const activeCount = await tx.enrollment.count({
-              where: { classId: input.classId, status: 'ACTIVE' },
-            });
-            if (activeCount >= academicClass.capacity)
-              throw new DomainError('CLASS_FULL', 'La clase alcanzó su cupo máximo.');
-            return map(await tx.enrollment.create({ data: input, include }));
-          },
-          { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
-        );
+        return await this.prisma.$transaction(work, {
+          isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+        });
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
           throw new DomainError(
@@ -248,14 +305,31 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
       }),
     );
   }
-  async updateStartDate(id: string, startDate: Date): Promise<EnrollmentDto> {
-    return map(
-      await this.prisma.enrollment.update({
-        where: { id },
-        data: { startDate },
-        include,
-      }),
-    );
+  async updateStartDate(id: string, startDate: Date, actorId?: string): Promise<EnrollmentDto> {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM enrollments WHERE id = ${id}::uuid FOR UPDATE`;
+      const before = await tx.enrollment.findUnique({ where: { id } });
+      if (!before) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada.');
+      const updated = await tx.enrollment.update({ where: { id }, data: { startDate }, include });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: 'UPDATE',
+            entityType: 'ENROLLMENT',
+            entityId: id,
+            before: { startDate: isoDate(before.startDate) },
+            after: { startDate: isoDate(updated.startDate) },
+            metadata: {
+              studentId: before.studentId,
+              studentName: `${updated.student.firstName} ${updated.student.lastName}`,
+              classId: before.classId,
+              className: updated.class.name,
+            },
+          },
+        });
+      return map(updated);
+    });
   }
   async end(id: string, data: EnrollmentEndData, actorId?: string) {
     return this.prisma.$transaction(async (tx) => {

@@ -246,7 +246,7 @@ export default function Page() {
                       <Link className="text-link classes-table-action" href={`/classes/${item.id}`}>
                         Ver
                       </Link>
-                      <PermissionGate permission="offering:manage">
+                      <PermissionGate permission="classes:update">
                         <Link
                           className="text-link classes-table-action"
                           href={`/classes/${item.id}?editar=1`}

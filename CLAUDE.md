@@ -24,7 +24,7 @@ npm run build
 
 Antes de cerrar un cambio: `npm run typecheck`, `npm test` y `npm run lint` (CI además corre `format:check`, `prisma validate`, `migrate deploy` y `build`).
 
-Tests puntuales (Vitest, sin archivo de config en `apps/api`):
+Tests puntuales (Vitest; `apps/api/vitest.config.ts` corre los unitarios en paralelo y después los `*.integration.spec.ts` de a un archivo):
 
 ```bash
 npm test -w @academy/api -- src/billing/domain/payment-allocation.spec.ts

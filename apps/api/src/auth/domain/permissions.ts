@@ -6,6 +6,7 @@ export type Permission =
   | 'enrollments:manage'
   | 'offering:read'
   | 'offering:manage'
+  | 'classes:update'
   | 'tariffs:read'
   | 'tariffs:manage'
   | 'charges:read'
@@ -34,6 +35,7 @@ const admissionPermissions: readonly Permission[] = [
   'leads:manage',
   'enrollments:manage',
   'offering:read',
+  'classes:update',
   'tariffs:read',
   'charges:read',
   'charges:generate',

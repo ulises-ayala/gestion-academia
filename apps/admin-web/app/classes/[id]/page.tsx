@@ -82,7 +82,7 @@ export default function ClassDetailPage() {
             {item.danceType.name} · {item.teacher.firstName} {item.teacher.lastName}
           </p>
         </div>
-        <PermissionGate permission="offering:manage">
+        <PermissionGate permission="classes:update">
           <div className="actions">
             <button
               className={edit ? 'secondary' : ''}
@@ -90,14 +90,16 @@ export default function ClassDetailPage() {
             >
               {edit ? 'Cerrar edición' : 'Editar clase'}
             </button>
-            <button className="secondary" onClick={() => void toggle()}>
-              {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
-            </button>
+            <PermissionGate permission="offering:manage">
+              <button className="secondary" onClick={() => void toggle()}>
+                {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
+              </button>
+            </PermissionGate>
           </div>
         </PermissionGate>
       </div>
       {message && <p className="message">{message}</p>}
-      <PermissionGate permission="offering:manage">
+      <PermissionGate permission="classes:update">
         {edit && (
           <section className="card" ref={editCard} aria-labelledby="class-edit-title">
             <h2 id="class-edit-title">Editar clase</h2>

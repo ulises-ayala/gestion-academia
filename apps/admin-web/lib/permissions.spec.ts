@@ -14,4 +14,10 @@ describe('lead UI permission', () => {
     expect(roleCan('MANAGER', 'cash:reconcile')).toBe(true);
     expect(roleCan('ADMINISTRATOR', 'cash:reconcile')).toBe(true);
   });
+
+  it('muestra la edición de clases a Admisión sin el resto de la oferta', () => {
+    expect(roleCan('RECEPTION', 'classes:update')).toBe(true);
+    expect(roleCan('RECEPTION', 'offering:manage')).toBe(false);
+    expect(roleCan('MANAGER', 'classes:update')).toBe(true);
+  });
 });

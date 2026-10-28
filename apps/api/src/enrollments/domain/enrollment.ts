@@ -48,6 +48,27 @@ export function parseEnrollmentDate(value: string, field: 'startDate' | 'endDate
   return date;
 }
 
+const dayInMs = 24 * 60 * 60 * 1000;
+
+/**
+ * Cambio de clase: la inscripción actual termina el día previo al cambio y la nueva empieza ese
+ * día, así ambos períodos no se superponen. Devuelve la fecha de finalización de la actual.
+ */
+export function classChangeEndDate(
+  current: { classId: string; startDate: Date },
+  target: { classId: string; startDate: Date },
+): Date {
+  if (current.classId === target.classId)
+    throw new DomainError('ENROLLMENT_SAME_CLASS', 'El alumno ya está inscripto en esa clase.');
+  if (target.startDate <= current.startDate)
+    throw new DomainError(
+      'INVALID_CLASS_CHANGE_DATE',
+      `El cambio debe ser posterior al inicio de la inscripción actual (${current.startDate.toISOString().slice(0, 10)}).`,
+      { field: 'changeDate' },
+    );
+  return new Date(target.startDate.getTime() - dayInMs);
+}
+
 export function validateEndDate(startDate: Date, endDateValue: string): Date {
   const endDate = parseEnrollmentDate(endDateValue, 'endDate');
   if (endDate < startDate) {

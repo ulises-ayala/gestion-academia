@@ -10,6 +10,10 @@ export type EnrollmentEndData = Readonly<{
   endNote: string | null;
 }>;
 
+export type EnrollmentClassChangeData = Readonly<
+  Omit<EnrollmentEndData, 'endDate'> & { classId: string; startDate: Date }
+>;
+
 export const ENROLLMENT_REPOSITORY = Symbol('ENROLLMENT_REPOSITORY');
 export type EnrollmentQuery = Readonly<{
   studentId?: string;
@@ -31,8 +35,14 @@ export interface EnrollmentRepository {
     startDate: Date;
     endDate: Date | null;
   }): Promise<EnrollmentDto>;
-  updateStartDate(id: string, startDate: Date): Promise<EnrollmentDto>;
+  updateStartDate(id: string, startDate: Date, actorId?: string): Promise<EnrollmentDto>;
   end(id: string, data: EnrollmentEndData, actorId?: string): Promise<EnrollmentDto>;
+  /** Finaliza la inscripción el día previo a `startDate` e inscribe en `classId` desde esa fecha. */
+  changeClass(
+    id: string,
+    data: EnrollmentClassChangeData,
+    actorId?: string,
+  ): Promise<{ ended: EnrollmentDto; created: EnrollmentDto }>;
   hasActiveForStudent(studentId: string): Promise<boolean>;
   hasActiveForClass(classId: string): Promise<boolean>;
 }
