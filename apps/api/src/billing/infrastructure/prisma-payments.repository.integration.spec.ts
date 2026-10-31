@@ -6,6 +6,7 @@ import {
   prismaTransactionOptions,
 } from '../../database/prisma-transaction-options';
 import { integrationDatabaseEnabled } from '../../database/integration-database';
+import { BillingAdjustmentsService } from '../application/billing-adjustments.service';
 import { ReceivablesService } from '../application/receivables.service';
 import { PrismaBillingRepository } from './prisma-billing.repository';
 import { PrismaPaymentsRepository } from './prisma-payments.repository';
@@ -18,6 +19,7 @@ describe.runIf(enabled)(
     const repository = new PrismaPaymentsRepository(prisma as PrismaService);
     const billing = new PrismaBillingRepository(prisma as PrismaService);
     const receivables = new ReceivablesService(prisma as PrismaService);
+    const adjustments = new BillingAdjustmentsService(prisma as PrismaService);
 
     const createFixture = async () => {
       const token = crypto.randomUUID();
@@ -86,6 +88,8 @@ describe.runIf(enabled)(
             discountAmount: '0.00',
             finalAmount: '40000.00',
             dueDate: new Date('2026-08-10T00:00:00.000Z'),
+            // Generadas a tiempo: si nacieran vencidas no llevarían recargo (decisión 202).
+            createdAt: new Date('2026-08-01T15:00:00.000Z'),
           },
         });
         const secondCharge = await tx.monthlyCharge.create({
@@ -98,6 +102,7 @@ describe.runIf(enabled)(
             discountAmount: '0.00',
             finalAmount: '40000.00',
             dueDate: new Date('2026-09-10T00:00:00.000Z'),
+            createdAt: new Date('2026-09-01T15:00:00.000Z'),
           },
         });
         return {
@@ -561,6 +566,131 @@ describe.runIf(enabled)(
             pageSize: 25,
           }),
         ).resolves.toMatchObject({ summary: { totalCharges: 1, totalOutstanding: '40000.00' } });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('no suma recargo a una cuota que nace vencida', async () => {
+      const fixture = await createFixture();
+      try {
+        // Cuota de julio generada el 31/08, ya vencida (alumno nuevo o deuda cargada tarde).
+        const july = await prisma.monthlyCharge.create({
+          data: {
+            studentId: fixture.student.id,
+            enrollmentId: fixture.enrollment.id,
+            tariffId: fixture.tariff.id,
+            period: new Date('2026-07-01T00:00:00.000Z'),
+            baseAmount: '40000.00',
+            discountAmount: '0.00',
+            finalAmount: '40000.00',
+            dueDate: new Date('2026-07-10T00:00:00.000Z'),
+            createdAt: new Date('2026-08-31T15:00:00.000Z'),
+          },
+        });
+        await expect(billing.findCharge(july.id)).resolves.toMatchObject({
+          studentDueAmount: '40000.00',
+          outstandingAmount: '40000.00',
+          overdue: true,
+        });
+        // Agosto (generada a tiempo) sí proyecta su recargo.
+        await expect(
+          receivables.list({
+            scope: 'pending',
+            q: fixture.student.dni,
+            sort: 'oldest',
+            page: 1,
+            pageSize: 25,
+          }),
+        ).resolves.toMatchObject({ summary: { totalOutstanding: '121000.00' } });
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '40000.00' }],
+          fixture.actor.id,
+        );
+        expect(payment.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: july.id, amount: '40000.00' }),
+        ]);
+        expect(
+          await prisma.monthlyChargeAdjustment.count({ where: { monthlyChargeId: july.id } }),
+        ).toBe(0);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('quita el recargo proyectado y no lo vuelve a sumar al cobrar', async () => {
+      const fixture = await createFixture();
+      try {
+        await expect(
+          adjustments.waiveLateFee(fixture.charge.id, 'No correspondía', {
+            ...fixture.actor,
+            role: 'RECEPTION',
+          }),
+        ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+        await expect(
+          adjustments.waiveLateFee(fixture.secondCharge.id, 'Todavía no vence', fixture.actor),
+        ).rejects.toMatchObject({ code: 'LATE_FEE_NOT_APPLICABLE' });
+        await adjustments.waiveLateFee(fixture.charge.id, 'No correspondía', fixture.actor);
+        await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
+          studentDueAmount: '40000.00',
+          outstandingAmount: '40000.00',
+        });
+        await expect(
+          adjustments.waiveLateFee(fixture.charge.id, 'Otra vez', fixture.actor),
+        ).rejects.toMatchObject({ code: 'LATE_FEE_ALREADY_WAIVED' });
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '40000.00' }],
+          fixture.actor.id,
+        );
+        expect(payment.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: fixture.charge.id, amount: '40000.00' }),
+        ]);
+        expect(
+          await prisma.monthlyCharge.findUnique({
+            where: { id: fixture.charge.id },
+            select: { status: true },
+          }),
+        ).toEqual({ status: 'PAID' });
+        expect(
+          await prisma.monthlyChargeAdjustment.findMany({
+            where: { monthlyChargeId: fixture.charge.id },
+            orderBy: { createdAt: 'asc' },
+            select: { type: true },
+          }),
+        ).toEqual([{ type: 'LATE_FEE' }, { type: 'REVERSAL' }]);
+        expect(
+          await prisma.auditLog.findFirst({
+            where: { actorUserId: fixture.actor.id, action: 'CORRECTION' },
+            select: { reason: true, metadata: true },
+          }),
+        ).toEqual({
+          reason: 'No correspondía',
+          metadata: { monthlyChargeId: fixture.charge.id, source: 'LATE_FEE_WAIVER' },
+        });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('un recargo ya cobrado se quita después de anular el pago', async () => {
+      const fixture = await createFixture();
+      try {
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '41000.00' }],
+          fixture.actor.id,
+        );
+        await expect(
+          adjustments.waiveLateFee(fixture.charge.id, 'No correspondía', fixture.actor),
+        ).rejects.toMatchObject({ code: 'ADJUSTMENT_WOULD_CREATE_CREDIT' });
+        await repository.void(payment.id, fixture.actor.id, 'Recargo indebido');
+        await adjustments.waiveLateFee(fixture.charge.id, 'No correspondía', fixture.actor);
+        await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
+          paidAmount: '0.00',
+          outstandingAmount: '40000.00',
+        });
       } finally {
         await cleanupFixture(fixture);
       }

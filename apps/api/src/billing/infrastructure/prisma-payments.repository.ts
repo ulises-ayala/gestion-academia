@@ -14,7 +14,7 @@ import {
   confirmedAllocatedAmount,
   paymentChargeStatus,
 } from '../domain/payment-allocation';
-import { adjustedAmounts, LATE_FEE_AMOUNT } from '../domain/billing-adjustments';
+import { adjustedAmounts, lateFeeAdjustment, lateFeeApplies } from '../domain/billing-adjustments';
 import { businessDayAt } from '../../dashboard/application/business-day';
 
 const include = {
@@ -119,32 +119,24 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               },
               orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
             });
-            const today = businessDayAt(
-              new Date(),
-              process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
-            ).dateValue;
+            const timeZone = process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
+            const today = businessDayAt(new Date(), timeZone).dateValue;
             for (const charge of lockedCharges) {
-              if (
-                charge.kind !== 'MONTHLY' ||
-                charge.dueDate >= today ||
-                charge.adjustments.some(({ type }) => type === 'LATE_FEE')
-              )
-                continue;
               const paid = confirmedAllocatedAmount(charge.allocations);
               const due = adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue;
-              if (due.minus(paid).lessThanOrEqualTo(0)) continue;
-              await tx.monthlyChargeAdjustment.create({
-                data: {
-                  monthlyChargeId: charge.id,
-                  type: 'LATE_FEE',
-                  calculation: 'FIXED',
-                  configuredValue: LATE_FEE_AMOUNT,
-                  effectiveAmount: LATE_FEE_AMOUNT,
-                  studentAmountDelta: LATE_FEE_AMOUNT,
-                  settlementBaseDelta: LATE_FEE_AMOUNT,
-                  reason: 'Recargo fijo por vencimiento',
-                },
-              });
+              if (
+                lateFeeApplies(
+                  {
+                    kind: charge.kind,
+                    dueDate: charge.dueDate,
+                    createdOn: businessDayAt(charge.createdAt, timeZone).dateValue,
+                    hasLateFee: charge.adjustments.some(({ type }) => type === 'LATE_FEE'),
+                    outstanding: due.minus(paid),
+                  },
+                  today,
+                )
+              )
+                await tx.monthlyChargeAdjustment.create({ data: lateFeeAdjustment(charge.id) });
             }
             const materializedCharges = await tx.monthlyCharge.findMany({
               where: { studentId, status: { not: 'VOID' } },

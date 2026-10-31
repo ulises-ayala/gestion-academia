@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
   addMonths,
   businessPeriod,
-  collectNowAmount,
   formatTariffRange,
   inactiveTariffsFrom,
   overlappingTariff,
@@ -39,10 +38,6 @@ describe('generar cuota', () => {
     expect(suggestedPeriod(range, '2026-10', new Set(['2026-10', '2026-11', '2026-12']))).toBe(
       '2026-12',
     );
-  });
-  it('al cobrar en el momento suma un recargo por cada cuota vencida', () => {
-    expect(collectNowAmount({ newTotal: '40000.00', lateFeeCount: 0 })).toBe('40000.00');
-    expect(collectNowAmount({ newTotal: '120000.00', lateFeeCount: 2 })).toBe('122000.00');
   });
   it('lee las tarifas desactivadas que se pueden activar', () => {
     const tariff = { id: 't1', name: 'Zumba mensual', amount: '40000.00' };

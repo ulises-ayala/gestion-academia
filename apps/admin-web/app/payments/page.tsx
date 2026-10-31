@@ -1,6 +1,7 @@
 'use client';
 
 import type {
+  MonthlyChargeDto,
   MonthlyChargeListDto,
   PaymentDto,
   PaymentListDto,
@@ -35,6 +36,7 @@ import {
   centsToDecimal,
   createPaymentPayload,
   decimalToCents,
+  hasWaivableLateFee,
   openCharges,
   outstandingTotal,
   paymentMethodLabels,
@@ -98,6 +100,9 @@ export default function PaymentsPage() {
   const [voidTarget, setVoidTarget] = useState<PaymentDto | null>(null);
   const [voidReason, setVoidReason] = useState('');
   const [voiding, setVoiding] = useState(false);
+  const [waiveTarget, setWaiveTarget] = useState<MonthlyChargeDto | null>(null);
+  const [waiveReason, setWaiveReason] = useState('');
+  const [waiving, setWaiving] = useState(false);
 
   const navigate = useCallback((href: string) => {
     const url = new URL(href, window.location.origin);
@@ -229,6 +234,15 @@ export default function PaymentsPage() {
     return () => window.removeEventListener('keydown', closeOnEscape);
   }, [voidTarget, voiding]);
 
+  useEffect(() => {
+    if (!waiveTarget) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !waiving) setWaiveTarget(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [waiveTarget, waiving]);
+
   async function searchStudent(event: FormEvent) {
     event.preventDefault();
     setMessage('');
@@ -307,6 +321,25 @@ export default function PaymentsPage() {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo anular el pago.');
     } finally {
       setVoiding(false);
+    }
+  }
+
+  async function waiveLateFee() {
+    if (!waiveTarget || !waiveReason.trim() || waiving) return;
+    setWaiving(true);
+    try {
+      await apiRequest(`/monthly-charges/${waiveTarget.id}/late-fee/waive`, {
+        method: 'POST',
+        body: JSON.stringify({ reason: waiveReason.trim() }),
+      });
+      setWaiveTarget(null);
+      setWaiveReason('');
+      await Promise.all([student ? loadStudent(student.id) : Promise.resolve(), loadReceivables()]);
+      setMessage('Recargo quitado y saldo actualizado.');
+    } catch (error) {
+      setMessage(error instanceof ApiClientError ? error.message : 'No se pudo quitar el recargo.');
+    } finally {
+      setWaiving(false);
     }
   }
 
@@ -816,6 +849,7 @@ export default function PaymentsPage() {
           canBackfill={can('charges:manage')}
           canCollectNow={can('payments:collect')}
           canManageTariffs={can('tariffs:manage')}
+          canWaiveLateFee={can('charges:manage')}
           onChargeGenerated={(result) => {
             notifySuccess(result.title, result.detail);
             if (location.studentId)
@@ -827,6 +861,10 @@ export default function PaymentsPage() {
           onVoid={(payment) => {
             setVoidTarget(payment);
             setVoidReason('');
+          }}
+          onWaiveLateFee={(charge) => {
+            setWaiveTarget(charge);
+            setWaiveReason('');
           }}
         />
       )}
@@ -870,6 +908,50 @@ export default function PaymentsPage() {
                 onClick={() => void voidPayment()}
               >
                 {voiding ? 'Anulando…' : 'Anular pago'}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {waiveTarget && (
+        <div
+          className="modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !waiving) setWaiveTarget(null);
+          }}
+        >
+          <section
+            aria-labelledby="waive-title"
+            aria-modal="true"
+            className="modal card"
+            role="dialog"
+          >
+            <h2 id="waive-title">Quitar recargo</h2>
+            <p className="modal-copy">
+              {waiveTarget.academicClass.name} · {chargeLabel(waiveTarget)}. Indicá por qué no
+              corresponde el recargo de $1.000.
+            </p>
+            <label>
+              Motivo
+              <textarea
+                autoFocus
+                maxLength={500}
+                value={waiveReason}
+                onChange={(event) => setWaiveReason(event.target.value)}
+                placeholder="Alumna nueva, la cuota se generó ya vencida"
+              />
+            </label>
+            <p className="modal-note">
+              El recargo queda registrado como corregido y no se vuelve a sumar. Si ya se cobró,
+              primero anulá ese pago y después volvé a cobrar sin recargo.
+            </p>
+            <div className="modal-actions">
+              <button className="secondary" disabled={waiving} onClick={() => setWaiveTarget(null)}>
+                Cancelar
+              </button>
+              <button disabled={!waiveReason.trim() || waiving} onClick={() => void waiveLateFee()}>
+                {waiving ? 'Quitando…' : 'Quitar recargo'}
               </button>
             </div>
           </section>
@@ -956,11 +1038,13 @@ function StudentAccount({
   canBackfill,
   canCollectNow,
   canManageTariffs,
+  canWaiveLateFee,
   onChargeGenerated,
   onCollect,
   onRetry,
   onTender,
   onVoid,
+  onWaiveLateFee,
 }: Readonly<{
   allocationPreview: ReturnType<typeof previewAllocations>;
   charges: MonthlyChargeListDto['items'];
@@ -980,11 +1064,13 @@ function StudentAccount({
   canBackfill: boolean;
   canCollectNow: boolean;
   canManageTariffs: boolean;
+  canWaiveLateFee: boolean;
   onChargeGenerated(result: GenerateChargeResult): void;
   onCollect(): void;
   onRetry(): void;
   onTender(method: keyof TenderAmounts, amount: string): void;
   onVoid(payment: PaymentDto): void;
+  onWaiveLateFee(charge: MonthlyChargeDto): void;
 }>) {
   const [generating, setGenerating] = useState(false);
   const [otherPayment, setOtherPayment] = useState(false);
@@ -1121,7 +1207,12 @@ function StudentAccount({
                               : item.type === 'TEACHER_SCHOLARSHIP'
                                 ? 'Beca docente'
                                 : item.type === 'REVERSAL'
-                                  ? 'Corrección'
+                                  ? charge.adjustments.some(
+                                      (other) =>
+                                        other.type === 'LATE_FEE' && other.id === item.reversalOfId,
+                                    )
+                                    ? 'Recargo quitado'
+                                    : 'Corrección'
                                   : item.type === 'HISTORICAL_DISCOUNT'
                                     ? 'Descuento histórico'
                                     : 'Descuento docente',
@@ -1133,6 +1224,18 @@ function StudentAccount({
                   <small>Pagado {money(charge.paidAmount)}</small>
                   <br />
                   <strong>Resta {money(charge.outstandingAmount)}</strong>
+                  {canWaiveLateFee && hasWaivableLateFee(charge) && (
+                    <>
+                      <br />
+                      <button
+                        className="link-button"
+                        type="button"
+                        onClick={() => onWaiveLateFee(charge)}
+                      >
+                        Quitar recargo
+                      </button>
+                    </>
+                  )}
                 </span>
               </article>
             ))}

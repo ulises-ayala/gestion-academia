@@ -2,6 +2,39 @@ import { Prisma } from '@academy/database';
 import { DomainError } from '../../shared/domain/domain-error';
 
 export const LATE_FEE_AMOUNT = new Prisma.Decimal(1000);
+
+/**
+ * Recargo por vencimiento (decisiones 133 y 202): solo cuotas mensuales con saldo, ya vencidas,
+ * sin recargo previo y creadas a tiempo. Una cuota que nace vencida (creada después de su
+ * vencimiento: alumno nuevo, deuda cargada tarde) no lleva recargo. Fechas de negocio.
+ */
+export const lateFeeApplies = (
+  charge: Readonly<{
+    kind: string;
+    dueDate: Date;
+    createdOn: Date;
+    hasLateFee: boolean;
+    outstanding: Prisma.Decimal;
+  }>,
+  today: Date,
+) =>
+  charge.kind === 'MONTHLY' &&
+  !charge.hasLateFee &&
+  charge.dueDate < today &&
+  charge.createdOn <= charge.dueDate &&
+  charge.outstanding.greaterThan(0);
+
+export const lateFeeAdjustment = (monthlyChargeId: string) => ({
+  monthlyChargeId,
+  type: 'LATE_FEE' as const,
+  calculation: 'FIXED' as const,
+  configuredValue: LATE_FEE_AMOUNT,
+  effectiveAmount: LATE_FEE_AMOUNT,
+  studentAmountDelta: LATE_FEE_AMOUNT,
+  settlementBaseDelta: LATE_FEE_AMOUNT,
+  reason: 'Recargo fijo por vencimiento',
+});
+
 type AdjustmentType =
   | 'DIRECTION_SCHOLARSHIP'
   | 'TEACHER_SCHOLARSHIP'

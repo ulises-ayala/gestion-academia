@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createPaymentPayload,
   decimalToCents,
+  hasWaivableLateFee,
   outstandingTotal,
   openCharges,
   paymentSubmissionDisabled,
@@ -83,5 +84,21 @@ describe('payments UI helpers', () => {
   it('rechaza valores inválidos para el cálculo', () => {
     expect(decimalToCents('1.234')).toBeNull();
     expect(decimalToCents('-1')).toBeNull();
+  });
+
+  it('detecta el recargo que todavía se puede quitar', () => {
+    const lateFee = (id: string | null) =>
+      ({ id, type: 'LATE_FEE', reversalOfId: null }) as MonthlyChargeDto['adjustments'][number];
+    const reversal = (of: string) =>
+      ({
+        id: `r-${of}`,
+        type: 'REVERSAL',
+        reversalOfId: of,
+      }) as MonthlyChargeDto['adjustments'][number];
+    expect(hasWaivableLateFee({ adjustments: [] })).toBe(false);
+    // Proyectado (todavía no guardado) o guardado sin revertir.
+    expect(hasWaivableLateFee({ adjustments: [lateFee(null)] })).toBe(true);
+    expect(hasWaivableLateFee({ adjustments: [lateFee('f1')] })).toBe(true);
+    expect(hasWaivableLateFee({ adjustments: [lateFee('f1'), reversal('f1')] })).toBe(false);
   });
 });

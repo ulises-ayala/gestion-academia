@@ -7,6 +7,7 @@ import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
+import { bornOverdueSql } from '../../billing/infrastructure/late-fee-sql';
 import { toCsv } from '../domain/csv';
 import { PDF_DEBTOR_LIMIT, renderOperationalReportPdf } from '../domain/report-pdf';
 
@@ -39,7 +40,7 @@ const debtCtes = (businessDate: string) => Prisma.sql`
       GREATEST(
         GREATEST(mc.base_amount + COALESCE(a.delta, 0), 0)
         + CASE WHEN mc.due_date < ${businessDate}::date AND NOT COALESCE(a.has_late_fee, false)
-          AND mc.kind = 'MONTHLY' AND GREATEST(mc.base_amount + COALESCE(a.delta, 0), 0) - COALESCE(c.paid, 0) > 0
+          AND mc.kind = 'MONTHLY' AND NOT ${bornOverdueSql('mc')} AND GREATEST(mc.base_amount + COALESCE(a.delta, 0), 0) - COALESCE(c.paid, 0) > 0
           THEN 1000 ELSE 0 END
         - COALESCE(c.paid, 0), 0
       ) AS outstanding

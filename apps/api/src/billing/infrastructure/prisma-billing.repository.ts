@@ -10,6 +10,7 @@ import {
   chargeStatus,
   conditionDeltas,
   LATE_FEE_AMOUNT,
+  lateFeeApplies,
 } from '../domain/billing-adjustments';
 
 const chargeInclude = {
@@ -47,22 +48,27 @@ export const mapTariff = (item: {
   createdAt: item.createdAt.toISOString(),
   updatedAt: item.updatedAt.toISOString(),
 });
-const currentBusinessDate = () =>
-  businessDayAt(new Date(), process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires').dateValue;
+const businessTimeZone = () => process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
+const currentBusinessDate = () => businessDayAt(new Date(), businessTimeZone()).dateValue;
 const mapCharge = (item: IncludedCharge, today: Date): MonthlyChargeDto => {
   const paidAmount = item.allocations.reduce(
     (sum, allocation) => sum.plus(allocation.amount),
     new Prisma.Decimal(0),
   );
   const amounts = adjustedAmounts(item.baseAmount, item.adjustments);
-  const hasLateFee = item.adjustments.some(({ type }) => type === 'LATE_FEE');
-  // La deuda histórica no lleva recargo por vencimiento.
+  // La deuda histórica y la cuota que nace vencida no llevan recargo por vencimiento.
   const virtualLateFee =
-    item.kind === 'MONTHLY' &&
     item.status !== 'VOID' &&
-    !hasLateFee &&
-    item.dueDate < today &&
-    amounts.studentDue.minus(paidAmount).greaterThan(0)
+    lateFeeApplies(
+      {
+        kind: item.kind,
+        dueDate: item.dueDate,
+        createdOn: businessDayAt(item.createdAt, businessTimeZone()).dateValue,
+        hasLateFee: item.adjustments.some(({ type }) => type === 'LATE_FEE'),
+        outstanding: amounts.studentDue.minus(paidAmount),
+      },
+      today,
+    )
       ? LATE_FEE_AMOUNT
       : new Prisma.Decimal(0);
   const studentDue = amounts.studentDue.plus(virtualLateFee);

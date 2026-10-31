@@ -127,12 +127,6 @@ export const inactiveTariffsFrom = (
   );
 };
 
-/** Lo que se cobra al generar y cobrar en el momento: las cuotas más un recargo por cada vencida. */
-export const collectNowAmount = (preview: Readonly<{ newTotal: string; lateFeeCount: number }>) => {
-  const cents = Math.round(Number(preview.newTotal) * 100) + preview.lateFeeCount * 100000;
-  return (cents / 100).toFixed(2);
-};
-
 export const shortDate = (value: string) =>
   `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
 

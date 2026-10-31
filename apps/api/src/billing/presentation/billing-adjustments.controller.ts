@@ -65,4 +65,14 @@ export class BillingAdjustmentsController {
       actor,
     );
   }
+
+  @Post('monthly-charges/:chargeId/late-fee/waive')
+  @Permissions('charges:manage')
+  waiveLateFee(
+    @Param('chargeId') chargeId: string,
+    @Body() input: ReverseMonthlyChargeAdjustmentDto,
+    @CurrentUser() actor: PublicAuthUser,
+  ) {
+    return this.service.waiveLateFee(parseUuid(chargeId, 'chargeId'), input.reason, actor);
+  }
 }

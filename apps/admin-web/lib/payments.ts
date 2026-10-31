@@ -44,6 +44,16 @@ export const outstandingTotal = (charges: readonly MonthlyChargeDto[]) =>
     ),
   );
 
+/** Recargo por vencimiento, proyectado o guardado, que todavía no se quitó. */
+export const hasWaivableLateFee = (charge: Pick<MonthlyChargeDto, 'adjustments'>) =>
+  charge.adjustments.some(
+    (adjustment) =>
+      adjustment.type === 'LATE_FEE' &&
+      !charge.adjustments.some(
+        (other) => adjustment.id !== null && other.reversalOfId === adjustment.id,
+      ),
+  );
+
 export const tenderTotal = (tenders: TenderAmounts) =>
   (Object.values(tenders) as string[]).reduce(
     (sum, amount) => sum + (decimalToCents(amount || '0') ?? 0n),

@@ -86,7 +86,7 @@ export class ChargeGenerationService {
         alreadyExists: await this.repository.chargeExists(enrollment.id, period),
       });
     }
-    return { enrollment, months, today, enrollmentStartChange };
+    return { enrollment, months, enrollmentStartChange };
   }
 
   async preview(
@@ -94,11 +94,7 @@ export class ChargeGenerationService {
     actor: GenerationActor,
     now = new Date(),
   ): Promise<MonthlyChargePreviewDto> {
-    const { enrollment, months, today, enrollmentStartChange } = await this.resolve(
-      input,
-      actor,
-      now,
-    );
+    const { enrollment, months, enrollmentStartChange } = await this.resolve(input, actor, now);
     const detailed = [];
     for (const month of months) {
       const conditions = await this.repository.conditionsFor(enrollment.id, month.period);
@@ -119,7 +115,6 @@ export class ChargeGenerationService {
         studentDueAmount: due.studentDue.toFixed(2),
         adjustments: conditions.map(({ type }) => type),
         alreadyExists: month.alreadyExists,
-        lateFeeOnCollect: month.dueDate < today && !due.studentDue.isZero(),
       });
     }
     const pending = detailed.filter((month) => !month.alreadyExists);
@@ -131,7 +126,6 @@ export class ChargeGenerationService {
       newTotal: pending
         .reduce((sum, month) => sum.plus(month.studentDueAmount), new Prisma.Decimal(0))
         .toFixed(2),
-      lateFeeCount: pending.filter((month) => month.lateFeeOnCollect).length,
       enrollmentStartChange: pending.length ? enrollmentStartChange : null,
     };
   }

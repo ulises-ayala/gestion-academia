@@ -16,7 +16,6 @@ import { TariffQuickForm } from './tariff-quick-form';
 import {
   adjustmentLabels,
   businessPeriod,
-  collectNowAmount,
   defaultDueDate,
   formatTariffRange,
   inactiveTariffsFrom,
@@ -88,7 +87,7 @@ export function GenerateChargeDialog({
   const range = enrollment
     ? periodRange({ currentPeriod, canBackfill, enrollmentStart: enrollment.startDate })
     : null;
-  const collectAmount = preview ? collectNowAmount(preview) : '0.00';
+  const collectAmount = preview?.newTotal ?? '0.00';
   const collectBlocked = !preview
     ? 'sin-cuota'
     : !canCollect
@@ -477,10 +476,6 @@ export function GenerateChargeDialog({
                         Ya existe la cuota de {periodLabel(single.period).toLowerCase()} para esta
                         clase.
                       </p>
-                    ) : single.lateFeeOnCollect ? (
-                      <p className="generate-charge-note" role="status">
-                        Esta cuota ya está vencida: al cobrarla se suma el recargo de $1.000.
-                      </p>
                     ) : null}
                   </>
                 ) : preview ? (
@@ -494,8 +489,6 @@ export function GenerateChargeDialog({
                             {month.alreadyExists
                               ? 'Ya tiene cuota: se saltea'
                               : `${month.tariff.name} · vence ${shortDate(month.dueDate)}${
-                                  month.lateFeeOnCollect ? ' · vencida' : ''
-                                }${
                                   month.adjustments.length
                                     ? ` · ${month.adjustments.map((type) => adjustmentLabels[type]).join(', ')}`
                                     : ''
@@ -514,12 +507,6 @@ export function GenerateChargeDialog({
                     {preview.newCount === 0 ? (
                       <p className="generate-charge-note is-blocked" role="status">
                         Todos esos meses ya tienen cuota para esta clase.
-                      </p>
-                    ) : preview.lateFeeCount > 0 ? (
-                      <p className="generate-charge-note" role="status">
-                        {preview.lateFeeCount === 1
-                          ? 'Una cuota ya está vencida: al cobrarla se suma el recargo de $1.000.'
-                          : `${preview.lateFeeCount} cuotas ya están vencidas: al cobrarlas se suma el recargo de $1.000 por cada una.`}
                       </p>
                     ) : null}
                   </>
@@ -581,13 +568,7 @@ export function GenerateChargeDialog({
                     <p className="modal-copy">{collectBlocked}</p>
                   ) : collectNow && preview ? (
                     <p className="generate-charge-collect">
-                      Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}
-                      {preview.lateFeeCount === 1
-                        ? ' (incluye el recargo)'
-                        : preview.lateFeeCount > 1
-                          ? ` (incluye ${preview.lateFeeCount} recargos)`
-                          : ''}
-                      .
+                      Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}.
                     </p>
                   ) : null}
                 </fieldset>

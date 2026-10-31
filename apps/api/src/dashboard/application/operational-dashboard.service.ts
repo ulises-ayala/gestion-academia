@@ -6,6 +6,7 @@ import { hasPermissions } from '../../auth/domain/permissions';
 import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from './business-day';
 import { followUpCountQuery } from '../../students/infrastructure/student-follow-up-query';
+import { bornOverdueSql } from '../../billing/infrastructure/late-fee-sql';
 import {
   buildFinancialSummary,
   confirmedPaymentMonthsAt,
@@ -135,8 +136,10 @@ export class OperationalDashboardService {
           ), calculated AS (
             SELECT mc.student_id, mc.due_date, COALESCE(c.paid, 0) AS paid,
                    GREATEST(mc.base_amount + COALESCE(a.student_delta, 0), 0) AS adjusted_due,
-                   -- La deuda histórica no proyecta recargo: se trata como si ya lo tuviera.
-                   (COALESCE(a.has_late_fee, false) OR mc.kind <> 'MONTHLY') AS has_late_fee
+                   -- La deuda histórica y la cuota que nace vencida no proyectan recargo: se
+                   -- tratan como si ya lo tuvieran.
+                   (COALESCE(a.has_late_fee, false) OR mc.kind <> 'MONTHLY'
+                     OR ${bornOverdueSql('mc')}) AS has_late_fee
             FROM monthly_charges mc
             LEFT JOIN confirmed c ON c.monthly_charge_id = mc.id
             LEFT JOIN adjustment_totals a ON a.monthly_charge_id = mc.id

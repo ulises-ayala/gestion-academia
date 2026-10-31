@@ -554,7 +554,6 @@ export type MonthlyChargePreviewMonthDto = Readonly<{
   studentDueAmount: string;
   adjustments: readonly BillingAdjustmentTypeDto[];
   alreadyExists: boolean;
-  lateFeeOnCollect: boolean;
 }>;
 export type MonthlyChargePreviewDto = Readonly<{
   enrollmentId: string;
@@ -563,8 +562,6 @@ export type MonthlyChargePreviewDto = Readonly<{
   /** Cuotas que se van a crear (las que ya existen se saltean) y su importe. */
   newCount: number;
   newTotal: string;
-  /** Cuotas a crear que ya vencieron: cada una suma el recargo al cobrarla. */
-  lateFeeCount: number;
   /** Si la deuda es anterior al inicio, la inscripción se adelanta a esa fecha. */
   enrollmentStartChange: Readonly<{ from: string; to: string }> | null;
 }>;

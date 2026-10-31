@@ -3,6 +3,7 @@ import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
+import { bornOverdueSql } from '../infrastructure/late-fee-sql';
 
 type SummaryRow = {
   totalStudents: bigint;
@@ -81,8 +82,10 @@ export class ReceivablesService {
       ), calculated AS (
         SELECT mc.*, COALESCE(c.paid, 0) AS confirmed_paid,
                GREATEST(mc.base_amount + COALESCE(a.student_delta, 0), 0) AS adjusted_due,
-               -- La deuda histórica no proyecta recargo: se trata como si ya lo tuviera.
-               (COALESCE(a.has_late_fee, false) OR mc.kind <> 'MONTHLY') AS has_late_fee
+               -- La deuda histórica y la cuota que nace vencida no proyectan recargo: se tratan
+               -- como si ya lo tuvieran.
+               (COALESCE(a.has_late_fee, false) OR mc.kind <> 'MONTHLY' OR ${bornOverdueSql('mc')})
+                 AS has_late_fee
         FROM monthly_charges mc
         LEFT JOIN confirmed c ON c.monthly_charge_id = mc.id
         LEFT JOIN adjustment_totals a ON a.monthly_charge_id = mc.id

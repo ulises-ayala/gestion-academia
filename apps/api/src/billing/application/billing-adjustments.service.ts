@@ -6,12 +6,15 @@ import type {
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
+import { businessDayAt } from '../../dashboard/application/business-day';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import {
   adjustedAmounts,
   chargeStatus,
   conditionDeltas,
+  lateFeeAdjustment,
+  lateFeeApplies,
   parseBillingPeriod,
   validateCondition,
 } from '../domain/billing-adjustments';
@@ -332,6 +335,109 @@ export class BillingAdjustmentsService {
           before: { adjustmentId: original.id },
           after: { reversalId: reversal.id },
           metadata: { monthlyChargeId: chargeId },
+        },
+      });
+      return { id: reversal.id };
+    });
+  }
+
+  /**
+   * Quita el recargo por vencimiento de una cuota (decisión 203): revierte el recargo guardado o,
+   * si todavía solo se proyecta, lo guarda y lo revierte en el mismo paso, así no se vuelve a
+   * sumar en el próximo cobro.
+   */
+  async waiveLateFee(chargeId: string, why: string, actor: PublicAuthUser) {
+    if (actor.role === 'RECEPTION') throw new DomainError('FORBIDDEN', 'Acción no permitida');
+    const motive = reason(why);
+    const timeZone = process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
+    return this.prisma.$transaction(async (tx) => {
+      const owner = await tx.monthlyCharge.findUnique({
+        where: { id: chargeId },
+        select: { studentId: true },
+      });
+      if (!owner) throw new DomainError('MONTHLY_CHARGE_NOT_FOUND', 'Cuota no encontrada');
+      // Mismo bloqueo que el cobro: evita que un pago simultáneo materialice otro recargo.
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${owner.studentId}))`;
+      const charge = await tx.monthlyCharge.findUniqueOrThrow({
+        where: { id: chargeId },
+        include: {
+          adjustments: true,
+          allocations: { where: { payment: { status: 'CONFIRMED' } }, select: { amount: true } },
+        },
+      });
+      const paid = charge.allocations.reduce(
+        (sum, row) => sum.plus(row.amount),
+        new Prisma.Decimal(0),
+      );
+      const reversedIds = new Set(
+        charge.adjustments.flatMap(({ reversalOfId }) => (reversalOfId ? [reversalOfId] : [])),
+      );
+      const lateFees = charge.adjustments.filter(({ type }) => type === 'LATE_FEE');
+      let original = lateFees.find(({ id }) => !reversedIds.has(id));
+      const created = [];
+      if (!original) {
+        if (lateFees.length > 0)
+          throw new DomainError('LATE_FEE_ALREADY_WAIVED', 'El recargo de esta cuota ya se quitó');
+        const applies =
+          charge.status !== 'VOID' &&
+          lateFeeApplies(
+            {
+              kind: charge.kind,
+              dueDate: charge.dueDate,
+              createdOn: businessDayAt(charge.createdAt, timeZone).dateValue,
+              hasLateFee: false,
+              outstanding: adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue.minus(
+                paid,
+              ),
+            },
+            businessDayAt(new Date(), timeZone).dateValue,
+          );
+        if (!applies)
+          throw new DomainError(
+            'LATE_FEE_NOT_APPLICABLE',
+            'Esta cuota no tiene recargo para quitar',
+          );
+        original = await tx.monthlyChargeAdjustment.create({
+          data: { ...lateFeeAdjustment(chargeId), createdByUserId: actor.id },
+        });
+        created.push(original);
+      }
+      const reversal = await tx.monthlyChargeAdjustment.create({
+        data: {
+          monthlyChargeId: chargeId,
+          type: 'REVERSAL',
+          effectiveAmount: original.effectiveAmount,
+          studentAmountDelta: original.studentAmountDelta.negated(),
+          settlementBaseDelta: original.settlementBaseDelta.negated(),
+          createdByUserId: actor.id,
+          reason: motive,
+          reversalOfId: original.id,
+        },
+      });
+      const amounts = adjustedAmounts(charge.baseAmount, [
+        ...charge.adjustments,
+        ...created,
+        reversal,
+      ]);
+      if (paid.greaterThan(amounts.studentDue))
+        throw new DomainError(
+          'ADJUSTMENT_WOULD_CREATE_CREDIT',
+          'El recargo ya está cobrado. Para quitarlo, anulá el pago, quitá el recargo y volvé a cobrar.',
+        );
+      await tx.monthlyCharge.update({
+        where: { id: chargeId },
+        data: { status: chargeStatus(paid, amounts.studentDue) },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actor.id,
+          action: 'CORRECTION',
+          entityType: 'MONTHLY_CHARGE_ADJUSTMENT',
+          entityId: reversal.id,
+          reason: motive,
+          before: { adjustmentId: original.id },
+          after: { reversalId: reversal.id },
+          metadata: { monthlyChargeId: chargeId, source: 'LATE_FEE_WAIVER' },
         },
       });
       return { id: reversal.id };

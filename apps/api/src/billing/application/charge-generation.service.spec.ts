@@ -103,12 +103,10 @@ describe('ChargeGenerationService', () => {
           studentDueAmount: '40000.00',
           adjustments: [],
           alreadyExists: false,
-          lateFeeOnCollect: false,
         },
       ],
       newCount: 1,
       newTotal: '40000.00',
-      lateFeeCount: 0,
       enrollmentStartChange: null,
     });
   });
@@ -132,7 +130,7 @@ describe('ChargeGenerationService', () => {
       reception,
       now,
     );
-    expect(preview).toMatchObject({ newCount: 2, newTotal: '80000.00', lateFeeCount: 1 });
+    expect(preview).toMatchObject({ newCount: 2, newTotal: '80000.00' });
     await service.generate(
       { enrollmentId, period: '2026-10', untilPeriod: '2026-11' },
       reception,
@@ -159,7 +157,7 @@ describe('ChargeGenerationService', () => {
       ['2026-09', 't1', false],
       ['2026-10', 't1', true],
     ]);
-    expect(preview).toMatchObject({ newCount: 2, newTotal: '80000.00', lateFeeCount: 2 });
+    expect(preview).toMatchObject({ newCount: 2, newTotal: '80000.00' });
     await expect(
       service.generate({ enrollmentId, period: '2026-08', untilPeriod: '2026-10' }, manager, now),
     ).resolves.toMatchObject({ skippedPeriods: ['2026-10'] });

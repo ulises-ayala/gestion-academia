@@ -5,6 +5,7 @@ import {
   chargeStatus,
   conditionDeltas,
   LATE_FEE_AMOUNT,
+  lateFeeApplies,
 } from './billing-adjustments';
 
 const amount = (value: string | number) => new Prisma.Decimal(value);
@@ -56,5 +57,26 @@ describe('billing adjustments', () => {
       ]).studentDue.toFixed(2),
     ).toBe('0.00');
     expect(LATE_FEE_AMOUNT.toFixed(2)).toBe('1000.00');
+  });
+
+  it('el recargo solo aplica a cuotas mensuales vencidas, con saldo, sin recargo y creadas a tiempo', () => {
+    const date = (value: string) => new Date(`${value}T00:00:00.000Z`);
+    const today = date('2026-10-31');
+    const onTime = {
+      kind: 'MONTHLY',
+      dueDate: date('2026-10-10'),
+      createdOn: date('2026-10-01'),
+      hasLateFee: false,
+      outstanding: amount(40000),
+    };
+    expect(lateFeeApplies(onTime, today)).toBe(true);
+    // Creada el mismo día del vencimiento: todavía no nació vencida.
+    expect(lateFeeApplies({ ...onTime, createdOn: date('2026-10-10') }, today)).toBe(true);
+    // Alumna nueva inscripta el 28/10: la cuota de octubre nace vencida.
+    expect(lateFeeApplies({ ...onTime, createdOn: date('2026-10-28') }, today)).toBe(false);
+    expect(lateFeeApplies({ ...onTime, dueDate: today }, today)).toBe(false);
+    expect(lateFeeApplies({ ...onTime, hasLateFee: true }, today)).toBe(false);
+    expect(lateFeeApplies({ ...onTime, outstanding: amount(0) }, today)).toBe(false);
+    expect(lateFeeApplies({ ...onTime, kind: 'HISTORICAL_DEBT' }, today)).toBe(false);
   });
 });
