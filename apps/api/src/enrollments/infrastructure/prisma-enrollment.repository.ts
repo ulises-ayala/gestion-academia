@@ -14,7 +14,13 @@ import type {
   EnrollmentRepository,
   EnrollmentEndData,
 } from '../application/enrollment.repository';
-import { classChangeEndDate, validateEndDate, validateEndReason } from '../domain/enrollment';
+import {
+  classChangeEndDate,
+  nextDay,
+  samePeriodEnrollmentError,
+  validateEndDate,
+  validateEndReason,
+} from '../domain/enrollment';
 import { findEnrollmentScheduleConflict } from '../domain/enrollment-schedule-conflict';
 
 const include = {
@@ -158,10 +164,74 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
       return { ended: map(ended), created };
     });
   }
+  async reactivate(id: string, actorId?: string) {
+    return this.serializable(async (tx) => {
+      const current = await tx.enrollment.findUnique({ where: { id } });
+      if (!current) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada.');
+      const lockKeys = [current.classId, `student:${current.studentId}`].sort();
+      for (const lockKey of lockKeys)
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
+      await tx.$queryRaw`SELECT id FROM enrollments WHERE id = ${id}::uuid FOR UPDATE`;
+      const before = await tx.enrollment.findUnique({ where: { id } });
+      if (!before) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada.');
+      if (before.status !== 'ENDED')
+        throw new DomainError('ENROLLMENT_NOT_ENDED', 'La inscripción ya está activa.');
+      // Vuelve a ocupar el lugar desde el día siguiente a su fin (o desde su inicio si no tiene).
+      await this.assertCanOccupy(tx, {
+        studentId: before.studentId,
+        classId: before.classId,
+        from: before.endDate ? nextDay(before.endDate) : before.startDate,
+        reactivatingId: id,
+      });
+      const updated = await tx.enrollment.update({
+        where: { id },
+        data: { status: 'ACTIVE', endDate: null, endReason: null, endNote: null },
+        include,
+      });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: 'REACTIVATE',
+            entityType: 'ENROLLMENT',
+            entityId: id,
+            before: {
+              status: before.status,
+              endDate: before.endDate ? isoDate(before.endDate) : null,
+              endReason: before.endReason,
+              endNote: before.endNote,
+            },
+            after: { status: updated.status, endDate: null, endReason: null, endNote: null },
+            metadata: {
+              studentId: before.studentId,
+              studentName: `${updated.student.firstName} ${updated.student.lastName}`,
+              classId: before.classId,
+              className: updated.class.name,
+            },
+          },
+        });
+      return map(updated);
+    });
+  }
   private async createWithin(
     tx: Prisma.TransactionClient,
     input: { studentId: string; classId: string; startDate: Date },
   ): Promise<EnrollmentDto> {
+    await this.assertCanOccupy(tx, {
+      studentId: input.studentId,
+      classId: input.classId,
+      from: input.startDate,
+    });
+    return map(await tx.enrollment.create({ data: input, include }));
+  }
+  /**
+   * Valida que el alumno pueda ocupar un lugar en la clase desde `from`, sin fecha de fin: alta
+   * nueva o reactivación (`reactivatingId`, que se excluye de las comparaciones).
+   */
+  private async assertCanOccupy(
+    tx: Prisma.TransactionClient,
+    input: { studentId: string; classId: string; from: Date; reactivatingId?: string },
+  ) {
     const student = await tx.student.findUnique({
       where: { id: input.studentId },
       select: { status: true },
@@ -195,10 +265,27 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
         'ENROLLMENT_ALREADY_ACTIVE',
         'El alumno ya tiene una inscripción activa en esta clase.',
       );
+    const coexisting: Prisma.EnrollmentWhereInput[] = [
+      { endDate: null },
+      { endDate: { gte: input.from } },
+    ];
+    const samePeriod = await tx.enrollment.findFirst({
+      where: {
+        studentId: input.studentId,
+        classId: input.classId,
+        ...(input.reactivatingId ? { id: { not: input.reactivatingId } } : {}),
+        OR: coexisting,
+      },
+      select: { id: true, startDate: true, endDate: true },
+      orderBy: { startDate: 'desc' },
+    });
+    if (samePeriod) throw samePeriodEnrollmentError(samePeriod, Boolean(input.reactivatingId));
+    // La misma clase ya se resolvió arriba: sus horarios coinciden consigo mismos.
     const potentiallyConcurrentEnrollments = await tx.enrollment.findMany({
       where: {
         studentId: input.studentId,
-        OR: [{ endDate: null }, { endDate: { gte: input.startDate } }],
+        classId: { not: input.classId },
+        OR: coexisting,
       },
       select: {
         class: {
@@ -240,7 +327,6 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
     });
     if (activeCount >= academicClass.capacity)
       throw new DomainError('CLASS_FULL', 'La clase alcanzó su cupo máximo.');
-    return map(await tx.enrollment.create({ data: input, include }));
   }
   private async serializable<T>(work: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
     for (let attempt = 0; attempt < SERIALIZABLE_TRANSACTION_ATTEMPTS; attempt++) {

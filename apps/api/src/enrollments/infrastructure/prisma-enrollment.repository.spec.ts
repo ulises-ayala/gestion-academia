@@ -77,10 +77,65 @@ describe('PrismaEnrollmentRepository schedule conflicts', () => {
       expect.objectContaining({
         where: {
           studentId,
+          classId: { not: classId },
           OR: [{ endDate: null }, { endDate: { gte: new Date('2026-06-15T00:00:00.000Z') } }],
         },
       }),
     );
+    expect(transaction.enrollment.create).not.toHaveBeenCalled();
+  });
+
+  it('una inscripción finalizada de la misma clase no es conflicto horario sino de período', async () => {
+    const studentId = crypto.randomUUID();
+    const classId = crypto.randomUUID();
+    const endedId = crypto.randomUUID();
+    const findFirst = vi
+      .fn()
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        id: endedId,
+        startDate: new Date('2026-08-01T00:00:00.000Z'),
+        endDate: new Date('2026-10-30T00:00:00.000Z'),
+      });
+    const findMany = vi.fn();
+    const transaction = {
+      $executeRaw: vi.fn(async () => 1),
+      student: { findUnique: vi.fn(async () => ({ status: 'ACTIVE' })) },
+      academyClass: {
+        findUnique: vi.fn(async () => ({
+          status: 'ACTIVE',
+          capacity: 20,
+          schedules: [
+            { dayOfWeek: 'TUESDAY', startTime: atTime('18:00'), endTime: atTime('19:00') },
+          ],
+        })),
+      },
+      enrollment: { findFirst, findMany, count: vi.fn(async () => 0), create: vi.fn() },
+    };
+    const prisma = {
+      $transaction: vi.fn(async (operation) => operation(transaction)),
+    } as unknown as PrismaService;
+
+    await expect(
+      new PrismaEnrollmentRepository(prisma).create({
+        studentId,
+        classId,
+        startDate: new Date('2026-10-30T00:00:00.000Z'),
+      }),
+    ).rejects.toMatchObject({
+      code: 'ENROLLMENT_PERIOD_OVERLAP',
+      details: { enrollmentId: endedId, endDate: '2026-10-30', nextStartDate: '2026-10-31' },
+    });
+    expect(findFirst).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        where: {
+          studentId,
+          classId,
+          OR: [{ endDate: null }, { endDate: { gte: new Date('2026-10-30T00:00:00.000Z') } }],
+        },
+      }),
+    );
+    expect(findMany).not.toHaveBeenCalled();
     expect(transaction.enrollment.create).not.toHaveBeenCalled();
   });
 

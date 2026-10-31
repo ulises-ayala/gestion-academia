@@ -80,6 +80,12 @@ export class EnrollmentsController {
     });
   }
 
+  @Post(':id/reactivate')
+  @Permissions('enrollments:manage', 'enrollments:reactivate')
+  reactivate(@Param('id') id: string, @CurrentUser() user: PublicAuthUser) {
+    return this.service.reactivate(parseUuid(id), user.id);
+  }
+
   @Post(':id/end') end(
     @Param('id') id: string,
     @Body() body: EndEnrollmentDto,

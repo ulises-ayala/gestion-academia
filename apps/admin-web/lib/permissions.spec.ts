@@ -20,4 +20,10 @@ describe('lead UI permission', () => {
     expect(roleCan('RECEPTION', 'offering:manage')).toBe(false);
     expect(roleCan('MANAGER', 'classes:update')).toBe(true);
   });
+
+  it('muestra reactivar inscripciones solo a Administración y Dirección', () => {
+    expect(roleCan('RECEPTION', 'enrollments:reactivate')).toBe(false);
+    expect(roleCan('MANAGER', 'enrollments:reactivate')).toBe(true);
+    expect(roleCan('ADMINISTRATOR', 'enrollments:reactivate')).toBe(true);
+  });
 });

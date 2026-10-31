@@ -35,12 +35,13 @@ describe('Enrollment authentication boundary', () => {
     root = `http://127.0.0.1:${(app.getHttpServer().address() as AddressInfo).port}/api/v1`;
   });
   afterEach(async () => app.close());
-  it('protege listado, alta, detalle y finalización', async () => {
+  it('protege listado, alta, detalle, finalización y reactivación', async () => {
     const requests: [string, string][] = [
       ['/enrollments', 'GET'],
       ['/enrollments', 'POST'],
       [`/enrollments/${crypto.randomUUID()}`, 'GET'],
       [`/enrollments/${crypto.randomUUID()}/end`, 'POST'],
+      [`/enrollments/${crypto.randomUUID()}/reactivate`, 'POST'],
     ];
     for (const [path, method] of requests)
       expect((await fetch(`${root}${path}`, { method })).status).toBe(401);

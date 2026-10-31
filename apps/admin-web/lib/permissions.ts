@@ -4,6 +4,7 @@ export type UiPermission =
   | 'students:manage'
   | 'leads:manage'
   | 'enrollments:manage'
+  | 'enrollments:reactivate'
   | 'offering:read'
   | 'offering:manage'
   | 'classes:update'
@@ -48,6 +49,7 @@ const admissionPermissions: readonly UiPermission[] = [
 ];
 const administrationPermissions: readonly UiPermission[] = [
   ...admissionPermissions,
+  'enrollments:reactivate',
   'offering:manage',
   'tariffs:manage',
   'charges:manage',

@@ -93,6 +93,12 @@ export class EnrollmentsService {
       actorId,
     );
   }
+  async reactivate(id: string, actorId?: string) {
+    const enrollment = await this.get(id);
+    if (enrollment.status === 'ACTIVE')
+      throw new DomainError('ENROLLMENT_NOT_ENDED', 'La inscripción ya está activa.');
+    return this.repository.reactivate(id, actorId);
+  }
   assertStudentCanDeactivate(studentId: string) {
     return this.assertNoActiveStudentEnrollments(studentId);
   }

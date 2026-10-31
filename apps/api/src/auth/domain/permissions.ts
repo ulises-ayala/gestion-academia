@@ -4,6 +4,7 @@ export type Permission =
   | 'students:manage'
   | 'leads:manage'
   | 'enrollments:manage'
+  | 'enrollments:reactivate'
   | 'offering:read'
   | 'offering:manage'
   | 'classes:update'
@@ -48,6 +49,7 @@ const admissionPermissions: readonly Permission[] = [
 ];
 const administrationPermissions: readonly Permission[] = [
   ...admissionPermissions,
+  'enrollments:reactivate',
   'offering:manage',
   'tariffs:manage',
   'charges:manage',

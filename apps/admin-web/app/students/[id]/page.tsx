@@ -453,6 +453,8 @@ export default function StudentDetailPage() {
   const [endTarget, setEndTarget] = useState<EnrollmentDto | null>(null);
   const [changeTarget, setChangeTarget] = useState<EnrollmentDto | null>(null);
   const [startDateTarget, setStartDateTarget] = useState<EnrollmentDto | null>(null);
+  const [reactivateTarget, setReactivateTarget] = useState<EnrollmentDto | null>(null);
+  const [reactivateError, setReactivateError] = useState('');
   const [followUp, setFollowUp] = useState<readonly StudentFollowUpItemDto[]>([]);
   const [statusConfirmation, setStatusConfirmation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -547,6 +549,25 @@ export default function StudentDetailPage() {
       setSubmitting(false);
     }
   }
+  async function reactivateEnrollment() {
+    if (!reactivateTarget || submitting) return;
+    setSubmitting(true);
+    setReactivateError('');
+    try {
+      await apiRequest<EnrollmentDto>(`/enrollments/${reactivateTarget.id}/reactivate`, {
+        method: 'POST',
+      });
+      setReactivateTarget(null);
+      await load();
+    } catch (error) {
+      setReactivateError(
+        error instanceof ApiClientError ? error.message : 'No se pudo reactivar la inscripción',
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }
+  const canReactivate = can('enrollments:reactivate') && student?.status === 'ACTIVE';
   const openEnd = (item: EnrollmentDto) => {
     setEndTarget(item);
   };
@@ -890,6 +911,7 @@ export default function StudentDetailPage() {
                       <th>Motivo de finalización</th>
                       <th>Observación</th>
                       <th>Estado</th>
+                      {canReactivate && <th aria-label="Acciones" />}
                     </tr>
                   </thead>
                   <tbody>
@@ -905,6 +927,19 @@ export default function StudentDetailPage() {
                         <td data-label="Estado">
                           <span className="status inactive">Finalizada</span>
                         </td>
+                        {canReactivate && (
+                          <td data-label="Acciones">
+                            <button
+                              className="secondary"
+                              onClick={() => {
+                                setReactivateError('');
+                                setReactivateTarget(item);
+                              }}
+                            >
+                              Reactivar
+                            </button>
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
@@ -1069,6 +1104,43 @@ export default function StudentDetailPage() {
             void load().then(() => setMessage('Fecha de inicio actualizada.'));
           }}
         />
+      )}
+      {reactivateTarget && (
+        <div className="modal-backdrop">
+          <section
+            aria-labelledby="reactivate-title"
+            aria-modal="true"
+            className="modal card"
+            role="dialog"
+          >
+            <h2 id="reactivate-title">Reactivar inscripción</h2>
+            <p>
+              ¿Querés reactivar la inscripción a {reactivateTarget.academicClass.name} desde el{' '}
+              {formatDate(reactivateTarget.startDate)}?
+            </p>
+            <p className="modal-note">
+              Vuelve a quedar activa, sin fecha de fin, con sus cuotas y becas. La finalización
+              anterior queda registrada en la auditoría.
+            </p>
+            {reactivateError && (
+              <p className="error" role="alert">
+                {reactivateError}
+              </p>
+            )}
+            <div className="modal-actions">
+              <button
+                className="secondary"
+                disabled={submitting}
+                onClick={() => setReactivateTarget(null)}
+              >
+                Cancelar
+              </button>
+              <button disabled={submitting} onClick={() => void reactivateEnrollment()}>
+                {submitting ? 'Reactivando…' : 'Reactivar'}
+              </button>
+            </div>
+          </section>
+        </div>
       )}
       {statusConfirmation && (
         <div className="modal-backdrop">

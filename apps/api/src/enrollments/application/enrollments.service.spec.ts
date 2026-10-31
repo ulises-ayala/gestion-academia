@@ -144,6 +144,18 @@ class MemoryEnrollments implements EnrollmentRepository {
     this.items[this.items.indexOf(current)] = updated;
     return updated;
   }
+  async reactivate(id: string) {
+    const current = this.items.find((x) => x.id === id)!;
+    const reactivated = {
+      ...current,
+      status: 'ACTIVE' as const,
+      endDate: null,
+      endReason: null,
+      endNote: null,
+    };
+    this.items[this.items.indexOf(current)] = reactivated;
+    return reactivated;
+  }
   async hasActiveForStudent(id: string) {
     return this.items.some((x) => x.studentId === id && x.status === 'ACTIVE');
   }
@@ -187,6 +199,21 @@ describe('EnrollmentsService', () => {
     await expect(
       service.create({ studentId, classId, startDate: '2026-08-01' }),
     ).resolves.toMatchObject({ status: 'ACTIVE' });
+  });
+  it('reactiva una inscripción finalizada y rechaza reactivar una activa', async () => {
+    const repo = new MemoryEnrollments();
+    const service = new EnrollmentsService(repo);
+    const item = await service.create({ studentId, classId, startDate: '2026-08-01' });
+    await expect(service.reactivate(item.id)).rejects.toMatchObject({
+      code: 'ENROLLMENT_NOT_ENDED',
+    });
+    await service.end(item.id, { endDate: '2026-10-30', endReason: 'NON_PAYMENT' });
+    await expect(service.reactivate(item.id)).resolves.toMatchObject({
+      id: item.id,
+      status: 'ACTIVE',
+      endDate: null,
+      endReason: null,
+    });
   });
   it('finaliza preservando historia y rechaza finalizar dos veces', async () => {
     const repo = new MemoryEnrollments();

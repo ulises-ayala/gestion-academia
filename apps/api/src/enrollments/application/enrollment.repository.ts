@@ -43,6 +43,8 @@ export interface EnrollmentRepository {
     data: EnrollmentClassChangeData,
     actorId?: string,
   ): Promise<{ ended: EnrollmentDto; created: EnrollmentDto }>;
+  /** Vuelve a activar una inscripción finalizada, sin fecha de fin; queda auditado. */
+  reactivate(id: string, actorId?: string): Promise<EnrollmentDto>;
   hasActiveForStudent(studentId: string): Promise<boolean>;
   hasActiveForClass(classId: string): Promise<boolean>;
 }
