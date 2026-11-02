@@ -305,10 +305,11 @@ function TeachersView({
           <ul>
             {data.unconfigured.map((item) => (
               <li key={`${item.classId}-${item.period}`}>
-                <span>
-                  <strong>{item.className}</strong> · {periodLabel(item.period).toLowerCase()} ·{' '}
-                  {money(item.collected)}
+                <span className="settlement-warning-class">
+                  <strong>{item.className}</strong>
+                  <small>Cobrado en {periodLabel(item.period).toLowerCase()}</small>
                 </span>
+                <span className="settlement-warning-amount">{money(item.collected)}</span>
                 {!closed && (
                   <button
                     type="button"
