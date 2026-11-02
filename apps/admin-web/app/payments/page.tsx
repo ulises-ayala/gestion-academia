@@ -22,6 +22,7 @@ import {
 } from '../../components/generate-charge-dialog';
 import { notifySuccess } from '../../lib/notify';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
+import { CorrectPaymentDialog } from '../../components/correct-payment-dialog';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { chargeLabel } from '../../lib/collect-payment';
@@ -98,6 +99,7 @@ export default function PaymentsPage() {
   const [cashShiftRequired, setCashShiftRequired] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [voidTarget, setVoidTarget] = useState<PaymentDto | null>(null);
+  const [correctTarget, setCorrectTarget] = useState<PaymentDto | null>(null);
   const [voidReason, setVoidReason] = useState('');
   const [voiding, setVoiding] = useState(false);
   const [waiveTarget, setWaiveTarget] = useState<MonthlyChargeDto | null>(null);
@@ -322,6 +324,16 @@ export default function PaymentsPage() {
     } finally {
       setVoiding(false);
     }
+  }
+
+  async function paymentCorrected() {
+    setCorrectTarget(null);
+    await Promise.all([
+      student ? loadStudent(student.id) : Promise.resolve(),
+      location.tab === 'history' ? loadHistory() : Promise.resolve(),
+      loadReceivables(),
+    ]);
+    setMessage('Pago corregido: el original quedó anulado y la caja se ajustó en su turno.');
   }
 
   async function waiveLateFee() {
@@ -782,6 +794,7 @@ export default function PaymentsPage() {
                   setVoidTarget(payment);
                   setVoidReason('');
                 }}
+                onCorrect={setCorrectTarget}
               />
               <div className="pagination">
                 <button
@@ -862,6 +875,7 @@ export default function PaymentsPage() {
             setVoidTarget(payment);
             setVoidReason('');
           }}
+          onCorrect={setCorrectTarget}
           onWaiveLateFee={(charge) => {
             setWaiveTarget(charge);
             setWaiveReason('');
@@ -869,6 +883,13 @@ export default function PaymentsPage() {
         />
       )}
 
+      {correctTarget && (
+        <CorrectPaymentDialog
+          payment={correctTarget}
+          onClose={() => setCorrectTarget(null)}
+          onDone={() => void paymentCorrected()}
+        />
+      )}
       {voidTarget && (
         <div
           className="modal-backdrop"
@@ -1044,6 +1065,7 @@ function StudentAccount({
   onRetry,
   onTender,
   onVoid,
+  onCorrect,
   onWaiveLateFee,
 }: Readonly<{
   allocationPreview: ReturnType<typeof previewAllocations>;
@@ -1070,6 +1092,7 @@ function StudentAccount({
   onRetry(): void;
   onTender(method: keyof TenderAmounts, amount: string): void;
   onVoid(payment: PaymentDto): void;
+  onCorrect(payment: PaymentDto): void;
   onWaiveLateFee(charge: MonthlyChargeDto): void;
 }>) {
   const [generating, setGenerating] = useState(false);
@@ -1341,6 +1364,7 @@ function StudentAccount({
             payments={payments}
             receiptPhone={student.phone}
             onVoid={onVoid}
+            onCorrect={onCorrect}
           />
         )}
       </section>

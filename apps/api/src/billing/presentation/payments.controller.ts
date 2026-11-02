@@ -1,4 +1,5 @@
 import type {
+  CorrectPaymentDto,
   CreateOtherPaymentDto,
   CreatePaymentDto,
   PaymentMethodDto,
@@ -10,6 +11,7 @@ import type {
 } from '@academy/contracts';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
+import { hasPermissions } from '../../auth/domain/permissions';
 import { CurrentUser } from '../../auth/presentation/current-user.decorator';
 import { Permissions } from '../../auth/presentation/permissions.decorator';
 import { businessDayAt } from '../../dashboard/application/business-day';
@@ -110,6 +112,7 @@ export class PaymentsController {
     return this.service.create(
       { ...input, studentId: parseUuid(input.studentId, 'studentId') },
       user.id,
+      hasPermissions(user, ['payments:void']),
     );
   }
 
@@ -126,6 +129,7 @@ export class PaymentsController {
         teacherId: input.teacherId ? parseUuid(input.teacherId, 'teacherId') : null,
       },
       user.id,
+      hasPermissions(user, ['payments:void']),
     );
   }
 
@@ -133,6 +137,16 @@ export class PaymentsController {
   @Permissions('payments:void')
   void(@Param('id') id: string, @Body() body: VoidPaymentDto, @CurrentUser() user: PublicAuthUser) {
     return this.service.void(parseUuid(id), user.id, body?.reason);
+  }
+
+  @Post(':id/correct')
+  @Permissions('payments:void')
+  correct(
+    @Param('id') id: string,
+    @Body() body: CorrectPaymentDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.correct(parseUuid(id), body, user.id);
   }
 
   private search(value?: string) {

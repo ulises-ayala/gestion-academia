@@ -143,6 +143,19 @@ dialog.collect-dialog::backdrop {
   width: 100%;
   margin-top: var(--space-1);
 }
+.modal .collect-paid-date {
+  display: grid;
+  grid-template-columns: auto 12rem;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+}
+.collect-paid-date input {
+  width: 100%;
+}
+.collect-paid-date .collect-hint {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
 .collect-hint {
   display: block;
   margin-top: var(--space-1);

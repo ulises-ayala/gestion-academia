@@ -425,6 +425,8 @@ model Payment {
   /// Profesor que dictó la clase suelta (foto al cobrar, para liquidaciones).
   teacherId       String?              @map("teacher_id") @db.Uuid
   paidAt          DateTime             @default(now()) @map("paid_at") @db.Timestamptz(3)
+  /// Pago anulado que este reemplaza al corregirlo (medio, importe o fecha).
+  correctionOfId  String?              @unique @map("correction_of_id") @db.Uuid
   createdByUserId String               @map("created_by_user_id") @db.Uuid
   voidedAt        DateTime?            @map("voided_at") @db.Timestamptz(3)
   voidedByUserId  String?              @map("voided_by_user_id") @db.Uuid
@@ -435,6 +437,8 @@ model Payment {
   voidedBy        AdminUser?           @relation("PaymentVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
   academicClass   AcademyClass?        @relation(fields: [classId], references: [id], onDelete: Restrict)
   teacher         Teacher?             @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  correctionOf    Payment?             @relation("PaymentCorrection", fields: [correctionOfId], references: [id], onDelete: Restrict)
+  correctedBy     Payment?             @relation("PaymentCorrection")
   allocations     PaymentAllocation[]
   tenders         PaymentTender[]
   cashMovements   CashMovement[]

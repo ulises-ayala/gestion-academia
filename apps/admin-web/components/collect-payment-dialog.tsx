@@ -16,6 +16,7 @@ import { Check, Search } from 'lucide-react';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
+import { businessToday } from '../lib/dates';
 import {
   amountInputValue,
   chargeLabel,
@@ -98,6 +99,11 @@ export function CollectPaymentDialog({
   const [teachers, setTeachers] = useState<TeacherListDto['items'] | null>(null);
   const [teacherId, setTeacherId] = useState('');
   const [detail, setDetail] = useState('');
+  // Pagos cobrados antes y cargados tarde: Administración/Dirección ponen la fecha real.
+  const today = businessToday();
+  const [paidDate, setPaidDate] = useState(today);
+  const dated = (payload: object) =>
+    paidDate && paidDate !== today ? { ...payload, paidDate } : payload;
   const [debtForm, setDebtForm] = useState({ enrollmentId: '', amount: '', description: '' });
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -324,11 +330,11 @@ export function CollectPaymentDialog({
         tab === 'charges'
           ? await apiRequest<PaymentDto>('/payments', {
               method: 'POST',
-              body: JSON.stringify(createPaymentPayload(student.id, tenders)),
+              body: JSON.stringify(dated(createPaymentPayload(student.id, tenders))),
             })
           : await apiRequest<PaymentDto>('/payments/other', {
               method: 'POST',
-              body: JSON.stringify(buildOtherPaymentPayload(student.id, otherForm, tenders)),
+              body: JSON.stringify(dated(buildOtherPaymentPayload(student.id, otherForm, tenders))),
             });
       setChanged(true);
       setDone(payment);
@@ -834,6 +840,23 @@ export function CollectPaymentDialog({
             </div>
           )}
 
+          {tab !== 'debt' &&
+            can('payments:void') &&
+            !(tab === 'charges' && pending.length === 0) && (
+              <label className="collect-paid-date">
+                Fecha del pago
+                <input
+                  type="date"
+                  max={today}
+                  value={paidDate}
+                  disabled={saving}
+                  onChange={(event) => setPaidDate(event.target.value)}
+                />
+                <small className="collect-hint">
+                  Cambiala solo si el pago se cobró otro día y se carga tarde.
+                </small>
+              </label>
+            )}
           {cashBanner}
           {tried && problem && (
             <p className="field-error" role="status">

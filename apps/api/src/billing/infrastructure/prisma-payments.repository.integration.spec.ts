@@ -135,6 +135,10 @@ describe.runIf(enabled)(
           await tx.cashMovement.deleteMany({ where: { sourcePaymentId: { in: paymentIds } } });
           await tx.paymentTender.deleteMany({ where: { paymentId: { in: paymentIds } } });
           await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
+          // Primero los reemplazos de una corrección: apuntan al pago original.
+          await tx.payment.deleteMany({
+            where: { id: { in: paymentIds }, correctionOfId: { not: null } },
+          });
           await tx.payment.deleteMany({ where: { id: { in: paymentIds } } });
         }
         await tx.monthlyChargeAdjustment.deleteMany({
@@ -386,6 +390,120 @@ describe.runIf(enabled)(
             select: { status: true },
           }),
         ).toEqual([{ status: 'PAID' }, { status: 'PARTIAL' }]);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('corrige el medio de pago en el mismo turno y conserva las cuotas', async () => {
+      const fixture = await createFixture();
+      try {
+        const original = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '41000.00' }],
+          fixture.actor.id,
+        );
+        const corrected = await repository.correct(
+          original.id,
+          {
+            tenders: [{ method: 'MERCADO_PAGO', amount: '41000.00' }],
+            paidAt: new Date(original.paidAt),
+          },
+          fixture.actor.id,
+          'Era Mercado Pago',
+        );
+        expect(corrected).toMatchObject({
+          status: 'CONFIRMED',
+          amount: '41000.00',
+          correctionOfId: original.id,
+          tenders: [{ method: 'MERCADO_PAGO', amount: '41000.00' }],
+          allocations: [{ monthlyChargeId: fixture.charge.id, amount: '41000.00' }],
+        });
+        await expect(repository.findById(original.id)).resolves.toMatchObject({
+          status: 'VOID',
+          correctedById: corrected.id,
+        });
+        // En el turno: el efectivo se revierte y entra como Mercado Pago (la reversa y el nuevo
+        // cobro se crean en la misma transacción, así que se comparan sin orden).
+        const movements = await prisma.cashMovement.findMany({
+          where: { cashShiftId: fixture.cashShift.id },
+          select: { type: true, method: true, amount: true },
+        });
+        expect(movements).toHaveLength(3);
+        expect(movements).toEqual(
+          expect.arrayContaining([
+            { type: 'COLLECTION', method: 'CASH', amount: new Prisma.Decimal('41000') },
+            { type: 'REVERSAL', method: 'CASH', amount: new Prisma.Decimal('41000') },
+            { type: 'COLLECTION', method: 'MERCADO_PAGO', amount: new Prisma.Decimal('41000') },
+          ]),
+        );
+        await expect(
+          prisma.monthlyCharge.findUniqueOrThrow({ where: { id: fixture.charge.id } }),
+        ).resolves.toMatchObject({ status: 'PAID' });
+        await expect(
+          repository.correct(
+            original.id,
+            { tenders: [{ method: 'CARD', amount: '41000.00' }], paidAt: new Date() },
+            fixture.actor.id,
+            'otra vez',
+          ),
+        ).rejects.toMatchObject({ code: 'PAYMENT_ALREADY_VOID' });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('un pago cargado tarde con fecha anterior al vencimiento no lleva recargo', async () => {
+      const fixture = await createFixture();
+      try {
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '40000.00' }],
+          fixture.actor.id,
+          new Date('2026-08-05T15:00:00.000Z'),
+        );
+        expect(payment.paidAt).toBe('2026-08-05T15:00:00.000Z');
+        expect(payment.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: fixture.charge.id, amount: '40000.00' }),
+        ]);
+        expect(
+          await prisma.monthlyChargeAdjustment.count({
+            where: { monthlyChargeId: fixture.charge.id, type: 'LATE_FEE' },
+          }),
+        ).toBe(0);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('si cambia el importe vuelve a imputar de la cuota más vieja', async () => {
+      const fixture = await createFixture();
+      try {
+        const original = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '41000.00' }],
+          fixture.actor.id,
+        );
+        const corrected = await repository.correct(
+          original.id,
+          { tenders: [{ method: 'CASH', amount: '50000.00' }], paidAt: new Date(original.paidAt) },
+          fixture.actor.id,
+          'Pagó también parte de septiembre',
+        );
+        expect(
+          corrected.allocations.map(({ monthlyChargeId, amount }) => ({ monthlyChargeId, amount })),
+        ).toEqual([
+          { monthlyChargeId: fixture.charge.id, amount: '41000.00' },
+          { monthlyChargeId: fixture.secondCharge.id, amount: '9000.00' },
+        ]);
+        await expect(
+          repository.correct(
+            corrected.id,
+            { tenders: [{ method: 'CASH', amount: '999999.00' }], paidAt: new Date() },
+            fixture.actor.id,
+            'demasiado',
+          ),
+        ).rejects.toMatchObject({ code: 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE' });
       } finally {
         await cleanupFixture(fixture);
       }

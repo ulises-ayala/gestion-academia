@@ -15,6 +15,8 @@ const payment = (): PaymentDto => ({
   status: 'CONFIRMED',
   paidAt: new Date().toISOString(),
   createdBy: { id: actorId, username: 'admision' },
+  correctionOfId: null,
+  correctedById: null,
   voidedAt: null,
   voidedBy: null,
   allocations: [
@@ -43,12 +45,15 @@ class MemoryPayments implements PaymentsRepository {
     actorId: string;
   } | null = null;
   item = payment();
+  lastPaidAt: Date | undefined = undefined;
   async create(
     id: string,
     tenders: readonly { method: PaymentMethodDto; amount: string }[],
     userId: string,
+    paidAt?: Date,
   ) {
     this.last = { studentId: id, tenders, actorId: userId };
+    this.lastPaidAt = paidAt;
     return {
       ...this.item,
       amount: tenders
@@ -97,6 +102,20 @@ class MemoryPayments implements PaymentsRepository {
   }
   async confirmedTotal() {
     return this.item.status === 'CONFIRMED' ? this.item.amount : '0.00';
+  }
+  corrected: {
+    id: string;
+    input: { tenders: readonly { method: PaymentMethodDto; amount: string }[]; paidAt: Date };
+    reason: string;
+  } | null = null;
+  async correct(
+    id: string,
+    input: { tenders: readonly { method: PaymentMethodDto; amount: string }[]; paidAt: Date },
+    _actorId: string,
+    reason: string,
+  ) {
+    this.corrected = { id, input, reason };
+    return { ...this.item, id: crypto.randomUUID(), correctionOfId: id };
   }
   async void() {
     this.item = {
@@ -313,6 +332,120 @@ describe('PaymentsService', () => {
       status: 'VOID',
       tenders: [{ method: 'CASH' }],
       allocations: [{ monthlyChargeId: chargeId }],
+    });
+  });
+
+  describe('corregir pago', () => {
+    // 01/11/2026 22:00 en Argentina.
+    const now = new Date('2026-11-02T01:00:00.000Z');
+    const setup = () => {
+      const repository = new MemoryPayments();
+      repository.item = { ...payment(), paidAt: '2026-10-30T14:00:00.000Z' };
+      return { repository, service: new PaymentsService(repository) };
+    };
+
+    it('cambia el medio de pago con motivo y conserva la fecha', async () => {
+      const { repository, service } = setup();
+      await service.correct(
+        repository.item.id,
+        {
+          reason: 'Era Mercado Pago, se cargó como efectivo',
+          tenders: [{ method: 'MERCADO_PAGO', amount: '40000' }],
+        },
+        actorId,
+        now,
+      );
+      expect(repository.corrected).toEqual({
+        id: repository.item.id,
+        input: {
+          tenders: [{ method: 'MERCADO_PAGO', amount: '40000.00' }],
+          paidAt: new Date('2026-10-30T14:00:00.000Z'),
+        },
+        reason: 'Era Mercado Pago, se cargó como efectivo',
+      });
+    });
+
+    it('corrige la fecha real del pago al mediodía de ese día', async () => {
+      const { repository, service } = setup();
+      await service.correct(
+        repository.item.id,
+        {
+          reason: 'Pagó el 15/10, se cargó tarde',
+          tenders: [{ method: 'CASH', amount: '40000' }],
+          paidDate: '2026-10-15',
+        },
+        actorId,
+        now,
+      );
+      expect(repository.corrected?.input.paidAt).toEqual(new Date('2026-10-15T15:00:00.000Z'));
+    });
+
+    it('rechaza sin motivo, sin cambios, con fecha futura o sobre un pago anulado', async () => {
+      const { repository, service } = setup();
+      const id = repository.item.id;
+      const same = [{ method: 'CASH' as const, amount: '40000' }];
+      await expect(
+        service.correct(id, { reason: ' ', tenders: same }, actorId, now),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'reason' } });
+      await expect(
+        service.correct(id, { reason: 'x', tenders: same, paidDate: '2026-10-30' }, actorId, now),
+      ).rejects.toMatchObject({
+        code: 'VALIDATION_ERROR',
+        message: 'No hay cambios para corregir',
+      });
+      await expect(
+        service.correct(id, { reason: 'x', tenders: same, paidDate: '2026-11-02' }, actorId, now),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'paidDate' } });
+      repository.item = { ...repository.item, status: 'VOID' };
+      await expect(
+        service.correct(
+          id,
+          { reason: 'x', tenders: [{ method: 'CARD', amount: '1' }] },
+          actorId,
+          now,
+        ),
+      ).rejects.toMatchObject({ code: 'PAYMENT_ALREADY_VOID' });
+      expect(repository.corrected).toBeNull();
+    });
+  });
+
+  describe('pago cargado tarde con su fecha real', () => {
+    const now = new Date('2026-11-02T01:00:00.000Z'); // 01/11 22:00 en Argentina
+    const tenders = [{ method: 'CASH' as const, amount: '40000' }];
+
+    it('Administración lo carga con la fecha en que se pagó', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).create(
+        { studentId, tenders, paidDate: '2026-10-05' },
+        actorId,
+        true,
+        now,
+      );
+      expect(repository.lastPaidAt).toEqual(new Date('2026-10-05T15:00:00.000Z'));
+    });
+
+    it('con la fecha de hoy queda la hora de carga', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).create(
+        { studentId, tenders, paidDate: '2026-11-01' },
+        actorId,
+        true,
+        now,
+      );
+      expect(repository.lastPaidAt).toBeUndefined();
+    });
+
+    it('Admisión no puede cambiar la fecha', async () => {
+      const repository = new MemoryPayments();
+      await expect(
+        new PaymentsService(repository).create(
+          { studentId, tenders, paidDate: '2026-10-05' },
+          actorId,
+          false,
+          now,
+        ),
+      ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+      expect(repository.last).toBeNull();
     });
   });
 });

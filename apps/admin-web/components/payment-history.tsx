@@ -21,6 +21,7 @@ export function PaymentHistory({
   studentHref,
   receiptPhone,
   onVoid,
+  onCorrect,
 }: Readonly<{
   canVoid: boolean;
   payments: readonly PaymentDto[];
@@ -29,6 +30,8 @@ export function PaymentHistory({
   /** Con el alumno ya elegido, ofrece reenviar el recibo a este teléfono por WhatsApp. */
   receiptPhone?: string | null;
   onVoid(payment: PaymentDto): void;
+  /** Corregir medio, importe o fecha (mismos permisos que anular). */
+  onCorrect?(payment: PaymentDto): void;
 }>) {
   return (
     <div className="table-wrap payment-history-table">
@@ -85,8 +88,15 @@ export function PaymentHistory({
               <td data-label="Registrado por">{payment.createdBy.username}</td>
               <td data-label="Estado">
                 <span className={`status ${payment.status === 'CONFIRMED' ? 'active' : 'void'}`}>
-                  {payment.status === 'CONFIRMED' ? 'Confirmado' : 'Anulado'}
+                  {payment.status === 'CONFIRMED'
+                    ? 'Confirmado'
+                    : payment.correctedById
+                      ? 'Corregido'
+                      : 'Anulado'}
                 </span>
+                {payment.correctionOfId && (
+                  <small className="table-subline">Corrección de un pago anterior</small>
+                )}
               </td>
               <td data-label="Acciones">
                 <div className="payment-history-actions">
@@ -99,6 +109,11 @@ export function PaymentHistory({
                     >
                       Recibo por WhatsApp
                     </a>
+                  )}
+                  {canVoid && onCorrect && payment.status === 'CONFIRMED' && (
+                    <button className="secondary" onClick={() => onCorrect(payment)}>
+                      Corregir
+                    </button>
                   )}
                   {canVoid && payment.status === 'CONFIRMED' && (
                     <button className="secondary" onClick={() => onVoid(payment)}>

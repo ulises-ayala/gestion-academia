@@ -1,9 +1,21 @@
-import type { CreateOtherPaymentDto, CreatePaymentDto, PaymentMethodDto } from '@academy/contracts';
+import type {
+  CorrectPaymentDto,
+  CreateOtherPaymentDto,
+  CreatePaymentDto,
+  PaymentMethodDto,
+} from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
 import { DomainError } from '../../shared/domain/domain-error';
 import { validateOtherPayment } from '../domain/other-payment';
+import {
+  backdatedPaidAt,
+  correctedPaidAt,
+  paymentCorrectionChanges,
+} from '../domain/payment-correction';
+
+const timeZone = () => process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
 import {
   PAYMENTS_REPOSITORY,
   type PaymentQuery,
@@ -16,12 +28,33 @@ const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'CARD'];
 export class PaymentsService {
   constructor(@Inject(PAYMENTS_REPOSITORY) private readonly repository: PaymentsRepository) {}
 
-  async create(input: CreatePaymentDto, actorId: string) {
-    return this.repository.create(input.studentId, this.tenders(input.tenders), actorId);
+  async create(input: CreatePaymentDto, actorId: string, canBackdate = false, now = new Date()) {
+    const tenders = this.tenders(input.tenders);
+    const paidAt = this.paidAt(input.paidDate, canBackdate, now);
+    return paidAt
+      ? this.repository.create(input.studentId, tenders, actorId, paidAt)
+      : this.repository.create(input.studentId, tenders, actorId);
   }
 
-  async createOther(input: CreateOtherPaymentDto, actorId: string) {
+  /** Fecha real de un pago cargado tarde; solo quien puede anular pagos (Administración/Dirección). */
+  private paidAt(paidDate: unknown, canBackdate: boolean, now: Date) {
+    const paidAt = backdatedPaidAt(paidDate, now, timeZone());
+    if (paidAt && !canBackdate)
+      throw new DomainError(
+        'FORBIDDEN',
+        'Solo Administración o Dirección pueden cargar un pago con otra fecha',
+      );
+    return paidAt;
+  }
+
+  async createOther(
+    input: CreateOtherPaymentDto,
+    actorId: string,
+    canBackdate = false,
+    now = new Date(),
+  ) {
     const tenders = this.tenders(input.tenders);
+    const paidAt = this.paidAt(input.paidDate, canBackdate, now);
     const other = validateOtherPayment(input);
     let teacherId = other.teacherId;
     if (other.classId) {
@@ -42,11 +75,10 @@ export class PaymentsService {
           });
       }
     }
-    return this.repository.createOther(
-      { studentId: input.studentId, ...other, teacherId },
-      tenders,
-      actorId,
-    );
+    const data = { studentId: input.studentId, ...other, teacherId };
+    return paidAt
+      ? this.repository.createOther(data, tenders, actorId, paidAt)
+      : this.repository.createOther(data, tenders, actorId);
   }
 
   private tenders(input: CreatePaymentDto['tenders']) {
@@ -99,5 +131,22 @@ export class PaymentsService {
 
   void(id: string, actorId: string, reason: unknown) {
     return this.repository.void(id, actorId, validateReason(reason));
+  }
+
+  async correct(id: string, input: CorrectPaymentDto | null, actorId: string, now = new Date()) {
+    const reason = validateReason(input?.reason);
+    const tenders = this.tenders(input?.tenders ?? []);
+    const original = await this.get(id);
+    if (original.status === 'VOID')
+      throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+    const paidAt = correctedPaidAt(new Date(original.paidAt), input?.paidDate, now, timeZone());
+    if (
+      !paymentCorrectionChanges(
+        { tenders: original.tenders, paidAt: new Date(original.paidAt) },
+        { tenders, paidAt },
+      )
+    )
+      throw new DomainError('VALIDATION_ERROR', 'No hay cambios para corregir', { field: 'body' });
+    return this.repository.correct(id, { tenders, paidAt }, actorId, reason);
   }
 }
