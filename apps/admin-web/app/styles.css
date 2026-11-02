@@ -3209,3 +3209,23 @@ td .link-button {
     grid-template-columns: 1fr;
   }
 }
+.cash-close-dialog .cash-totals {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+.cash-close-dialog .cash-totals label > span {
+  color: var(--method);
+  font-weight: var(--font-weight-semibold);
+}
+.cash-close-dialog .cash-totals label[data-method] {
+  border-color: var(--method-border);
+  background: var(--method-soft);
+}
+.cash-close-dialog .cash-totals small {
+  color: var(--text-muted);
+}
+@media (max-width: 30rem) {
+  .cash-close-dialog .cash-totals {
+    grid-template-columns: 1fr;
+  }
+}

@@ -8,7 +8,7 @@ import type {
 } from '@academy/contracts';
 import { Banknote, CreditCard } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useAuth } from '../../components/auth-provider';
 import { CashHandoverDialog } from '../../components/cash-handovers';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
@@ -44,6 +44,7 @@ export default function CashPage() {
   const [closing, setClosing] = useState(false);
   const [collecting, setCollecting] = useState(false);
   const [handingOver, setHandingOver] = useState(false);
+  const [closeError, setCloseError] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [from, setFrom] = useState(today());
@@ -105,6 +106,7 @@ export default function CashPage() {
   async function close() {
     if (!current) return;
     setBusy(true);
+    setCloseError('');
     try {
       await apiRequest(`/cash-shifts/${current.id}/close`, {
         method: 'POST',
@@ -114,7 +116,9 @@ export default function CashPage() {
       setDeclared({ CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' });
       await load();
     } catch (error) {
-      setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cerrar el turno.');
+      setCloseError(
+        error instanceof ApiClientError ? error.message : 'No se pudo cerrar el turno.',
+      );
     } finally {
       setBusy(false);
     }
@@ -260,20 +264,28 @@ export default function CashPage() {
         />
       )}
       {closing && current && (
-        <section className="panel cash-close">
-          <h2>Cerrar turno</h2>
-          <p>
-            Declará cuánto figura como cobrado en tu control. Las diferencias no impiden cerrar.
-          </p>
-          <div className="cash-totals">
+        <CashDialog
+          titleId="close-shift-title"
+          busy={busy}
+          onClose={() => {
+            setClosing(false);
+            setCloseError('');
+          }}
+        >
+          <div>
+            <h2 id="close-shift-title">Cerrar turno</h2>
+            <p className="modal-copy">
+              Declará cuánto figura como cobrado en tu control. Las diferencias no impiden cerrar.
+            </p>
+          </div>
+          <div className="cash-totals cash-close-fields">
             {methods.map((method) => {
               const difference =
                 Number(declared[method] || 0) - Number(current.expectedByMethod[method]);
               return (
-                <label key={method}>
-                  <span>
-                    {labels[method]} · esperado {money(current.expectedByMethod[method])}
-                  </span>
+                <label key={method} data-method={method}>
+                  <span>{labels[method]}</span>
+                  <small>Esperado {money(current.expectedByMethod[method])}</small>
                   <input
                     inputMode="decimal"
                     value={declared[method]}
@@ -291,18 +303,30 @@ export default function CashPage() {
               declarado. Podés cerrar el turno igualmente.
             </p>
           )}
-          <div className="form-actions">
-            <button className="secondary" onClick={() => setClosing(false)}>
+          {closeError && (
+            <p className="error" role="alert">
+              {closeError}
+            </p>
+          )}
+          <div className="modal-actions">
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() => {
+                setClosing(false);
+                setCloseError('');
+              }}
+            >
               Cancelar
             </button>
             <button
               disabled={busy || methods.some((method) => declared[method] === '')}
               onClick={() => void close()}
             >
-              Confirmar cierre
+              {busy ? 'Cerrando…' : 'Confirmar cierre'}
             </button>
           </div>
-        </section>
+        </CashDialog>
       )}
       <section className="panel card">
         <div
@@ -568,6 +592,38 @@ export default function CashPage() {
       )}
       {handingOver && <CashHandoverDialog onClose={() => setHandingOver(false)} />}
     </div>
+  );
+}
+
+/** Popup de la pantalla de Caja (mismo estilo que los demás diálogos). */
+function CashDialog({
+  titleId,
+  busy,
+  onClose,
+  children,
+}: Readonly<{ titleId: string; busy: boolean; onClose(): void; children: ReactNode }>) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    const element = dialog.current;
+    element?.showModal();
+    return () => {
+      element?.close();
+      opener?.focus();
+    };
+  }, []);
+  return (
+    <dialog
+      ref={dialog}
+      className="modal card generate-charge-dialog cash-close-dialog"
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault();
+        if (!busy) onClose();
+      }}
+    >
+      {children}
+    </dialog>
   );
 }
 
