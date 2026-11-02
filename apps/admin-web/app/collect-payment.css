@@ -13,6 +13,27 @@ dialog.collect-dialog::backdrop {
   background: var(--overlay);
 }
 
+/* El mismo cobro dentro de una página (estado de cuenta del alumno). */
+.collect-inline {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  border-top: 3px solid var(--brand);
+}
+.collect-inline h2,
+.collect-inline p {
+  margin: 0;
+}
+.collect-inline label {
+  display: block;
+  width: 100%;
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+.collect-inline .collect-done {
+  padding-bottom: var(--space-2);
+}
+
 .collect-header {
   display: flex;
   align-items: center;
@@ -143,7 +164,7 @@ dialog.collect-dialog::backdrop {
   width: 100%;
   margin-top: var(--space-1);
 }
-.modal .collect-paid-date {
+:is(.modal, .collect-inline) .collect-paid-date {
   display: grid;
   grid-template-columns: auto 12rem;
   align-items: center;
@@ -204,6 +225,16 @@ dialog.collect-dialog::backdrop {
   color: var(--text-muted);
   font-size: var(--font-size-xs);
 }
+.collect-charge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+}
+.collect-charge-actions .link-button {
+  font-size: inherit;
+}
 .collect-charge-amount {
   display: grid;
   justify-items: end;
@@ -221,7 +252,7 @@ dialog.collect-dialog::backdrop {
   padding: 0;
   border: 0;
 }
-.modal .collect-concepts label {
+:is(.modal, .collect-inline) .collect-concepts label {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -232,7 +263,7 @@ dialog.collect-dialog::backdrop {
   color: var(--text);
   cursor: pointer;
 }
-.modal .collect-concepts label.is-selected {
+:is(.modal, .collect-inline) .collect-concepts label.is-selected {
   border-color: var(--brand);
   background: var(--brand-soft);
 }
@@ -277,6 +308,7 @@ dialog.collect-dialog::backdrop {
 }
 .collect-tenders legend {
   margin-bottom: var(--space-2);
+  padding: 0;
   color: var(--text-muted);
   font-weight: var(--font-weight-medium);
 }

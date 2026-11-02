@@ -1048,11 +1048,6 @@ legend {
 .schedule-builder {
   grid-template-columns: repeat(5, minmax(7rem, 1fr)) auto;
 }
-.payment-history-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
 .teacher-checklist {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
@@ -2456,31 +2451,6 @@ dialog.enrollment-end-dialog:not([open]) {
 .section-heading h2 {
   margin-bottom: var(--space-1);
 }
-.student-payment-list {
-  display: grid;
-  gap: var(--space-2);
-}
-.student-payment-list article {
-  display: grid;
-  grid-template-columns: minmax(10rem, 0.8fr) minmax(14rem, 1.6fr) auto;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-3) 0;
-  border-top: 1px solid var(--border);
-}
-.student-payment-list article:first-child {
-  border-top: 0;
-}
-.student-payment-list article > div {
-  display: grid;
-  gap: var(--space-1);
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.student-payment-list article span,
-.student-payment-list article small {
-  color: var(--text-muted);
-}
 .attendance-summary {
   display: flex;
   flex-wrap: wrap;
@@ -2580,10 +2550,6 @@ dialog.enrollment-end-dialog:not([open]) {
   }
   .section-heading {
     flex-direction: column;
-  }
-  .student-payment-list article {
-    grid-template-columns: 1fr;
-    gap: var(--space-2);
   }
 }
 @media (max-width: 390px) {
@@ -2765,7 +2731,7 @@ td .link-button {
 }
 .payment-history-filters {
   display: grid;
-  grid-template-columns: minmax(14rem, 1.4fr) repeat(4, minmax(9rem, 0.65fr));
+  grid-template-columns: minmax(13rem, 2fr) repeat(4, minmax(8.5rem, 1fr)) auto;
   align-items: flex-end;
   gap: var(--space-3);
   margin-bottom: var(--space-4);
@@ -2773,8 +2739,12 @@ td .link-button {
 .history-filter-actions {
   display: flex;
   gap: var(--space-2);
-  grid-column: 1 / -1;
   justify-content: flex-end;
+}
+@media (max-width: 1400px) {
+  .payment-history-filters {
+    grid-template-columns: minmax(13rem, 2fr) repeat(2, minmax(8.5rem, 1fr));
+  }
 }
 .payment-breakdown {
   display: grid;
@@ -2817,7 +2787,8 @@ td .link-button {
   .payment-history-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .payment-history-filters .search-field {
+  .payment-history-filters .search-field,
+  .history-filter-actions {
     grid-column: 1 / -1;
   }
 }

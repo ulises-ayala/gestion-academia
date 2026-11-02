@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { PaymentActions, StudentPaymentList } from '../../components/payment-actions';
 import { PaymentHistory } from '../../components/payment-history';
 
 const payment: PaymentDto = {
@@ -133,6 +134,65 @@ describe('PaymentHistory', () => {
   });
 });
 
+describe('Acciones de un pago', () => {
+  it('ofrece recibo por WhatsApp, Corregir y Anular con un color por acción', () => {
+    const markup = renderToStaticMarkup(
+      <PaymentActions
+        payment={payment}
+        receiptPhone="3704559012"
+        canVoid
+        onCorrect={() => undefined}
+        onVoid={() => undefined}
+      />,
+    );
+    expect(markup).toContain('payment-action is-whatsapp');
+    expect(markup).toContain('https://wa.me/5493704559012');
+    expect(markup).toContain('payment-action is-correct');
+    expect(markup).toContain('payment-action is-void');
+  });
+
+  it('no ofrece acciones en un pago anulado ni Corregir/Anular sin permiso', () => {
+    const voided = renderToStaticMarkup(
+      <PaymentActions payment={{ ...payment, status: 'VOID' }} receiptPhone="3704559012" canVoid />,
+    );
+    const receiptOnly = renderToStaticMarkup(
+      <PaymentActions
+        payment={payment}
+        receiptPhone={null}
+        canVoid={false}
+        onCorrect={() => undefined}
+        onVoid={() => undefined}
+      />,
+    );
+    expect(voided).toBe('');
+    expect(receiptOnly).toContain('WhatsApp');
+    expect(receiptOnly).not.toContain('Corregir');
+    expect(receiptOnly).not.toContain('Anular');
+  });
+
+  it('en el historial general manda el recibo al teléfono de cada alumno', () => {
+    const markup = renderToStaticMarkup(
+      <PaymentHistory
+        canVoid={false}
+        payments={[{ ...payment, student: { ...payment.student, phone: '0370 15 455-9012' } }]}
+        showReceipts
+        showStudent
+        onVoid={() => undefined}
+      />,
+    );
+    expect(markup).toContain('https://wa.me/5493704559012');
+  });
+
+  it('lista los pagos del alumno en tarjetas con su aplicación', () => {
+    const markup = renderToStaticMarkup(
+      <StudentPaymentList payments={[payment]} receiptPhone="3704559012" />,
+    );
+    expect(markup).toContain('Bachata · Agosto de 2026');
+    expect(markup).toContain('Registrado por admision');
+    expect(markup).toContain('WhatsApp');
+  });
+});
+
 describe('Payments center markup', () => {
   const page = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8');
   const styles = readFileSync(new URL('../styles.css', import.meta.url), 'utf8');
@@ -155,9 +215,14 @@ describe('Payments center markup', () => {
     expect(styles).toMatch(/\.payment-context-chip[\s\S]*margin: 0 0 var\(--space-4\)/);
   });
 
-  it('ofrece abrir Caja preservando el contexto del cobro', () => {
-    expect(page).toContain('cashHrefForPayment(locationSearch)');
-    expect(page).toContain('Abrir caja');
+  it('lee la URL del router para que los links internos abran el estado de cuenta', () => {
+    expect(page).toContain('useSearchParams()');
+    expect(page).not.toContain('window.location.search');
+  });
+
+  it('cobra desde el estado de cuenta con la misma estructura que el popup', () => {
+    expect(page).toContain('variant="inline"');
+    expect(page).toContain('<StudentPaymentList');
   });
 
   it('loads debtors without selecting a student and exposes the operational controls', () => {

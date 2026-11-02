@@ -633,7 +633,10 @@ export type PaymentAllocationDto = Readonly<{
 }>;
 export type PaymentDto = Readonly<{
   id: string;
-  student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
+  /** phone: para mandar el recibo por WhatsApp desde el historial de cobros. */
+  student: Readonly<
+    Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'> & { phone?: string | null }
+  >;
   amount: string;
   tenders: readonly PaymentTenderDto[];
   status: PaymentStatusDto;

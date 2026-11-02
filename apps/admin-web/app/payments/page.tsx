@@ -13,17 +13,14 @@ import type {
   StudentDto,
   StudentListDto,
 } from '@academy/contracts';
-import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { FormEvent, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '../../components/auth-provider';
-import {
-  GenerateChargeDialog,
-  type GenerateChargeResult,
-} from '../../components/generate-charge-dialog';
 import { notifySuccess } from '../../lib/notify';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
-import { ChargeDueDateModal } from '../../components/charge-due-date-modal';
 import { CorrectPaymentDialog } from '../../components/correct-payment-dialog';
+import { StudentPaymentList } from '../../components/payment-actions';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { chargeLabel } from '../../lib/collect-payment';
@@ -33,24 +30,10 @@ import {
   paymentLocationFromSearch,
   paymentSearch,
 } from '../../lib/payment-center';
-import { cashHrefForPayment } from '../../lib/contextual-filters';
-import {
-  centsToDecimal,
-  createPaymentPayload,
-  decimalToCents,
-  hasWaivableLateFee,
-  openCharges,
-  outstandingTotal,
-  paymentMethodLabels,
-  paymentSubmissionDisabled,
-  previewAllocations,
-  tenderTotal,
-  type TenderAmounts,
-} from '../../lib/payments';
+import { hasWaivableLateFee, openCharges, outstandingTotal } from '../../lib/payments';
 
 const money = (value: string | number) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
-const emptyTenders = (): TenderAmounts => ({ CASH: '', MERCADO_PAGO: '', CARD: '' });
 const scopeLabels: Readonly<Record<ReceivablesScopeDto, string>> = {
   pending: 'Todas con saldo',
   overdue: 'Vencidas',
@@ -71,10 +54,26 @@ const loadingByScope: Readonly<Record<ReceivablesScopeDto, string>> = {
 };
 
 export default function PaymentsPage() {
-  const { can } = useAuth();
-  const [locationSearch, setLocationSearch] = useState(() =>
-    typeof window === 'undefined' ? '' : window.location.search,
+  return (
+    <Suspense
+      fallback={
+        <section className="card module-state" role="status">
+          Cargando pagos…
+        </section>
+      }
+    >
+      <PaymentsCenter />
+    </Suspense>
   );
+}
+
+function PaymentsCenter() {
+  const { can } = useAuth();
+  // La URL sale del router: con la navegación interna (por ejemplo "Ver en Pagos" desde la
+  // ficha) window.location todavía tiene la dirección anterior en el primer render.
+  const searchParams = useSearchParams();
+  const searchText = searchParams.toString();
+  const locationSearch = searchText ? `?${searchText}` : '';
   const location = useMemo(() => paymentLocationFromSearch(locationSearch), [locationSearch]);
   const [receivables, setReceivables] = useState<ReceivablesDto | null>(null);
   const [receivablesLoading, setReceivablesLoading] = useState(false);
@@ -95,10 +94,9 @@ export default function PaymentsPage() {
   const [studentLoading, setStudentLoading] = useState(false);
   const [charges, setCharges] = useState<MonthlyChargeListDto['items']>([]);
   const [payments, setPayments] = useState<PaymentListDto['items']>([]);
-  const [tenders, setTenders] = useState<TenderAmounts>(emptyTenders);
+  // Sube cuando la página cambia algo de la cuenta, para que el panel de cobro recargue.
+  const [refreshKey, setRefreshKey] = useState(0);
   const [message, setMessage] = useState('');
-  const [cashShiftRequired, setCashShiftRequired] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [voidTarget, setVoidTarget] = useState<PaymentDto | null>(null);
   const [correctTarget, setCorrectTarget] = useState<PaymentDto | null>(null);
   const [voidReason, setVoidReason] = useState('');
@@ -107,16 +105,9 @@ export default function PaymentsPage() {
   const [waiveReason, setWaiveReason] = useState('');
   const [waiving, setWaiving] = useState(false);
 
+  // Next sincroniza useSearchParams con history.pushState sin recargar la página.
   const navigate = useCallback((href: string) => {
-    const url = new URL(href, window.location.origin);
-    window.history.pushState({}, '', url);
-    setLocationSearch(url.search);
-  }, []);
-
-  useEffect(() => {
-    const onPopState = () => setLocationSearch(window.location.search);
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
+    window.history.pushState(null, '', href);
   }, []);
 
   useEffect(() => {
@@ -184,9 +175,12 @@ export default function PaymentsPage() {
     location.to,
   ]);
 
-  const loadStudent = useCallback(async (studentId: string) => {
-    setStudentLoading(true);
-    setMessage('');
+  // silent: refresca sin desmontar la pantalla (el panel de cobro conserva lo que muestra).
+  const loadStudent = useCallback(async (studentId: string, silent = false) => {
+    if (!silent) {
+      setStudentLoading(true);
+      setMessage('');
+    }
     try {
       const selectedStudent = await apiRequest<StudentDto>(`/students/${studentId}`);
       const [chargeResult, paymentResult] = await Promise.all([
@@ -196,8 +190,8 @@ export default function PaymentsPage() {
       setStudent(selectedStudent);
       setCharges(chargeResult.items);
       setPayments(paymentResult.items);
-      setTenders(emptyTenders());
     } catch (error) {
+      if (silent) return;
       setStudent(null);
       setMessage(
         error instanceof ApiClientError
@@ -205,7 +199,7 @@ export default function PaymentsPage() {
           : 'No se pudo cargar el estado de cuenta del alumno.',
       );
     } finally {
-      setStudentLoading(false);
+      if (!silent) setStudentLoading(false);
     }
   }, []);
 
@@ -227,6 +221,12 @@ export default function PaymentsPage() {
     if (location.action === 'collect' && student && !studentLoading)
       document.getElementById('registrar-cobro')?.scrollIntoView({ behavior: 'smooth' });
   }, [location.action, student, studentLoading]);
+
+  const refreshAccount = useCallback(async () => {
+    if (!location.studentId) return;
+    setRefreshKey((key) => key + 1);
+    await loadStudent(location.studentId, true);
+  }, [loadStudent, location.studentId]);
 
   useEffect(() => {
     if (!voidTarget) return;
@@ -260,50 +260,6 @@ export default function PaymentsPage() {
     }
   }
 
-  const pending = useMemo(() => openCharges(charges), [charges]);
-  const totalCents = useMemo(() => tenderTotal(tenders), [tenders]);
-  const debtCents = useMemo(() => decimalToCents(outstandingTotal(charges)) ?? 0n, [charges]);
-  const allocationPreview = useMemo(
-    () => previewAllocations(charges, totalCents),
-    [charges, totalCents],
-  );
-  const hasInvalidTender = Object.values(tenders).some(
-    (amount) => amount.trim() !== '' && decimalToCents(amount) === null,
-  );
-  const exceedsOutstanding = totalCents > debtCents;
-
-  async function collect() {
-    if (!student || submitting) return;
-    setSubmitting(true);
-    setMessage('');
-    try {
-      await apiRequest<PaymentDto>('/payments', {
-        method: 'POST',
-        body: JSON.stringify(createPaymentPayload(student.id, tenders)),
-      });
-      setCashShiftRequired(false);
-      await Promise.all([loadStudent(student.id), loadReceivables()]);
-      setMessage('Pago registrado correctamente.');
-    } catch (error) {
-      setCashShiftRequired(
-        error instanceof ApiClientError && error.error.code === 'CASH_SHIFT_REQUIRED',
-      );
-      const changed =
-        error instanceof ApiClientError &&
-        (error.status === 409 || error.error.code === 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE');
-      await loadStudent(student.id).catch(() => undefined);
-      setMessage(
-        changed
-          ? 'La deuda cambió mientras registrabas el pago. Actualizamos el estado de cuenta para que puedas revisarlo nuevamente.'
-          : error instanceof ApiClientError
-            ? error.message
-            : 'No se pudo registrar el pago.',
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   async function voidPayment() {
     if (!voidTarget || !voidReason.trim() || voiding) return;
     setVoiding(true);
@@ -315,11 +271,10 @@ export default function PaymentsPage() {
       setVoidTarget(null);
       setVoidReason('');
       await Promise.all([
-        student ? loadStudent(student.id) : Promise.resolve(),
-        location.tab === 'history' ? loadHistory() : Promise.resolve(),
-        loadReceivables(),
+        location.studentId ? refreshAccount() : Promise.resolve(),
+        !location.studentId && location.tab === 'history' ? loadHistory() : Promise.resolve(),
       ]);
-      setMessage('Pago anulado y saldos actualizados.');
+      notifySuccess('Pago anulado', 'Los saldos se actualizaron.');
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo anular el pago.');
     } finally {
@@ -330,11 +285,10 @@ export default function PaymentsPage() {
   async function paymentCorrected() {
     setCorrectTarget(null);
     await Promise.all([
-      student ? loadStudent(student.id) : Promise.resolve(),
-      location.tab === 'history' ? loadHistory() : Promise.resolve(),
-      loadReceivables(),
+      location.studentId ? refreshAccount() : Promise.resolve(),
+      !location.studentId && location.tab === 'history' ? loadHistory() : Promise.resolve(),
     ]);
-    setMessage('Pago corregido: el original quedó anulado y la caja se ajustó en su turno.');
+    notifySuccess('Pago corregido', 'El original quedó anulado y la caja se ajustó en su turno.');
   }
 
   async function waiveLateFee() {
@@ -347,8 +301,8 @@ export default function PaymentsPage() {
       });
       setWaiveTarget(null);
       setWaiveReason('');
-      await Promise.all([student ? loadStudent(student.id) : Promise.resolve(), loadReceivables()]);
-      setMessage('Recargo quitado y saldo actualizado.');
+      await refreshAccount();
+      notifySuccess('Recargo quitado', 'El saldo se actualizó.');
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo quitar el recargo.');
     } finally {
@@ -411,27 +365,14 @@ export default function PaymentsPage() {
 
   return (
     <>
-      <div className="page-heading payments-heading">
-        <div>
-          <p className="eyebrow">Facturación</p>
-          <h1>{location.studentId ? 'Estado de cuenta' : 'Pagos'}</h1>
-          <p className="subtitle">
-            {location.studentId
-              ? 'Saldos reales, imputación oldest-first e historial del alumno.'
-              : 'Centro operativo de cuentas por cobrar y cobros registrados.'}
-          </p>
+      {!location.studentId && (
+        <div className="page-heading payments-heading">
+          <div>
+            <p className="eyebrow">Facturación</p>
+            <h1>Pagos</h1>
+            <p className="subtitle">Centro operativo de cuentas por cobrar y cobros registrados.</p>
+          </div>
         </div>
-        {location.studentId && (
-          <a className="button secondary" href={paymentBackHref(locationSearch)}>
-            ← {location.tab === 'history' ? 'Historial de cobros' : 'Cuentas por cobrar'}
-          </a>
-        )}
-      </div>
-      {cashShiftRequired && (
-        <p className="message" role="alert">
-          Necesitás abrir tu turno de caja antes de registrar un cobro.{' '}
-          <Link href={cashHrefForPayment(locationSearch)}>Abrir caja</Link>
-        </p>
       )}
 
       {!location.studentId && (
@@ -789,6 +730,7 @@ export default function PaymentsPage() {
               <PaymentHistory
                 canVoid={can('payments:void')}
                 payments={history.items}
+                showReceipts
                 showStudent
                 studentHref={studentHref}
                 onVoid={(payment) => {
@@ -845,33 +787,19 @@ export default function PaymentsPage() {
 
       {location.studentId && (
         <StudentAccount
-          allocationPreview={allocationPreview}
+          backHref={paymentBackHref(locationSearch)}
+          backLabel={location.tab === 'history' ? 'Historial de cobros' : 'Cuentas por cobrar'}
           charges={charges}
-          debtCents={debtCents}
-          exceedsOutstanding={exceedsOutstanding}
-          hasInvalidTender={hasInvalidTender}
           loading={studentLoading}
           message={message}
           payments={payments}
-          pending={pending}
+          refreshKey={refreshKey}
           student={student}
-          submitting={submitting}
-          tenders={tenders}
-          totalCents={totalCents}
+          focusAmount={location.action === 'collect'}
           canVoid={can('payments:void')}
-          canGenerate={can('charges:generate')}
-          canBackfill={can('charges:manage')}
-          canCollectNow={can('payments:collect')}
-          canManageTariffs={can('tariffs:manage')}
           canWaiveLateFee={can('charges:manage')}
-          onChargeGenerated={(result) => {
-            notifySuccess(result.title, result.detail);
-            if (location.studentId)
-              void loadStudent(location.studentId).then(() => setMessage(result.warning ?? ''));
-          }}
-          onCollect={() => void collect()}
+          onChanged={() => void (location.studentId && loadStudent(location.studentId, true))}
           onRetry={() => location.studentId && void loadStudent(location.studentId)}
-          onTender={(method, amount) => setTenders((current) => ({ ...current, [method]: amount }))}
           onVoid={(payment) => {
             setVoidTarget(payment);
             setVoidReason('');
@@ -1041,64 +969,52 @@ function StudentSearch({
   );
 }
 
+/**
+ * Estado de cuenta de un alumno con la misma estructura que el popup "Registrar pago": arriba el
+ * alumno en una línea, a la izquierda el cobro (cuotas, clase suelta, deuda anterior) y a la
+ * derecha sus pagos con el recibo por WhatsApp, Corregir y Anular a mano.
+ */
 function StudentAccount({
-  allocationPreview,
+  backHref,
+  backLabel,
   charges,
-  debtCents,
-  exceedsOutstanding,
-  hasInvalidTender,
   loading,
   message,
   payments,
-  pending,
+  refreshKey,
   student,
-  submitting,
-  tenders,
-  totalCents,
+  focusAmount,
   canVoid,
-  canGenerate,
-  canBackfill,
-  canCollectNow,
-  canManageTariffs,
   canWaiveLateFee,
-  onChargeGenerated,
-  onCollect,
+  onChanged,
   onRetry,
-  onTender,
   onVoid,
   onCorrect,
   onWaiveLateFee,
 }: Readonly<{
-  allocationPreview: ReturnType<typeof previewAllocations>;
+  backHref: string;
+  backLabel: string;
   charges: MonthlyChargeListDto['items'];
-  debtCents: bigint;
-  exceedsOutstanding: boolean;
-  hasInvalidTender: boolean;
   loading: boolean;
   message: string;
   payments: PaymentListDto['items'];
-  pending: MonthlyChargeListDto['items'];
+  refreshKey: number;
   student: StudentDto | null;
-  submitting: boolean;
-  tenders: TenderAmounts;
-  totalCents: bigint;
+  focusAmount: boolean;
   canVoid: boolean;
-  canGenerate: boolean;
-  canBackfill: boolean;
-  canCollectNow: boolean;
-  canManageTariffs: boolean;
   canWaiveLateFee: boolean;
-  onChargeGenerated(result: GenerateChargeResult): void;
-  onCollect(): void;
+  onChanged(): void;
   onRetry(): void;
-  onTender(method: keyof TenderAmounts, amount: string): void;
   onVoid(payment: PaymentDto): void;
   onCorrect(payment: PaymentDto): void;
   onWaiveLateFee(charge: MonthlyChargeDto): void;
 }>) {
-  const [generating, setGenerating] = useState(false);
-  const [otherPayment, setOtherPayment] = useState(false);
-  const [dueDateTarget, setDueDateTarget] = useState<MonthlyChargeDto | null>(null);
+  const pending = useMemo(() => openCharges(charges), [charges]);
+  const back = (
+    <a className="button secondary" href={backHref}>
+      ← {backLabel}
+    </a>
+  );
   if (loading)
     return (
       <section className="card module-state" role="status">
@@ -1107,294 +1023,108 @@ function StudentAccount({
     );
   if (!student)
     return (
-      <section className="card module-state" role="alert">
-        <p>{message || 'No se pudo cargar el estado de cuenta.'}</p>
-        <button className="secondary" onClick={onRetry}>
-          Reintentar
-        </button>
-      </section>
+      <>
+        <div className="page-heading payments-heading">
+          <div>
+            <p className="eyebrow">Estado de cuenta</p>
+            <h1>Alumno no disponible</h1>
+          </div>
+          {back}
+        </div>
+        <section className="card module-state" role="alert">
+          <p>{message || 'No se pudo cargar el estado de cuenta.'}</p>
+          <button className="secondary" onClick={onRetry}>
+            Reintentar
+          </button>
+        </section>
+      </>
     );
+  const debt = outstandingTotal(charges);
   const overdueCount = pending.filter((charge) => charge.overdue).length;
   const partialCount = pending.filter((charge) => charge.status === 'PARTIAL').length;
   return (
     <>
-      <section className="card student-account-header">
+      <div className="page-heading payments-heading account-heading">
         <div>
-          <p className="eyebrow">Alumno seleccionado</p>
-          <h2>
+          <p className="eyebrow">Estado de cuenta</p>
+          <h1>
             {student.firstName} {student.lastName}
-          </h2>
-          <p>DNI {student.dni}</p>
-        </div>
-        <a className="text-link" href={`/students/${student.id}`}>
-          Ver ficha del alumno
-        </a>
-      </section>
-      <section className="account-metrics student-account-metrics" aria-label="Resumen del alumno">
-        <article className="account-metric primary">
-          <span>Saldo total</span>
-          <strong>{money(outstandingTotal(charges))}</strong>
-        </article>
-        <article className="account-metric">
-          <span>Cuotas con saldo</span>
-          <strong>{pending.length}</strong>
-        </article>
-        <article className="account-metric">
-          <span>Vencidas</span>
-          <strong>{overdueCount}</strong>
-        </article>
-        <article className="account-metric">
-          <span>Parciales</span>
-          <strong>{partialCount}</strong>
-        </article>
-      </section>
-      <section className="card">
-        <div className="section-heading">
-          <div>
-            <h2>Estado de cuenta</h2>
-            <p className="subtitle">La imputación se realiza primero sobre la cuota más antigua.</p>
-          </div>
-          <div className="account-heading-actions">
-            <strong>Saldo pendiente: {money(outstandingTotal(charges))}</strong>
-            {canGenerate && (
-              <button className="secondary" type="button" onClick={() => setGenerating(true)}>
-                Generar cuota
-              </button>
+          </h1>
+          <ul className="account-facts" aria-label="Resumen de la cuenta">
+            <li>DNI {student.dni}</li>
+            {student.phone && <li>{student.phone}</li>}
+            <li className={Number(debt) > 0 ? 'is-debt' : 'is-ok'}>
+              {Number(debt) > 0 ? `Debe ${money(debt)}` : 'Al día'}
+            </li>
+            {overdueCount > 0 && (
+              <li className="is-debt">
+                {overdueCount} {overdueCount === 1 ? 'vencida' : 'vencidas'}
+              </li>
             )}
-            {canCollectNow && (
-              <button className="secondary" type="button" onClick={() => setOtherPayment(true)}>
-                Clase suelta u otro
-              </button>
+            {partialCount > 0 && (
+              <li>
+                {partialCount} {partialCount === 1 ? 'parcial' : 'parciales'}
+              </li>
             )}
-          </div>
+          </ul>
         </div>
-        {otherPayment && (
-          <CollectPaymentDialog
-            initialStudent={student}
-            initialTab="other"
-            onClose={(changed) => {
-              setOtherPayment(false);
-              if (changed)
-                onChargeGenerated({
-                  title: 'Cobro registrado',
-                  detail: 'Se actualizó el estado de cuenta.',
-                });
-            }}
-          />
-        )}
-        {dueDateTarget && (
-          <ChargeDueDateModal
-            charge={dueDateTarget}
-            onClose={() => setDueDateTarget(null)}
-            onSaved={() => {
-              setDueDateTarget(null);
-              onChargeGenerated({
-                title: 'Vencimiento actualizado',
-                detail: 'Se actualizó el estado de cuenta.',
-              });
-            }}
-          />
-        )}
-        {generating && (
-          <GenerateChargeDialog
-            studentId={student.id}
-            studentName={`${student.firstName} ${student.lastName}`}
-            charges={charges}
-            canBackfill={canBackfill}
-            canCollect={canCollectNow}
-            canManageTariffs={canManageTariffs}
-            onClose={() => setGenerating(false)}
-            onDone={(result) => {
-              setGenerating(false);
-              onChargeGenerated(result);
-            }}
-          />
-        )}
-        {charges.length === 0 || pending.length === 0 ? (
-          <p className="empty-state">
-            {charges.length === 0
-              ? 'No hay cuotas registradas para este alumno.'
-              : 'Este alumno no tiene cuotas pendientes.'}
-            {canGenerate &&
-              ' Si viene a pagar un mes que todavía no tiene cuota, usá “Generar cuota”.'}
-          </p>
-        ) : (
-          <div className="payment-charge-list">
-            {pending.map((charge) => (
-              <article className="enrollment-card" key={charge.id}>
-                <span>
-                  <strong>{charge.academicClass.name}</strong>
-                  <br />
-                  {chargeLabel(charge)}
-                  {charge.kind === 'MONTHLY' ? ` · vence ${formatDate(charge.dueDate)}` : ''}{' '}
-                  {charge.overdue && <span className="status void">Vencida</span>}{' '}
-                  <span className={`status ${charge.status.toLowerCase()}`}>
-                    {charge.status === 'PARTIAL' ? 'Parcial' : 'Pendiente'}
-                  </span>
-                </span>
-                <span>
-                  <small>Importe ajustado {money(charge.studentDueAmount)}</small>
-                  {charge.adjustments.length > 0 && (
-                    <small>
-                      {charge.adjustments
-                        .map((item) =>
-                          item.type === 'LATE_FEE'
-                            ? 'Recargo por mora'
-                            : item.type === 'DIRECTION_SCHOLARSHIP'
-                              ? 'Beca Dirección'
-                              : item.type === 'TEACHER_SCHOLARSHIP'
-                                ? 'Beca docente'
-                                : item.type === 'REVERSAL'
-                                  ? charge.adjustments.some(
-                                      (other) =>
-                                        other.type === 'LATE_FEE' && other.id === item.reversalOfId,
-                                    )
-                                    ? 'Recargo quitado'
-                                    : 'Corrección'
-                                  : item.type === 'HISTORICAL_DISCOUNT'
-                                    ? 'Descuento histórico'
-                                    : 'Descuento docente',
-                        )
-                        .join(' · ')}
-                    </small>
-                  )}
-                  <br />
-                  <small>Pagado {money(charge.paidAmount)}</small>
-                  <br />
-                  <strong>Resta {money(charge.outstandingAmount)}</strong>
-                  {canWaiveLateFee && hasWaivableLateFee(charge) && (
-                    <>
-                      <br />
-                      <button
-                        className="link-button"
-                        type="button"
-                        onClick={() => onWaiveLateFee(charge)}
-                      >
-                        Quitar recargo
-                      </button>
-                    </>
-                  )}
-                  {canGenerate && charge.kind === 'MONTHLY' && (
-                    <>
-                      <br />
-                      <button
-                        className="link-button"
-                        type="button"
-                        onClick={() => setDueDateTarget(charge)}
-                      >
-                        Cambiar vencimiento
-                      </button>
-                    </>
-                  )}
-                </span>
-              </article>
-            ))}
-          </div>
-        )}
-        {pending.length > 0 && (
-          <div className="payment-v2-grid" id="registrar-cobro">
-            <div className="payment-tenders">
-              <h3>Registrar cobro</h3>
-              <p className="subtitle">Ingresá el importe recibido por cada medio.</p>
-              {(Object.entries(paymentMethodLabels) as [keyof TenderAmounts, string][]).map(
-                ([method, label]) => (
-                  <label key={method}>
-                    {label}
-                    <input
-                      inputMode="decimal"
-                      placeholder="0,00"
-                      value={tenders[method]}
-                      onChange={(event) => onTender(method, event.target.value)}
-                    />
-                  </label>
-                ),
-              )}
-              <strong>Total del pago: {money(centsToDecimal(totalCents))}</strong>
-              {hasInvalidTender && (
-                <p className="field-error">Usá importes positivos con hasta dos decimales.</p>
-              )}
-              {exceedsOutstanding && (
-                <div className="payment-exceeds" role="status">
-                  <p className="field-error">
-                    El pago supera la deuda cargada ({money(centsToDecimal(debtCents))}).
-                  </p>
-                  {canGenerate && (
-                    <p className="subtitle">
-                      Si paga meses que todavía no tienen cuota (adelantados o deuda anterior),
-                      generalos primero y después registrá el cobro.{' '}
-                      <button
-                        className="link-button"
-                        type="button"
-                        onClick={() => setGenerating(true)}
-                      >
-                        Generar cuota
-                      </button>
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="payment-allocation-preview">
-              <h3>Vista previa de imputación</h3>
-              {allocationPreview.length === 0 ? (
-                <p className="subtitle">Ingresá un importe para ver cómo se distribuirá.</p>
-              ) : (
-                <>
-                  <ul>
-                    {allocationPreview.map(({ charge, amount }) => (
-                      <li key={charge.id}>
-                        <span>
-                          {charge.academicClass.name} · {chargeLabel(charge)}
-                        </span>
-                        <strong>{money(amount)}</strong>
-                      </li>
-                    ))}
-                  </ul>
-                  {!exceedsOutstanding && (
-                    <strong>
-                      Saldo posterior estimado: {money(centsToDecimal(debtCents - totalCents))}
-                    </strong>
-                  )}
-                </>
-              )}
+        <div className="account-heading-links">
+          <Link className="button secondary" href={`/students/${student.id}`}>
+            Ver ficha
+          </Link>
+          {back}
+        </div>
+      </div>
+      {message && (
+        <p className="message" role="alert">
+          {message}
+        </p>
+      )}
+      <div className="account-layout">
+        <CollectPaymentDialog
+          variant="inline"
+          initialStudent={student}
+          refreshKey={refreshKey}
+          focusAmount={focusAmount}
+          chargeActions={
+            canWaiveLateFee
+              ? (charge) =>
+                  hasWaivableLateFee(charge) ? (
+                    <button
+                      className="link-button"
+                      type="button"
+                      onClick={() => onWaiveLateFee(charge)}
+                    >
+                      Quitar recargo
+                    </button>
+                  ) : null
+              : undefined
+          }
+          onChanged={onChanged}
+          onClose={() => undefined}
+        />
+        <section className="card account-payments" id="pagos-del-alumno">
+          <div className="section-heading">
+            <div>
+              <h2>Pagos del alumno</h2>
+              <p className="subtitle">
+                {payments.length === 0
+                  ? 'Todavía no tiene pagos.'
+                  : `${payments.length} ${payments.length === 1 ? 'pago' : 'pagos'}, del más nuevo al más viejo.`}
+              </p>
             </div>
           </div>
-        )}
-        {pending.length > 0 && (
-          <div className="payment-summary">
-            <button
-              disabled={paymentSubmissionDisabled(
-                totalCents,
-                debtCents,
-                hasInvalidTender,
-                submitting,
-              )}
-              onClick={onCollect}
-            >
-              {submitting ? 'Registrando…' : 'Registrar cobro'}
-            </button>
-          </div>
-        )}
-        {message && (
-          <p className="message" role="alert">
-            {message}
-          </p>
-        )}
-      </section>
-      <section className="card">
-        <h2>Historial del alumno</h2>
-        {payments.length === 0 ? (
-          <p className="empty-state">No hay pagos registrados.</p>
-        ) : (
-          <PaymentHistory
-            canVoid={canVoid}
-            payments={payments}
-            receiptPhone={student.phone}
-            onVoid={onVoid}
-            onCorrect={onCorrect}
-          />
-        )}
-      </section>
+          {payments.length > 0 && (
+            <StudentPaymentList
+              payments={payments}
+              receiptPhone={student.phone}
+              canVoid={canVoid}
+              onCorrect={onCorrect}
+              onVoid={onVoid}
+            />
+          )}
+        </section>
+      </div>
     </>
   );
 }

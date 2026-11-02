@@ -21,7 +21,6 @@ import { EnrollmentStartDateModal } from '../../../components/enrollment-start-d
 import { GenerateChargeDialog } from '../../../components/generate-charge-dialog';
 import { CollectPaymentDialog } from '../../../components/collect-payment-dialog';
 import { chargeLabel } from '../../../lib/collect-payment';
-import { describeOtherPayment } from '../../../lib/other-payment';
 import { FollowUpIndicator } from '../../../components/student-follow-up';
 import { enrollmentEndLabel } from '../../../lib/enrollment-end';
 import { useAuth } from '../../../components/auth-provider';
@@ -30,6 +29,8 @@ import { businessToday, calculateAge, formatDate } from '../../../lib/dates';
 import { billingTermsLabel } from '../../../lib/enrollment-billing';
 import { EnrollmentBillingTermsModal } from '../../../components/enrollment-billing-terms-modal';
 import { MoveChargeModal } from '../../../components/move-charge-modal';
+import { ChargeDueDateModal } from '../../../components/charge-due-date-modal';
+import { StudentPaymentList } from '../../../components/payment-actions';
 import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import {
   attendanceCounts,
@@ -37,7 +38,6 @@ import {
   sortAccountCharges,
   studentAccountSummary,
 } from '../../../lib/student-account';
-import { paymentMethodLabels } from '../../../lib/payments';
 
 const money = (value: string) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
@@ -52,12 +52,6 @@ const chargeStatus = {
   PAID: 'Pagada',
   VOID: 'Anulada',
 } as const;
-const dateTime = (value: string) =>
-  new Intl.DateTimeFormat('es-AR', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-    timeZone: 'America/Buenos_Aires',
-  }).format(new Date(value));
 const adjustmentLabel = {
   DIRECTION_SCHOLARSHIP: 'Beca de Dirección',
   TEACHER_SCHOLARSHIP: 'Beca del profesor',
@@ -458,6 +452,9 @@ export default function StudentDetailPage() {
   const [startDateTarget, setStartDateTarget] = useState<EnrollmentDto | null>(null);
   const [termsTarget, setTermsTarget] = useState<EnrollmentDto | null>(null);
   const [moveTarget, setMoveTarget] = useState<MonthlyChargeListDto['items'][number] | null>(null);
+  const [dueDateTarget, setDueDateTarget] = useState<MonthlyChargeListDto['items'][number] | null>(
+    null,
+  );
   const [reactivateTarget, setReactivateTarget] = useState<EnrollmentDto | null>(null);
   const [reactivateError, setReactivateError] = useState('');
   const [followUp, setFollowUp] = useState<readonly StudentFollowUpItemDto[]>([]);
@@ -537,6 +534,8 @@ export default function StudentDetailPage() {
   // Cambio de clase sin volver a cobrar: la cuota pasa a otra clase activa del alumno.
   const moveTargetsFor = (charge: MonthlyChargeListDto['items'][number]) =>
     enrollments.filter((item) => item.status === 'ACTIVE' && item.id !== charge.enrollmentId);
+  // Cambiar el vencimiento de una cuota con saldo, a mano desde la tabla.
+  const canChangeDueDate = can('charges:generate');
   const canMoveCharges =
     can('charges:generate') &&
     enrollments.filter((item) => item.status === 'ACTIVE').length > 0 &&
@@ -805,7 +804,7 @@ export default function StudentDetailPage() {
             <section className="card">
               <div className="section-heading">
                 <div>
-                  <h2>Estado de cuenta</h2>
+                  <h2>Cuotas</h2>
                   <p className="subtitle">
                     {summary.pendingDebt === '0.00'
                       ? 'Sin deuda pendiente.'
@@ -813,7 +812,7 @@ export default function StudentDetailPage() {
                   </p>
                 </div>
                 <Link className="button secondary" href={`/payments?studentId=${id}`}>
-                  Ver en Pagos
+                  Ver estado de cuenta
                 </Link>
               </div>
               {sectionErrors.charges ? (
@@ -822,27 +821,40 @@ export default function StudentDetailPage() {
                 <p className="empty-state">No tiene cuotas registradas.</p>
               ) : (
                 <div className="table-wrap">
-                  <table>
+                  <table className="student-charges-table">
                     <thead>
                       <tr>
                         <th>Período</th>
-                        <th>Clase</th>
                         <th>Importe</th>
-                        <th>Pagado</th>
                         <th>Saldo</th>
-                        <th>Vencimiento</th>
+                        <th>Vence</th>
                         <th>Estado</th>
-                        {canMoveCharges && <th>Acciones</th>}
                       </tr>
                     </thead>
                     <tbody>
                       {orderedCharges.map((charge) => {
                         const overdue = isOverdueCharge(charge, today);
+                        const open =
+                          charge.status !== 'VOID' && Number(charge.outstandingAmount) > 0;
                         return (
                           <tr key={charge.id}>
-                            <td data-label="Período">{chargeLabel(charge)}</td>
-                            <td data-label="Clase">{charge.academicClass.name}</td>
-                            <td data-label="Importe">
+                            <td data-label="Período">
+                              {chargeLabel(charge)}
+                              <small className="table-subline">{charge.academicClass.name}</small>
+                              {canMoveCharges &&
+                                charge.kind === 'MONTHLY' &&
+                                charge.status !== 'VOID' &&
+                                moveTargetsFor(charge).length > 0 && (
+                                  <button
+                                    className="link-button table-subline"
+                                    type="button"
+                                    onClick={() => setMoveTarget(charge)}
+                                  >
+                                    Pasar a otra clase
+                                  </button>
+                                )}
+                            </td>
+                            <td data-label="Importe" className="nowrap">
                               {money(charge.studentDueAmount)}
                               {charge.adjustments.length > 0 && (
                                 <small className="billing-adjustment-summary">
@@ -852,30 +864,37 @@ export default function StudentDetailPage() {
                                 </small>
                               )}
                             </td>
-                            <td data-label="Pagado">{money(charge.paidAmount)}</td>
-                            <td data-label="Saldo">{money(charge.outstandingAmount)}</td>
-                            <td data-label="Vencimiento">{formatDate(charge.dueDate)}</td>
-                            <td data-label="Estado">
-                              <span className={`status ${charge.status.toLowerCase()}`}>
-                                {chargeStatus[charge.status]}
-                              </span>
-                              {overdue && <span className="status void">Vencida</span>}
+                            <td data-label="Saldo" className="nowrap">
+                              {money(charge.outstandingAmount)}
+                              {open && Number(charge.paidAmount) > 0 && (
+                                <small className="table-subline">
+                                  pagó {money(charge.paidAmount)}
+                                </small>
+                              )}
                             </td>
-                            {canMoveCharges && (
-                              <td data-label="Acciones">
-                                {charge.kind === 'MONTHLY' &&
-                                  charge.status !== 'VOID' &&
-                                  moveTargetsFor(charge).length > 0 && (
-                                    <button
-                                      className="link-button"
-                                      type="button"
-                                      onClick={() => setMoveTarget(charge)}
-                                    >
-                                      Pasar a otra clase
-                                    </button>
-                                  )}
-                              </td>
-                            )}
+                            <td data-label="Vence" className="nowrap">
+                              {formatDate(charge.dueDate)}
+                              {canChangeDueDate && open && charge.kind === 'MONTHLY' && (
+                                <button
+                                  className="link-button table-subline"
+                                  type="button"
+                                  onClick={() => setDueDateTarget(charge)}
+                                >
+                                  Cambiar
+                                </button>
+                              )}
+                            </td>
+                            <td data-label="Estado">
+                              <span className="charge-status-stack">
+                                {/* Vencida ya dice que está pendiente; parcial se aclara. */}
+                                {!(overdue && charge.status === 'PENDING') && (
+                                  <span className={`status ${charge.status.toLowerCase()}`}>
+                                    {chargeStatus[charge.status]}
+                                  </span>
+                                )}
+                                {overdue && <span className="status void">Vencida</span>}
+                              </span>
+                            </td>
                           </tr>
                         );
                       })}
@@ -1025,7 +1044,7 @@ export default function StudentDetailPage() {
               <div className="section-heading">
                 <div>
                   <h2>Pagos recientes</h2>
-                  <p className="subtitle">Últimos movimientos.</p>
+                  <p className="subtitle">Con el recibo para reenviar.</p>
                 </div>
                 <Link className="button secondary" href={`/payments?studentId=${id}`}>
                   Ver todos
@@ -1036,47 +1055,22 @@ export default function StudentDetailPage() {
               ) : payments.length === 0 ? (
                 <p className="empty-state">No hay pagos registrados.</p>
               ) : (
-                <div className="student-payment-list">
-                  {payments.map((payment) => (
-                    <article key={payment.id}>
-                      <div>
-                        <strong>{money(payment.amount)}</strong>
-                        <span>
-                          {dateTime(payment.paidAt)} ·{' '}
-                          {payment.tenders
-                            .map(
-                              (tender) =>
-                                `${paymentMethodLabels[tender.method]} ${money(tender.amount)}`,
-                            )
-                            .join(' + ')}
-                        </span>
-                      </div>
-                      <div>
-                        <span>
-                          {payment.kind === 'OTHER'
-                            ? describeOtherPayment(payment.otherConcept)
-                            : payment.allocations
-                                .map(
-                                  (allocation) =>
-                                    `${allocation.academicClass.name} ${chargeLabel(allocation)}: ${money(allocation.amount)}`,
-                                )
-                                .join(', ')}
-                        </span>
-                        <small>Registrado por {payment.createdBy.username}</small>
-                      </div>
-                      <span
-                        className={`status ${payment.status === 'CONFIRMED' ? 'active' : 'void'}`}
-                      >
-                        {payment.status === 'CONFIRMED' ? 'Confirmado' : 'Anulado'}
-                      </span>
-                    </article>
-                  ))}
-                </div>
+                <StudentPaymentList payments={payments} receiptPhone={student.phone} />
               )}
             </section>
           )}
         </aside>
       </div>
+      {dueDateTarget && (
+        <ChargeDueDateModal
+          charge={dueDateTarget}
+          onClose={() => setDueDateTarget(null)}
+          onSaved={() => {
+            setDueDateTarget(null);
+            void load().then(() => setMessage('Vencimiento actualizado.'));
+          }}
+        />
+      )}
       {collecting && (
         <CollectPaymentDialog
           initialStudent={student}

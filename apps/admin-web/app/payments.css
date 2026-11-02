@@ -1,0 +1,193 @@
+/* Acciones de un pago: recibo por WhatsApp, Corregir y Anular, del mismo tamaño y con un color
+   cada una para no confundirlas. */
+.payment-actions {
+  display: grid;
+  gap: var(--space-2);
+}
+.payment-actions.is-row {
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+}
+.payment-actions.is-stack {
+  grid-template-columns: minmax(7.5rem, 1fr);
+  gap: var(--space-1);
+}
+.payment-action {
+  display: inline-flex;
+  min-height: var(--control-height-sm);
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.payment-action.is-whatsapp {
+  border-color: var(--success-border);
+  color: var(--success);
+}
+.payment-action.is-correct {
+  border-color: var(--info-border);
+  color: var(--info);
+}
+.payment-action.is-void {
+  border-color: var(--destructive-border);
+  color: var(--destructive);
+}
+.payment-action.is-whatsapp:hover {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+.payment-action.is-correct:hover:not(:disabled) {
+  border-color: var(--info);
+  background: var(--info-soft);
+}
+.payment-action.is-void:hover:not(:disabled) {
+  border-color: var(--destructive);
+  background: var(--destructive-soft);
+}
+td.nowrap {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* Pagos de un alumno en tarjetas (ficha y estado de cuenta). */
+.student-payment-cards {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.student-payment-cards > li {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.student-payment-cards > li.is-void {
+  background: var(--surface-muted);
+}
+.student-payment-cards > li.is-void .student-payment-top strong {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.student-payment-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.student-payment-top strong {
+  font-size: var(--font-size-heading);
+  font-variant-numeric: tabular-nums;
+}
+.student-payment-meta {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.student-payment-items {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.student-payment-cards .payment-actions {
+  margin-top: var(--space-1);
+}
+
+/* Estado de cuenta: el alumno en una línea y el cobro con la estructura del popup. */
+.account-heading h1 {
+  margin-bottom: var(--space-2);
+}
+.account-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.account-facts li {
+  padding: 2px var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.account-facts li.is-debt {
+  border-color: var(--destructive-border);
+  background: var(--destructive-soft);
+  color: var(--destructive);
+  font-weight: var(--font-weight-semibold);
+}
+.account-facts li.is-ok {
+  border-color: var(--success-border);
+  background: var(--success-soft);
+  color: var(--success);
+  font-weight: var(--font-weight-semibold);
+}
+.account-heading-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.account-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+  align-items: start;
+  gap: var(--space-4);
+}
+.account-layout > .card {
+  margin-top: 0;
+}
+
+@media (max-width: 1100px) {
+  .account-layout {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .account-heading-links > * {
+    flex: 1;
+  }
+}
+@media (max-width: 30rem) {
+  .payment-actions.is-row .payment-action svg {
+    display: none;
+  }
+}
+
+/* Ficha: cuotas en pocas columnas (la clase va debajo del período). */
+.student-charges-table .table-subline {
+  font-size: var(--font-size-xs);
+}
+.student-charges-table .link-button.table-subline {
+  color: var(--brand);
+}
+.student-payments-card .section-heading .button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.student-charges-table td {
+  padding-block: var(--space-2);
+}
+.charge-status-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.student-profile-layout .empty-state {
+  padding: var(--space-6) var(--space-4);
+}

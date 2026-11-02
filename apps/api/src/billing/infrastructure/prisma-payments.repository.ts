@@ -18,7 +18,7 @@ import { adjustedAmounts, lateFeeAdjustment, lateFeeApplies } from '../domain/bi
 import { businessDayAt } from '../../dashboard/application/business-day';
 
 const include = {
-  student: { select: { id: true, dni: true, firstName: true, lastName: true } },
+  student: { select: { id: true, dni: true, firstName: true, lastName: true, phone: true } },
   createdBy: { select: { id: true, username: true } },
   voidedBy: { select: { id: true, username: true } },
   academicClass: { select: { id: true, name: true } },

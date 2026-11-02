@@ -3,7 +3,7 @@ import React from 'react';
 import { describeOtherPayment } from '../lib/other-payment';
 import { paymentMethodLabels } from '../lib/payments';
 import { chargeLabel } from '../lib/collect-payment';
-import { whatsappReceiptUrl } from '../lib/whatsapp-receipt';
+import { PaymentActions, paymentStatusLabel } from './payment-actions';
 
 const money = (value: string | number) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
@@ -20,6 +20,7 @@ export function PaymentHistory({
   showStudent = false,
   studentHref,
   receiptPhone,
+  showReceipts = false,
   onVoid,
   onCorrect,
 }: Readonly<{
@@ -29,6 +30,8 @@ export function PaymentHistory({
   studentHref?(id: string): string;
   /** Con el alumno ya elegido, ofrece reenviar el recibo a este teléfono por WhatsApp. */
   receiptPhone?: string | null;
+  /** Sin alumno elegido: recibo por WhatsApp al teléfono de cada pago. */
+  showReceipts?: boolean;
   onVoid(payment: PaymentDto): void;
   /** Corregir medio, importe o fecha (mismos permisos que anular). */
   onCorrect?(payment: PaymentDto): void;
@@ -60,7 +63,7 @@ export function PaymentHistory({
                   <small className="table-subline">DNI {payment.student.dni}</small>
                 </td>
               )}
-              <td data-label="Monto">
+              <td data-label="Monto" className="nowrap">
                 <strong>{money(payment.amount)}</strong>
               </td>
               <td data-label="Medios">
@@ -88,39 +91,27 @@ export function PaymentHistory({
               <td data-label="Registrado por">{payment.createdBy.username}</td>
               <td data-label="Estado">
                 <span className={`status ${payment.status === 'CONFIRMED' ? 'active' : 'void'}`}>
-                  {payment.status === 'CONFIRMED'
-                    ? 'Confirmado'
-                    : payment.correctedById
-                      ? 'Corregido'
-                      : 'Anulado'}
+                  {paymentStatusLabel(payment)}
                 </span>
                 {payment.correctionOfId && (
                   <small className="table-subline">Corrección de un pago anterior</small>
                 )}
               </td>
               <td data-label="Acciones">
-                <div className="payment-history-actions">
-                  {receiptPhone !== undefined && payment.status === 'CONFIRMED' && (
-                    <a
-                      className="button secondary"
-                      href={whatsappReceiptUrl(payment, receiptPhone)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Recibo por WhatsApp
-                    </a>
-                  )}
-                  {canVoid && onCorrect && payment.status === 'CONFIRMED' && (
-                    <button className="secondary" onClick={() => onCorrect(payment)}>
-                      Corregir
-                    </button>
-                  )}
-                  {canVoid && payment.status === 'CONFIRMED' && (
-                    <button className="secondary" onClick={() => onVoid(payment)}>
-                      Anular
-                    </button>
-                  )}
-                </div>
+                <PaymentActions
+                  payment={payment}
+                  receiptPhone={
+                    receiptPhone !== undefined
+                      ? receiptPhone
+                      : showReceipts
+                        ? (payment.student.phone ?? null)
+                        : undefined
+                  }
+                  canVoid={canVoid}
+                  onCorrect={onCorrect}
+                  onVoid={onVoid}
+                  layout="stack"
+                />
               </td>
             </tr>
           ))}

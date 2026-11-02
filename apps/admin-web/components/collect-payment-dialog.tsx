@@ -14,7 +14,15 @@ import type {
 } from '@academy/contracts';
 import { Check, Search } from 'lucide-react';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { businessToday } from '../lib/dates';
 import {
@@ -52,6 +60,7 @@ import {
 import { classTeachersLabel } from '../lib/offering';
 import { whatsappNumber, whatsappReceiptUrl } from '../lib/whatsapp-receipt';
 import { useAuth } from './auth-provider';
+import { ChargeDueDateModal } from './charge-due-date-modal';
 import { GenerateChargeDialog } from './generate-charge-dialog';
 
 const freshPick = (amount = ''): TenderPick => ({ mode: 'CASH', amount, split: emptyTenders });
@@ -66,16 +75,33 @@ const errorText = (error: unknown, fallback: string) =>
  * "Registrar pago": buscar al alumno y cobrarle en el mismo lugar, sin cambiar de pantalla.
  * Cuotas pendientes (o generar la que viene a pagar), clase suelta u otro concepto, y la deuda
  * anterior que el sistema todavía no tiene.
+ *
+ * variant="inline" es el mismo cobro dentro de una página (estado de cuenta del alumno): sin
+ * buscador ni botón Cerrar, y avisa cada cambio con onChanged para refrescar el resto.
  */
 export function CollectPaymentDialog({
   initialStudent = null,
   initialTab = 'charges',
+  variant = 'dialog',
+  refreshKey = 0,
+  focusAmount = variant === 'dialog',
+  chargeActions,
+  onChanged,
   onClose,
 }: Readonly<{
   initialStudent?: StudentDto | null;
   initialTab?: CollectTab;
+  variant?: 'dialog' | 'inline';
+  /** Al cambiar, vuelve a cargar las cuotas (la página tocó algo: anuló un pago, etc.). */
+  refreshKey?: number;
+  /** Enfocar el importe al cargar las cuotas. */
+  focusAmount?: boolean;
+  /** Acciones extra por cuota (p. ej. quitar recargo en el estado de cuenta). */
+  chargeActions?: ((charge: MonthlyChargeDto) => ReactNode) | undefined;
+  onChanged?(): void;
   onClose(changed: boolean): void;
 }>) {
+  const inline = variant === 'inline';
   const { can } = useAuth();
   const dialog = useRef<HTMLDialogElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -106,6 +132,7 @@ export function CollectPaymentDialog({
     paidDate && paidDate !== today ? { ...payload, paidDate } : payload;
   const [debtForm, setDebtForm] = useState({ enrollmentId: '', amount: '', description: '' });
   const [generating, setGenerating] = useState(false);
+  const [dueDateTarget, setDueDateTarget] = useState<MonthlyChargeDto | null>(null);
   const [saving, setSaving] = useState(false);
   const [tried, setTried] = useState(false);
   const [notice, setNotice] = useState('');
@@ -114,6 +141,10 @@ export function CollectPaymentDialog({
 
   const close = () => {
     if (!saving) onClose(changed);
+  };
+  const markChanged = () => {
+    setChanged(true);
+    onChanged?.();
   };
 
   useEffect(() => {
@@ -227,8 +258,17 @@ export function CollectPaymentDialog({
   }, [amountTouched, charges, debtCents]);
 
   useEffect(() => {
-    if (student && charges && tab === 'charges' && !done) amountInput.current?.focus();
-  }, [charges, done, student, tab]);
+    if (focusAmount && student && charges && tab === 'charges' && !done)
+      amountInput.current?.focus();
+  }, [charges, done, focusAmount, student, tab]);
+
+  const lastRefresh = useRef(refreshKey);
+  useEffect(() => {
+    if (refreshKey === lastRefresh.current || !student) return;
+    lastRefresh.current = refreshKey;
+    setAmountTouched(false);
+    void loadCharges(student.id).catch(() => undefined);
+  }, [loadCharges, refreshKey, student]);
 
   const totalCents = pickTotalCents(pick);
   const preview = previewAllocations(pending, totalCents);
@@ -316,7 +356,7 @@ export function CollectPaymentDialog({
           method: 'POST',
           body: JSON.stringify(historicalDebtPayload(debtForm)),
         });
-        setChanged(true);
+        markChanged();
         await loadCharges(student.id);
         setDebtForm((form) => ({ ...form, amount: '', description: '' }));
         setTab('charges');
@@ -336,7 +376,7 @@ export function CollectPaymentDialog({
               method: 'POST',
               body: JSON.stringify(dated(buildOtherPaymentPayload(student.id, otherForm, tenders))),
             });
-      setChanged(true);
+      markChanged();
       setDone(payment);
       void loadCharges(student.id).catch(() => undefined);
     } catch (caught) {
@@ -453,21 +493,15 @@ export function CollectPaymentDialog({
         ? 'Cobrando…'
         : `Cobrar ${money(centsToDecimal(totalCents))}`;
 
-  return (
-    <dialog
-      ref={dialog}
-      className="modal card collect-dialog"
-      aria-labelledby="collect-title"
-      onCancel={(event) => {
-        event.preventDefault();
-        if (!generating) close();
-      }}
-    >
+  const content = (
+    <>
       <header className="collect-header">
-        <h2 id="collect-title">Registrar pago</h2>
-        <button type="button" className="secondary" disabled={saving} onClick={close}>
-          Cerrar
-        </button>
+        <h2 id="collect-title">{inline ? 'Registrar cobro' : 'Registrar pago'}</h2>
+        {!inline && (
+          <button type="button" className="secondary" disabled={saving} onClick={close}>
+            Cerrar
+          </button>
+        )}
       </header>
 
       {!student ? (
@@ -569,48 +603,58 @@ export function CollectPaymentDialog({
                 : 'El alumno no tiene teléfono cargado: WhatsApp te va a pedir el contacto.'}
             </p>
           )}
-          <div className="modal-actions collect-done-actions">
-            <button type="button" className="secondary" onClick={() => onClose(true)}>
-              Terminar
-            </button>
-            <button type="button" className="secondary" onClick={backToSearch}>
-              Cobrar a otro alumno
-            </button>
-            <button type="button" onClick={anotherForSameStudent}>
-              Cobrar otra cosa a {student.firstName}
-            </button>
-          </div>
+          {inline ? (
+            <div className="modal-actions collect-done-actions">
+              <button type="button" className="secondary" onClick={anotherForSameStudent}>
+                Listo
+              </button>
+            </div>
+          ) : (
+            <div className="modal-actions collect-done-actions">
+              <button type="button" className="secondary" onClick={() => onClose(true)}>
+                Terminar
+              </button>
+              <button type="button" className="secondary" onClick={backToSearch}>
+                Cobrar a otro alumno
+              </button>
+              <button type="button" onClick={anotherForSameStudent}>
+                Cobrar otra cosa a {student.firstName}
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <form className="collect-form" onSubmit={(event) => void submit(event)} noValidate>
-          <div className="collect-student">
-            <div>
-              <strong>
-                {student.firstName} {student.lastName}
-              </strong>
-              <span>
-                DNI {student.dni} ·{' '}
-                {charges === null
-                  ? 'calculando deuda…'
-                  : debtCents > 0n
-                    ? `debe ${money(debt)}`
-                    : 'al día'}
-              </span>
+          {!inline && (
+            <div className="collect-student">
+              <div>
+                <strong>
+                  {student.firstName} {student.lastName}
+                </strong>
+                <span>
+                  DNI {student.dni} ·{' '}
+                  {charges === null
+                    ? 'calculando deuda…'
+                    : debtCents > 0n
+                      ? `debe ${money(debt)}`
+                      : 'al día'}
+                </span>
+              </div>
+              <div className="collect-student-links">
+                <Link className="text-link" href={`/students/${student.id}`}>
+                  Ver ficha
+                </Link>
+                <button
+                  type="button"
+                  className="link-button"
+                  disabled={saving}
+                  onClick={backToSearch}
+                >
+                  Cambiar alumno
+                </button>
+              </div>
             </div>
-            <div className="collect-student-links">
-              <Link className="text-link" href={`/students/${student.id}`}>
-                Ver ficha
-              </Link>
-              <button
-                type="button"
-                className="link-button"
-                disabled={saving}
-                onClick={backToSearch}
-              >
-                Cambiar alumno
-              </button>
-            </div>
-          </div>
+          )}
 
           <div className="collect-tabs" role="tablist" aria-label="Qué cobrar">
             {(
@@ -664,6 +708,22 @@ export function CollectPaymentDialog({
                             {charge.overdue && charge.kind === 'MONTHLY' ? ' · vencida' : ''}
                             {charge.status === 'PARTIAL' ? ' · pago parcial' : ''}
                           </small>
+                          {((can('charges:generate') && charge.kind === 'MONTHLY') ||
+                            chargeActions) && (
+                            <span className="collect-charge-actions">
+                              {can('charges:generate') && charge.kind === 'MONTHLY' && (
+                                <button
+                                  type="button"
+                                  className="link-button"
+                                  disabled={saving}
+                                  onClick={() => setDueDateTarget(charge)}
+                                >
+                                  Cambiar vencimiento
+                                </button>
+                              )}
+                              {chargeActions?.(charge)}
+                            </span>
+                          )}
                         </span>
                         <span className="collect-charge-amount">
                           {money(charge.outstandingAmount)}
@@ -899,13 +959,43 @@ export function CollectPaymentDialog({
           onClose={() => setGenerating(false)}
           onDone={(result) => {
             setGenerating(false);
-            setChanged(true);
+            markChanged();
             setAmountTouched(false);
             setNotice(`${result.title}. Ya podés cobrarla.`);
             void loadCharges(student.id).catch(() => undefined);
           }}
         />
       )}
+      {dueDateTarget && (
+        <ChargeDueDateModal
+          charge={dueDateTarget}
+          onClose={() => setDueDateTarget(null)}
+          onSaved={() => {
+            setDueDateTarget(null);
+            markChanged();
+            setNotice('Vencimiento actualizado.');
+            if (student) void loadCharges(student.id).catch(() => undefined);
+          }}
+        />
+      )}
+    </>
+  );
+
+  return inline ? (
+    <section id="registrar-cobro" className="card collect-inline" aria-labelledby="collect-title">
+      {content}
+    </section>
+  ) : (
+    <dialog
+      ref={dialog}
+      className="modal card collect-dialog"
+      aria-labelledby="collect-title"
+      onCancel={(event) => {
+        event.preventDefault();
+        if (!generating && !dueDateTarget) close();
+      }}
+    >
+      {content}
     </dialog>
   );
 }
