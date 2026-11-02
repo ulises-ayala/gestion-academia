@@ -191,7 +191,7 @@ export function CashHandovers() {
       </form>
       {collected !== null && (
         <p className="cash-handover-collected">
-          Efectivo cobrado del {shortDate(form.fromDate)} al {shortDate(form.toDate)}:{' '}
+          Efectivo que entró a la caja del {shortDate(form.fromDate)} al {shortDate(form.toDate)}:{' '}
           <strong>{money(collected)}</strong>
         </p>
       )}
@@ -215,7 +215,7 @@ export function CashHandovers() {
               <tr>
                 <th>Período</th>
                 <th>Entregado</th>
-                <th>Efectivo cobrado</th>
+                <th>Efectivo en caja</th>
                 <th>Diferencia</th>
                 <th>Recibió</th>
                 <th>Registró</th>
@@ -232,7 +232,7 @@ export function CashHandovers() {
                     {item.note ? <small className="cash-handover-meta">{item.note}</small> : null}
                   </td>
                   <td data-label="Entregado">{money(item.amount)}</td>
-                  <td data-label="Efectivo cobrado">{money(item.collectedAmount)}</td>
+                  <td data-label="Efectivo en caja">{money(item.collectedAmount)}</td>
                   <td data-label="Diferencia">{money(item.difference)}</td>
                   <td data-label="Recibió">{item.receivedBy}</td>
                   <td data-label="Registró">{item.createdBy.username}</td>

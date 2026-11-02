@@ -54,6 +54,25 @@ describe.runIf(integrationDatabaseEnabled)(
           },
         },
       });
+      // El efectivo entra a la caja cuando se carga en un turno (movimiento), no por fecha de pago.
+      const shift = await prisma.cashShift.create({
+        data: { userId: actor.id },
+      });
+      const cashTender = (
+        await prisma.paymentTender.findMany({ where: { paymentId: payment.id, method: 'CASH' } })
+      )[0]!;
+      await prisma.cashMovement.create({
+        data: {
+          cashShiftId: shift.id,
+          type: 'COLLECTION',
+          method: 'CASH',
+          amount: '30000.00',
+          sourcePaymentId: payment.id,
+          sourcePaymentTenderId: cashTender.id,
+          actorUserId: actor.id,
+          createdAt: new Date('2031-03-03T15:00:00.000Z'),
+        },
+      });
       const now = new Date('2031-03-10T15:00:00.000Z');
       try {
         await expect(service.cashCollected('2031-03-02', '2031-03-08', now)).resolves.toMatchObject(
@@ -94,6 +113,8 @@ describe.runIf(integrationDatabaseEnabled)(
       } finally {
         await prisma.auditLog.deleteMany({ where: { actorUserId: actor.id } });
         await prisma.cashHandover.deleteMany({ where: { createdByUserId: actor.id } });
+        await prisma.cashMovement.deleteMany({ where: { cashShiftId: shift.id } });
+        await prisma.cashShift.delete({ where: { id: shift.id } });
         await prisma.paymentTender.deleteMany({ where: { paymentId: payment.id } });
         await prisma.payment.delete({ where: { id: payment.id } });
         await prisma.student.delete({ where: { id: student.id } });

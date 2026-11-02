@@ -1,4 +1,4 @@
-import type { CashCollectedDto, CashHandoverDto } from '@academy/contracts';
+import type { CashCollectedDto, CashHandoverDto, CreateCashHandoverDto } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
@@ -50,18 +50,20 @@ export class CashHandoversService {
     fromDate: string,
     toDate: string,
   ) {
+    // Efectivo que entró a la caja en el período: cobros menos reversas de los turnos, por el
+    // momento en que se cargaron (un pago cargado tarde entra al cajón cuando se carga).
     const { from, toExclusive } = this.range(fromDate, toDate);
-    const result = await client.paymentTender.aggregate({
-      where: {
-        method: 'CASH',
-        payment: { status: 'CONFIRMED', paidAt: { gte: from, lt: toExclusive } },
-      },
+    const totals = await client.cashMovement.groupBy({
+      by: ['type'],
+      where: { method: 'CASH', createdAt: { gte: from, lt: toExclusive } },
       _sum: { amount: true },
     });
-    return result._sum.amount ?? new Prisma.Decimal(0);
+    const sum = (type: 'COLLECTION' | 'REVERSAL') =>
+      totals.find((row) => row.type === type)?._sum.amount ?? new Prisma.Decimal(0);
+    return sum('COLLECTION').minus(sum('REVERSAL'));
   }
 
-  /** Efectivo cobrado en el período (pagos confirmados por su fecha de pago). */
+  /** Efectivo que entró a la caja en el período (movimientos de los turnos). */
   async cashCollected(
     fromDate: unknown,
     toDate: unknown,
@@ -92,11 +94,8 @@ export class CashHandoversService {
     return { items: items.map(mapHandover), total, page, pageSize };
   }
 
-  async create(input: unknown, actorId: string, now = new Date()) {
-    const handover = validateCashHandover(
-      input as Parameters<typeof validateCashHandover>[0],
-      businessDayAt(now, timeZone()).date,
-    );
+  async create(input: CreateCashHandoverDto | null, actorId: string, now = new Date()) {
+    const handover = validateCashHandover(input, businessDayAt(now, timeZone()).date);
     return withSerializableRetry(
       () =>
         this.prisma.$transaction(

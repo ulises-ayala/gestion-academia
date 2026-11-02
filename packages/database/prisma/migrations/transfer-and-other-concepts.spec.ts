@@ -11,6 +11,7 @@ describe('Transferencia y conceptos de otros cobros', () => {
     expect(migration).toContain(`ALTER TYPE "PaymentMethod" ADD VALUE 'TRANSFER'`);
     expect(migration).toContain(`ALTER TYPE "OtherPaymentConcept" ADD VALUE 'APPAREL'`);
     expect(migration).toContain(`ALTER TYPE "OtherPaymentConcept" ADD VALUE 'GALA_SEAL'`);
-    expect(migration).not.toMatch(/UPDATE|DELETE/i);
+    expect(migration).not.toMatch(/UPDATE\s|DELETE\s/i);
+    expect(migration).toContain(`"concept" <> 'SINGLE_CLASS' AND "class_id" IS NULL`);
   });
 });

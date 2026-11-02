@@ -17,6 +17,10 @@ describe('entrega de efectivo', () => {
     expect(
       nextHandoverPeriod([handover('2026-11-01'), handover('2026-11-07', 'x')], '2026-11-08'),
     ).toEqual({ fromDate: '2026-11-02', toDate: '2026-11-08' });
+    expect(nextHandoverPeriod([handover('2026-11-08')], '2026-11-08')).toEqual({
+      fromDate: '',
+      toDate: '2026-11-08',
+    });
     expect(nextHandoverPeriod([], '2026-11-08')).toEqual({
       fromDate: '2026-11-02',
       toDate: '2026-11-08',

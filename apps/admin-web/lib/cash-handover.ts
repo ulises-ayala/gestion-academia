@@ -18,14 +18,15 @@ const addDays = (date: string, days: number) => {
 
 /**
  * Período que se propone para la próxima entrega: desde el día siguiente a la última entrega
- * vigente hasta hoy; sin entregas previas, la última semana.
+ * vigente hasta hoy; sin entregas previas, la última semana. Si la última ya llega a hoy, no
+ * propone inicio (cualquier período hasta hoy se superpondría).
  */
 export const nextHandoverPeriod = (handovers: readonly CashHandoverDto[], today: string) => {
   const last = handovers
     .filter((item) => !item.voidedAt)
     .reduce<string | null>((max, item) => (max && max > item.toDate ? max : item.toDate), null);
-  const fromDate = last && last < today ? addDays(last, 1) : addDays(today, -6);
-  return { fromDate, toDate: today };
+  if (last && last >= today) return { fromDate: '', toDate: today };
+  return { fromDate: last ? addDays(last, 1) : addDays(today, -6), toDate: today };
 };
 
 /** Primer motivo por el que no se puede registrar la entrega, o null. */
