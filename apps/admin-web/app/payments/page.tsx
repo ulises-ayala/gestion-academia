@@ -282,13 +282,16 @@ function PaymentsCenter() {
     }
   }
 
-  async function paymentCorrected() {
+  async function paymentCorrected(corrected: PaymentDto) {
     setCorrectTarget(null);
     await Promise.all([
       location.studentId ? refreshAccount() : Promise.resolve(),
       !location.studentId && location.tab === 'history' ? loadHistory() : Promise.resolve(),
     ]);
-    notifySuccess('Pago corregido', 'El original quedó anulado y la caja se ajustó en su turno.');
+    // Corregir medio/importe/fecha reemplaza el pago; cambiar cuotas lo deja como estaba.
+    if (corrected.correctionOfId)
+      notifySuccess('Pago corregido', 'El original quedó anulado y la caja se ajustó en su turno.');
+    else notifySuccess('Cuotas cambiadas', 'El pago y la caja no cambiaron.');
   }
 
   async function waiveLateFee() {
@@ -816,7 +819,7 @@ function PaymentsCenter() {
         <CorrectPaymentDialog
           payment={correctTarget}
           onClose={() => setCorrectTarget(null)}
-          onDone={() => void paymentCorrected()}
+          onDone={(corrected) => void paymentCorrected(corrected)}
         />
       )}
       {voidTarget && (

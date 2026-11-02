@@ -3,6 +3,7 @@ import type {
   CreateOtherPaymentDto,
   CreatePaymentDto,
   PaymentMethodDto,
+  ReallocatePaymentDto,
 } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
@@ -28,12 +29,48 @@ const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'CARD'];
 export class PaymentsService {
   constructor(@Inject(PAYMENTS_REPOSITORY) private readonly repository: PaymentsRepository) {}
 
-  async create(input: CreatePaymentDto, actorId: string, canBackdate = false, now = new Date()) {
+  /** isAdministration: puede cargar la fecha real y elegir las cuotas (Administración/Dirección). */
+  async create(
+    input: CreatePaymentDto,
+    actorId: string,
+    isAdministration = false,
+    now = new Date(),
+  ) {
     const tenders = this.tenders(input.tenders);
-    const paidAt = this.paidAt(input.paidDate, canBackdate, now);
-    return paidAt
-      ? this.repository.create(input.studentId, tenders, actorId, paidAt)
-      : this.repository.create(input.studentId, tenders, actorId);
+    const paidAt = this.paidAt(input.paidDate, isAdministration, now);
+    const chargeIds = this.chargeIds(input.monthlyChargeIds);
+    if (chargeIds && !isAdministration)
+      throw new DomainError(
+        'FORBIDDEN',
+        'Solo Administración o Dirección pueden elegir las cuotas que se pagan',
+      );
+    return this.repository.create(
+      input.studentId,
+      tenders,
+      actorId,
+      paidAt ?? undefined,
+      chargeIds ?? undefined,
+    );
+  }
+
+  /** Cuotas elegidas; null si no se eligió ninguna (se imputa desde la más vieja). */
+  private chargeIds(value: unknown) {
+    if (value === undefined || value === null) return null;
+    if (
+      !Array.isArray(value) ||
+      value.length > 60 ||
+      value.some((id) => typeof id !== 'string' || !id)
+    )
+      throw new DomainError('VALIDATION_ERROR', 'Las cuotas elegidas no son válidas', {
+        field: 'monthlyChargeIds',
+      });
+    if (value.length === 0) return null;
+    const ids = value as string[];
+    if (new Set(ids).size !== ids.length)
+      throw new DomainError('VALIDATION_ERROR', 'Una cuota está repetida', {
+        field: 'monthlyChargeIds',
+      });
+    return ids;
   }
 
   /** Fecha real de un pago cargado tarde; solo quien puede anular pagos (Administración/Dirección). */
@@ -148,5 +185,43 @@ export class PaymentsService {
     )
       throw new DomainError('VALIDATION_ERROR', 'No hay cambios para corregir', { field: 'body' });
     return this.repository.correct(id, { tenders, paidAt }, actorId, reason);
+  }
+
+  /** Cambia las cuotas a las que se imputó un pago, sin tocar el pago ni la caja. */
+  async reallocate(id: string, input: ReallocatePaymentDto | null, actorId: string) {
+    const reason = validateReason(input?.reason);
+    const rows = input?.allocations;
+    if (!Array.isArray(rows) || rows.length === 0 || rows.length > 60)
+      throw new DomainError('VALIDATION_ERROR', 'Elegí al menos una cuota', {
+        field: 'allocations',
+      });
+    const allocations = rows.map((row, index) => {
+      if (
+        !row ||
+        typeof row !== 'object' ||
+        typeof row.amount !== 'string' ||
+        !/^\d{1,10}(?:\.\d{1,2})?$/.test(row.amount) ||
+        new Prisma.Decimal(row.amount).lessThanOrEqualTo(0)
+      )
+        throw new DomainError('VALIDATION_ERROR', 'El importe debe ser mayor a cero', {
+          field: `allocations.${index}.amount`,
+        });
+      return {
+        monthlyChargeId: row.monthlyChargeId,
+        amount: new Prisma.Decimal(row.amount).toFixed(2),
+      };
+    });
+    if (new Set(allocations.map(({ monthlyChargeId }) => monthlyChargeId)).size !== rows.length)
+      throw new DomainError('VALIDATION_ERROR', 'Una cuota está repetida', {
+        field: 'allocations',
+      });
+    const payment = await this.get(id);
+    if (payment.status === 'VOID')
+      throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+    if (payment.kind !== 'CHARGES')
+      throw new DomainError('VALIDATION_ERROR', 'Este cobro no se imputa a cuotas', {
+        field: 'allocations',
+      });
+    return this.repository.reallocate(id, allocations, actorId, reason);
   }
 }

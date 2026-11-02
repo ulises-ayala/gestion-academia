@@ -5,6 +5,7 @@ import type {
   PaymentMethodDto,
   PaymentStatusDto,
   PaymentSummaryDto,
+  ReallocatePaymentDto,
   ReceivablesScopeDto,
   ReceivablesSortDto,
   VoidPaymentDto,
@@ -110,7 +111,17 @@ export class PaymentsController {
     if (!input || typeof input !== 'object')
       throw new DomainError('VALIDATION_ERROR', 'El cuerpo del pago es obligatorio');
     return this.service.create(
-      { ...input, studentId: parseUuid(input.studentId, 'studentId') },
+      {
+        ...input,
+        studentId: parseUuid(input.studentId, 'studentId'),
+        ...(Array.isArray(input.monthlyChargeIds)
+          ? {
+              monthlyChargeIds: input.monthlyChargeIds.map((id) =>
+                parseUuid(id, 'monthlyChargeIds'),
+              ),
+            }
+          : {}),
+      },
       user.id,
       hasPermissions(user, ['payments:void']),
     );
@@ -147,6 +158,27 @@ export class PaymentsController {
     @CurrentUser() user: PublicAuthUser,
   ) {
     return this.service.correct(parseUuid(id), body, user.id);
+  }
+
+  /** Reimputar: cambiar a qué cuotas se aplicó el pago (los mismos que corrigen). */
+  @Post(':id/allocations')
+  @Permissions('payments:void')
+  reallocate(
+    @Param('id') id: string,
+    @Body() body: ReallocatePaymentDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    const allocations = Array.isArray(body?.allocations)
+      ? body.allocations.map((row, index) => ({
+          ...row,
+          monthlyChargeId: parseUuid(row?.monthlyChargeId, `allocations.${index}.monthlyChargeId`),
+        }))
+      : body?.allocations;
+    return this.service.reallocate(
+      parseUuid(id),
+      body && typeof body === 'object' ? ({ ...body, allocations } as ReallocatePaymentDto) : null,
+      user.id,
+    );
   }
 
   private search(value?: string) {

@@ -46,14 +46,17 @@ class MemoryPayments implements PaymentsRepository {
   } | null = null;
   item = payment();
   lastPaidAt: Date | undefined = undefined;
+  lastChargeIds: readonly string[] | undefined = undefined;
   async create(
     id: string,
     tenders: readonly { method: PaymentMethodDto; amount: string }[],
     userId: string,
     paidAt?: Date,
+    monthlyChargeIds?: readonly string[],
   ) {
     this.last = { studentId: id, tenders, actorId: userId };
     this.lastPaidAt = paidAt;
+    this.lastChargeIds = monthlyChargeIds;
     return {
       ...this.item,
       amount: tenders
@@ -116,6 +119,20 @@ class MemoryPayments implements PaymentsRepository {
   ) {
     this.corrected = { id, input, reason };
     return { ...this.item, id: crypto.randomUUID(), correctionOfId: id };
+  }
+  reallocated: {
+    id: string;
+    allocations: readonly { monthlyChargeId: string; amount: string }[];
+    reason: string;
+  } | null = null;
+  async reallocate(
+    id: string,
+    allocations: readonly { monthlyChargeId: string; amount: string }[],
+    _actorId: string,
+    reason: string,
+  ) {
+    this.reallocated = { id, allocations, reason };
+    return this.item;
   }
   async void() {
     this.item = {
@@ -446,6 +463,102 @@ describe('PaymentsService', () => {
         ),
       ).rejects.toMatchObject({ code: 'FORBIDDEN' });
       expect(repository.last).toBeNull();
+    });
+  });
+
+  describe('elegir las cuotas que se pagan', () => {
+    const tenders = [{ method: 'CASH' as const, amount: '40000' }];
+    const october = crypto.randomUUID();
+
+    it('Administración elige la cuota', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).create(
+        { studentId, tenders, monthlyChargeIds: [october] },
+        actorId,
+        true,
+      );
+      expect(repository.lastChargeIds).toEqual([october]);
+    });
+
+    it('sin cuotas elegidas se imputa desde la más vieja', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).create(
+        { studentId, tenders, monthlyChargeIds: [] },
+        actorId,
+        true,
+      );
+      expect(repository.lastChargeIds).toBeUndefined();
+    });
+
+    it('Admisión no puede elegir', async () => {
+      const repository = new MemoryPayments();
+      await expect(
+        new PaymentsService(repository).create(
+          { studentId, tenders, monthlyChargeIds: [october] },
+          actorId,
+          false,
+        ),
+      ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+      expect(repository.last).toBeNull();
+    });
+
+    it('rechaza cuotas repetidas', async () => {
+      await expect(
+        new PaymentsService(new MemoryPayments()).create(
+          { studentId, tenders, monthlyChargeIds: [october, october] },
+          actorId,
+          true,
+        ),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+    });
+  });
+
+  describe('reimputar un pago', () => {
+    const october = crypto.randomUUID();
+
+    it('normaliza importes y pasa el motivo', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).reallocate(
+        repository.item.id,
+        {
+          reason: ' quería pagar octubre ',
+          allocations: [{ monthlyChargeId: october, amount: '40000' }],
+        },
+        actorId,
+      );
+      expect(repository.reallocated).toEqual({
+        id: repository.item.id,
+        allocations: [{ monthlyChargeId: october, amount: '40000.00' }],
+        reason: 'quería pagar octubre',
+      });
+    });
+
+    it('exige motivo', async () => {
+      const repository = new MemoryPayments();
+      await expect(
+        new PaymentsService(repository).reallocate(
+          repository.item.id,
+          { reason: ' ', allocations: [{ monthlyChargeId: october, amount: '40000' }] },
+          actorId,
+        ),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'reason' } });
+    });
+
+    it('no reimputa un pago anulado ni un cobro de otro concepto', async () => {
+      const repository = new MemoryPayments();
+      const input = {
+        reason: 'error',
+        allocations: [{ monthlyChargeId: october, amount: '40000' }],
+      };
+      repository.item = { ...repository.item, kind: 'OTHER' };
+      await expect(
+        new PaymentsService(repository).reallocate(repository.item.id, input, actorId),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+      repository.item = { ...repository.item, kind: 'CHARGES', status: 'VOID' };
+      await expect(
+        new PaymentsService(repository).reallocate(repository.item.id, input, actorId),
+      ).rejects.toMatchObject({ code: 'PAYMENT_ALREADY_VOID' });
+      expect(repository.reallocated).toBeNull();
     });
   });
 });

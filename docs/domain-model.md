@@ -93,6 +93,7 @@ erDiagram
 - `Payment` pertenece a un alumno y conserva importe, instante y usuario responsable. Uno o más `PaymentTender` desglosan efectivo, Mercado Pago y tarjeta; un medio no se repite dentro del pago.
 - `PaymentAllocation` registra cuánto del pago se aplicó a cada cuota. La suma de tenders, el importe del pago y la suma de imputaciones son iguales y se calculan con decimales exactos.
 - El backend recibe alumno y medios, calcula la deuda vigente y distribuye oldest-first por vencimiento con desempate estable por creación e ID. Se admiten pagos parciales y derrame entre cuotas, pero no sobrepago ni saldo a favor.
+- Administración y Dirección pueden elegir las cuotas que paga el alumno (decisión 232). Reimputar un pago agrega filas de imputación (negativas y positivas) ligadas a una `PaymentReallocation` con motivo, sin modificar las originales ni la caja (decisión 233); la imputación vigente de un pago es la suma de sus filas por cuota.
 - `paidAmount`, `outstandingAmount` y vencimiento son datos derivados exclusivamente de imputaciones pertenecientes a pagos `CONFIRMED`; no se persisten como saldos duplicados.
 - El cobro usa advisory lock por alumno, locks de filas, aislamiento serializable y reintentos. Dos cajas no pueden consumir la misma deuda.
 - Anular conserva `PaymentTender` y `PaymentAllocation`, marca el pago `VOID` y recalcula cada cuota con los demás pagos confirmados; puede quedar `PENDING`, `PARTIAL` o `PAID`.

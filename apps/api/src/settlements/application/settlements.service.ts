@@ -123,7 +123,12 @@ export class SettlementsService {
           mc.base_amount AS "baseAmount",
           COALESCE(adj.student_delta, 0) AS "studentDelta",
           COALESCE(adj.settlement_delta, 0) AS "settlementDelta"
-        FROM payment_allocations pa
+        FROM (
+          -- Imputación vigente por pago y cuota (suma las filas de cada reimputación).
+          SELECT payment_id, monthly_charge_id, SUM(amount) AS amount
+          FROM payment_allocations GROUP BY payment_id, monthly_charge_id
+          HAVING SUM(amount) <> 0
+        ) pa
         JOIN payments p ON p.id = pa.payment_id
         JOIN monthly_charges mc ON mc.id = pa.monthly_charge_id
         JOIN enrollments e ON e.id = mc.enrollment_id

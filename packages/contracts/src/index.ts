@@ -600,6 +600,11 @@ export type CreatePaymentDto = Readonly<{
   tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
   /** Fecha real de un pago cargado tarde (AAAA-MM-DD). Solo Administración y Dirección. */
   paidDate?: string | null;
+  /**
+   * Cuotas que paga el alumno (de la más vieja a la más nueva entre ellas). Si falta, se imputa
+   * desde la deuda más antigua. Solo Administración y Dirección.
+   */
+  monthlyChargeIds?: readonly string[] | null;
 }>;
 export type PaymentKindDto = 'CHARGES' | 'OTHER';
 export type OtherPaymentConceptDto = 'SINGLE_CLASS' | 'OTHER';
@@ -702,6 +707,14 @@ export type CorrectPaymentDto = Readonly<{
   tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
   /** Fecha real del pago (AAAA-MM-DD); si falta se conserva la del original. */
   paidDate?: string | null;
+}>;
+/**
+ * Reimputar un pago: cambia a qué cuotas se aplicó, sin tocar el pago ni la caja. `allocations`
+ * es la imputación completa nueva y tiene que sumar el importe del pago.
+ */
+export type ReallocatePaymentDto = Readonly<{
+  reason: string;
+  allocations: readonly Readonly<{ monthlyChargeId: string; amount: string }>[];
 }>;
 
 export type CashShiftStatusDto = 'OPEN' | 'CLOSED';

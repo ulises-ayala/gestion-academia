@@ -142,6 +142,7 @@ describe.runIf(enabled)(
           await tx.cashMovement.deleteMany({ where: { sourcePaymentId: { in: paymentIds } } });
           await tx.paymentTender.deleteMany({ where: { paymentId: { in: paymentIds } } });
           await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
+          await tx.paymentReallocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
           // Primero los reemplazos de una corrección: apuntan al pago original.
           await tx.payment.deleteMany({
             where: { id: { in: paymentIds }, correctionOfId: { not: null } },
@@ -401,6 +402,129 @@ describe.runIf(enabled)(
             select: { status: true },
           }),
         ).toEqual([{ status: 'PAID' }, { status: 'PARTIAL' }]);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('cobra solo la cuota elegida aunque haya una más vieja', async () => {
+      const fixture = await createFixture();
+      try {
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '40000.00' }],
+          fixture.actor.id,
+          undefined,
+          [fixture.secondCharge.id],
+        );
+        expect(payment.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }),
+        ]);
+        await expect(
+          prisma.monthlyCharge.findUniqueOrThrow({ where: { id: fixture.charge.id } }),
+        ).resolves.toMatchObject({ status: 'PENDING' });
+        await expect(
+          repository.create(
+            fixture.student.id,
+            [{ method: 'CASH', amount: '1000.00' }],
+            fixture.actor.id,
+            undefined,
+            [fixture.secondCharge.id],
+          ),
+        ).rejects.toMatchObject({ code: 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE' });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('reimputa un pago sin tocar la caja y lo conserva al corregirlo o anularlo', async () => {
+      const fixture = await createFixture();
+      try {
+        // Agosto vencido: el cobro de 40.000 va a agosto (con recargo queda parcial).
+        const original = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '40000.00' }],
+          fixture.actor.id,
+        );
+        expect(original.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: fixture.charge.id, amount: '40000.00' }),
+        ]);
+        const moved = await repository.reallocate(
+          original.id,
+          [{ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }],
+          fixture.actor.id,
+          'Venía a pagar septiembre',
+        );
+        expect(moved).toMatchObject({ id: original.id, status: 'CONFIRMED', amount: '40000.00' });
+        expect(moved.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }),
+        ]);
+        const statuses = async () =>
+          (
+            await prisma.monthlyCharge.findMany({
+              where: { id: { in: [fixture.charge.id, fixture.secondCharge.id] } },
+              select: { id: true, status: true },
+            })
+          ).reduce<Record<string, string>>(
+            (all, charge) => ({ ...all, [charge.id]: charge.status }),
+            {},
+          );
+        expect(await statuses()).toEqual({
+          [fixture.charge.id]: 'PENDING',
+          [fixture.secondCharge.id]: 'PAID',
+        });
+        // La caja no cambia y la imputación original sigue guardada.
+        expect(await prisma.cashMovement.count({ where: { sourcePaymentId: original.id } })).toBe(
+          1,
+        );
+        expect(
+          await prisma.paymentAllocation.count({
+            where: { paymentId: original.id, reallocationId: null },
+          }),
+        ).toBe(1);
+        await expect(
+          prisma.auditLog.findFirst({ where: { entityId: original.id, action: 'UPDATE' } }),
+        ).resolves.toMatchObject({
+          reason: 'Venía a pagar septiembre',
+          metadata: expect.objectContaining({ source: 'PAYMENT_REALLOCATION' }),
+        });
+        // Pedir la misma imputación que ya tiene no registra nada.
+        await expect(
+          repository.reallocate(
+            original.id,
+            [{ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }],
+            fixture.actor.id,
+            'igual',
+          ),
+        ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+
+        // Corregir el medio conserva la imputación vigente (septiembre).
+        const corrected = await repository.correct(
+          original.id,
+          { tenders: [{ method: 'CARD', amount: '40000.00' }], paidAt: new Date(original.paidAt) },
+          fixture.actor.id,
+          'Era tarjeta',
+        );
+        expect(corrected.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }),
+        ]);
+        expect(await statuses()).toEqual({
+          [fixture.charge.id]: 'PENDING',
+          [fixture.secondCharge.id]: 'PAID',
+        });
+        await repository.void(corrected.id, fixture.actor.id, 'Prueba');
+        expect(await statuses()).toEqual({
+          [fixture.charge.id]: 'PENDING',
+          [fixture.secondCharge.id]: 'PENDING',
+        });
+        await expect(
+          repository.reallocate(
+            corrected.id,
+            [{ monthlyChargeId: fixture.charge.id, amount: '40000.00' }],
+            fixture.actor.id,
+            'anulado',
+          ),
+        ).rejects.toMatchObject({ code: 'PAYMENT_ALREADY_VOID' });
       } finally {
         await cleanupFixture(fixture);
       }

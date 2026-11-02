@@ -48,6 +48,7 @@ describe('popup de cobro', () => {
     const debt = 21000000n; // $210.000
     expect(chargesProblem(pick({ amount: '100000' }), debt)).toBeNull();
     expect(chargesProblem(pick({ amount: '250000' }), debt)).toMatch(/supera la deuda/);
+    expect(chargesProblem(pick({ amount: '250000' }), debt, true)).toMatch(/cuotas marcadas/);
     expect(chargesProblem(pick({ amount: '' }), debt)).toBe('Ingresá el importe recibido.');
     expect(chargesProblem(pick({ amount: '1000' }), 0n)).toMatch(/generá la cuota/);
   });

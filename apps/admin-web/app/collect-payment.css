@@ -218,9 +218,17 @@ dialog.collect-dialog::backdrop {
 .collect-charges li.is-applied {
   box-shadow: inset 3px 0 var(--brand);
 }
-.collect-charges li > span:first-child {
+.collect-charges li > span:not(.collect-charge-amount) {
   display: grid;
+  flex: 1;
   gap: 2px;
+}
+.collect-charges .collect-charge-pick {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--brand);
 }
 .collect-charges small {
   color: var(--text-muted);
@@ -409,4 +417,10 @@ dialog.collect-dialog::backdrop {
   .collect-actions .collect-submit {
     width: 100%;
   }
+}
+.collect-charges .reallocate-amount {
+  flex: none;
+  width: 8rem;
+  margin: 0;
+  text-align: right;
 }

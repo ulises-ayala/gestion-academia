@@ -120,6 +120,8 @@ export function CollectPaymentDialog({
   const [tab, setTab] = useState<CollectTab>(initialTab);
   const [pick, setPick] = useState<TenderPick>(freshPick());
   const [amountTouched, setAmountTouched] = useState(false);
+  /** Cuotas que eligió Administración; vacío = desde la más vieja. */
+  const [chosen, setChosen] = useState<readonly string[]>([]);
   const [concept, setConcept] = useState<OtherPaymentConceptDto>('SINGLE_CLASS');
   const [classId, setClassId] = useState('');
   const [teachers, setTeachers] = useState<TeacherListDto['items'] | null>(null);
@@ -245,17 +247,28 @@ export function CollectPaymentDialog({
         ),
     [charges],
   );
-  const debtCents = pending.reduce(
-    (sum, charge) => sum + (decimalToCents(charge.outstandingAmount) ?? 0n),
-    0n,
-  );
+  const outstandingCents = (list: readonly MonthlyChargeDto[]) =>
+    list.reduce((sum, charge) => sum + (decimalToCents(charge.outstandingAmount) ?? 0n), 0n);
+  const debtCents = outstandingCents(pending);
   const debt = centsToDecimal(debtCents);
+  // Administración y Dirección pueden elegir qué cuotas paga; si no eligen, desde la más vieja.
+  // Con una sola cuota no hay qué elegir (y no queda una selección oculta).
+  const canChoose = can('payments:void') && pending.length > 1;
+  const chosenOpen = canChoose ? pending.filter((charge) => chosen.includes(charge.id)) : [];
+  const payable = chosenOpen.length > 0 ? chosenOpen : pending;
+  const payableCents = outstandingCents(payable);
+  const toggleChosen = (id: string) => {
+    setChosen((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+    );
+    setAmountTouched(false);
+  };
 
-  // Por defecto se cobra toda la deuda; la recepcionista puede bajar el importe (pago parcial).
+  // Por defecto se cobra toda la deuda (o lo de las cuotas elegidas); se puede bajar el importe.
   useEffect(() => {
     if (charges && !amountTouched)
-      setPick((current) => ({ ...current, amount: amountInputValue(debtCents) }));
-  }, [amountTouched, charges, debtCents]);
+      setPick((current) => ({ ...current, amount: amountInputValue(payableCents) }));
+  }, [amountTouched, charges, payableCents]);
 
   useEffect(() => {
     if (focusAmount && student && charges && tab === 'charges' && !done)
@@ -271,13 +284,13 @@ export function CollectPaymentDialog({
   }, [loadCharges, refreshKey, student]);
 
   const totalCents = pickTotalCents(pick);
-  const preview = previewAllocations(pending, totalCents);
+  const preview = previewAllocations(payable, totalCents);
   const tenders: TenderAmounts = tendersFrom(pick);
   const otherForm = { concept, classId, teacherId, detail };
   const selectedClass = classes?.find((item) => item.id === classId) ?? null;
   const problem =
     tab === 'charges'
-      ? chargesProblem(pick, debtCents)
+      ? chargesProblem(pick, payableCents, chosenOpen.length > 0)
       : tab === 'other'
         ? pickIsInvalid(pick)
           ? 'Usá importes positivos con hasta dos decimales.'
@@ -291,6 +304,7 @@ export function CollectPaymentDialog({
     setTab('charges');
     setPick(freshPick());
     setAmountTouched(false);
+    setChosen([]);
     setDebtForm({ enrollmentId: '', amount: '', description: '' });
     setNotice('');
     setTried(false);
@@ -370,13 +384,21 @@ export function CollectPaymentDialog({
         tab === 'charges'
           ? await apiRequest<PaymentDto>('/payments', {
               method: 'POST',
-              body: JSON.stringify(dated(createPaymentPayload(student.id, tenders))),
+              body: JSON.stringify(
+                dated({
+                  ...createPaymentPayload(student.id, tenders),
+                  ...(chosenOpen.length > 0
+                    ? { monthlyChargeIds: chosenOpen.map((charge) => charge.id) }
+                    : {}),
+                }),
+              ),
             })
           : await apiRequest<PaymentDto>('/payments/other', {
               method: 'POST',
               body: JSON.stringify(dated(buildOtherPaymentPayload(student.id, otherForm, tenders))),
             });
       markChanged();
+      setChosen([]);
       setDone(payment);
       void loadCharges(student.id).catch(() => undefined);
     } catch (caught) {
@@ -693,48 +715,67 @@ export function CollectPaymentDialog({
                   Está al día: no tiene cuotas pendientes. Si viene a pagar un mes, generá la cuota.
                 </p>
               ) : (
-                <ul className="collect-charges">
-                  {pending.map((charge) => {
-                    const applied = preview.find((item) => item.charge.id === charge.id);
-                    return (
-                      <li key={charge.id} className={applied ? 'is-applied' : ''}>
-                        <span>
-                          <strong>{chargeLabel(charge)}</strong>
-                          <small>
-                            {charge.academicClass.name}
-                            {charge.kind === 'MONTHLY'
-                              ? ` · vence ${shortDate(charge.dueDate)}`
-                              : ''}
-                            {charge.overdue && charge.kind === 'MONTHLY' ? ' · vencida' : ''}
-                            {charge.status === 'PARTIAL' ? ' · pago parcial' : ''}
-                          </small>
-                          {((can('charges:generate') && charge.kind === 'MONTHLY') ||
-                            chargeActions) && (
-                            <span className="collect-charge-actions">
-                              {can('charges:generate') && charge.kind === 'MONTHLY' && (
-                                <button
-                                  type="button"
-                                  className="link-button"
-                                  disabled={saving}
-                                  onClick={() => setDueDateTarget(charge)}
-                                >
-                                  Cambiar vencimiento
-                                </button>
-                              )}
-                              {chargeActions?.(charge)}
-                            </span>
+                <>
+                  {canChoose && (
+                    <p className="collect-hint">
+                      {chosenOpen.length > 0
+                        ? 'Se cobran solo las cuotas marcadas.'
+                        : 'Se cobra desde la cuota más vieja. Si paga otro mes, marcá sus cuotas.'}
+                    </p>
+                  )}
+                  <ul className="collect-charges">
+                    {pending.map((charge) => {
+                      const applied = preview.find((item) => item.charge.id === charge.id);
+                      return (
+                        <li key={charge.id} className={applied ? 'is-applied' : ''}>
+                          {canChoose && (
+                            <input
+                              type="checkbox"
+                              className="collect-charge-pick"
+                              aria-label={`Cobrar ${chargeLabel(charge)}`}
+                              checked={chosen.includes(charge.id)}
+                              disabled={saving}
+                              onChange={() => toggleChosen(charge.id)}
+                            />
                           )}
-                        </span>
-                        <span className="collect-charge-amount">
-                          {money(charge.outstandingAmount)}
-                          {applied && applied.amount !== charge.outstandingAmount && (
-                            <small>cobra {money(applied.amount)}</small>
-                          )}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
+                          <span>
+                            <strong>{chargeLabel(charge)}</strong>
+                            <small>
+                              {charge.academicClass.name}
+                              {charge.kind === 'MONTHLY'
+                                ? ` · vence ${shortDate(charge.dueDate)}`
+                                : ''}
+                              {charge.overdue && charge.kind === 'MONTHLY' ? ' · vencida' : ''}
+                              {charge.status === 'PARTIAL' ? ' · pago parcial' : ''}
+                            </small>
+                            {((can('charges:generate') && charge.kind === 'MONTHLY') ||
+                              chargeActions) && (
+                              <span className="collect-charge-actions">
+                                {can('charges:generate') && charge.kind === 'MONTHLY' && (
+                                  <button
+                                    type="button"
+                                    className="link-button"
+                                    disabled={saving}
+                                    onClick={() => setDueDateTarget(charge)}
+                                  >
+                                    Cambiar vencimiento
+                                  </button>
+                                )}
+                                {chargeActions?.(charge)}
+                              </span>
+                            )}
+                          </span>
+                          <span className="collect-charge-amount">
+                            {money(charge.outstandingAmount)}
+                            {applied && applied.amount !== charge.outstandingAmount && (
+                              <small>cobra {money(applied.amount)}</small>
+                            )}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
               )}
               {can('charges:generate') && (
                 <button

@@ -11,7 +11,9 @@ import { DomainError } from '../../shared/domain/domain-error';
 import type { PaymentQuery, PaymentsRepository } from '../application/payments.repository';
 import {
   buildPaymentAllocationPlan,
+  buildReallocationPlan,
   confirmedAllocatedAmount,
+  netAllocations,
   paymentChargeStatus,
 } from '../domain/payment-allocation';
 import { adjustedAmounts, lateFeeAdjustment, lateFeeApplies } from '../domain/billing-adjustments';
@@ -55,7 +57,7 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   correctedById: item.correctedBy?.id ?? null,
   voidedAt: item.voidedAt?.toISOString() ?? null,
   voidedBy: item.voidedBy,
-  allocations: item.allocations.map(({ monthlyCharge, amount }) => ({
+  allocations: netAllocations(item.allocations).map(({ monthlyCharge, amount }) => ({
     monthlyChargeId: monthlyCharge.id,
     amount: amount.toFixed(2),
     kind: monthlyCharge.kind,
@@ -95,6 +97,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
     paidAt?: Date,
+    monthlyChargeIds?: readonly string[],
   ) {
     for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
       try {
@@ -162,12 +165,23 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               (sum, tender) => sum.plus(tender.amount),
               new Prisma.Decimal(0),
             );
-            const plan = buildPaymentAllocationPlan(charges, amount);
+            // Cuotas elegidas por Administración: se imputa solo a esas, de la más vieja a la más nueva.
+            const selected = monthlyChargeIds
+              ? charges.filter(({ id }) => monthlyChargeIds.includes(id))
+              : charges;
+            if (monthlyChargeIds && selected.length !== monthlyChargeIds.length)
+              throw new DomainError(
+                'MONTHLY_CHARGE_NOT_FOUND',
+                'Una de las cuotas elegidas no es del alumno o está anulada',
+              );
+            const plan = buildPaymentAllocationPlan(selected, amount);
             const { allocations, balances, totalOutstanding } = plan;
             if (amount.greaterThan(totalOutstanding))
               throw new DomainError(
                 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE',
-                'El cobro supera la deuda pendiente actual del alumno',
+                monthlyChargeIds
+                  ? 'El cobro supera lo que deben las cuotas elegidas'
+                  : 'El cobro supera la deuda pendiente actual del alumno',
                 { outstandingAmount: totalOutstanding.toFixed(2) },
               );
             if (!plan.remaining.isZero() || allocations.length === 0)
@@ -571,7 +585,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             let allocations: { monthlyChargeId: string; amount: Prisma.Decimal }[] = [];
             if (original.kind === 'CHARGES') {
               if (amount.equals(original.amount))
-                allocations = original.allocations.map((allocation) => ({
+                allocations = netAllocations(original.allocations).map((allocation) => ({
                   monthlyChargeId: allocation.monthlyChargeId,
                   amount: allocation.amount,
                 }));
@@ -703,6 +717,138 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             return mapPayment(
               await tx.payment.findUniqueOrThrow({ where: { id: replacement.id }, include }),
             );
+          },
+          { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+        );
+      } catch (error) {
+        if (isRetryableTransactionError(error)) {
+          if (attempt < PAYMENT_TRANSACTION_ATTEMPTS - 1) {
+            await waitBeforeRetry(attempt);
+            continue;
+          }
+          throw new DomainError(
+            'PAYMENT_CONCURRENCY_CONFLICT',
+            'El pago fue modificado al mismo tiempo.',
+          );
+        }
+        throw error;
+      }
+    }
+    throw new DomainError(
+      'PAYMENT_CONCURRENCY_CONFLICT',
+      'El pago fue modificado al mismo tiempo.',
+    );
+  }
+
+  async reallocate(
+    id: string,
+    target: readonly Readonly<{ monthlyChargeId: string; amount: string }>[],
+    actorId: string,
+    reason: string,
+  ) {
+    for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
+      try {
+        return await this.prisma.$transaction(
+          async (tx) => {
+            await tx.$queryRaw`SELECT id FROM payments WHERE id = ${id}::uuid FOR UPDATE`;
+            const payment = await tx.payment.findUnique({
+              where: { id },
+              include: { allocations: true },
+            });
+            if (!payment) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
+            if (payment.status === 'VOID')
+              throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+            if (payment.kind !== 'CHARGES')
+              throw new DomainError('VALIDATION_ERROR', 'Este cobro no se imputa a cuotas', {
+                field: 'allocations',
+              });
+            const studentId = payment.studentId;
+            // Mismo bloqueo por alumno que el cobro: la deuda no cambia mientras se reimputa.
+            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
+            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status <> 'VOID' ORDER BY due_date, created_at, id FOR UPDATE`;
+            const charges = await tx.monthlyCharge.findMany({
+              where: { studentId, status: { not: 'VOID' } },
+              include: {
+                adjustments: true,
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+            });
+            const current = netAllocations(payment.allocations);
+            const rows = buildReallocationPlan(
+              payment.amount,
+              current,
+              target.map((row) => ({
+                monthlyChargeId: row.monthlyChargeId,
+                amount: new Prisma.Decimal(row.amount),
+              })),
+              charges.map((charge) => ({
+                id: charge.id,
+                studentDueAmount: adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue,
+                paid: confirmedAllocatedAmount(charge.allocations),
+              })),
+            );
+            await tx.paymentReallocation.create({
+              data: {
+                paymentId: id,
+                reason,
+                createdByUserId: actorId,
+                allocations: {
+                  create: rows.map((row) => ({
+                    paymentId: id,
+                    monthlyChargeId: row.monthlyChargeId,
+                    amount: row.amount,
+                  })),
+                },
+              },
+            });
+            const touched = await tx.monthlyCharge.findMany({
+              where: { id: { in: rows.map(({ monthlyChargeId }) => monthlyChargeId) } },
+              include: {
+                adjustments: true,
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+            });
+            for (const charge of touched) {
+              if (charge.status === 'VOID') continue;
+              await tx.monthlyCharge.update({
+                where: { id: charge.id },
+                data: {
+                  status: paymentChargeStatus(
+                    confirmedAllocatedAmount(charge.allocations),
+                    adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue,
+                  ),
+                },
+              });
+            }
+            await tx.auditLog.create({
+              data: {
+                actorUserId: actorId,
+                action: 'UPDATE',
+                entityType: 'PAYMENT',
+                entityId: id,
+                reason,
+                before: {
+                  allocations: current.map((row) => ({
+                    monthlyChargeId: row.monthlyChargeId,
+                    amount: row.amount.toFixed(2),
+                  })),
+                },
+                after: {
+                  allocations: target.map((row) => ({
+                    monthlyChargeId: row.monthlyChargeId,
+                    amount: row.amount,
+                  })),
+                },
+                metadata: { source: 'PAYMENT_REALLOCATION', studentId },
+              },
+            });
+            return mapPayment(await tx.payment.findUniqueOrThrow({ where: { id }, include }));
           },
           { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
         );

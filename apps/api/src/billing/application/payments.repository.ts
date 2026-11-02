@@ -19,12 +19,16 @@ export type PaymentQuery = Readonly<{
 }>;
 
 export interface PaymentsRepository {
-  /** paidAt: fecha real de un pago cargado tarde (si falta, ahora). */
+  /**
+   * paidAt: fecha real de un pago cargado tarde (si falta, ahora). monthlyChargeIds: cuotas
+   * elegidas (si falta, se imputa desde la deuda más antigua).
+   */
   create(
     studentId: string,
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
     paidAt?: Date,
+    monthlyChargeIds?: readonly string[],
   ): Promise<PaymentDto>;
   /** Cobro que no se imputa a cuotas; igual exige turno de caja abierto. */
   createOther(
@@ -58,6 +62,16 @@ export interface PaymentsRepository {
       tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
       paidAt: Date;
     }>,
+    actorId: string,
+    reason: string,
+  ): Promise<PaymentDto>;
+  /**
+   * Cambia las cuotas a las que se imputó el pago (imputación completa nueva), sin tocar el pago ni
+   * la caja: agrega filas negativas y positivas ligadas a una reimputación con motivo.
+   */
+  reallocate(
+    id: string,
+    allocations: readonly Readonly<{ monthlyChargeId: string; amount: string }>[],
     actorId: string,
     reason: string,
   ): Promise<PaymentDto>;
