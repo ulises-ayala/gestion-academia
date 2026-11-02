@@ -6,6 +6,8 @@ import {
   formatTariffRange,
   inactiveTariffsFrom,
   overlappingTariff,
+  dueDateFor,
+  lastDayOfPeriod,
   tariffDraft,
   periodLabel,
   periodRange,
@@ -77,16 +79,38 @@ describe('generar cuota', () => {
       validFrom: '2026-10-01',
       validTo: '',
     });
+    const name = 'Zumba mensual';
     expect(
-      overlappingTariff([tariff({})], { validFrom: '2026-10-01', validTo: '2026-10-31' }),
+      overlappingTariff([tariff({})], { name, validFrom: '2026-10-01', validTo: '2026-10-31' }),
     ).toBeNull();
-    expect(overlappingTariff([tariff({})], { validFrom: '2026-10-01', validTo: '' })?.id).toBe('t');
     expect(
-      overlappingTariff([tariff({ status: 'INACTIVE' })], { validFrom: '2026-10-01', validTo: '' }),
+      overlappingTariff([tariff({})], {
+        name: ` ${name.toUpperCase()}`,
+        validFrom: '2026-10-01',
+        validTo: '',
+      })?.id,
+    ).toBe('t');
+    expect(
+      overlappingTariff([tariff({ status: 'INACTIVE' })], {
+        name,
+        validFrom: '2026-10-01',
+        validTo: '',
+      }),
+    ).toBeNull();
+    // Otra modalidad de la misma clase (otro nombre) puede regir en las mismas fechas.
+    expect(
+      overlappingTariff([tariff({})], { name: 'Reducida', validFrom: '2026-10-01', validTo: '' }),
     ).toBeNull();
     expect(formatTariffRange({ validFrom: '2026-09-01', validTo: null })).toBe(
       'desde el 01/09/2026',
     );
+  });
+  it('vence el día de pago acordado o el último día del mes', () => {
+    expect(dueDateFor('2026-11')).toBe('2026-11-10');
+    expect(dueDateFor('2026-11', 5)).toBe('2026-11-05');
+    expect(dueDateFor('2026-11', 31)).toBe('2026-11-30');
+    expect(dueDateFor('2027-02', 30)).toBe('2027-02-28');
+    expect(lastDayOfPeriod('2028-02')).toBe('2028-02-29');
   });
   it('nombra el mes en castellano', () => {
     expect(periodLabel('2026-11')).toBe('Noviembre de 2026');

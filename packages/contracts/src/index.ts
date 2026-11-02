@@ -371,6 +371,10 @@ export type EnrollmentDto = Readonly<{
   endReason: EnrollmentEndReasonDto | null;
   endNote: string | null;
   status: EnrollmentStatusDto;
+  /** Modalidad: tarifa que paga el alumno; null = la única tarifa vigente de la clase. */
+  tariff: Readonly<{ id: string; name: string; amount: string }> | null;
+  /** Día de pago acordado (1 a 31). */
+  paymentDueDay: number;
   student: EnrollmentStudentDto;
   academicClass: ClassDto;
   createdAt: string;
@@ -380,6 +384,13 @@ export type CreateEnrollmentDto = Readonly<{
   studentId: string;
   classId: string;
   startDate: string;
+  tariffId?: string | null;
+  paymentDueDay?: number;
+}>;
+/** Condiciones de cobro de la inscripción; valen para las cuotas que se generen después. */
+export type UpdateEnrollmentBillingTermsDto = Readonly<{
+  tariffId?: string | null;
+  paymentDueDay?: number;
 }>;
 export type EndEnrollmentDto = Readonly<{
   endDate: string;
@@ -529,6 +540,8 @@ export type EndEnrollmentBillingConditionDto = Readonly<{
   reason: string;
 }>;
 export type ReverseMonthlyChargeAdjustmentDto = Readonly<{ reason: string }>;
+/** Nuevo vencimiento de una cuota mensual con saldo, dentro de su mes. */
+export type ChangeMonthlyChargeDueDateDto = Readonly<{ dueDate: string; reason: string }>;
 export type CreateMonthlyChargeDto = Readonly<{
   enrollmentId: string;
   tariffId: string;

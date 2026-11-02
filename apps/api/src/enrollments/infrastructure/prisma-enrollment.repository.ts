@@ -9,7 +9,9 @@ import {
 } from '../../database/serializable-retry';
 import { DomainError } from '../../shared/domain/domain-error';
 import type {
+  EnrollmentBillingTerms,
   EnrollmentClassChangeData,
+  EnrollmentCreateData,
   EnrollmentQuery,
   EnrollmentRepository,
   EnrollmentEndData,
@@ -27,6 +29,7 @@ const include = {
   student: {
     select: { id: true, dni: true, firstName: true, lastName: true, phone: true, status: true },
   },
+  tariff: { select: { id: true, name: true, amount: true } },
   class: {
     include: {
       danceType: { select: { id: true, name: true } },
@@ -51,6 +54,22 @@ const include = {
 type Included = Prisma.EnrollmentGetPayload<{ include: typeof include }>;
 const isoDate = (date: Date) => date.toISOString().slice(0, 10);
 const time = (date: Date) => date.toISOString().slice(11, 16);
+/** La modalidad tiene que ser una tarifa activa de la misma clase (decisión 207). */
+const assertModality = async (tx: Prisma.TransactionClient, tariffId: string, classId: string) => {
+  const tariff = await tx.tariff.findUnique({
+    where: { id: tariffId },
+    select: { classId: true, status: true },
+  });
+  if (!tariff) throw new DomainError('TARIFF_NOT_FOUND', 'Tarifa no encontrada');
+  if (tariff.classId !== classId)
+    throw new DomainError('TARIFF_CLASS_MISMATCH', 'La tarifa no corresponde a la clase', {
+      field: 'tariffId',
+    });
+  if (tariff.status !== 'ACTIVE')
+    throw new DomainError('TARIFF_INACTIVE', 'La modalidad elegida tiene la tarifa desactivada', {
+      field: 'tariffId',
+    });
+};
 const map = (item: Included): EnrollmentDto => ({
   id: item.id,
   studentId: item.studentId,
@@ -60,6 +79,8 @@ const map = (item: Included): EnrollmentDto => ({
   endReason: item.endReason,
   endNote: item.endNote,
   status: item.status,
+  tariff: item.tariff ? { ...item.tariff, amount: item.tariff.amount.toFixed(2) } : null,
+  paymentDueDay: item.paymentDueDay,
   student: item.student,
   academicClass: {
     id: item.class.id,
@@ -109,11 +130,7 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
     ]);
     return { items: items.map(map), total, page: query.page, pageSize: query.pageSize };
   }
-  async create(input: {
-    studentId: string;
-    classId: string;
-    startDate: Date;
-  }): Promise<EnrollmentDto> {
+  async create(input: EnrollmentCreateData): Promise<EnrollmentDto> {
     return this.serializable(async (tx) => {
       const lockKeys = [input.classId, `student:${input.studentId}`].sort();
       for (const lockKey of lockKeys)
@@ -140,10 +157,12 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
         data: { status: 'ENDED', endDate, ...reason },
         include,
       });
+      // El día de pago acordado se mantiene; la modalidad es de la clase anterior y no se pasa.
       const created = await this.createWithin(tx, {
         studentId: before.studentId,
         classId: data.classId,
         startDate: data.startDate,
+        paymentDueDay: before.paymentDueDay,
       });
       if (actorId)
         await tx.auditLog.create({
@@ -223,13 +242,14 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
   }
   private async createWithin(
     tx: Prisma.TransactionClient,
-    input: { studentId: string; classId: string; startDate: Date },
+    input: EnrollmentCreateData,
   ): Promise<EnrollmentDto> {
     await this.assertCanOccupy(tx, {
       studentId: input.studentId,
       classId: input.classId,
       from: input.startDate,
     });
+    if (input.tariffId) await assertModality(tx, input.tariffId, input.classId);
     return map(await tx.enrollment.create({ data: input, include }));
   }
   /**
@@ -419,6 +439,45 @@ export class PrismaEnrollmentRepository implements EnrollmentRepository {
               studentName: `${updated.student.firstName} ${updated.student.lastName}`,
               classId: before.classId,
               className: updated.class.name,
+            },
+          },
+        });
+      return map(updated);
+    });
+  }
+  async updateBillingTerms(id: string, terms: EnrollmentBillingTerms, actorId?: string) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM enrollments WHERE id = ${id}::uuid FOR UPDATE`;
+      const before = await tx.enrollment.findUnique({
+        where: { id },
+        include: { tariff: { select: { name: true } } },
+      });
+      if (!before) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada.');
+      if (terms.tariffId) await assertModality(tx, terms.tariffId, before.classId);
+      const updated = await tx.enrollment.update({ where: { id }, data: terms, include });
+      if (actorId)
+        await tx.auditLog.create({
+          data: {
+            actorUserId: actorId,
+            action: 'UPDATE',
+            entityType: 'ENROLLMENT',
+            entityId: id,
+            before: {
+              tariffId: before.tariffId,
+              tariffName: before.tariff?.name ?? null,
+              paymentDueDay: before.paymentDueDay,
+            },
+            after: {
+              tariffId: updated.tariffId,
+              tariffName: updated.tariff?.name ?? null,
+              paymentDueDay: updated.paymentDueDay,
+            },
+            metadata: {
+              studentId: before.studentId,
+              studentName: `${updated.student.firstName} ${updated.student.lastName}`,
+              classId: before.classId,
+              className: updated.class.name,
+              source: 'BILLING_TERMS',
             },
           },
         });

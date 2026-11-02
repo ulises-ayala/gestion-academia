@@ -10,6 +10,9 @@ export type EnrollmentForGeneration = Readonly<{
   status: 'ACTIVE' | 'ENDED';
   startDate: string;
   endDate: string | null;
+  /** Modalidad elegida (decisión 207); null = la única tarifa vigente de la clase. */
+  tariff: Readonly<{ id: string; name: string }> | null;
+  paymentDueDay: number;
 }>;
 
 export type ChargeConditionForPreview = Readonly<{

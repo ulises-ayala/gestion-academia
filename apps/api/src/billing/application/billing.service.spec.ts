@@ -220,7 +220,7 @@ describe('BillingService', () => {
         enrollmentId,
         tariffId: tariff.id,
         period: '2026-08',
-        dueDate: '2026-08-11',
+        dueDate: '2026-09-01',
       }),
     ).rejects.toMatchObject({ code: 'INVALID_DUE_DATE' });
   });

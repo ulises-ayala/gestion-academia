@@ -210,7 +210,7 @@ export class PrismaBillingRepository implements BillingRepository {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
         throw new DomainError(
           'TARIFF_IN_USE',
-          'No se puede eliminar una tarifa que ya tiene cuotas asociadas',
+          'No se puede eliminar una tarifa con cuotas asociadas o elegida como modalidad de un alumno',
         );
       }
 

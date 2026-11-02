@@ -34,6 +34,8 @@ class MemoryRepository implements ChargeGenerationRepository {
     status: 'ACTIVE',
     startDate: '2026-03-02',
     endDate: null,
+    tariff: null,
+    paymentDueDay: 10,
   };
   tariffs: TariffDto[] = [
     tariff({}),
@@ -217,13 +219,13 @@ describe('ChargeGenerationService', () => {
     ).rejects.toMatchObject({ code: 'MONTHLY_CHARGE_ALREADY_EXISTS' });
   });
 
-  it('rechaza inscripciones inexistentes o finalizadas y vencimientos fuera del 1 al 10', async () => {
+  it('rechaza inscripciones inexistentes o finalizadas y vencimientos fuera del mes', async () => {
     const { repository, service } = setup();
     await expect(
       service.generate({ enrollmentId: crypto.randomUUID(), period: '2026-11' }, reception, now),
     ).rejects.toMatchObject({ code: 'ENROLLMENT_NOT_FOUND' });
     await expect(
-      service.generate({ enrollmentId, period: '2026-11', dueDate: '2026-11-15' }, reception, now),
+      service.generate({ enrollmentId, period: '2026-11', dueDate: '2026-12-01' }, reception, now),
     ).rejects.toMatchObject({ code: 'INVALID_DUE_DATE' });
     repository.enrollment = { ...repository.enrollment, status: 'ENDED' };
     await expect(
@@ -292,5 +294,57 @@ describe('ChargeGenerationService', () => {
         ),
       ).rejects.toMatchObject({ code: 'ENROLLMENT_NOT_FOUND' });
     });
+  });
+
+  it('usa el día de pago acordado y, en meses más cortos, el último día', async () => {
+    const { repository, service } = setup();
+    repository.enrollment = { ...repository.enrollment, paymentDueDay: 31 };
+    await service.generate(
+      { enrollmentId, period: '2026-11', untilPeriod: '2026-12' },
+      reception,
+      now,
+    );
+    expect(repository.created.map(({ data }) => data.dueDate)).toEqual([
+      '2026-11-30',
+      '2026-12-31',
+    ]);
+  });
+
+  it('usa la modalidad del alumno cuando la clase tiene varias tarifas', async () => {
+    const { repository, service } = setup();
+    repository.tariffs = [
+      tariff({ id: 'completa', name: 'Completa', amount: '40000.00' }),
+      tariff({ id: 'reducida', name: 'Reducida', amount: '25000.00' }),
+    ];
+    await expect(
+      service.preview({ enrollmentId, period: '2026-11' }, reception, now),
+    ).rejects.toMatchObject({ code: 'TARIFF_AMBIGUOUS_FOR_PERIOD' });
+    repository.enrollment = {
+      ...repository.enrollment,
+      tariff: { id: 'reducida', name: 'Reducida' },
+    };
+    await expect(
+      service.preview({ enrollmentId, period: '2026-11' }, reception, now),
+    ).resolves.toMatchObject({ newTotal: '25000.00' });
+  });
+
+  it('si cambió el precio, sigue la modalidad por nombre', async () => {
+    const { repository, service } = setup();
+    repository.tariffs = [
+      tariff({ id: 'red-vieja', name: 'Reducida', amount: '25000.00', validTo: '2026-10-31' }),
+      tariff({ id: 'red-nueva', name: 'reducida ', amount: '28000.00', validFrom: '2026-11-01' }),
+      tariff({ id: 'completa', name: 'Completa', amount: '40000.00' }),
+    ];
+    repository.enrollment = {
+      ...repository.enrollment,
+      tariff: { id: 'red-vieja', name: 'Reducida' },
+    };
+    await expect(
+      service.preview({ enrollmentId, period: '2026-11' }, reception, now),
+    ).resolves.toMatchObject({ newTotal: '28000.00' });
+    repository.tariffs = [tariff({ id: 'completa', name: 'Completa' })];
+    await expect(
+      service.preview({ enrollmentId, period: '2026-11' }, reception, now),
+    ).rejects.toMatchObject({ code: 'TARIFF_MODALITY_NOT_FOUND' });
   });
 });

@@ -28,7 +28,9 @@ export class PrismaChargeGenerationRepository implements ChargeGenerationReposit
         status: true,
         startDate: true,
         endDate: true,
+        paymentDueDay: true,
         class: { select: { name: true } },
+        tariff: { select: { id: true, name: true } },
       },
     });
     if (!item) return null;
@@ -40,6 +42,8 @@ export class PrismaChargeGenerationRepository implements ChargeGenerationReposit
       status: item.status,
       startDate: isoDate(item.startDate),
       endDate: item.endDate ? isoDate(item.endDate) : null,
+      tariff: item.tariff,
+      paymentDueDay: item.paymentDueDay,
     };
   }
 

@@ -16,7 +16,8 @@ import { TariffQuickForm } from './tariff-quick-form';
 import {
   adjustmentLabels,
   businessPeriod,
-  defaultDueDate,
+  dueDateFor,
+  lastDayOfPeriod,
   formatTariffRange,
   inactiveTariffsFrom,
   periodLabel,
@@ -126,7 +127,7 @@ export function GenerateChargeDialog({
       existing,
     );
     setPeriod(next);
-    setDueDate(defaultDueDate(next));
+    setDueDate(dueDateFor(next, selected.paymentDueDay));
     setUntilPeriod((current) => (current && current >= next ? current : next));
   };
 
@@ -355,7 +356,7 @@ export function GenerateChargeDialog({
                     onChange={(event) => {
                       const next = event.target.value;
                       setPeriod(next);
-                      if (next) setDueDate(defaultDueDate(next));
+                      if (next) setDueDate(dueDateFor(next, enrollment?.paymentDueDay));
                       if (next && untilPeriod < next) setUntilPeriod(next);
                     }}
                   />
@@ -381,7 +382,7 @@ export function GenerateChargeDialog({
                       required
                       value={dueDate}
                       min={period ? `${period}-01` : undefined}
-                      max={period ? `${period}-10` : undefined}
+                      max={period ? lastDayOfPeriod(period) : undefined}
                       disabled={saving}
                       onChange={(event) => setDueDate(event.target.value)}
                     />

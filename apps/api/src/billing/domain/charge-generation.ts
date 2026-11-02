@@ -3,8 +3,8 @@ import { DomainError } from '../../shared/domain/domain-error';
 
 /** Meses hacia adelante que se pueden generar para cobrar por adelantado. */
 export const GENERATION_MONTHS_AHEAD = 2;
-/** Día de vencimiento por defecto, el mismo que usa el alta de alumno. */
-export const DEFAULT_DUE_DAY = '10';
+/** Día de pago por defecto de una inscripción (decisión 208). */
+export const DEFAULT_DUE_DAY = 10;
 
 const periodPattern = /^\d{4}-(0[1-9]|1[0-2])$/;
 
@@ -28,7 +28,12 @@ const monthLabel = (period: string) =>
     new Date(`${period}-01T00:00:00.000Z`),
   );
 
-export const defaultDueDate = (period: string) => `${period}-${DEFAULT_DUE_DAY}`;
+const lastDayOf = (period: string) =>
+  new Date(Date.UTC(Number(period.slice(0, 4)), Number(period.slice(5, 7)), 0)).getUTCDate();
+
+/** Vencimiento del mes según el día de pago acordado; en meses más cortos, el último día. */
+export const dueDateFor = (period: string, day: number = DEFAULT_DUE_DAY) =>
+  `${period}-${String(Math.min(day, lastDayOf(period))).padStart(2, '0')}`;
 
 /** Máximo de meses que se generan de una vez (por ejemplo, para cargar deuda vieja). */
 export const MAX_GENERATION_MONTHS = 12;
@@ -102,15 +107,20 @@ const coversPeriod = (tariff: TariffDto, period: string) =>
   tariff.validFrom.slice(0, 7) <= period &&
   (!tariff.validTo || tariff.validTo.slice(0, 7) >= period);
 
+const sameName = (left: string, right: string) =>
+  left.trim().toLocaleLowerCase('es') === right.trim().toLocaleLowerCase('es');
+
 /**
  * Tarifa de la clase para el mes. Se prefiere la activa; para meses pasados se acepta
- * la tarifa histórica inactiva de ese mes (decisión 160). Si hay más de una candidata
- * no se elige al azar: se pide revisar Tarifas.
+ * la tarifa histórica inactiva de ese mes (decisión 160). Con modalidad (la tarifa que eligió
+ * el alumno, decisión 207) se usa esa tarifa o, si no cubre el mes (cambió el precio), la del
+ * mismo nombre. Si hay más de una candidata no se elige al azar: se pide revisar.
  */
 export const pickTariff = (
   tariffs: readonly TariffDto[],
   period: string,
   currentPeriod: string,
+  modality: Readonly<{ id: string; name: string }> | null = null,
 ): TariffDto => {
   const covering = tariffs.filter((tariff) => coversPeriod(tariff, period));
   const active = covering.filter((tariff) => tariff.status === 'ACTIVE');
@@ -138,10 +148,23 @@ export const pickTariff = (
       { field: 'period', inactiveTariffs },
     );
   }
+  if (modality) {
+    const pinned = candidates.find(({ id }) => id === modality.id);
+    if (pinned) return pinned;
+    const named = candidates.filter(({ name }) => sameName(name, modality.name));
+    if (named.length === 1) return named[0]!;
+    throw new DomainError(
+      named.length ? 'TARIFF_AMBIGUOUS_FOR_PERIOD' : 'TARIFF_MODALITY_NOT_FOUND',
+      named.length
+        ? `La clase tiene más de una tarifa “${modality.name}” vigente para ${monthLabel(period)}. Revisá Tarifas.`
+        : `La modalidad del alumno (“${modality.name}”) no tiene tarifa para ${monthLabel(period)}. Elegí otra modalidad en su ficha o revisá Tarifas.`,
+      { field: 'period' },
+    );
+  }
   if (candidates.length > 1)
     throw new DomainError(
       'TARIFF_AMBIGUOUS_FOR_PERIOD',
-      `La clase tiene más de una tarifa vigente para ${monthLabel(period)}. Revisá Tarifas.`,
+      `La clase tiene más de una tarifa vigente para ${monthLabel(period)}. Elegí la modalidad del alumno en su ficha.`,
       { field: 'period' },
     );
   return candidates[0]!;

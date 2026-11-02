@@ -3,6 +3,7 @@ import type {
   CreateEnrollmentDto,
   EndEnrollmentDto,
   EnrollmentStatusDto,
+  UpdateEnrollmentBillingTermsDto,
   UpdateEnrollmentStartDateDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
@@ -48,6 +49,15 @@ export class EnrollmentsController {
     @CurrentUser() user: PublicAuthUser,
   ) {
     return this.service.updateStartDate(parseUuid(id), body?.startDate, user.id);
+  }
+
+  @Patch(':id/billing-terms')
+  updateBillingTerms(
+    @Param('id') id: string,
+    @Body() body: UpdateEnrollmentBillingTermsDto,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.updateBillingTerms(parseUuid(id), body, user.id);
   }
 
   @Post(':id/change-class') changeClass(

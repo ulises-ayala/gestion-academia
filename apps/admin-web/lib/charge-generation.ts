@@ -53,7 +53,15 @@ export const suggestedPeriod = (
   return range.max;
 };
 
-export const defaultDueDate = (period: string) => `${period}-10`;
+/** Último día del mes (`AAAA-MM-DD`), límite del vencimiento de una cuota. */
+export const lastDayOfPeriod = (period: string) =>
+  `${period}-${String(
+    new Date(Date.UTC(Number(period.slice(0, 4)), Number(period.slice(5, 7)), 0)).getUTCDate(),
+  ).padStart(2, '0')}`;
+
+/** Vencimiento según el día de pago de la inscripción; en meses más cortos, el último día. */
+export const dueDateFor = (period: string, day = 10) =>
+  `${period}-${String(Math.min(day, Number(lastDayOfPeriod(period).slice(8)))).padStart(2, '0')}`;
 
 export type InactiveTariff = Readonly<{ id: string; name: string; amount: string }>;
 
@@ -90,14 +98,21 @@ export const tariffDraft = (
   };
 };
 
-/** Tarifa activa de la clase cuyas fechas se pisan con las propuestas. */
+const sameName = (left: string, right: string) =>
+  left.trim().toLocaleLowerCase('es') === right.trim().toLocaleLowerCase('es');
+
+/**
+ * Tarifa activa de la clase, con el mismo nombre (la misma modalidad), cuyas fechas se pisan
+ * con las propuestas. Tarifas con otro nombre pueden convivir: son otra modalidad.
+ */
 export const overlappingTariff = (
   classTariffs: readonly TariffDto[],
-  range: Readonly<{ validFrom: string; validTo: string }>,
+  range: Readonly<{ name: string; validFrom: string; validTo: string }>,
 ) =>
   classTariffs.find(
     (tariff) =>
       tariff.status === 'ACTIVE' &&
+      sameName(tariff.name, range.name) &&
       (!range.validTo || tariff.validFrom <= range.validTo) &&
       (!tariff.validTo || !range.validFrom || tariff.validTo >= range.validFrom),
   ) ?? null;

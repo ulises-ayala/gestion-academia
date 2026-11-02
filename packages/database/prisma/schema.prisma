@@ -284,17 +284,23 @@ model Enrollment {
   endDate           DateTime?                    @map("end_date") @db.Date
   endReason         EnrollmentEndReason?         @map("end_reason")
   endNote           String?                      @map("end_note") @db.VarChar(500)
+  /// Modalidad: tarifa que paga el alumno. Null = la única tarifa vigente de la clase.
+  tariffId          String?                      @map("tariff_id") @db.Uuid
+  /// Día de pago acordado (1 a 31; en meses más cortos, el último día del mes).
+  paymentDueDay     Int                          @default(10) @map("payment_due_day")
   status            EnrollmentStatus             @default(ACTIVE)
   createdAt         DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
   student           Student                      @relation(fields: [studentId], references: [id], onDelete: Restrict)
   class             AcademyClass                 @relation(fields: [classId], references: [id], onDelete: Restrict)
+  tariff            Tariff?                      @relation(fields: [tariffId], references: [id], onDelete: Restrict)
   monthlyCharges    MonthlyCharge[]
   attendances       StudentAttendance[]
   billingConditions EnrollmentBillingCondition[]
 
   @@index([studentId, status])
   @@index([classId, status])
+  @@index([tariffId])
   @@map("enrollments")
 }
 
@@ -311,6 +317,7 @@ model Tariff {
 
   class          AcademyClass    @relation(fields: [classId], references: [id], onDelete: Restrict)
   monthlyCharges MonthlyCharge[]
+  enrollments    Enrollment[]
 
   @@index([classId, validFrom, validTo])
   @@index([status, validFrom, validTo])

@@ -15,7 +15,7 @@ import { historicalDebtDates, validateHistoricalDebt } from '../domain/historica
 import {
   assertGenerationPeriod,
   assertPeriodAllowed,
-  defaultDueDate,
+  dueDateFor,
   periodsBetween,
   pickTariff,
 } from '../domain/charge-generation';
@@ -77,12 +77,12 @@ export class ChargeGenerationService {
     for (const period of periods) {
       const { dueDate } = validateChargeDates(
         period,
-        single && input.dueDate ? input.dueDate : defaultDueDate(period),
+        single && input.dueDate ? input.dueDate : dueDateFor(period, enrollment.paymentDueDay),
       );
       months.push({
         period,
         dueDate,
-        tariff: pickTariff(tariffs, period, currentPeriod),
+        tariff: pickTariff(tariffs, period, currentPeriod, enrollment.tariff),
         alreadyExists: await this.repository.chargeExists(enrollment.id, period),
       });
     }

@@ -22,6 +22,7 @@ import {
 } from '../../components/generate-charge-dialog';
 import { notifySuccess } from '../../lib/notify';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
+import { ChargeDueDateModal } from '../../components/charge-due-date-modal';
 import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { chargeLabel } from '../../lib/collect-payment';
@@ -1074,6 +1075,7 @@ function StudentAccount({
 }>) {
   const [generating, setGenerating] = useState(false);
   const [otherPayment, setOtherPayment] = useState(false);
+  const [dueDateTarget, setDueDateTarget] = useState<MonthlyChargeDto | null>(null);
   if (loading)
     return (
       <section className="card module-state" role="status">
@@ -1157,6 +1159,19 @@ function StudentAccount({
             }}
           />
         )}
+        {dueDateTarget && (
+          <ChargeDueDateModal
+            charge={dueDateTarget}
+            onClose={() => setDueDateTarget(null)}
+            onSaved={() => {
+              setDueDateTarget(null);
+              onChargeGenerated({
+                title: 'Vencimiento actualizado',
+                detail: 'Se actualizó el estado de cuenta.',
+              });
+            }}
+          />
+        )}
         {generating && (
           <GenerateChargeDialog
             studentId={student.id}
@@ -1233,6 +1248,18 @@ function StudentAccount({
                         onClick={() => onWaiveLateFee(charge)}
                       >
                         Quitar recargo
+                      </button>
+                    </>
+                  )}
+                  {canGenerate && charge.kind === 'MONTHLY' && (
+                    <>
+                      <br />
+                      <button
+                        className="link-button"
+                        type="button"
+                        onClick={() => setDueDateTarget(charge)}
+                      >
+                        Cambiar vencimiento
                       </button>
                     </>
                   )}

@@ -396,6 +396,7 @@ export default function NewStudentPage() {
                   value={dueDate}
                   onChange={(event) => setDueDate(event.target.value)}
                 />
+                <small>El día de este vencimiento queda como día de pago del alumno.</small>
               </label>
             </div>
             <div className="charge-summary">

@@ -14,6 +14,13 @@ export type EnrollmentClassChangeData = Readonly<
   Omit<EnrollmentEndData, 'endDate'> & { classId: string; startDate: Date }
 >;
 
+/** Modalidad (tarifa de la clase o null) y día de pago; lo que falta no cambia. */
+export type EnrollmentBillingTerms = Readonly<{ tariffId?: string | null; paymentDueDay?: number }>;
+
+export type EnrollmentCreateData = Readonly<
+  { studentId: string; classId: string; startDate: Date } & EnrollmentBillingTerms
+>;
+
 export const ENROLLMENT_REPOSITORY = Symbol('ENROLLMENT_REPOSITORY');
 export type EnrollmentQuery = Readonly<{
   studentId?: string;
@@ -28,7 +35,7 @@ export interface EnrollmentRepository {
   findPage(
     query: EnrollmentQuery,
   ): Promise<{ items: EnrollmentDto[]; total: number; page: number; pageSize: number }>;
-  create(input: { studentId: string; classId: string; startDate: Date }): Promise<EnrollmentDto>;
+  create(input: EnrollmentCreateData): Promise<EnrollmentDto>;
   createHistorical(input: {
     studentId: string;
     classId: string;
@@ -36,6 +43,12 @@ export interface EnrollmentRepository {
     endDate: Date | null;
   }): Promise<EnrollmentDto>;
   updateStartDate(id: string, startDate: Date, actorId?: string): Promise<EnrollmentDto>;
+  /** Cambia modalidad y/o día de pago; queda auditado. */
+  updateBillingTerms(
+    id: string,
+    terms: EnrollmentBillingTerms,
+    actorId?: string,
+  ): Promise<EnrollmentDto>;
   end(id: string, data: EnrollmentEndData, actorId?: string): Promise<EnrollmentDto>;
   /** Finaliza la inscripción el día previo a `startDate` e inscribe en `classId` desde esa fecha. */
   changeClass(

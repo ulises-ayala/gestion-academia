@@ -23,6 +23,7 @@ export default function NewEnrollmentPage() {
     branches: BranchDto[];
   }>({ dances: [], teachers: [], branches: [] });
   const [startDate, setStartDate] = useState(new Date().toLocaleDateString('en-CA'));
+  const [paymentDueDay, setPaymentDueDay] = useState('10');
   const [message, setMessage] = useState('');
   const load = useCallback(async () => {
     const query = new URLSearchParams({ status: 'ACTIVE', pageSize: '100' });
@@ -47,7 +48,12 @@ export default function NewEnrollmentPage() {
     try {
       await apiRequest('/enrollments', {
         method: 'POST',
-        body: JSON.stringify({ studentId: id, classId, startDate }),
+        body: JSON.stringify({
+          studentId: id,
+          classId,
+          startDate,
+          paymentDueDay: Number(paymentDueDay),
+        }),
       });
       router.push(`/students/${id}`);
     } catch (error) {
@@ -82,6 +88,16 @@ export default function NewEnrollmentPage() {
         <label>
           Inscripto desde
           <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+        </label>
+        <label>
+          Día de pago
+          <input
+            type="number"
+            min={1}
+            max={31}
+            value={paymentDueDay}
+            onChange={(e) => setPaymentDueDay(e.target.value)}
+          />
         </label>
       </div>
       {message && <p className="message">{message}</p>}

@@ -33,6 +33,15 @@ export function validateEndReason(
   return { endReason: reason as EnrollmentEndReasonDto, endNote };
 }
 
+/** Día de pago acordado: entero del 1 al 31 (decisión 208). */
+export function parsePaymentDueDay(value: unknown): number {
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < 1 || value > 31)
+    throw new DomainError('VALIDATION_ERROR', 'El día de pago debe ser un número del 1 al 31', {
+      field: 'paymentDueDay',
+    });
+  return value;
+}
+
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 
 export function parseEnrollmentDate(value: string, field: 'startDate' | 'endDate'): Date {
