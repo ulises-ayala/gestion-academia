@@ -36,6 +36,9 @@
   --info: #245b78;
   --info-soft: #e8f1f6;
   --info-border: #b9d1df;
+  --violet: #5b3a8c;
+  --violet-soft: #f1ecf8;
+  --violet-border: #d4c7e9;
   --neutral-soft: #f1efec;
   --neutral-border: #d5d0ca;
   --overlay: rgb(28 25 23 / 45%);
@@ -119,6 +122,9 @@
   --info: #92bde6;
   --info-soft: #1a2735;
   --info-border: color-mix(in srgb, var(--info) 22%, transparent);
+  --violet: #c3a6ee;
+  --violet-soft: #221d2c;
+  --violet-border: color-mix(in srgb, var(--violet) 22%, transparent);
   --neutral-soft: var(--surface-secondary);
   --neutral-border: var(--border);
   --overlay: rgb(11 11 12 / 72%);

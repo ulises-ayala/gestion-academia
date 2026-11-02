@@ -1,7 +1,7 @@
 'use client';
 
 import type { CashCollectedDto, CashHandoverDto, CashHandoverListDto } from '@academy/contracts';
-import React, { useCallback, useEffect, useState, type FormEvent } from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import {
   handoverPayload,
@@ -18,10 +18,12 @@ const money = (value: string) =>
 const shortDate = (value: string) => `${value.slice(8, 10)}/${value.slice(5, 7)}`;
 
 /**
- * Entregas del efectivo recaudado a Dirección (Administración y Dirección). No es un gasto: queda
- * registrado qué período cubre y cuánto se entregó frente al efectivo cobrado.
+ * Popup para entregar el efectivo recaudado a Dirección (Administración y Dirección). No es un
+ * gasto: queda registrado qué período cubre y cuánto se entregó frente al efectivo que entró a la
+ * caja. Abajo, las últimas entregas con la opción de anular.
  */
-export function CashHandovers() {
+export function CashHandoverDialog({ onClose }: Readonly<{ onClose(): void }>) {
+  const dialog = useRef<HTMLDialogElement>(null);
   const today = businessToday();
   const [list, setList] = useState<CashHandoverListDto | null>(null);
   const [form, setForm] = useState<CashHandoverForm>({
@@ -36,12 +38,23 @@ export function CashHandovers() {
   const [saving, setSaving] = useState(false);
   const [tried, setTried] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [voidTarget, setVoidTarget] = useState<CashHandoverDto | null>(null);
   const [voidReason, setVoidReason] = useState('');
   const problem = handoverProblem(form, today);
 
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    const element = dialog.current;
+    element?.showModal();
+    return () => {
+      element?.close();
+      opener?.focus();
+    };
+  }, []);
+
   const load = useCallback(async () => {
-    const result = await apiRequest<CashHandoverListDto>('/cash-handovers?pageSize=10');
+    const result = await apiRequest<CashHandoverListDto>('/cash-handovers?pageSize=5');
     setList(result);
     return result;
   }, []);
@@ -58,7 +71,7 @@ export function CashHandovers() {
       );
   }, [load, today]);
 
-  // Efectivo cobrado en el período elegido; precarga el importe mientras no se lo cambie a mano.
+  // Efectivo que entró a la caja en el período; precarga el importe mientras no se lo cambie a mano.
   useEffect(() => {
     if (!form.fromDate || !form.toDate || form.toDate < form.fromDate || form.toDate > today) {
       setCollected(null);
@@ -89,6 +102,7 @@ export function CashHandovers() {
     if (problem || saving) return;
     setSaving(true);
     setError('');
+    setNotice('');
     try {
       await apiRequest<CashHandoverDto>('/cash-handovers', {
         method: 'POST',
@@ -98,6 +112,7 @@ export function CashHandovers() {
       setForm((current) => ({ ...current, note: '', ...nextHandoverPeriod(result.items, today) }));
       setAmountTouched(false);
       setTried(false);
+      setNotice('Entrega registrada.');
     } catch (caught) {
       setError(
         caught instanceof ApiClientError ? caught.message : 'No se pudo registrar la entrega.',
@@ -127,170 +142,175 @@ export function CashHandovers() {
   }
 
   return (
-    <section className="panel cash-handovers">
-      <h2>Entregas de efectivo a Dirección</h2>
-      <p className="subtitle">
-        El efectivo recaudado que se le entrega a Dirección. No es un gasto: no cambia la caja ni la
-        recaudación.
-      </p>
-      <form className="cash-range" onSubmit={(event) => void submit(event)} noValidate>
-        <label>
-          Desde
-          <input
-            type="date"
-            max={today}
-            value={form.fromDate}
-            disabled={saving}
-            onChange={(event) => setForm({ ...form, fromDate: event.target.value })}
-          />
-        </label>
-        <label>
-          Hasta
-          <input
-            type="date"
-            max={today}
-            value={form.toDate}
-            disabled={saving}
-            onChange={(event) => setForm({ ...form, toDate: event.target.value })}
-          />
-        </label>
-        <label>
-          Importe entregado
-          <input
-            inputMode="decimal"
-            value={form.amount}
-            disabled={saving}
-            aria-invalid={tried && Boolean(problem)}
-            onChange={(event) => {
-              setAmountTouched(true);
-              setForm({ ...form, amount: event.target.value });
-            }}
-          />
-        </label>
-        <label>
-          Recibe
-          <input
-            maxLength={120}
-            value={form.receivedBy}
-            disabled={saving}
-            onChange={(event) => setForm({ ...form, receivedBy: event.target.value })}
-          />
-        </label>
-        <label className="cash-handover-note">
-          Nota (opcional)
-          <input
-            maxLength={500}
-            value={form.note}
-            disabled={saving}
-            onChange={(event) => setForm({ ...form, note: event.target.value })}
-          />
-        </label>
-        <button type="submit" disabled={saving}>
-          {saving ? 'Registrando…' : 'Registrar entrega'}
-        </button>
-      </form>
-      {collected !== null && (
-        <p className="cash-handover-collected">
-          Efectivo que entró a la caja del {shortDate(form.fromDate)} al {shortDate(form.toDate)}:{' '}
-          <strong>{money(collected)}</strong>
-        </p>
-      )}
-      {tried && problem && (
-        <p className="field-error" role="status">
-          {problem}
-        </p>
-      )}
-      {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
-      )}
-      {list && list.items.length === 0 && (
-        <p className="empty-state">Todavía no se registró ninguna entrega.</p>
-      )}
-      {list && list.items.length > 0 && (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Período</th>
-                <th>Entregado</th>
-                <th>Efectivo en caja</th>
-                <th>Diferencia</th>
-                <th>Recibió</th>
-                <th>Registró</th>
-                <th>
-                  <span className="sr-only">Acciones</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.items.map((item) => (
-                <tr key={item.id} className={item.voidedAt ? 'is-void' : ''}>
-                  <td data-label="Período">
-                    {shortDate(item.fromDate)} al {shortDate(item.toDate)}
-                    {item.note ? <small className="cash-handover-meta">{item.note}</small> : null}
-                  </td>
-                  <td data-label="Entregado">{money(item.amount)}</td>
-                  <td data-label="Efectivo en caja">{money(item.collectedAmount)}</td>
-                  <td data-label="Diferencia">{money(item.difference)}</td>
-                  <td data-label="Recibió">{item.receivedBy}</td>
-                  <td data-label="Registró">{item.createdBy.username}</td>
-                  <td data-label="Estado">
-                    {item.voidedAt ? (
-                      <span className="status inactive" title={item.voidReason ?? undefined}>
-                        Anulada
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        className="secondary"
-                        disabled={saving}
-                        onClick={() => {
-                          setVoidTarget(item);
-                          setVoidReason('');
-                        }}
-                      >
-                        Anular
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <dialog
+      ref={dialog}
+      className="modal card generate-charge-dialog cash-handover-dialog"
+      aria-labelledby="cash-handover-title"
+      onCancel={(event) => {
+        event.preventDefault();
+        if (!saving) onClose();
+      }}
+    >
+      <form className="generate-charge" onSubmit={(event) => void submit(event)} noValidate>
+        <div>
+          <h2 id="cash-handover-title">Entregar efectivo a Dirección</h2>
+          <p className="modal-copy">
+            No es un gasto: no cambia la caja ni la recaudación, solo deja registrada la entrega.
+          </p>
         </div>
-      )}
-      {voidTarget && (
-        <div className="cash-range">
-          <label className="cash-handover-note">
-            Motivo para anular la entrega del {shortDate(voidTarget.fromDate)} al{' '}
-            {shortDate(voidTarget.toDate)}
+        <div className="generate-charge-fields">
+          <label>
+            Desde
             <input
-              maxLength={500}
-              value={voidReason}
+              type="date"
+              max={today}
+              value={form.fromDate}
               disabled={saving}
-              autoFocus
-              onChange={(event) => setVoidReason(event.target.value)}
+              onChange={(event) => setForm({ ...form, fromDate: event.target.value })}
             />
           </label>
-          <button
-            type="button"
-            className="secondary"
-            disabled={saving}
-            onClick={() => setVoidTarget(null)}
-          >
-            Cancelar
+          <label>
+            Hasta
+            <input
+              type="date"
+              max={today}
+              value={form.toDate}
+              disabled={saving}
+              onChange={(event) => setForm({ ...form, toDate: event.target.value })}
+            />
+          </label>
+          <label>
+            Importe entregado
+            <input
+              inputMode="decimal"
+              placeholder="0"
+              value={form.amount}
+              disabled={saving}
+              aria-invalid={tried && Boolean(problem)}
+              onChange={(event) => {
+                setAmountTouched(true);
+                setForm({ ...form, amount: event.target.value });
+              }}
+            />
+          </label>
+          <label>
+            Recibe
+            <input
+              maxLength={120}
+              value={form.receivedBy}
+              disabled={saving}
+              onChange={(event) => setForm({ ...form, receivedBy: event.target.value })}
+            />
+          </label>
+          <label className="wide">
+            Nota (opcional)
+            <input
+              maxLength={500}
+              value={form.note}
+              disabled={saving}
+              onChange={(event) => setForm({ ...form, note: event.target.value })}
+            />
+          </label>
+        </div>
+        {collected !== null && (
+          <p className="generate-charge-total cash-handover-collected">
+            <span>
+              Efectivo que entró a la caja del {shortDate(form.fromDate)} al{' '}
+              {shortDate(form.toDate)}
+            </span>
+            <strong>{money(collected)}</strong>
+          </p>
+        )}
+        {tried && problem && (
+          <p className="field-error" role="status">
+            {problem}
+          </p>
+        )}
+        {notice && (
+          <p className="form-message" role="status">
+            {notice}
+          </p>
+        )}
+        {error && (
+          <p role="alert" className="error">
+            {error}
+          </p>
+        )}
+        <div className="modal-actions">
+          <button className="secondary" type="button" disabled={saving} onClick={onClose}>
+            Cerrar
           </button>
-          <button
-            type="button"
-            disabled={saving || voidReason.trim().length < 3}
-            onClick={() => void voidHandover()}
-          >
-            Anular entrega
+          <button type="submit" disabled={saving}>
+            {saving ? 'Registrando…' : 'Registrar entrega'}
           </button>
         </div>
+      </form>
+
+      {list && list.items.length > 0 && (
+        <section className="cash-handover-history" aria-labelledby="cash-handover-history-title">
+          <h3 id="cash-handover-history-title">Últimas entregas</h3>
+          <ul>
+            {list.items.map((item) => (
+              <li key={item.id} className={item.voidedAt ? 'is-void' : ''}>
+                <span>
+                  <strong>
+                    {shortDate(item.fromDate)} al {shortDate(item.toDate)} · {money(item.amount)}
+                  </strong>
+                  <small>
+                    {item.voidedAt
+                      ? `Anulada${item.voidReason ? `: ${item.voidReason}` : ''}`
+                      : `En caja ${money(item.collectedAmount)} · diferencia ${money(item.difference)} · recibió ${item.receivedBy}`}
+                  </small>
+                </span>
+                {!item.voidedAt && (
+                  <button
+                    type="button"
+                    className="link-button"
+                    disabled={saving}
+                    onClick={() => {
+                      setVoidTarget(item);
+                      setVoidReason('');
+                    }}
+                  >
+                    Anular
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+          {voidTarget && (
+            <div className="cash-handover-void">
+              <label>
+                Motivo para anular la del {shortDate(voidTarget.fromDate)} al{' '}
+                {shortDate(voidTarget.toDate)}
+                <input
+                  maxLength={500}
+                  value={voidReason}
+                  disabled={saving}
+                  onChange={(event) => setVoidReason(event.target.value)}
+                />
+              </label>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={saving}
+                  onClick={() => setVoidTarget(null)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  disabled={saving || voidReason.trim().length < 3}
+                  onClick={() => void voidHandover()}
+                >
+                  Anular entrega
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
       )}
-    </section>
+    </dialog>
   );
 }

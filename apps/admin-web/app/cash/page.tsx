@@ -6,11 +6,11 @@ import type {
   CashShiftListDto,
   PaymentMethodDto,
 } from '@academy/contracts';
-import { CreditCard } from 'lucide-react';
+import { Banknote, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../components/auth-provider';
-import { CashHandovers } from '../../components/cash-handovers';
+import { CashHandoverDialog } from '../../components/cash-handovers';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { safePaymentReturnTo } from '../../lib/contextual-filters';
@@ -43,6 +43,7 @@ export default function CashPage() {
   });
   const [closing, setClosing] = useState(false);
   const [collecting, setCollecting] = useState(false);
+  const [handingOver, setHandingOver] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [from, setFrom] = useState(today());
@@ -176,6 +177,12 @@ export default function CashPage() {
           <h1>Caja</h1>
           <p>Turnos y cobros registrados automáticamente desde Pagos.</p>
         </div>
+        {can('cash:reconcile') && (
+          <button className="secondary cash-handover-button" onClick={() => setHandingOver(true)}>
+            <Banknote aria-hidden="true" size={18} strokeWidth={1.8} />
+            Entregar efectivo a Dirección
+          </button>
+        )}
       </header>
       {message && (
         <div className="module-state" role="alert">
@@ -220,7 +227,7 @@ export default function CashPage() {
                   type="button"
                   onClick={() => setCollecting(true)}
                 >
-                  <CreditCard aria-hidden="true" size={20} strokeWidth={1.8} />
+                  <CreditCard aria-hidden="true" size={18} strokeWidth={1.8} />
                   Registrar pago
                 </button>
               )}
@@ -231,7 +238,7 @@ export default function CashPage() {
           </div>
           <div className="cash-totals">
             {methods.map((method) => (
-              <article key={method}>
+              <article key={method} data-method={method}>
                 <span>{labels[method]}</span>
                 <strong>{money(current.expectedByMethod[method])}</strong>
                 <small>Esperado según cobros</small>
@@ -521,25 +528,32 @@ export default function CashPage() {
         </section>
       )}
       {can('cash:reconcile') && (
-        <section className="panel">
-          <h2>Consolidado</h2>
-          <div className="cash-range">
-            <label>
-              Desde
-              <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
-            </label>
-            <label>
-              Hasta
-              <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
-            </label>
-            <button onClick={() => void consolidate()}>Consultar</button>
+        <section className="panel cash-consolidated">
+          <div className="cash-consolidated-heading">
+            <div>
+              <h2>Consolidado</h2>
+              <p className="subtitle">Turnos cerrados en el período, por medio de pago.</p>
+            </div>
+            <div className="cash-range">
+              <label>
+                Desde
+                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+              </label>
+              <label>
+                Hasta
+                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+              </label>
+              <button className="secondary" onClick={() => void consolidate()}>
+                Consultar
+              </button>
+            </div>
           </div>
           {consolidated && (
             <>
-              <p>{consolidated.shiftCount} turnos</p>
+              <p className="cash-consolidated-count">{consolidated.shiftCount} turnos</p>
               <div className="cash-totals">
                 {consolidated.byMethod.map((line) => (
-                  <article key={line.method}>
+                  <article key={line.method} data-method={line.method}>
                     <strong>{labels[line.method]}</strong>
                     <span>Sistema al cierre: {money(line.systemAtClose)}</span>
                     <span>Declarado: {money(line.declaredAtClose)}</span>
@@ -552,7 +566,7 @@ export default function CashPage() {
           )}
         </section>
       )}
-      {can('cash:reconcile') && <CashHandovers />}
+      {handingOver && <CashHandoverDialog onClose={() => setHandingOver(false)} />}
     </div>
   );
 }

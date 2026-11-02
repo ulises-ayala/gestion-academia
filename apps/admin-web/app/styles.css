@@ -281,9 +281,39 @@
 }
 .cash-totals {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-3);
   margin: var(--space-4) 0;
+}
+/* Un color por medio de pago, para distinguirlos de un vistazo. */
+.cash-totals [data-method='CASH'] {
+  --method: var(--success);
+  --method-soft: var(--success-soft);
+  --method-border: var(--success-border);
+}
+.cash-totals [data-method='MERCADO_PAGO'] {
+  --method: var(--info);
+  --method-soft: var(--info-soft);
+  --method-border: var(--info-border);
+}
+.cash-totals [data-method='TRANSFER'] {
+  --method: var(--violet);
+  --method-soft: var(--violet-soft);
+  --method-border: var(--violet-border);
+}
+.cash-totals [data-method='CARD'] {
+  --method: var(--brand);
+  --method-soft: var(--brand-soft);
+  --method-border: color-mix(in srgb, var(--brand) 28%, transparent);
+}
+.cash-totals article[data-method] {
+  border-color: var(--method-border);
+  background: var(--method-soft);
+}
+.cash-totals article[data-method] > span:first-child,
+.cash-totals article[data-method] > strong:first-child {
+  color: var(--method);
+  font-weight: var(--font-weight-semibold);
 }
 .cash-heading-actions {
   display: flex;
@@ -304,13 +334,84 @@
 .cash-heading-title p {
   margin: 0;
 }
-.cash-heading-actions .cash-collect-button {
+.cash-heading-actions > :is(button, .button),
+.cash-handover-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  min-height: 3.25rem;
-  padding: 0 var(--space-6);
-  font-size: 1.0625rem;
+  min-height: 2.75rem;
+  padding: 0 var(--space-5);
+}
+.cash-consolidated-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+}
+.cash-consolidated-heading h2,
+.cash-consolidated-heading .subtitle {
+  margin: 0;
+}
+.cash-consolidated-heading .cash-range {
+  margin-top: 0;
+}
+.cash-consolidated-count {
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+}
+.cash-consolidated .cash-totals article span {
+  font-size: var(--font-size-sm);
+}
+.cash-handover-collected strong {
+  font-variant-numeric: tabular-nums;
+}
+.cash-handover-history {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.cash-handover-history h3 {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+.cash-handover-history ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cash-handover-history li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+.cash-handover-history li + li {
+  border-top: 1px solid var(--border);
+}
+.cash-handover-history li > span {
+  display: grid;
+  gap: 2px;
+}
+.cash-handover-history small {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.cash-handover-history li.is-void strong {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.cash-handover-void {
+  display: grid;
+  gap: var(--space-2);
+}
+.cash-handover-void label {
+  display: grid;
+  gap: var(--space-1);
 }
 .cash-totals article,
 .cash-totals label {
@@ -343,40 +444,19 @@
   display: grid;
   gap: var(--space-1);
 }
-.cash-handovers .cash-handover-note {
-  flex: 1 1 14rem;
-}
-.cash-handover-collected {
-  margin: var(--space-3) 0 0;
-  color: var(--text-muted);
-}
-.cash-handover-collected strong {
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-.cash-handover-meta {
-  display: block;
-  color: var(--text-muted);
-  font-size: var(--font-size-xs);
-}
-.cash-handovers tr.is-void td {
-  color: var(--text-muted);
-  text-decoration: line-through;
-}
-.cash-handovers tr.is-void td:last-child {
-  text-decoration: none;
-}
-.cash-handovers .table-wrap {
-  margin-top: var(--space-4);
-}
 @media (max-width: 70rem) {
   .class-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@media (max-width: 48rem) {
+@media (max-width: 64rem) {
   .cash-totals {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 48rem) {
+  .page-heading .cash-handover-button {
+    width: 100%;
   }
   .cash-heading,
   .cash-movements article {
