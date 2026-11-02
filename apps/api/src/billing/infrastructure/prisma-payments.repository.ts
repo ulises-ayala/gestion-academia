@@ -23,6 +23,7 @@ const include = {
   voidedBy: { select: { id: true, username: true } },
   academicClass: { select: { id: true, name: true } },
   teacher: { select: { id: true, firstName: true, lastName: true } },
+  correctedBy: { select: { id: true } },
   tenders: { orderBy: [{ method: 'asc' as const }, { id: 'asc' as const }] },
   allocations: {
     include: {
@@ -50,6 +51,8 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   status: item.status,
   paidAt: item.paidAt.toISOString(),
   createdBy: item.createdBy,
+  correctionOfId: item.correctionOfId,
+  correctedById: item.correctedBy?.id ?? null,
   voidedAt: item.voidedAt?.toISOString() ?? null,
   voidedBy: item.voidedBy,
   allocations: item.allocations.map(({ monthlyCharge, amount }) => ({
@@ -91,6 +94,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     studentId: string,
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
+    paidAt?: Date,
   ) {
     for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
       try {
@@ -120,7 +124,8 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
             });
             const timeZone = process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
-            const today = businessDayAt(new Date(), timeZone).dateValue;
+            // El recargo se decide con la fecha real del pago (un pago cargado tarde no lo genera).
+            const today = businessDayAt(paidAt ?? new Date(), timeZone).dateValue;
             for (const charge of lockedCharges) {
               const paid = confirmedAllocatedAmount(charge.allocations);
               const due = adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue;
@@ -174,6 +179,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               data: {
                 studentId,
                 amount,
+                ...(paidAt ? { paidAt } : {}),
                 createdByUserId: actorId,
                 tenders: {
                   create: tenders.map((tender) => ({
@@ -249,6 +255,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     }>,
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,
+    paidAt?: Date,
   ) {
     try {
       return await this.prisma.$transaction(async (tx) => {
@@ -271,6 +278,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
           data: {
             studentId: data.studentId,
             amount,
+            ...(paidAt ? { paidAt } : {}),
             kind: 'OTHER',
             concept: data.concept,
             conceptDetail: data.detail,
@@ -478,6 +486,223 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               },
             });
             return mapPayment(updated);
+          },
+          { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+        );
+      } catch (error) {
+        if (isRetryableTransactionError(error)) {
+          if (attempt < PAYMENT_TRANSACTION_ATTEMPTS - 1) {
+            await waitBeforeRetry(attempt);
+            continue;
+          }
+          throw new DomainError(
+            'PAYMENT_CONCURRENCY_CONFLICT',
+            'El pago fue modificado al mismo tiempo.',
+          );
+        }
+        throw error;
+      }
+    }
+    throw new DomainError(
+      'PAYMENT_CONCURRENCY_CONFLICT',
+      'El pago fue modificado al mismo tiempo.',
+    );
+  }
+
+  async correct(
+    id: string,
+    input: Readonly<{
+      tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
+      paidAt: Date;
+    }>,
+    actorId: string,
+    reason: string,
+  ) {
+    for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
+      try {
+        return await this.prisma.$transaction(
+          async (tx) => {
+            await tx.$queryRaw`SELECT id FROM payments WHERE id = ${id}::uuid FOR UPDATE`;
+            const original = await tx.payment.findUnique({
+              where: { id },
+              include: { allocations: true, tenders: true },
+            });
+            if (!original) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
+            if (original.status === 'VOID')
+              throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+            const studentId = original.studentId;
+            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
+            const collections = await tx.cashMovement.findMany({
+              where: { sourcePaymentId: id, type: 'COLLECTION' },
+              orderBy: [{ cashShiftId: 'asc' }, { id: 'asc' }],
+            });
+            // Un cobro de caja tiene sus movimientos en un solo turno; los importados, ninguno.
+            const shiftId = collections[0]?.cashShiftId ?? null;
+            if (shiftId)
+              await tx.$queryRaw`SELECT id FROM cash_shifts WHERE id = ${shiftId}::uuid FOR UPDATE`;
+            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status <> 'VOID' ORDER BY due_date, created_at, id FOR UPDATE`;
+
+            // 1. El original queda anulado, con la reversa de sus cobros en su turno.
+            await tx.payment.update({
+              where: { id },
+              data: { status: 'VOID', voidedAt: new Date(), voidedByUserId: actorId },
+            });
+            if (collections.length > 0)
+              await tx.cashMovement.createMany({
+                data: collections.map((collection) => ({
+                  cashShiftId: collection.cashShiftId,
+                  type: 'REVERSAL',
+                  method: collection.method,
+                  amount: collection.amount,
+                  sourcePaymentId: collection.sourcePaymentId,
+                  sourcePaymentTenderId: collection.sourcePaymentTenderId,
+                  reversalOfId: collection.id,
+                  actorUserId: actorId,
+                  reason,
+                })),
+              });
+
+            // 2. Imputación del reemplazo: con el mismo importe, las mismas cuotas; si cambia,
+            //    de la cuota más vieja a la más nueva, como cualquier cobro.
+            const amount = input.tenders.reduce(
+              (sum, tender) => sum.plus(tender.amount),
+              new Prisma.Decimal(0),
+            );
+            let allocations: { monthlyChargeId: string; amount: Prisma.Decimal }[] = [];
+            if (original.kind === 'CHARGES') {
+              if (amount.equals(original.amount))
+                allocations = original.allocations.map((allocation) => ({
+                  monthlyChargeId: allocation.monthlyChargeId,
+                  amount: allocation.amount,
+                }));
+              else {
+                const charges = await tx.monthlyCharge.findMany({
+                  where: { studentId, status: { not: 'VOID' } },
+                  include: {
+                    adjustments: true,
+                    allocations: {
+                      where: { payment: { status: 'CONFIRMED' } },
+                      select: { amount: true },
+                    },
+                  },
+                });
+                const plan = buildPaymentAllocationPlan(
+                  charges.map((charge) => ({
+                    ...charge,
+                    studentDueAmount: adjustedAmounts(charge.baseAmount, charge.adjustments)
+                      .studentDue,
+                  })),
+                  amount,
+                );
+                if (amount.greaterThan(plan.totalOutstanding))
+                  throw new DomainError(
+                    'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE',
+                    'El importe corregido supera la deuda del alumno',
+                    { outstandingAmount: plan.totalOutstanding.toFixed(2) },
+                  );
+                allocations = plan.allocations;
+              }
+            }
+
+            const replacement = await tx.payment.create({
+              data: {
+                studentId,
+                amount,
+                origin: original.origin,
+                kind: original.kind,
+                concept: original.concept,
+                conceptDetail: original.conceptDetail,
+                classId: original.classId,
+                teacherId: original.teacherId,
+                paidAt: input.paidAt,
+                // Quien cobró sigue siendo quien registró el original; la corrección queda auditada.
+                createdByUserId: original.createdByUserId,
+                correctionOfId: original.id,
+                tenders: {
+                  create: input.tenders.map((tender) => ({
+                    method: tender.method,
+                    amount: tender.amount,
+                  })),
+                },
+                allocations: { create: allocations },
+              },
+              include: { tenders: true },
+            });
+            if (shiftId)
+              await tx.cashMovement.createMany({
+                data: replacement.tenders.map((tender) => ({
+                  cashShiftId: shiftId,
+                  type: 'COLLECTION',
+                  method: tender.method,
+                  amount: tender.amount,
+                  sourcePaymentId: replacement.id,
+                  sourcePaymentTenderId: tender.id,
+                  actorUserId: actorId,
+                  reason,
+                })),
+              });
+
+            // 3. Estado de las cuotas que tocaban el original o el reemplazo.
+            const chargeIds = [
+              ...new Set([
+                ...original.allocations.map(({ monthlyChargeId }) => monthlyChargeId),
+                ...allocations.map(({ monthlyChargeId }) => monthlyChargeId),
+              ]),
+            ];
+            const touched = await tx.monthlyCharge.findMany({
+              where: { id: { in: chargeIds } },
+              include: {
+                adjustments: true,
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+            });
+            for (const charge of touched) {
+              if (charge.status === 'VOID') continue;
+              await tx.monthlyCharge.update({
+                where: { id: charge.id },
+                data: {
+                  status: paymentChargeStatus(
+                    confirmedAllocatedAmount(charge.allocations),
+                    adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue,
+                  ),
+                },
+              });
+            }
+
+            const tenderSummary = (
+              tenders: readonly { method: string; amount: Prisma.Decimal | string }[],
+            ) =>
+              tenders.map((tender) => ({
+                method: tender.method,
+                amount: new Prisma.Decimal(tender.amount).toFixed(2),
+              }));
+            await tx.auditLog.create({
+              data: {
+                actorUserId: actorId,
+                action: 'CORRECTION',
+                entityType: 'PAYMENT',
+                entityId: original.id,
+                reason,
+                before: {
+                  amount: original.amount.toFixed(2),
+                  tenders: tenderSummary(original.tenders),
+                  paidAt: original.paidAt.toISOString(),
+                },
+                after: {
+                  paymentId: replacement.id,
+                  amount: amount.toFixed(2),
+                  tenders: tenderSummary(input.tenders),
+                  paidAt: input.paidAt.toISOString(),
+                },
+                metadata: { source: 'PAYMENT_CORRECTION', studentId },
+              },
+            });
+            return mapPayment(
+              await tx.payment.findUniqueOrThrow({ where: { id: replacement.id }, include }),
+            );
           },
           { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
         );

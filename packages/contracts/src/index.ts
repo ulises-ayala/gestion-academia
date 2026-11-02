@@ -596,6 +596,8 @@ export type PaymentStatusDto = 'CONFIRMED' | 'VOID';
 export type CreatePaymentDto = Readonly<{
   studentId: string;
   tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
+  /** Fecha real de un pago cargado tarde (AAAA-MM-DD). Solo Administración y Dirección. */
+  paidDate?: string | null;
 }>;
 export type PaymentKindDto = 'CHARGES' | 'OTHER';
 export type OtherPaymentConceptDto = 'SINGLE_CLASS' | 'OTHER';
@@ -608,6 +610,8 @@ export type CreateOtherPaymentDto = Readonly<{
   teacherId?: string | null;
   detail?: string | null;
   tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
+  /** Fecha real de un pago cargado tarde (AAAA-MM-DD). Solo Administración y Dirección. */
+  paidDate?: string | null;
 }>;
 export type PaymentTenderDto = Readonly<{
   id: string;
@@ -633,6 +637,10 @@ export type PaymentDto = Readonly<{
   status: PaymentStatusDto;
   paidAt: string;
   createdBy: Readonly<{ id: string; username: string }>;
+  /** Pago anulado que este corrige. */
+  correctionOfId: string | null;
+  /** Pago que reemplazó a este al corregirlo (este queda anulado). */
+  correctedById: string | null;
   voidedAt: string | null;
   voidedBy: Readonly<{ id: string; username: string }> | null;
   allocations: readonly PaymentAllocationDto[];
@@ -680,6 +688,16 @@ export type ReceivablesDto = Readonly<{
 }>;
 export type PaymentSummaryDto = Readonly<{ confirmedTotal: string }>;
 export type VoidPaymentDto = Readonly<{ reason: string }>;
+/**
+ * Corregir un pago: se anula y se reemplaza por uno nuevo con los medios, el importe o la fecha
+ * correctos. Los movimientos de caja se corrigen en el turno del pago original.
+ */
+export type CorrectPaymentDto = Readonly<{
+  reason: string;
+  tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
+  /** Fecha real del pago (AAAA-MM-DD); si falta se conserva la del original. */
+  paidDate?: string | null;
+}>;
 
 export type CashShiftStatusDto = 'OPEN' | 'CLOSED';
 export type CashMovementTypeDto = 'COLLECTION' | 'REVERSAL';

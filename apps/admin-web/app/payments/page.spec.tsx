@@ -16,6 +16,8 @@ const payment: PaymentDto = {
   status: 'CONFIRMED',
   paidAt: '2026-08-31T15:00:00.000Z',
   createdBy: { id: 'user-id', username: 'admision' },
+  correctionOfId: null,
+  correctedById: null,
   voidedAt: null,
   voidedBy: null,
   allocations: [
@@ -94,6 +96,40 @@ describe('PaymentHistory', () => {
     expect(confirmed).toContain('Anular</button>');
     expect(voided).toContain('Anulado');
     expect(voided).not.toContain('Anular</button>');
+  });
+
+  it('ofrece Corregir a quien puede anular y marca los pagos corregidos', () => {
+    const confirmed = renderToStaticMarkup(
+      <PaymentHistory
+        canVoid
+        payments={[payment]}
+        onVoid={() => undefined}
+        onCorrect={() => undefined}
+      />,
+    );
+    const withoutPermission = renderToStaticMarkup(
+      <PaymentHistory
+        canVoid={false}
+        payments={[payment]}
+        onVoid={() => undefined}
+        onCorrect={() => undefined}
+      />,
+    );
+    const history = renderToStaticMarkup(
+      <PaymentHistory
+        canVoid
+        payments={[
+          { ...payment, id: 'nuevo', correctionOfId: 'payment-id' },
+          { ...payment, status: 'VOID', correctedById: 'nuevo' },
+        ]}
+        onVoid={() => undefined}
+        onCorrect={() => undefined}
+      />,
+    );
+    expect(confirmed).toContain('Corregir</button>');
+    expect(withoutPermission).not.toContain('Corregir</button>');
+    expect(history).toContain('Corregido');
+    expect(history).toContain('Corrección de un pago anterior');
   });
 });
 
