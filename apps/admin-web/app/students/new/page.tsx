@@ -12,7 +12,7 @@ import type {
 import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
-import { dayLabels } from '../../../lib/offering';
+import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import {
   buildOnboardingPayload,
   onboardingTotal,
@@ -343,7 +343,7 @@ export default function NewStudentPage() {
                   </div>
                   {academicClass && (
                     <p className="class-summary">
-                      {academicClass.teacher.firstName} {academicClass.teacher.lastName} ·{' '}
+                      {classTeachersLabel(academicClass)} ·{' '}
                       {academicClass.schedules
                         .map(
                           (schedule) =>

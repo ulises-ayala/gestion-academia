@@ -69,7 +69,12 @@ export class PrismaTeacherRepository implements TeacherRepository {
   }
   async hasActiveClasses(id: string) {
     return (
-      (await this.prisma.academyClass.count({ where: { teacherId: id, status: 'ACTIVE' } })) > 0
+      (await this.prisma.academyClass.count({
+        where: {
+          status: 'ACTIVE',
+          OR: [{ teacherId: id }, { additionalTeachers: { some: { teacherId: id } } }],
+        },
+      })) > 0
     );
   }
   async findPage(query: TeacherQuery) {

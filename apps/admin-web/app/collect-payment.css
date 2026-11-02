@@ -344,6 +344,9 @@ dialog.collect-dialog::backdrop {
   justify-content: center;
   margin-top: var(--space-3);
 }
+.collect-done-whatsapp {
+  margin-top: var(--space-2);
+}
 
 @media (max-width: 36rem) {
   .collect-methods {

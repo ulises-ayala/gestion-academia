@@ -178,6 +178,7 @@ model Teacher {
   createdAt         DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
   classes           AcademyClass[]
+  additionalClasses ClassAdditionalTeacher[]
   billingConditions EnrollmentBillingCondition[]
   chargeAdjustments MonthlyChargeAdjustment[]
   payments          Payment[]
@@ -230,26 +231,40 @@ model Room {
 }
 
 model AcademyClass {
-  id          String          @id @default(uuid()) @db.Uuid
-  name        String          @db.VarChar(150)
-  danceTypeId String          @map("dance_type_id") @db.Uuid
-  teacherId   String          @map("teacher_id") @db.Uuid
-  level       String?         @db.VarChar(100)
-  capacity    Int
-  status      RecordStatus    @default(ACTIVE)
-  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt   DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
-  danceType   DanceType       @relation(fields: [danceTypeId], references: [id])
-  teacher     Teacher         @relation(fields: [teacherId], references: [id])
-  schedules   ClassSchedule[]
-  enrollments Enrollment[]
-  tariffs     Tariff[]
-  payments    Payment[]
+  id                 String                   @id @default(uuid()) @db.Uuid
+  name               String                   @db.VarChar(150)
+  danceTypeId        String                   @map("dance_type_id") @db.Uuid
+  teacherId          String                   @map("teacher_id") @db.Uuid
+  level              String?                  @db.VarChar(100)
+  capacity           Int
+  status             RecordStatus             @default(ACTIVE)
+  createdAt          DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  danceType          DanceType                @relation(fields: [danceTypeId], references: [id])
+  teacher            Teacher                  @relation(fields: [teacherId], references: [id])
+  additionalTeachers ClassAdditionalTeacher[]
+  schedules          ClassSchedule[]
+  enrollments        Enrollment[]
+  tariffs            Tariff[]
+  payments           Payment[]
 
   @@index([danceTypeId, status])
   @@index([teacherId, status])
   @@index([name])
   @@map("classes")
+}
+
+/// Profesores que dictan la clase además del responsable (`AcademyClass.teacherId`).
+model ClassAdditionalTeacher {
+  classId   String       @map("class_id") @db.Uuid
+  teacherId String       @map("teacher_id") @db.Uuid
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  class     AcademyClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacher   Teacher      @relation(fields: [teacherId], references: [id])
+
+  @@id([classId, teacherId])
+  @@index([teacherId])
+  @@map("class_additional_teachers")
 }
 
 enum EnrollmentEndReason {

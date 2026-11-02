@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ClassForm } from '../../../components/class-form';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { formatDate } from '../../../lib/dates';
-import { dayLabels } from '../../../lib/offering';
+import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import { resolveClassOccupancy } from '../../../lib/class-occupancy';
 import { PermissionGate } from '../../../components/permission-gate';
 import { opensInEditMode } from '../../../lib/class-form-options';
@@ -79,7 +79,7 @@ export default function ClassDetailPage() {
           </Link>
           <h1>{item.name}</h1>
           <p>
-            {item.danceType.name} · {item.teacher.firstName} {item.teacher.lastName}
+            {item.danceType.name} · {classTeachersLabel(item)}
           </p>
         </div>
         <PermissionGate permission="classes:update">

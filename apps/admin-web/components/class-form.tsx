@@ -12,7 +12,7 @@ import type {
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { dayLabels } from '../lib/offering';
-import { withCurrentOption } from '../lib/class-form-options';
+import { additionalTeacherOptions, withCurrentOption } from '../lib/class-form-options';
 import { notifyError } from '../lib/notify';
 
 type UiSchedule = ClassScheduleInputDto & { branchId: string };
@@ -33,6 +33,9 @@ export function ClassForm({
     level: academicClass?.level ?? '',
     capacity: academicClass?.capacity ?? 1,
   });
+  const [additionalTeacherIds, setAdditionalTeacherIds] = useState<readonly string[]>(
+    academicClass?.additionalTeachers.map(({ id }) => id) ?? [],
+  );
   const [schedules, setSchedules] = useState<UiSchedule[]>(
     academicClass?.schedules.map((s) => ({
       dayOfWeek: s.dayOfWeek,
@@ -83,6 +86,14 @@ export function ClassForm({
         }
       : null,
   );
+  const otherTeacherOptions = additionalTeacherOptions(
+    teachers.map((item) => ({ id: item.id, label: `${item.lastName}, ${item.firstName}` })),
+    academicClass?.additionalTeachers.map((item) => ({
+      id: item.id,
+      label: `${item.lastName}, ${item.firstName}`,
+    })) ?? [],
+    form.teacherId,
+  );
   const branchRooms = useMemo(
     () => rooms.filter((room) => room.branchId === draft.branchId),
     [rooms, draft.branchId],
@@ -108,6 +119,7 @@ export function ClassForm({
     setMessage('');
     const payload: CreateClassDto = {
       ...form,
+      additionalTeacherIds: additionalTeacherIds.filter((id) => id !== form.teacherId),
       schedules: schedules.map(({ branchId: _branchId, ...schedule }) => schedule),
     };
     try {
@@ -151,10 +163,13 @@ export function ClassForm({
           </select>
         </label>
         <label>
-          Profesor
+          Profesor responsable
           <select
             value={form.teacherId}
-            onChange={(e) => setForm({ ...form, teacherId: e.target.value })}
+            onChange={(e) => {
+              setForm({ ...form, teacherId: e.target.value });
+              setAdditionalTeacherIds((ids) => ids.filter((id) => id !== e.target.value));
+            }}
           >
             {teacherOptions.map((item) => (
               <option key={item.id} value={item.id}>
@@ -177,6 +192,32 @@ export function ClassForm({
           />
         </label>
       </div>
+      <fieldset>
+        <legend>Otros profesores</legend>
+        <p className="subtitle">
+          Dictan la clase junto con el responsable. Las cuotas se informan a nombre del responsable.
+        </p>
+        {otherTeacherOptions.length === 0 ? (
+          <p className="subtitle">No hay otros profesores activos.</p>
+        ) : (
+          <div className="teacher-checklist">
+            {otherTeacherOptions.map((item) => (
+              <label key={item.id}>
+                <input
+                  type="checkbox"
+                  checked={additionalTeacherIds.includes(item.id)}
+                  onChange={(e) =>
+                    setAdditionalTeacherIds((ids) =>
+                      e.target.checked ? [...ids, item.id] : ids.filter((id) => id !== item.id),
+                    )
+                  }
+                />
+                {item.label}
+              </label>
+            ))}
+          </div>
+        )}
+      </fieldset>
       <fieldset>
         <legend>Horarios</legend>
         <div className="schedule-builder">

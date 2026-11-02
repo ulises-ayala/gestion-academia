@@ -19,6 +19,7 @@ const lesson = (overrides: Partial<ClassDto> & Pick<ClassDto, 'id' | 'name'>): C
   status: 'ACTIVE',
   danceType: { id: 'd1', name: 'Zumba' },
   teacher: { id: 't1', firstName: 'Jose Luis', lastName: 'Barrios' },
+  additionalTeachers: [],
   schedules: [],
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',

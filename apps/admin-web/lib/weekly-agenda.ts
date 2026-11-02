@@ -1,4 +1,5 @@
 import type { ClassDto, DayOfWeekDto } from '@academy/contracts';
+import { classTeachersLabel } from './offering';
 
 export const WEEK_DAYS: readonly DayOfWeekDto[] = [
   'MONDAY',
@@ -59,7 +60,11 @@ export const buildWeeklyAgenda = (
 ): AgendaDay[] => {
   const entries = classes
     .filter((item) => item.status === 'ACTIVE')
-    .filter((item) => !filters.teacherId || item.teacher.id === filters.teacherId)
+    .filter(
+      (item) =>
+        !filters.teacherId ||
+        [item.teacher, ...item.additionalTeachers].some(({ id }) => id === filters.teacherId),
+    )
     .filter((item) => !filters.danceTypeId || item.danceType.id === filters.danceTypeId)
     .flatMap((item) =>
       item.schedules
@@ -75,7 +80,7 @@ export const buildWeeklyAgenda = (
               className: item.name,
               level: item.level,
               danceType: item.danceType.name,
-              teacher: `${item.teacher.firstName} ${item.teacher.lastName}`,
+              teacher: classTeachersLabel(item),
               startTime: schedule.startTime,
               endTime: schedule.endTime,
               room: schedule.room.name,
@@ -111,7 +116,11 @@ export const agendaFilterOptions = (classes: readonly ClassDto[]) => {
     branches: unique(schedules.map((s) => [s.room.branch.id, s.room.branch.name] as const)),
     rooms: schedules.map((s) => ({ id: s.room.id, name: s.room.name, branchId: s.room.branch.id })),
     teachers: unique(
-      classes.map((c) => [c.teacher.id, `${c.teacher.lastName}, ${c.teacher.firstName}`] as const),
+      classes.flatMap((c) =>
+        [c.teacher, ...c.additionalTeachers].map(
+          (t) => [t.id, `${t.lastName}, ${t.firstName}`] as const,
+        ),
+      ),
     ),
     danceTypes: unique(classes.map((c) => [c.danceType.id, c.danceType.name] as const)),
   };

@@ -27,7 +27,7 @@ import { enrollmentEndLabel } from '../../../lib/enrollment-end';
 import { useAuth } from '../../../components/auth-provider';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { businessToday, calculateAge, formatDate } from '../../../lib/dates';
-import { dayLabels } from '../../../lib/offering';
+import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import {
   attendanceCounts,
   isOverdueCharge,
@@ -718,8 +718,7 @@ export default function StudentDetailPage() {
                         <p>
                           {item.academicClass.danceType.name}
                           {item.academicClass.level ? ` · Nivel ${item.academicClass.level}` : ''} ·
-                          Prof. {item.academicClass.teacher.firstName}{' '}
-                          {item.academicClass.teacher.lastName}
+                          Prof. {classTeachersLabel(item.academicClass)}
                         </p>
                       </div>
                       {can('enrollments:manage') && (

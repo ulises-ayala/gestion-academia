@@ -31,6 +31,13 @@ const include = {
     include: {
       danceType: { select: { id: true, name: true } },
       teacher: { select: { id: true, firstName: true, lastName: true } },
+      additionalTeachers: {
+        select: { teacher: { select: { id: true, firstName: true, lastName: true } } },
+        orderBy: [
+          { teacher: { lastName: 'asc' as const } },
+          { teacher: { firstName: 'asc' as const } },
+        ],
+      },
       schedules: {
         where: { status: 'ACTIVE' as const },
         include: {
@@ -62,6 +69,7 @@ const map = (item: Included): EnrollmentDto => ({
     status: item.class.status,
     danceType: item.class.danceType,
     teacher: item.class.teacher,
+    additionalTeachers: item.class.additionalTeachers.map(({ teacher }) => teacher),
     schedules: item.class.schedules.map((s) => ({
       id: s.id,
       dayOfWeek: s.dayOfWeek,

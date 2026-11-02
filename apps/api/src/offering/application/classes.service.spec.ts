@@ -60,6 +60,11 @@ class MemoryClasses implements ClassRepository {
       status: data.status,
       danceType: { id: data.danceTypeId, name: 'Bachata' },
       teacher: { id: data.teacherId, firstName: 'Ana', lastName: 'Pérez' },
+      additionalTeachers: data.additionalTeacherIds.map((id) => ({
+        id,
+        firstName: 'Adicional',
+        lastName: 'Prueba',
+      })),
       schedules: data.schedules.map((schedule) => ({
         id: crypto.randomUUID(),
         dayOfWeek: schedule.dayOfWeek,
@@ -139,6 +144,28 @@ describe('ClassesService', () => {
     await expect(service.create(input())).rejects.toMatchObject({ code: 'TEACHER_NOT_FOUND' });
     repo.teachers.set(teacherId, 'INACTIVE');
     await expect(service.create(input())).rejects.toMatchObject({ code: 'TEACHER_INACTIVE' });
+  });
+  it('guarda profesores adicionales y los conserva al editar otros datos', async () => {
+    const sofia = crypto.randomUUID();
+    const anabella = crypto.randomUUID();
+    repo.teachers.set(sofia, 'ACTIVE');
+    repo.teachers.set(anabella, 'ACTIVE');
+    const created = await service.create({ ...input(), additionalTeacherIds: [sofia, anabella] });
+    expect(created.additionalTeachers.map(({ id }) => id)).toEqual([sofia, anabella]);
+    const renamed = await service.update(created.id, { name: 'Formación Docente' });
+    expect(renamed.additionalTeachers.map(({ id }) => id)).toEqual([sofia, anabella]);
+    const trimmed = await service.update(created.id, { additionalTeacherIds: [anabella] });
+    expect(trimmed.additionalTeachers.map(({ id }) => id)).toEqual([anabella]);
+  });
+  it('rechaza profesores adicionales inexistentes o inactivos', async () => {
+    const other = crypto.randomUUID();
+    await expect(
+      service.create({ ...input(), additionalTeacherIds: [other] }),
+    ).rejects.toMatchObject({ code: 'TEACHER_NOT_FOUND' });
+    repo.teachers.set(other, 'INACTIVE');
+    await expect(
+      service.create({ ...input(), additionalTeacherIds: [other] }),
+    ).rejects.toMatchObject({ code: 'TEACHER_INACTIVE' });
   });
   it('rechaza tipo de danza inexistente o inactivo', async () => {
     repo.danceTypes.delete(danceTypeId);

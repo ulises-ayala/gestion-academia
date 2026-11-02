@@ -1048,6 +1048,26 @@ legend {
 .schedule-builder {
   grid-template-columns: repeat(5, minmax(7rem, 1fr)) auto;
 }
+.payment-history-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.teacher-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--space-2) var(--space-4);
+}
+.teacher-checklist label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+}
+.teacher-checklist input[type='checkbox'] {
+  width: auto;
+  min-height: auto;
+}
 .schedule-list {
   display: grid;
   gap: var(--space-2);

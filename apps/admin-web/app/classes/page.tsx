@@ -9,7 +9,7 @@ import type {
 import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { apiRequest } from '../../lib/api-client';
-import { dayLabels } from '../../lib/offering';
+import { classTeachersLabel, dayLabels } from '../../lib/offering';
 import { PermissionGate } from '../../components/permission-gate';
 
 export default function Page() {
@@ -211,9 +211,7 @@ export default function Page() {
                     </span>
                   </td>
                   <td data-label="Danza">{item.danceType.name}</td>
-                  <td data-label="Profesor">
-                    {item.teacher.firstName} {item.teacher.lastName}
-                  </td>
+                  <td data-label="Profesores">{classTeachersLabel(item)}</td>
                   <td data-label="Horarios">
                     <div className="class-schedule-list">
                       {item.schedules.length === 0 ? (

@@ -48,6 +48,8 @@ import {
   previewAllocations,
   type TenderAmounts,
 } from '../lib/payments';
+import { classTeachersLabel } from '../lib/offering';
+import { whatsappNumber, whatsappReceiptUrl } from '../lib/whatsapp-receipt';
 import { useAuth } from './auth-provider';
 import { GenerateChargeDialog } from './generate-charge-dialog';
 
@@ -542,6 +544,25 @@ export function CollectPaymentDialog({
               {debtCents > 0n ? `Le queda por pagar ${money(debt)}.` : 'Queda al día.'}
             </p>
           )}
+          <a
+            className="button collect-done-whatsapp"
+            href={whatsappReceiptUrl(
+              done,
+              student.phone,
+              done.kind === 'CHARGES' && charges ? debt : null,
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Enviar recibo por WhatsApp
+          </a>
+          {!whatsappNumber(student.phone) && (
+            <p className="collect-hint">
+              {student.phone
+                ? `El teléfono cargado (${student.phone}) no parece un celular: WhatsApp te va a pedir el contacto.`
+                : 'El alumno no tiene teléfono cargado: WhatsApp te va a pedir el contacto.'}
+            </p>
+          )}
           <div className="modal-actions collect-done-actions">
             <button type="button" className="secondary" onClick={() => onClose(true)}>
               Terminar
@@ -703,7 +724,7 @@ export function CollectPaymentDialog({
                     </option>
                     {classes?.map((item) => (
                       <option key={item.id} value={item.id}>
-                        {item.name} · Prof. {item.teacher.firstName} {item.teacher.lastName}
+                        {item.name} · Prof. {classTeachersLabel(item)}
                       </option>
                     ))}
                   </select>
@@ -725,7 +746,10 @@ export function CollectPaymentDialog({
                     {teachers?.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.firstName} {item.lastName}
-                        {item.id === selectedClass.teacher.id ? ' (profesor de la clase)' : ''}
+                        {item.id === selectedClass.teacher.id ||
+                        selectedClass.additionalTeachers.some(({ id }) => id === item.id)
+                          ? ' (profesor de la clase)'
+                          : ''}
                       </option>
                     ))}
                   </select>

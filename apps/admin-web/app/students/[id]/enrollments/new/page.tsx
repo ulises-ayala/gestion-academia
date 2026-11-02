@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../../../../lib/api-client';
-import { dayLabels } from '../../../../../lib/offering';
+import { classTeachersLabel, dayLabels } from '../../../../../lib/offering';
 export default function NewEnrollmentPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -145,7 +145,7 @@ export default function NewEnrollmentPage() {
               <article className="enrollment-card" key={item.id}>
                 <h3>{item.name}</h3>
                 <p>
-                  {item.danceType.name} · {item.teacher.firstName} {item.teacher.lastName}
+                  {item.danceType.name} · {classTeachersLabel(item)}
                 </p>
                 <ul className="schedule-list">
                   {item.schedules.map((s) => (

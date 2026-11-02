@@ -10,6 +10,13 @@ const fromTime = (value: Date) => value.toISOString().slice(11, 16);
 const include = {
   danceType: { select: { id: true, name: true } },
   teacher: { select: { id: true, firstName: true, lastName: true } },
+  additionalTeachers: {
+    select: { teacher: { select: { id: true, firstName: true, lastName: true } } },
+    orderBy: [
+      { teacher: { lastName: 'asc' as const } },
+      { teacher: { firstName: 'asc' as const } },
+    ],
+  },
   schedules: {
     where: { status: 'ACTIVE' as const },
     include: {
@@ -28,6 +35,7 @@ const mapClass = (item: IncludedClass): ClassData => ({
   status: item.status,
   danceType: item.danceType,
   teacher: item.teacher,
+  additionalTeachers: item.additionalTeachers.map(({ teacher }) => teacher),
   schedules: item.schedules.map((schedule) => ({
     id: schedule.id,
     dayOfWeek: schedule.dayOfWeek,
@@ -75,7 +83,15 @@ export class PrismaClassRepository implements ClassRepository {
       ...(query.status ? { status: query.status } : {}),
       ...(query.q ? { name: { contains: query.q, mode: 'insensitive' } } : {}),
       ...(query.danceTypeId ? { danceTypeId: query.danceTypeId } : {}),
-      ...(query.teacherId ? { teacherId: query.teacherId } : {}),
+      // El filtro por profesor incluye las clases donde es adicional.
+      ...(query.teacherId
+        ? {
+            OR: [
+              { teacherId: query.teacherId },
+              { additionalTeachers: { some: { teacherId: query.teacherId } } },
+            ],
+          }
+        : {}),
       ...(query.branchId || query.roomId
         ? {
             schedules: {
@@ -146,6 +162,10 @@ export class PrismaClassRepository implements ClassRepository {
           classId = (await tx.academyClass.create({ data: classData })).id;
         }
         if (!classId) throw new Error('No se pudo resolver el identificador de la clase');
+        await tx.classAdditionalTeacher.deleteMany({ where: { classId } });
+        await tx.classAdditionalTeacher.createMany({
+          data: data.additionalTeacherIds.map((teacherId) => ({ classId, teacherId })),
+        });
         await tx.classSchedule.createMany({
           data: data.schedules.map((schedule) => ({
             classId,
@@ -167,6 +187,7 @@ export class PrismaClassRepository implements ClassRepository {
                 name: before.name,
                 danceTypeId: before.danceTypeId,
                 teacherId: before.teacherId,
+                additionalTeacherIds: before.additionalTeachers.map(({ teacher }) => teacher.id),
                 level: before.level,
                 capacity: before.capacity,
                 status: before.status,
@@ -181,6 +202,7 @@ export class PrismaClassRepository implements ClassRepository {
                 name: saved.name,
                 danceTypeId: saved.danceTypeId,
                 teacherId: saved.teacherId,
+                additionalTeacherIds: saved.additionalTeachers.map(({ teacher }) => teacher.id),
                 level: saved.level,
                 capacity: saved.capacity,
                 status: saved.status,

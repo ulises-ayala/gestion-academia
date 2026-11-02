@@ -3,6 +3,7 @@ import React from 'react';
 import { describeOtherPayment } from '../lib/other-payment';
 import { paymentMethodLabels } from '../lib/payments';
 import { chargeLabel } from '../lib/collect-payment';
+import { whatsappReceiptUrl } from '../lib/whatsapp-receipt';
 
 const money = (value: string | number) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
@@ -18,12 +19,15 @@ export function PaymentHistory({
   payments,
   showStudent = false,
   studentHref,
+  receiptPhone,
   onVoid,
 }: Readonly<{
   canVoid: boolean;
   payments: readonly PaymentDto[];
   showStudent?: boolean;
   studentHref?(id: string): string;
+  /** Con el alumno ya elegido, ofrece reenviar el recibo a este teléfono por WhatsApp. */
+  receiptPhone?: string | null;
   onVoid(payment: PaymentDto): void;
 }>) {
   return (
@@ -85,11 +89,23 @@ export function PaymentHistory({
                 </span>
               </td>
               <td data-label="Acciones">
-                {canVoid && payment.status === 'CONFIRMED' && (
-                  <button className="secondary" onClick={() => onVoid(payment)}>
-                    Anular
-                  </button>
-                )}
+                <div className="payment-history-actions">
+                  {receiptPhone !== undefined && payment.status === 'CONFIRMED' && (
+                    <a
+                      className="button secondary"
+                      href={whatsappReceiptUrl(payment, receiptPhone)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Recibo por WhatsApp
+                    </a>
+                  )}
+                  {canVoid && payment.status === 'CONFIRMED' && (
+                    <button className="secondary" onClick={() => onVoid(payment)}>
+                      Anular
+                    </button>
+                  )}
+                </div>
               </td>
             </tr>
           ))}

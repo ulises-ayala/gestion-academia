@@ -188,6 +188,7 @@ describe('PrismaEnrollmentRepository schedule conflicts', () => {
         updatedAt: new Date(),
         danceType: { id: crypto.randomUUID(), name: 'Salsa' },
         teacher: { id: crypto.randomUUID(), firstName: 'Luz', lastName: 'Gómez' },
+        additionalTeachers: [],
         schedules: [targetSchedule],
       },
     };

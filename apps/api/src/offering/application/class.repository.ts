@@ -9,6 +9,7 @@ export type ClassData = Readonly<{
   status: 'ACTIVE' | 'INACTIVE';
   danceType: { id: string; name: string };
   teacher: { id: string; firstName: string; lastName: string };
+  additionalTeachers: readonly { id: string; firstName: string; lastName: string }[];
   schedules: readonly {
     id: string;
     dayOfWeek: DayOfWeekDto;

@@ -1336,7 +1336,12 @@ function StudentAccount({
         {payments.length === 0 ? (
           <p className="empty-state">No hay pagos registrados.</p>
         ) : (
-          <PaymentHistory canVoid={canVoid} payments={payments} onVoid={onVoid} />
+          <PaymentHistory
+            canVoid={canVoid}
+            payments={payments}
+            receiptPhone={student.phone}
+            onVoid={onVoid}
+          />
         )}
       </section>
     </>

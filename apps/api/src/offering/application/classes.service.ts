@@ -29,6 +29,8 @@ export class ClassesService {
       name: patch.name ?? current.name,
       danceTypeId: patch.danceTypeId ?? current.danceType.id,
       teacherId: patch.teacherId ?? current.teacher.id,
+      additionalTeacherIds:
+        patch.additionalTeacherIds ?? current.additionalTeachers.map(({ id }) => id),
       level: patch.level === undefined ? current.level : patch.level,
       capacity: patch.capacity ?? current.capacity,
       schedules:
@@ -60,6 +62,17 @@ export class ClassesService {
       throw new DomainError('TEACHER_INACTIVE', 'El profesor seleccionado está inactivo', {
         field: 'teacherId',
       });
+    for (const id of data.additionalTeacherIds) {
+      const additional = await this.repo.findTeacher(id);
+      if (!additional)
+        throw new DomainError('TEACHER_NOT_FOUND', 'Profesor adicional no encontrado', {
+          field: 'additionalTeacherIds',
+        });
+      if (additional.status !== 'ACTIVE')
+        throw new DomainError('TEACHER_INACTIVE', 'Un profesor adicional está inactivo', {
+          field: 'additionalTeacherIds',
+        });
+    }
     const danceType = await this.repo.findDanceType(data.danceTypeId);
     if (!danceType)
       throw new DomainError('DANCE_TYPE_NOT_FOUND', 'Tipo de danza no encontrado', {

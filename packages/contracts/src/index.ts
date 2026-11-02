@@ -325,7 +325,10 @@ export type ClassDto = Readonly<{
   capacity: number;
   status: RecordStatusDto;
   danceType: Readonly<{ id: string; name: string }>;
+  /** Profesor responsable: recibe las cuotas en los reportes. */
   teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
+  /** Profesores que dictan la clase además del responsable. */
+  additionalTeachers: readonly Readonly<{ id: string; firstName: string; lastName: string }>[];
   schedules: readonly ClassScheduleDto[];
   createdAt: string;
   updatedAt: string;
@@ -336,6 +339,7 @@ export type CreateClassDto = Readonly<{
   name: string;
   danceTypeId: string;
   teacherId: string;
+  additionalTeacherIds?: readonly string[];
   level?: string | null;
   capacity: number;
   schedules: readonly ClassScheduleInputDto[];

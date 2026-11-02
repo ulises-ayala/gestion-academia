@@ -32,10 +32,34 @@ const time = (value: unknown, field: string) => {
     throw new DomainError('VALIDATION_ERROR', `${field} debe usar el formato HH:mm`, { field });
   return value;
 };
+/** Máximo de profesores adicionales por clase. */
+export const MAX_ADDITIONAL_TEACHERS = 10;
+const additionalTeachers = (value: unknown, teacherId: string) => {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value) || value.some((id) => typeof id !== 'string' || !id.trim()))
+    throw new DomainError('VALIDATION_ERROR', 'Los profesores adicionales no son válidos', {
+      field: 'additionalTeacherIds',
+    });
+  const ids = [...new Set(value.map((id: string) => id.trim()))];
+  if (ids.includes(teacherId))
+    throw new DomainError(
+      'VALIDATION_ERROR',
+      'El profesor responsable no puede figurar también como adicional',
+      { field: 'additionalTeacherIds' },
+    );
+  if (ids.length > MAX_ADDITIONAL_TEACHERS)
+    throw new DomainError(
+      'VALIDATION_ERROR',
+      `La clase admite hasta ${MAX_ADDITIONAL_TEACHERS} profesores adicionales`,
+      { field: 'additionalTeacherIds' },
+    );
+  return ids;
+};
 export type ValidClassInput = Readonly<{
   name: string;
   danceTypeId: string;
   teacherId: string;
+  additionalTeacherIds: readonly string[];
   level: string | null;
   capacity: number;
   schedules: readonly ClassScheduleInputDto[];
@@ -89,10 +113,12 @@ export const validateClass = (
           { field: 'schedules' },
         );
     }
+  const teacherId = required(input.teacherId, 'teacherId', 36);
   return {
     name: required(input.name, 'name', 150),
     danceTypeId: required(input.danceTypeId, 'danceTypeId', 36),
-    teacherId: required(input.teacherId, 'teacherId', 36),
+    teacherId,
+    additionalTeacherIds: additionalTeachers(input.additionalTeacherIds, teacherId),
     level: optional(input.level, 'level', 100),
     capacity: input.capacity,
     schedules,
