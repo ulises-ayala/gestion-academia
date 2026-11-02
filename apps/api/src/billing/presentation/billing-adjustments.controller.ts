@@ -1,4 +1,5 @@
 import type {
+  ChangeMonthlyChargeDueDateDto,
   CreateEnrollmentBillingConditionDto,
   EndEnrollmentBillingConditionDto,
   ReverseMonthlyChargeAdjustmentDto,
@@ -63,6 +64,21 @@ export class BillingAdjustmentsController {
       parseUuid(adjustmentId, 'adjustmentId'),
       input.reason,
       actor,
+    );
+  }
+
+  @Post('monthly-charges/:chargeId/due-date')
+  @Permissions('charges:generate')
+  changeDueDate(
+    @Param('chargeId') chargeId: string,
+    @Body() input: ChangeMonthlyChargeDueDateDto,
+    @CurrentUser() actor: PublicAuthUser,
+  ) {
+    return this.service.changeDueDate(
+      parseUuid(chargeId, 'chargeId'),
+      input?.dueDate,
+      input?.reason,
+      actor.id,
     );
   }
 

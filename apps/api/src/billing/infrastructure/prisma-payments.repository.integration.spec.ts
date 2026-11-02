@@ -6,7 +6,10 @@ import {
   prismaTransactionOptions,
 } from '../../database/prisma-transaction-options';
 import { integrationDatabaseEnabled } from '../../database/integration-database';
+import { PrismaEnrollmentRepository } from '../../enrollments/infrastructure/prisma-enrollment.repository';
 import { BillingAdjustmentsService } from '../application/billing-adjustments.service';
+import { ChargeGenerationService } from '../application/charge-generation.service';
+import { PrismaChargeGenerationRepository } from './prisma-charge-generation.repository';
 import { ReceivablesService } from '../application/receivables.service';
 import { PrismaBillingRepository } from './prisma-billing.repository';
 import { PrismaPaymentsRepository } from './prisma-payments.repository';
@@ -20,6 +23,10 @@ describe.runIf(enabled)(
     const billing = new PrismaBillingRepository(prisma as PrismaService);
     const receivables = new ReceivablesService(prisma as PrismaService);
     const adjustments = new BillingAdjustmentsService(prisma as PrismaService);
+    const enrollments = new PrismaEnrollmentRepository(prisma as PrismaService);
+    const generation = new ChargeGenerationService(
+      new PrismaChargeGenerationRepository(prisma as PrismaService, billing),
+    );
 
     const createFixture = async () => {
       const token = crypto.randomUUID();
@@ -145,7 +152,11 @@ describe.runIf(enabled)(
           where: { monthlyCharge: { enrollmentId: fixture.enrollment.id } },
         });
         await tx.monthlyCharge.deleteMany({ where: { enrollmentId: fixture.enrollment.id } });
-        await tx.tariff.delete({ where: { id: fixture.tariff.id } });
+        await tx.enrollment.update({
+          where: { id: fixture.enrollment.id },
+          data: { tariffId: null },
+        });
+        await tx.tariff.deleteMany({ where: { classId: fixture.academicClass.id } });
         await tx.enrollment.delete({ where: { id: fixture.enrollment.id } });
         await tx.academyClass.delete({ where: { id: fixture.academicClass.id } });
         await tx.danceType.delete({ where: { id: fixture.danceType.id } });
@@ -809,6 +820,117 @@ describe.runIf(enabled)(
           paidAmount: '0.00',
           outstandingAmount: '40000.00',
         });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('cambia el vencimiento dentro del mes y no mueve un recargo ya guardado', async () => {
+      const fixture = await createFixture();
+      try {
+        // Hoy (31/08) agosto está vencida y proyecta recargo; con el nuevo vencimiento, no.
+        await adjustments.changeDueDate(
+          fixture.charge.id,
+          '2026-08-31',
+          'Paga el último día del mes',
+          fixture.actor.id,
+        );
+        await expect(billing.findCharge(fixture.charge.id)).resolves.toMatchObject({
+          dueDate: '2026-08-31',
+          outstandingAmount: '40000.00',
+          overdue: false,
+        });
+        expect(
+          await prisma.auditLog.findFirst({
+            where: { entityId: fixture.charge.id, action: 'UPDATE' },
+            select: { reason: true, before: true, after: true },
+          }),
+        ).toEqual({
+          reason: 'Paga el último día del mes',
+          before: { dueDate: '2026-08-10' },
+          after: { dueDate: '2026-08-31' },
+        });
+        await expect(
+          adjustments.changeDueDate(fixture.charge.id, '2026-09-05', 'Otro mes', fixture.actor.id),
+        ).rejects.toMatchObject({ code: 'INVALID_DUE_DATE' });
+
+        // Con el recargo ya guardado (cobro parcial de una cuota vencida) no se cambia.
+        await adjustments.changeDueDate(
+          fixture.charge.id,
+          '2026-08-10',
+          'Volvió al día 10',
+          fixture.actor.id,
+        );
+        await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '10000.00' }],
+          fixture.actor.id,
+        );
+        await expect(
+          adjustments.changeDueDate(fixture.charge.id, '2026-08-31', 'Tarde', fixture.actor.id),
+        ).rejects.toMatchObject({ code: 'LATE_FEE_ALREADY_APPLIED' });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('genera la cuota con la modalidad y el día de pago de la inscripción', async () => {
+      const fixture = await createFixture();
+      try {
+        const reduced = await prisma.tariff.create({
+          data: {
+            classId: fixture.academicClass.id,
+            name: 'Reducida',
+            amount: '25000.00',
+            validFrom: new Date('2026-08-01T00:00:00.000Z'),
+          },
+        });
+        const reception = { id: fixture.actor.id, canBackfill: false };
+        // Dos tarifas vigentes y sin modalidad elegida: no se adivina.
+        await expect(
+          generation.preview({ enrollmentId: fixture.enrollment.id, period: '2026-10' }, reception),
+        ).rejects.toMatchObject({ code: 'TARIFF_AMBIGUOUS_FOR_PERIOD' });
+
+        await expect(
+          enrollments.updateBillingTerms(
+            fixture.enrollment.id,
+            { tariffId: reduced.id, paymentDueDay: 31 },
+            fixture.actor.id,
+          ),
+        ).resolves.toMatchObject({
+          paymentDueDay: 31,
+          tariff: { id: reduced.id, name: 'Reducida', amount: '25000.00' },
+        });
+        await generation.generate(
+          { enrollmentId: fixture.enrollment.id, period: '2026-10' },
+          reception,
+        );
+        expect(
+          await prisma.monthlyCharge.findFirst({
+            where: {
+              enrollmentId: fixture.enrollment.id,
+              period: new Date('2026-10-01T00:00:00.000Z'),
+            },
+            select: { tariffId: true, baseAmount: true, dueDate: true },
+          }),
+        ).toEqual({
+          tariffId: reduced.id,
+          baseAmount: new Prisma.Decimal('25000'),
+          dueDate: new Date('2026-10-31T00:00:00.000Z'),
+        });
+        // La modalidad tiene que ser una tarifa activa de la clase.
+        const inactive = await prisma.tariff.create({
+          data: {
+            classId: fixture.academicClass.id,
+            name: 'Vieja',
+            amount: '20000.00',
+            validFrom: new Date('2026-08-01T00:00:00.000Z'),
+            status: 'INACTIVE',
+          },
+        });
+        await expect(
+          enrollments.updateBillingTerms(fixture.enrollment.id, { tariffId: inactive.id }),
+        ).rejects.toMatchObject({ code: 'TARIFF_INACTIVE' });
       } finally {
         await cleanupFixture(fixture);
       }

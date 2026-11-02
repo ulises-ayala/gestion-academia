@@ -7,6 +7,7 @@ import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
 import { businessDayAt } from '../../dashboard/application/business-day';
+import { validateChargeDates } from '../domain/billing';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import {
@@ -338,6 +339,79 @@ export class BillingAdjustmentsService {
         },
       });
       return { id: reversal.id };
+    });
+  }
+
+  /**
+   * Cambia el vencimiento de una cuota mensual con saldo dentro de su mes (decisión 209). Un
+   * recargo ya guardado no se mueve con el vencimiento: primero se quita (decisión 203).
+   */
+  async changeDueDate(chargeId: string, dueDateValue: string, why: string, actorId: string) {
+    const motive = reason(why);
+    return this.prisma.$transaction(async (tx) => {
+      const owner = await tx.monthlyCharge.findUnique({
+        where: { id: chargeId },
+        select: { studentId: true },
+      });
+      if (!owner) throw new DomainError('MONTHLY_CHARGE_NOT_FOUND', 'Cuota no encontrada');
+      // Mismo bloqueo que el cobro: el vencimiento define el orden de imputación y el recargo.
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${owner.studentId}))`;
+      const charge = await tx.monthlyCharge.findUniqueOrThrow({
+        where: { id: chargeId },
+        include: {
+          adjustments: true,
+          allocations: { where: { payment: { status: 'CONFIRMED' } }, select: { amount: true } },
+        },
+      });
+      if (charge.kind !== 'MONTHLY' || charge.status === 'VOID')
+        throw new DomainError(
+          'DUE_DATE_NOT_EDITABLE',
+          'Solo se puede cambiar el vencimiento de una cuota mensual vigente',
+        );
+      const paid = charge.allocations.reduce(
+        (sum, row) => sum.plus(row.amount),
+        new Prisma.Decimal(0),
+      );
+      if (
+        adjustedAmounts(charge.baseAmount, charge.adjustments)
+          .studentDue.minus(paid)
+          .lessThanOrEqualTo(0)
+      )
+        throw new DomainError('DUE_DATE_NOT_EDITABLE', 'La cuota ya está paga');
+      const reversedIds = new Set(
+        charge.adjustments.flatMap(({ reversalOfId }) => (reversalOfId ? [reversalOfId] : [])),
+      );
+      if (charge.adjustments.some(({ id, type }) => type === 'LATE_FEE' && !reversedIds.has(id)))
+        throw new DomainError(
+          'LATE_FEE_ALREADY_APPLIED',
+          'La cuota ya tiene el recargo aplicado. Pedí a Administración que lo quite y después cambiá el vencimiento.',
+        );
+      const { dueDate } = validateChargeDates(
+        charge.period.toISOString().slice(0, 7),
+        dueDateValue,
+      );
+      const previous = charge.dueDate.toISOString().slice(0, 10);
+      if (dueDate === previous)
+        throw new DomainError('VALIDATION_ERROR', 'La cuota ya vence ese día', {
+          field: 'dueDate',
+        });
+      await tx.monthlyCharge.update({
+        where: { id: chargeId },
+        data: { dueDate: new Date(`${dueDate}T00:00:00.000Z`) },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actorId,
+          action: 'UPDATE',
+          entityType: 'MONTHLY_CHARGE',
+          entityId: chargeId,
+          reason: motive,
+          before: { dueDate: previous },
+          after: { dueDate },
+          metadata: { studentId: charge.studentId, source: 'DUE_DATE' },
+        },
+      });
+      return { id: chargeId, dueDate };
     });
   }
 

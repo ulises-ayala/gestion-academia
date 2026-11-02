@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { DomainError } from '../../shared/domain/domain-error';
 import { classChangeEndDate } from '../domain/enrollment';
 import type {
+  EnrollmentBillingTerms,
   EnrollmentClassChangeData,
+  EnrollmentCreateData,
   EnrollmentQuery,
   EnrollmentRepository,
   EnrollmentEndData,
@@ -21,6 +23,8 @@ const dto = (overrides: Partial<EnrollmentDto> = {}): EnrollmentDto => ({
   endReason: null,
   endNote: null,
   status: 'ACTIVE',
+  tariff: null,
+  paymentDueDay: 10,
   student: {
     id: studentId,
     dni: '12345678',
@@ -64,7 +68,7 @@ class MemoryEnrollments implements EnrollmentRepository {
     );
     return { items, total: items.length, page: query.page, pageSize: query.pageSize };
   }
-  async create(input: { studentId: string; classId: string; startDate: Date }) {
+  async create(input: EnrollmentCreateData) {
     const student = this.students.get(input.studentId);
     if (!student) throw new DomainError('STUDENT_NOT_FOUND', 'Alumno no encontrado');
     if (student !== 'ACTIVE') throw new DomainError('STUDENT_INACTIVE', 'Alumno inactivo');
@@ -88,9 +92,26 @@ class MemoryEnrollments implements EnrollmentRepository {
       studentId: input.studentId,
       classId: input.classId,
       startDate: input.startDate.toISOString().slice(0, 10),
+      paymentDueDay: input.paymentDueDay ?? 10,
     });
     this.items.push(item);
     return item;
+  }
+  async updateBillingTerms(id: string, terms: EnrollmentBillingTerms) {
+    const current = this.items.find((x) => x.id === id)!;
+    const updated = {
+      ...current,
+      ...(terms.paymentDueDay !== undefined ? { paymentDueDay: terms.paymentDueDay } : {}),
+      ...(terms.tariffId !== undefined
+        ? {
+            tariff: terms.tariffId
+              ? { id: terms.tariffId, name: 'Reducida', amount: '25000.00' }
+              : null,
+          }
+        : {}),
+    };
+    this.items[this.items.indexOf(current)] = updated;
+    return updated;
   }
   async end(id: string, data: EnrollmentEndData) {
     const current = this.items.find((x) => x.id === id)!;
@@ -188,6 +209,34 @@ describe('EnrollmentsService', () => {
     await expect(
       new EnrollmentsService(repo).create({ studentId, classId, startDate: '2026-08-20' }),
     ).rejects.toMatchObject({ code });
+  });
+  it('guarda el día de pago y cambia modalidad y día solo en inscripciones activas', async () => {
+    const repo = new MemoryEnrollments();
+    const service = new EnrollmentsService(repo);
+    const created = await service.create({
+      studentId,
+      classId,
+      startDate: '2026-08-20',
+      paymentDueDay: 20,
+    });
+    expect(created.paymentDueDay).toBe(20);
+    await expect(service.updateBillingTerms(created.id, {})).rejects.toMatchObject({
+      code: 'VALIDATION_ERROR',
+    });
+    await expect(
+      service.updateBillingTerms(created.id, { paymentDueDay: 32 }),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+    await expect(
+      service.updateBillingTerms(created.id, { tariffId: 'no-es-uuid' }),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+    const tariffId = crypto.randomUUID();
+    await expect(
+      service.updateBillingTerms(created.id, { tariffId, paymentDueDay: 5 }),
+    ).resolves.toMatchObject({ paymentDueDay: 5, tariff: { id: tariffId } });
+    await service.end(created.id, { endDate: '2026-09-30', endReason: 'PERSONAL_REASONS' });
+    await expect(
+      service.updateBillingTerms(created.id, { paymentDueDay: 7 }),
+    ).rejects.toMatchObject({ code: 'ENROLLMENT_ALREADY_ENDED' });
   });
   it('rechaza duplicado activo y permite reinscribir tras finalizar', async () => {
     const repo = new MemoryEnrollments();

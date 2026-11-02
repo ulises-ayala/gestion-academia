@@ -50,10 +50,13 @@ export class StudentOnboardingService {
       const createdEnrollments = [];
       const charges = [];
       for (const selection of [...selections].sort((a, b) => a.classId.localeCompare(b.classId))) {
+        // La tarifa elegida es la modalidad y el día del primer vencimiento, el día de pago.
         const enrollment = await enrollments.create({
           studentId: createdStudent.id,
           classId: selection.classId,
           startDate: businessDate(),
+          tariffId: selection.tariffId,
+          paymentDueDay: Number(input.dueDate!.slice(8, 10)),
         });
         createdEnrollments.push(enrollment);
         charges.push(

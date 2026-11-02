@@ -2,15 +2,37 @@ import type {
   ChangeEnrollmentClassDto,
   CreateEnrollmentDto,
   EndEnrollmentDto,
+  UpdateEnrollmentBillingTermsDto,
 } from '@academy/contracts';
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../shared/domain/domain-error';
-import { parseEnrollmentDate, validateEndDate, validateEndReason } from '../domain/enrollment';
+import {
+  parseEnrollmentDate,
+  parsePaymentDueDay,
+  validateEndDate,
+  validateEndReason,
+} from '../domain/enrollment';
 import {
   ENROLLMENT_REPOSITORY,
   type EnrollmentQuery,
   type EnrollmentRepository,
 } from './enrollment.repository';
+
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const billingTerms = (input: UpdateEnrollmentBillingTermsDto) => {
+  if (
+    input.tariffId !== undefined &&
+    input.tariffId !== null &&
+    (typeof input.tariffId !== 'string' || !uuidPattern.test(input.tariffId))
+  )
+    throw new DomainError('VALIDATION_ERROR', 'La modalidad no es válida', { field: 'tariffId' });
+  return {
+    ...(input.tariffId !== undefined ? { tariffId: input.tariffId } : {}),
+    ...(input.paymentDueDay !== undefined
+      ? { paymentDueDay: parsePaymentDueDay(input.paymentDueDay) }
+      : {}),
+  };
+};
 
 @Injectable()
 export class EnrollmentsService {
@@ -28,7 +50,18 @@ export class EnrollmentsService {
       studentId: input.studentId,
       classId: input.classId,
       startDate: parseEnrollmentDate(input.startDate, 'startDate'),
+      ...billingTerms(input),
     });
+  }
+
+  async updateBillingTerms(id: string, input: UpdateEnrollmentBillingTermsDto, actorId?: string) {
+    const terms = billingTerms(input ?? {});
+    if (terms.tariffId === undefined && terms.paymentDueDay === undefined)
+      throw new DomainError('VALIDATION_ERROR', 'Indicá la modalidad o el día de pago');
+    const enrollment = await this.get(id);
+    if (enrollment.status !== 'ACTIVE')
+      throw new DomainError('ENROLLMENT_ALREADY_ENDED', 'La inscripción ya está finalizada.');
+    return this.repository.updateBillingTerms(id, terms, actorId);
   }
 
   async createHistorical(input: {

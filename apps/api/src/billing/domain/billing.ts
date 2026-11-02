@@ -82,11 +82,10 @@ export const validateTariff = (input: {
 export const validateChargeDates = (periodValue: string, dueDateValue: string) => {
   const period = parsePeriod(periodValue);
   const dueDate = parseBillingDate(dueDateValue, 'dueDate');
-  if (dueDate.slice(0, 7) !== period.slice(0, 7) || Number(dueDate.slice(8, 10)) > 10)
-    throw new DomainError(
-      'INVALID_DUE_DATE',
-      'El vencimiento debe estar entre el día 1 y el 10 del período',
-      { field: 'dueDate' },
-    );
+  // Cualquier día del mes de la cuota: el día de pago es por alumno (decisión 208).
+  if (dueDate.slice(0, 7) !== period.slice(0, 7))
+    throw new DomainError('INVALID_DUE_DATE', 'El vencimiento debe caer en el mes de la cuota', {
+      field: 'dueDate',
+    });
   return { period, dueDate };
 };

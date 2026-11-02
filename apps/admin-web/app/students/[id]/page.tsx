@@ -27,6 +27,8 @@ import { enrollmentEndLabel } from '../../../lib/enrollment-end';
 import { useAuth } from '../../../components/auth-provider';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { businessToday, calculateAge, formatDate } from '../../../lib/dates';
+import { billingTermsLabel } from '../../../lib/enrollment-billing';
+import { EnrollmentBillingTermsModal } from '../../../components/enrollment-billing-terms-modal';
 import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import {
   attendanceCounts,
@@ -453,6 +455,7 @@ export default function StudentDetailPage() {
   const [endTarget, setEndTarget] = useState<EnrollmentDto | null>(null);
   const [changeTarget, setChangeTarget] = useState<EnrollmentDto | null>(null);
   const [startDateTarget, setStartDateTarget] = useState<EnrollmentDto | null>(null);
+  const [termsTarget, setTermsTarget] = useState<EnrollmentDto | null>(null);
   const [reactivateTarget, setReactivateTarget] = useState<EnrollmentDto | null>(null);
   const [reactivateError, setReactivateError] = useState('');
   const [followUp, setFollowUp] = useState<readonly StudentFollowUpItemDto[]>([]);
@@ -755,6 +758,21 @@ export default function StudentDetailPage() {
                             onClick={() => setStartDateTarget(item)}
                           >
                             Cambiar fecha
+                          </button>
+                        </>
+                      )}
+                    </p>
+                    <p className="student-class-since">
+                      {billingTermsLabel(item)}
+                      {can('enrollments:manage') && (
+                        <>
+                          {' · '}
+                          <button
+                            type="button"
+                            className="link-button"
+                            onClick={() => setTermsTarget(item)}
+                          >
+                            Cambiar
                           </button>
                         </>
                       )}
@@ -1087,6 +1105,16 @@ export default function StudentDetailPage() {
           onChanged={(newClassName) => {
             setChangeTarget(null);
             void load().then(() => setMessage(`Cambio de clase registrado: ${newClassName}.`));
+          }}
+        />
+      )}
+      {termsTarget && (
+        <EnrollmentBillingTermsModal
+          enrollment={termsTarget}
+          onClose={() => setTermsTarget(null)}
+          onSaved={() => {
+            setTermsTarget(null);
+            void load().then(() => setMessage('Modalidad y día de pago actualizados.'));
           }}
         />
       )}
