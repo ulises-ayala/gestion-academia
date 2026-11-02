@@ -2,6 +2,7 @@ import type {
   ChangeMonthlyChargeDueDateDto,
   CreateEnrollmentBillingConditionDto,
   EndEnrollmentBillingConditionDto,
+  MoveMonthlyChargeDto,
   ReverseMonthlyChargeAdjustmentDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
@@ -78,6 +79,21 @@ export class BillingAdjustmentsController {
       parseUuid(chargeId, 'chargeId'),
       input?.dueDate,
       input?.reason,
+      actor.id,
+    );
+  }
+
+  @Post('monthly-charges/:chargeId/enrollment')
+  @Permissions('charges:generate')
+  moveToEnrollment(
+    @Param('chargeId') chargeId: string,
+    @Body() input: MoveMonthlyChargeDto | null,
+    @CurrentUser() actor: PublicAuthUser,
+  ) {
+    return this.service.moveToEnrollment(
+      parseUuid(chargeId, 'chargeId'),
+      parseUuid(input?.enrollmentId ?? '', 'enrollmentId'),
+      input?.reason ?? '',
       actor.id,
     );
   }

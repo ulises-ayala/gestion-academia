@@ -542,6 +542,8 @@ export type EndEnrollmentBillingConditionDto = Readonly<{
 export type ReverseMonthlyChargeAdjustmentDto = Readonly<{ reason: string }>;
 /** Nuevo vencimiento de una cuota mensual con saldo, dentro de su mes. */
 export type ChangeMonthlyChargeDueDateDto = Readonly<{ dueDate: string; reason: string }>;
+/** Pasar una cuota a otra clase del alumno (cambio de clase sin volver a cobrar). */
+export type MoveMonthlyChargeDto = Readonly<{ enrollmentId: string; reason: string }>;
 export type CreateMonthlyChargeDto = Readonly<{
   enrollmentId: string;
   tariffId: string;

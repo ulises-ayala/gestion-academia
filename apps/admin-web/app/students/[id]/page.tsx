@@ -29,6 +29,7 @@ import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { businessToday, calculateAge, formatDate } from '../../../lib/dates';
 import { billingTermsLabel } from '../../../lib/enrollment-billing';
 import { EnrollmentBillingTermsModal } from '../../../components/enrollment-billing-terms-modal';
+import { MoveChargeModal } from '../../../components/move-charge-modal';
 import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import {
   attendanceCounts,
@@ -456,6 +457,7 @@ export default function StudentDetailPage() {
   const [changeTarget, setChangeTarget] = useState<EnrollmentDto | null>(null);
   const [startDateTarget, setStartDateTarget] = useState<EnrollmentDto | null>(null);
   const [termsTarget, setTermsTarget] = useState<EnrollmentDto | null>(null);
+  const [moveTarget, setMoveTarget] = useState<MonthlyChargeListDto['items'][number] | null>(null);
   const [reactivateTarget, setReactivateTarget] = useState<EnrollmentDto | null>(null);
   const [reactivateError, setReactivateError] = useState('');
   const [followUp, setFollowUp] = useState<readonly StudentFollowUpItemDto[]>([]);
@@ -532,6 +534,13 @@ export default function StudentDetailPage() {
     can('charges:generate') &&
     student?.status === 'ACTIVE' &&
     enrollments.some((item) => item.status === 'ACTIVE');
+  // Cambio de clase sin volver a cobrar: la cuota pasa a otra clase activa del alumno.
+  const moveTargetsFor = (charge: MonthlyChargeListDto['items'][number]) =>
+    enrollments.filter((item) => item.status === 'ACTIVE' && item.id !== charge.enrollmentId);
+  const canMoveCharges =
+    can('charges:generate') &&
+    enrollments.filter((item) => item.status === 'ACTIVE').length > 0 &&
+    enrollments.length > 1;
   const age = student ? calculateAge(student.birthDate) : null;
   const classByEnrollment = new Map(enrollments.map((item) => [item.id, item.academicClass.name]));
 
@@ -823,6 +832,7 @@ export default function StudentDetailPage() {
                         <th>Saldo</th>
                         <th>Vencimiento</th>
                         <th>Estado</th>
+                        {canMoveCharges && <th>Acciones</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -851,6 +861,21 @@ export default function StudentDetailPage() {
                               </span>
                               {overdue && <span className="status void">Vencida</span>}
                             </td>
+                            {canMoveCharges && (
+                              <td data-label="Acciones">
+                                {charge.kind === 'MONTHLY' &&
+                                  charge.status !== 'VOID' &&
+                                  moveTargetsFor(charge).length > 0 && (
+                                    <button
+                                      className="link-button"
+                                      type="button"
+                                      onClick={() => setMoveTarget(charge)}
+                                    >
+                                      Pasar a otra clase
+                                    </button>
+                                  )}
+                              </td>
+                            )}
                           </tr>
                         );
                       })}
@@ -1104,7 +1129,22 @@ export default function StudentDetailPage() {
           onClose={() => setChangeTarget(null)}
           onChanged={(newClassName) => {
             setChangeTarget(null);
-            void load().then(() => setMessage(`Cambio de clase registrado: ${newClassName}.`));
+            void load().then(() =>
+              setMessage(
+                `Cambio de clase registrado: ${newClassName}. Si ya pagó la cuota del mes, pasala a la nueva clase desde "Pasar a otra clase" en sus cuotas.`,
+              ),
+            );
+          }}
+        />
+      )}
+      {moveTarget && (
+        <MoveChargeModal
+          charge={moveTarget}
+          targets={moveTargetsFor(moveTarget)}
+          onClose={() => setMoveTarget(null)}
+          onSaved={(className) => {
+            setMoveTarget(null);
+            void load().then(() => setMessage(`Cuota pasada a ${className}.`));
           }}
         />
       )}

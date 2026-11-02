@@ -7,9 +7,9 @@ import {
 } from '../../database/prisma-transaction-options';
 import { integrationDatabaseEnabled } from '../../database/integration-database';
 import { PrismaEnrollmentRepository } from '../../enrollments/infrastructure/prisma-enrollment.repository';
-import { BillingAdjustmentsService } from '../application/billing-adjustments.service';
 import { ChargeGenerationService } from '../application/charge-generation.service';
 import { PrismaChargeGenerationRepository } from './prisma-charge-generation.repository';
+import { BillingAdjustmentsService } from '../application/billing-adjustments.service';
 import { ReceivablesService } from '../application/receivables.service';
 import { PrismaBillingRepository } from './prisma-billing.repository';
 import { PrismaPaymentsRepository } from './prisma-payments.repository';
@@ -460,6 +460,53 @@ describe.runIf(enabled)(
           ),
         ).rejects.toMatchObject({ code: 'PAYMENT_ALREADY_VOID' });
       } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('pasa una cuota pagada a la nueva clase del alumno sin tocar el pago', async () => {
+      const fixture = await createFixture();
+      const otherClass = await prisma.academyClass.create({
+        data: {
+          name: `Otra clase ${crypto.randomUUID()}`,
+          danceTypeId: fixture.danceType.id,
+          teacherId: fixture.teacher.id,
+          capacity: 10,
+        },
+      });
+      const otherEnrollment = await prisma.enrollment.create({
+        data: {
+          studentId: fixture.student.id,
+          classId: otherClass.id,
+          startDate: new Date('2026-08-15T00:00:00.000Z'),
+        },
+      });
+      try {
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '41000.00' }],
+          fixture.actor.id,
+        );
+        await adjustments.moveToEnrollment(
+          fixture.charge.id,
+          otherEnrollment.id,
+          'Se cambió de clase',
+          fixture.actor.id,
+        );
+        await expect(
+          prisma.monthlyCharge.findUniqueOrThrow({ where: { id: fixture.charge.id } }),
+        ).resolves.toMatchObject({ enrollmentId: otherEnrollment.id, status: 'PAID' });
+        await expect(repository.findById(payment.id)).resolves.toMatchObject({
+          status: 'CONFIRMED',
+          allocations: [expect.objectContaining({ monthlyChargeId: fixture.charge.id })],
+        });
+      } finally {
+        await prisma.monthlyCharge.update({
+          where: { id: fixture.charge.id },
+          data: { enrollmentId: fixture.enrollment.id },
+        });
+        await prisma.enrollment.delete({ where: { id: otherEnrollment.id } });
+        await prisma.academyClass.delete({ where: { id: otherClass.id } });
         await cleanupFixture(fixture);
       }
     });

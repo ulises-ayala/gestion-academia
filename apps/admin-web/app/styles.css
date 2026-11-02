@@ -2632,6 +2632,9 @@ dialog.enrollment-end-dialog:not([open]) {
   color: var(--brand);
   text-decoration: underline;
 }
+td .link-button {
+  white-space: nowrap;
+}
 .account-metrics {
   display: grid;
   grid-template-columns: 1.45fr repeat(3, minmax(0, 1fr));

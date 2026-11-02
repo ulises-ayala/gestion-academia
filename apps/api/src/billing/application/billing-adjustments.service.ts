@@ -416,6 +416,77 @@ export class BillingAdjustmentsService {
   }
 
   /**
+   * Pasa una cuota mensual a otra inscripción activa del mismo alumno (cambio de clase sin volver
+   * a cobrar): la cuota, sus pagos y sus ajustes quedan como están; solo cambia la clase a la que
+   * se atribuye, y con ella el profesor en ingresos y liquidaciones.
+   */
+  async moveToEnrollment(chargeId: string, enrollmentId: string, why: string, actorId: string) {
+    const motive = reason(why);
+    return this.prisma.$transaction(async (tx) => {
+      const owner = await tx.monthlyCharge.findUnique({
+        where: { id: chargeId },
+        select: { studentId: true },
+      });
+      if (!owner) throw new DomainError('MONTHLY_CHARGE_NOT_FOUND', 'Cuota no encontrada');
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${owner.studentId}))`;
+      const charge = await tx.monthlyCharge.findUniqueOrThrow({
+        where: { id: chargeId },
+        include: { enrollment: { include: { class: { select: { id: true, name: true } } } } },
+      });
+      if (charge.kind !== 'MONTHLY' || charge.status === 'VOID')
+        throw new DomainError(
+          'CHARGE_NOT_MOVABLE',
+          'Solo se puede pasar a otra clase una cuota mensual vigente',
+        );
+      const target = await tx.enrollment.findUnique({
+        where: { id: enrollmentId },
+        include: { class: { select: { id: true, name: true } } },
+      });
+      if (!target || target.studentId !== charge.studentId)
+        throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada', {
+          field: 'enrollmentId',
+        });
+      if (target.id === charge.enrollmentId)
+        throw new DomainError('VALIDATION_ERROR', 'La cuota ya es de esa clase', {
+          field: 'enrollmentId',
+        });
+      if (target.status !== 'ACTIVE')
+        throw new DomainError(
+          'ENROLLMENT_INACTIVE_FOR_CHARGE',
+          'La cuota solo se puede pasar a una clase en la que el alumno esté inscripto',
+          { field: 'enrollmentId' },
+        );
+      // Una cuota mensual por inscripción y mes (índice parcial de la decisión 194).
+      const existing = await tx.monthlyCharge.count({
+        where: { enrollmentId: target.id, period: charge.period, kind: 'MONTHLY' },
+      });
+      if (existing > 0)
+        throw new DomainError(
+          'MONTHLY_CHARGE_ALREADY_EXISTS',
+          `${target.class.name} ya tiene la cuota de ese mes`,
+          { field: 'enrollmentId' },
+        );
+      await tx.monthlyCharge.update({
+        where: { id: chargeId },
+        data: { enrollmentId: target.id },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actorId,
+          action: 'UPDATE',
+          entityType: 'MONTHLY_CHARGE',
+          entityId: chargeId,
+          reason: motive,
+          before: { enrollmentId: charge.enrollmentId, className: charge.enrollment.class.name },
+          after: { enrollmentId: target.id, className: target.class.name },
+          metadata: { studentId: charge.studentId, source: 'CLASS_REASSIGNMENT' },
+        },
+      });
+      return { id: chargeId, enrollmentId: target.id };
+    });
+  }
+
+  /**
    * Quita el recargo por vencimiento de una cuota (decisión 203): revierte el recargo guardado o,
    * si todavía solo se proyecta, lo guarda y lo revierte en el mismo paso, así no se vuelve a
    * sumar en el próximo cobro.
