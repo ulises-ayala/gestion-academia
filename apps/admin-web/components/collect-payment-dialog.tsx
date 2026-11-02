@@ -28,6 +28,7 @@ import { businessToday } from '../lib/dates';
 import {
   amountInputValue,
   chargeLabel,
+  cardSurchargeCents,
   chargesProblem,
   emptyTenders,
   historicalDebtPayload,
@@ -122,6 +123,9 @@ export function CollectPaymentDialog({
   const [amountTouched, setAmountTouched] = useState(false);
   /** Cuotas que eligió Administración; vacío = desde la más vieja. */
   const [chosen, setChosen] = useState<readonly string[]>([]);
+  /** Recargo por pagar con tarjeta (se registra aparte, como otro cobro). */
+  const [surcharge, setSurcharge] = useState('');
+  const [doneSurcharge, setDoneSurcharge] = useState<string | null>(null);
   const [concept, setConcept] = useState<OtherPaymentConceptDto>('SINGLE_CLASS');
   const [classId, setClassId] = useState('');
   const [teachers, setTeachers] = useState<TeacherListDto['items'] | null>(null);
@@ -287,10 +291,15 @@ export function CollectPaymentDialog({
   const preview = previewAllocations(payable, totalCents);
   const tenders: TenderAmounts = tendersFrom(pick);
   const otherForm = { concept, classId, teacherId, detail };
+  const paysByCard = (decimalToCents(tenders.CARD || '0') ?? 0n) > 0n;
+  const surchargeCents = paysByCard ? cardSurchargeCents(surcharge) : 0n;
   const selectedClass = classes?.find((item) => item.id === classId) ?? null;
   const problem =
     tab === 'charges'
-      ? chargesProblem(pick, payableCents, chosenOpen.length > 0)
+      ? (chargesProblem(pick, payableCents, chosenOpen.length > 0) ??
+        (surchargeCents === null
+          ? 'El recargo por tarjeta tiene que ser un importe válido.'
+          : null))
       : tab === 'other'
         ? pickIsInvalid(pick)
           ? 'Usá importes positivos con hasta dos decimales.'
@@ -305,6 +314,7 @@ export function CollectPaymentDialog({
     setPick(freshPick());
     setAmountTouched(false);
     setChosen([]);
+    setSurcharge('');
     setDebtForm({ enrollmentId: '', amount: '', description: '' });
     setNotice('');
     setTried(false);
@@ -323,6 +333,7 @@ export function CollectPaymentDialog({
   const anotherForSameStudent = () => {
     if (!student) return;
     setDone(null);
+    setSurcharge('');
     setPick(freshPick());
     setAmountTouched(false);
     setDetail('');
@@ -390,6 +401,7 @@ export function CollectPaymentDialog({
                   ...(chosenOpen.length > 0
                     ? { monthlyChargeIds: chosenOpen.map((charge) => charge.id) }
                     : {}),
+                  ...(surchargeCents ? { cardSurcharge: centsToDecimal(surchargeCents) } : {}),
                 }),
               ),
             })
@@ -399,6 +411,8 @@ export function CollectPaymentDialog({
             });
       markChanged();
       setChosen([]);
+      setDoneSurcharge(tab === 'charges' && surchargeCents ? centsToDecimal(surchargeCents) : null);
+      setSurcharge('');
       setDone(payment);
       void loadCharges(student.id).catch(() => undefined);
     } catch (caught) {
@@ -597,6 +611,9 @@ export function CollectPaymentDialog({
           </span>
           <h3>Cobro registrado</h3>
           <p className="collect-done-amount">{paymentSummary(done).amount}</p>
+          {doneSurcharge && (
+            <p className="modal-copy">Más {money(doneSurcharge)} de recargo por tarjeta</p>
+          )}
           <p className="modal-copy">
             {student.firstName} {student.lastName} · {paymentSummary(done).methods}
           </p>
@@ -791,6 +808,23 @@ export function CollectPaymentDialog({
                 <>
                   {amountField('Importe que paga')}
                   {tenderFields}
+                  {paysByCard && (
+                    <label className="collect-surcharge">
+                      Recargo por tarjeta (opcional)
+                      <input
+                        inputMode="decimal"
+                        placeholder="0,00"
+                        value={surcharge}
+                        disabled={saving}
+                        aria-invalid={tried && surchargeCents === null}
+                        onChange={(event) => setSurcharge(event.target.value)}
+                      />
+                      <small className="collect-hint">
+                        Se suma a la recaudación como otro cobro; no entra en la liquidación del
+                        profesor.
+                      </small>
+                    </label>
+                  )}
                 </>
               )}
             </div>

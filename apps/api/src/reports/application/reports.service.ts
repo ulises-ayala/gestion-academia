@@ -103,6 +103,7 @@ const CONCEPTS: readonly ReportCollectionConceptDto[] = [
   'SINGLE_CLASS',
   'APPAREL',
   'GALA_SEAL',
+  'CARD_SURCHARGE',
   'OTHER',
 ];
 type TeacherIncomeRow = {
@@ -529,7 +530,7 @@ export class ReportsService {
         ? 'Cuotas'
         : payment.concept === 'SINGLE_CLASS'
           ? 'Clase suelta'
-          : payment.concept === 'APPAREL' || payment.concept === 'GALA_SEAL'
+          : payment.concept && payment.concept !== 'OTHER'
             ? `${CONCEPT_LABELS[payment.concept]}${payment.conceptDetail ? `: ${payment.conceptDetail}` : ''}`
             : `Otro: ${payment.conceptDetail ?? ''}`;
     return toCsv(

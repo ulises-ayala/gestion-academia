@@ -98,6 +98,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     actorId: string,
     paidAt?: Date,
     monthlyChargeIds?: readonly string[],
+    cardSurcharge?: string,
   ) {
     for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
       try {
@@ -216,6 +217,32 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 actorUserId: actorId,
               })),
             });
+            // Recargo por tarjeta: otro cobro de la academia, pagado con tarjeta, en el mismo turno.
+            if (cardSurcharge) {
+              const surcharge = await tx.payment.create({
+                data: {
+                  studentId,
+                  amount: cardSurcharge,
+                  kind: 'OTHER',
+                  concept: 'CARD_SURCHARGE',
+                  ...(paidAt ? { paidAt } : {}),
+                  createdByUserId: actorId,
+                  tenders: { create: [{ method: 'CARD', amount: cardSurcharge }] },
+                },
+                include: { tenders: true },
+              });
+              await tx.cashMovement.create({
+                data: {
+                  cashShiftId: cashShift.id,
+                  type: 'COLLECTION',
+                  method: 'CARD',
+                  amount: cardSurcharge,
+                  sourcePaymentId: surcharge.id,
+                  sourcePaymentTenderId: surcharge.tenders[0]!.id,
+                  actorUserId: actorId,
+                },
+              });
+            }
             for (const allocation of allocations) {
               const balance = balances.find(
                 ({ charge }) => charge.id === allocation.monthlyChargeId,

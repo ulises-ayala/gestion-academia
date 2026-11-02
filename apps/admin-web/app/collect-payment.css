@@ -428,3 +428,8 @@ dialog.collect-dialog::backdrop {
   margin: 0;
   text-align: right;
 }
+.collect-surcharge {
+  display: grid;
+  gap: var(--space-1);
+  max-width: 20rem;
+}

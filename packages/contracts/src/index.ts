@@ -615,9 +615,19 @@ export type CreatePaymentDto = Readonly<{
    * desde la deuda más antigua. Solo Administración y Dirección.
    */
   monthlyChargeIds?: readonly string[] | null;
+  /**
+   * Recargo por pagar con tarjeta: se registra en la misma operación como otro cobro
+   * "Recargo por tarjeta" pagado con tarjeta. Exige que el cobro tenga tarjeta.
+   */
+  cardSurcharge?: string | null;
 }>;
 export type PaymentKindDto = 'CHARGES' | 'OTHER';
-export type OtherPaymentConceptDto = 'SINGLE_CLASS' | 'OTHER' | 'APPAREL' | 'GALA_SEAL';
+export type OtherPaymentConceptDto =
+  | 'SINGLE_CLASS'
+  | 'OTHER'
+  | 'APPAREL'
+  | 'GALA_SEAL'
+  | 'CARD_SURCHARGE';
 /** Cobro que no se imputa a cuotas: clase suelta (con su clase) u otro concepto (con detalle). */
 export type CreateOtherPaymentDto = Readonly<{
   studentId: string;

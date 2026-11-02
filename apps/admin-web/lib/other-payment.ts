@@ -5,6 +5,7 @@ export const otherConceptLabels: Readonly<Record<OtherPaymentConceptDto, string>
   SINGLE_CLASS: 'Clase suelta',
   APPAREL: 'Indumentaria',
   GALA_SEAL: 'Precintos de la Gala',
+  CARD_SURCHARGE: 'Recargo por tarjeta',
   OTHER: 'Otro',
 };
 

@@ -39,6 +39,7 @@ export class PaymentsService {
     const tenders = this.tenders(input.tenders);
     const paidAt = this.paidAt(input.paidDate, isAdministration, now);
     const chargeIds = this.chargeIds(input.monthlyChargeIds);
+    const cardSurcharge = this.cardSurcharge(input.cardSurcharge, tenders);
     if (chargeIds && !isAdministration)
       throw new DomainError(
         'FORBIDDEN',
@@ -50,7 +51,31 @@ export class PaymentsService {
       actorId,
       paidAt ?? undefined,
       chargeIds ?? undefined,
+      cardSurcharge ?? undefined,
     );
+  }
+
+  /** Recargo por tarjeta (decimal positivo); null si no hay. Exige que el cobro tenga tarjeta. */
+  private cardSurcharge(
+    value: unknown,
+    tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
+  ) {
+    if (value === undefined || value === null || value === '') return null;
+    if (typeof value !== 'string' || !/^\d{1,10}(?:\.\d{1,2})?$/.test(value))
+      throw new DomainError('VALIDATION_ERROR', 'El recargo debe ser un decimal positivo', {
+        field: 'cardSurcharge',
+      });
+    const amount = new Prisma.Decimal(value);
+    if (amount.isZero()) return null;
+    if (!tenders.some((tender) => tender.method === 'CARD'))
+      throw new DomainError(
+        'VALIDATION_ERROR',
+        'El recargo por tarjeta solo va si se paga con tarjeta',
+        {
+          field: 'cardSurcharge',
+        },
+      );
+    return amount.toFixed(2);
   }
 
   /** Cuotas elegidas; null si no se eligió ninguna (se imputa desde la más vieja). */
@@ -93,6 +118,10 @@ export class PaymentsService {
     const tenders = this.tenders(input.tenders);
     const paidAt = this.paidAt(input.paidDate, canBackdate, now);
     const other = validateOtherPayment(input);
+    if (other.concept === 'CARD_SURCHARGE' && tenders.some((tender) => tender.method !== 'CARD'))
+      throw new DomainError('VALIDATION_ERROR', 'El recargo por tarjeta se cobra con tarjeta', {
+        field: 'tenders',
+      });
     let teacherId = other.teacherId;
     if (other.classId) {
       const academicClass = await this.repository.findClass(other.classId);

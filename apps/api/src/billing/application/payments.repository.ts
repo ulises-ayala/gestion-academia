@@ -29,6 +29,8 @@ export interface PaymentsRepository {
     actorId: string,
     paidAt?: Date,
     monthlyChargeIds?: readonly string[],
+    /** Recargo por tarjeta: otro cobro "Recargo por tarjeta" en la misma transacción. */
+    cardSurcharge?: string,
   ): Promise<PaymentDto>;
   /** Cobro que no se imputa a cuotas; igual exige turno de caja abierto. */
   createOther(

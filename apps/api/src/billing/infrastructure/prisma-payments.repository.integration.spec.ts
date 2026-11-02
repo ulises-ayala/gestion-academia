@@ -133,7 +133,13 @@ describe.runIf(enabled)(
         const paymentIds = (
           await tx.payment.findMany({
             where: {
-              allocations: { some: { monthlyCharge: { enrollmentId: fixture.enrollment.id } } },
+              OR: [
+                {
+                  allocations: { some: { monthlyCharge: { enrollmentId: fixture.enrollment.id } } },
+                },
+                // Otros cobros del alumno (p. ej. el recargo por tarjeta) no tienen imputaciones.
+                { studentId: fixture.student.id },
+              ],
             },
             select: { id: true },
           })
@@ -402,6 +408,39 @@ describe.runIf(enabled)(
             select: { status: true },
           }),
         ).toEqual([{ status: 'PAID' }, { status: 'PARTIAL' }]);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('registra el recargo por tarjeta como otro cobro en el mismo turno', async () => {
+      const fixture = await createFixture();
+      try {
+        const payment = await repository.create(
+          fixture.student.id,
+          [{ method: 'CARD', amount: '40000.00' }],
+          fixture.actor.id,
+          undefined,
+          [fixture.secondCharge.id],
+          '4000.00',
+        );
+        expect(payment.allocations).toEqual([
+          expect.objectContaining({ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }),
+        ]);
+        const surcharge = await prisma.payment.findFirstOrThrow({
+          where: { studentId: fixture.student.id, concept: 'CARD_SURCHARGE' },
+          include: { tenders: true, allocations: true },
+        });
+        expect(surcharge).toMatchObject({ kind: 'OTHER', status: 'CONFIRMED' });
+        expect(surcharge.amount.toFixed(2)).toBe('4000.00');
+        expect(surcharge.allocations).toEqual([]);
+        expect(surcharge.tenders.map((tender) => tender.method)).toEqual(['CARD']);
+        const movements = await prisma.cashMovement.findMany({
+          where: { cashShiftId: fixture.cashShift.id },
+          select: { method: true, amount: true },
+        });
+        expect(movements).toHaveLength(2);
+        expect(movements.every((movement) => movement.method === 'CARD')).toBe(true);
       } finally {
         await cleanupFixture(fixture);
       }

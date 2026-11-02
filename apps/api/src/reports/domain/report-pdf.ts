@@ -19,6 +19,7 @@ export const CONCEPT_LABELS: Readonly<Record<ReportCollectionConceptDto, string>
   SINGLE_CLASS: 'Clase suelta',
   APPAREL: 'Indumentaria',
   GALA_SEAL: 'Precintos de la Gala',
+  CARD_SURCHARGE: 'Recargo por tarjeta',
   OTHER: 'Otros',
 };
 const COLORS = {

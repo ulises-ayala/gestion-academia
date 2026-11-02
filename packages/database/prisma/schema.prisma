@@ -91,6 +91,8 @@ enum OtherPaymentConcept {
   APPAREL
   /// Precintos de la Gala.
   GALA_SEAL
+  /// Recargo por pagar con tarjeta (de la academia, fuera de la liquidación).
+  CARD_SURCHARGE
 }
 
 enum AttendanceStatus {

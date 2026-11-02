@@ -47,16 +47,19 @@ class MemoryPayments implements PaymentsRepository {
   item = payment();
   lastPaidAt: Date | undefined = undefined;
   lastChargeIds: readonly string[] | undefined = undefined;
+  lastSurcharge: string | undefined = undefined;
   async create(
     id: string,
     tenders: readonly { method: PaymentMethodDto; amount: string }[],
     userId: string,
     paidAt?: Date,
     monthlyChargeIds?: readonly string[],
+    cardSurcharge?: string,
   ) {
     this.last = { studentId: id, tenders, actorId: userId };
     this.lastPaidAt = paidAt;
     this.lastChargeIds = monthlyChargeIds;
+    this.lastSurcharge = cardSurcharge;
     return {
       ...this.item,
       amount: tenders
@@ -559,6 +562,47 @@ describe('PaymentsService', () => {
         new PaymentsService(repository).reallocate(repository.item.id, input, actorId),
       ).rejects.toMatchObject({ code: 'PAYMENT_ALREADY_VOID' });
       expect(repository.reallocated).toBeNull();
+    });
+  });
+
+  describe('recargo por tarjeta', () => {
+    it('va con el cobro si se paga con tarjeta', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).create(
+        { studentId, tenders: [{ method: 'CARD', amount: '40000' }], cardSurcharge: '4000' },
+        actorId,
+      );
+      expect(repository.lastSurcharge).toBe('4000.00');
+    });
+
+    it('no se acepta sin tarjeta y cero es sin recargo', async () => {
+      const repository = new MemoryPayments();
+      await expect(
+        new PaymentsService(repository).create(
+          { studentId, tenders: [{ method: 'CASH', amount: '40000' }], cardSurcharge: '4000' },
+          actorId,
+        ),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'cardSurcharge' } });
+      await new PaymentsService(repository).create(
+        { studentId, tenders: [{ method: 'CARD', amount: '40000' }], cardSurcharge: '0' },
+        actorId,
+      );
+      expect(repository.lastSurcharge).toBeUndefined();
+    });
+
+    it('como otro cobro se paga solo con tarjeta', async () => {
+      const repository = new MemoryPayments();
+      await expect(
+        new PaymentsService(repository).createOther(
+          { studentId, concept: 'CARD_SURCHARGE', tenders: [{ method: 'CASH', amount: '4000' }] },
+          actorId,
+        ),
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'tenders' } });
+      await new PaymentsService(repository).createOther(
+        { studentId, concept: 'CARD_SURCHARGE', tenders: [{ method: 'CARD', amount: '4000' }] },
+        actorId,
+      );
+      expect(repository.other?.data.concept).toBe('CARD_SURCHARGE');
     });
   });
 });

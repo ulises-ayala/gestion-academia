@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   amountInputValue,
   chargeLabel,
+  cardSurchargeCents,
   chargesProblem,
   emptyTenders,
   historicalDebtPayload,
@@ -103,5 +104,11 @@ describe('popup de cobro', () => {
     } as unknown as PaymentDto);
     expect(summary.methods).toBe('Efectivo');
     expect(summary.detail).toMatch(/^Deuda anterior: ControlFit/);
+  });
+
+  it('entiende el recargo por tarjeta', () => {
+    expect(cardSurchargeCents('')).toBe(0n);
+    expect(cardSurchargeCents('4.000')).toBe(400000n);
+    expect(cardSurchargeCents('abc')).toBeNull();
   });
 });

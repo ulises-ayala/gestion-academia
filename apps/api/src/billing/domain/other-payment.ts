@@ -5,6 +5,7 @@ const concepts: readonly OtherPaymentConceptDto[] = [
   'SINGLE_CLASS',
   'APPAREL',
   'GALA_SEAL',
+  'CARD_SURCHARGE',
   'OTHER',
 ];
 export const OTHER_PAYMENT_DETAIL_MAX = 200;

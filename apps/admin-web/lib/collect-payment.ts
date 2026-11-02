@@ -81,6 +81,13 @@ export const pickIsInvalid = (pick: TenderPick) =>
   );
 
 /** Primer motivo por el que no se puede cobrar cuotas, o null. */
+/** Recargo por tarjeta en centavos: 0 si está vacío, null si no es un importe válido. */
+export const cardSurchargeCents = (value: string) => {
+  if (!value.trim()) return 0n;
+  const cents = decimalToCents(normalizeAmount(value));
+  return cents === null || cents < 0n ? null : cents;
+};
+
 /** chosen: debtCents es lo que deben las cuotas marcadas, no toda la deuda. */
 export const chargesProblem = (pick: TenderPick, debtCents: bigint, chosen = false) => {
   if (debtCents <= 0n) return 'No tiene cuotas pendientes: generá la cuota que viene a pagar.';
