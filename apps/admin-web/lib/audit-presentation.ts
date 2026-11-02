@@ -21,6 +21,7 @@ export const auditEntityOptions = [
   ['CASH_SHIFT', 'Turno de caja'],
   ['SETTLEMENT', 'Liquidación'],
   ['CLASS_SETTLEMENT_PLAN', 'Reparto de liquidación'],
+  ['CASH_HANDOVER', 'Entrega de efectivo'],
 ] as const;
 export const auditActionOptions = [
   ['', 'Todas'],

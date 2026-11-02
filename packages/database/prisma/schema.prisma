@@ -620,6 +620,29 @@ model PaymentAllocation {
   @@map("payment_allocations")
 }
 
+/// Entrega del efectivo recaudado a Dirección: no es un gasto ni un movimiento de turno.
+model CashHandover {
+  id              String     @id @default(uuid()) @db.Uuid
+  /// Período de recaudación que cubre (días de Buenos Aires).
+  fromDate        DateTime   @map("from_date") @db.Date
+  toDate          DateTime   @map("to_date") @db.Date
+  amount          Decimal    @db.Decimal(12, 2)
+  /// Efectivo cobrado en el período al registrar la entrega.
+  collectedAmount Decimal    @map("collected_amount") @db.Decimal(12, 2)
+  receivedBy      String     @map("received_by") @db.VarChar(120)
+  note            String?    @db.VarChar(500)
+  createdByUserId String     @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  voidedAt        DateTime?  @map("voided_at") @db.Timestamptz(3)
+  voidedByUserId  String?    @map("voided_by_user_id") @db.Uuid
+  voidReason      String?    @map("void_reason") @db.VarChar(500)
+  createdBy       AdminUser  @relation("CashHandoverCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  voidedBy        AdminUser? @relation("CashHandoverVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
+
+  @@index([toDate])
+  @@map("cash_handovers")
+}
+
 /// Corrección de las cuotas a las que se imputó un pago: no cambia el pago ni la caja; agrega
 /// filas de imputación (negativas en las cuotas que pierden, positivas en las que ganan).
 model PaymentReallocation {
@@ -699,6 +722,8 @@ model AdminUser {
   settlementPlansCreated      ClassSettlementPlan[]          @relation("SettlementPlanCreatedBy")
   settlementsClosed           SettlementClosing[]            @relation("SettlementClosedBy")
   paymentReallocations        PaymentReallocation[]          @relation("PaymentReallocationCreatedBy")
+  cashHandoversCreated        CashHandover[]                 @relation("CashHandoverCreatedBy")
+  cashHandoversVoided         CashHandover[]                 @relation("CashHandoverVoidedBy")
 
   @@map("admin_users")
 }

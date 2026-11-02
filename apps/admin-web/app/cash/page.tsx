@@ -10,6 +10,7 @@ import { CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../components/auth-provider';
+import { CashHandovers } from '../../components/cash-handovers';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { safePaymentReturnTo } from '../../lib/contextual-filters';
@@ -551,6 +552,7 @@ export default function CashPage() {
           )}
         </section>
       )}
+      {can('cash:reconcile') && <CashHandovers />}
     </div>
   );
 }

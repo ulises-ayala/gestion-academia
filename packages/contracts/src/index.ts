@@ -727,6 +727,36 @@ export type ReallocatePaymentDto = Readonly<{
   allocations: readonly Readonly<{ monthlyChargeId: string; amount: string }>[];
 }>;
 
+/** Entrega del efectivo recaudado a Dirección (no es un gasto). Fechas AAAA-MM-DD. */
+export type CashHandoverDto = Readonly<{
+  id: string;
+  fromDate: string;
+  toDate: string;
+  amount: string;
+  /** Efectivo cobrado en el período al registrar la entrega. */
+  collectedAmount: string;
+  /** Entregado menos cobrado: negativo si se entregó menos de lo cobrado. */
+  difference: string;
+  receivedBy: string;
+  note: string | null;
+  createdBy: Readonly<{ id: string; username: string }>;
+  createdAt: string;
+  voidedAt: string | null;
+  voidedBy: Readonly<{ id: string; username: string }> | null;
+  voidReason: string | null;
+}>;
+export type CashHandoverListDto = PageDto<CashHandoverDto>;
+export type CreateCashHandoverDto = Readonly<{
+  fromDate: string;
+  toDate: string;
+  amount: string;
+  /** Quién recibe; por defecto "Dirección". */
+  receivedBy?: string | null;
+  note?: string | null;
+}>;
+/** Efectivo cobrado en un período, para precargar la entrega. */
+export type CashCollectedDto = Readonly<{ fromDate: string; toDate: string; collected: string }>;
+
 export type CashShiftStatusDto = 'OPEN' | 'CLOSED';
 export type CashMovementTypeDto = 'COLLECTION' | 'REVERSAL';
 export type CashAmountByMethodDto = Readonly<Record<PaymentMethodDto, string>>;
@@ -828,7 +858,8 @@ export type AuditEntityTypeDto =
   | 'ATTENDANCE'
   | 'ENROLLMENT'
   | 'BILLING_CONDITION'
-  | 'MONTHLY_CHARGE_ADJUSTMENT';
+  | 'MONTHLY_CHARGE_ADJUSTMENT'
+  | 'CASH_HANDOVER';
 export type AuditSnapshotDto = Readonly<Record<string, unknown>>;
 export type AuditLogDto = Readonly<{
   id: string;

@@ -343,6 +343,32 @@
   display: grid;
   gap: var(--space-1);
 }
+.cash-handovers .cash-handover-note {
+  flex: 1 1 14rem;
+}
+.cash-handover-collected {
+  margin: var(--space-3) 0 0;
+  color: var(--text-muted);
+}
+.cash-handover-collected strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.cash-handover-meta {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.cash-handovers tr.is-void td {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.cash-handovers tr.is-void td:last-child {
+  text-decoration: none;
+}
+.cash-handovers .table-wrap {
+  margin-top: var(--space-4);
+}
 @media (max-width: 70rem) {
   .class-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
