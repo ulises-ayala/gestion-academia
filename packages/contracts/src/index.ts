@@ -1049,3 +1049,82 @@ export type OperationalDashboardDto = Readonly<{
     }>[];
   }>;
 }>;
+
+/** Liquidación de profesores (decisiones 227 a 231). */
+export type SettlementShareDto = Readonly<{
+  teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
+  percentage: string;
+}>;
+export type ClassSettlementPlanDto = Readonly<{
+  id: string;
+  classId: string;
+  /** Mes desde el que rige (AAAA-MM). */
+  validFrom: string;
+  reason: string | null;
+  shares: readonly SettlementShareDto[];
+  /** Lo que queda para la academia (100 menos lo repartido). */
+  academyPercentage: string;
+  createdBy: Readonly<{ id: string; username: string }>;
+  createdAt: string;
+}>;
+export type SaveClassSettlementPlanDto = Readonly<{
+  validFrom: string;
+  shares: readonly Readonly<{ teacherId: string; percentage: string }>[];
+  reason?: string;
+}>;
+export type ClassSettlementOverviewDto = Readonly<{
+  academicClass: Readonly<{
+    id: string;
+    name: string;
+    status: RecordStatusDto;
+    teachers: readonly Readonly<{ id: string; firstName: string; lastName: string }>[];
+  }>;
+  /** Reparto vigente en el mes consultado; null si la clase todavía no tiene. */
+  plan: ClassSettlementPlanDto | null;
+  /** Repartos que empiezan después del mes consultado. */
+  upcoming: readonly ClassSettlementPlanDto[];
+}>;
+export type SettlementConceptDto = 'MONTHLY' | 'HISTORICAL_DEBT' | 'SINGLE_CLASS';
+export type SettlementLineDto = Readonly<{
+  paymentId: string;
+  paidAt: string;
+  studentName: string;
+  className: string;
+  concept: SettlementConceptDto;
+  chargePeriod: string | null;
+  collected: string;
+  base: string;
+  percentage: string;
+  amount: string;
+}>;
+export type SettlementTeacherDto = Readonly<{
+  teacher: Readonly<{ id: string; firstName: string; lastName: string }>;
+  total: string;
+  lines: readonly SettlementLineDto[];
+}>;
+export type SettlementDto = Readonly<{
+  period: string;
+  status: 'OPEN' | 'CLOSED';
+  /** Solo se cierra un mes terminado. */
+  canClose: boolean;
+  generatedAt: string;
+  closedAt: string | null;
+  closedBy: Readonly<{ id: string; username: string }> | null;
+  note: string | null;
+  totals: Readonly<{
+    collected: string;
+    classIncome: string;
+    otherIncome: string;
+    teachers: string;
+    academy: string;
+  }>;
+  teachers: readonly SettlementTeacherDto[];
+  unconfigured: readonly Readonly<{
+    classId: string;
+    className: string;
+    period: string;
+    collected: string;
+  }>[];
+}>;
+export type CloseSettlementDto = Readonly<{ note?: string }>;
+export type ReopenSettlementDto = Readonly<{ reason: string }>;

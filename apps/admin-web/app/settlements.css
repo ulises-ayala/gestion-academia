@@ -1,0 +1,279 @@
+/* Liquidación de profesores */
+.settlements-heading {
+  align-items: flex-start;
+}
+.settlement-month {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.settlement-month-input input {
+  min-height: var(--control-height);
+  font-weight: var(--font-weight-semibold);
+}
+.icon-button {
+  width: var(--control-height);
+  padding: 0;
+}
+.settlement-tab-badge {
+  display: inline-grid;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  margin-left: var(--space-2);
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--destructive-fill);
+  color: var(--brand-on-fill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.settlement-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  margin-top: 0;
+  border-left: 3px solid var(--info);
+}
+.settlement-status.is-closed {
+  border-left-color: var(--success);
+}
+.settlement-status h2,
+.settlement-status p {
+  margin: 0;
+}
+.settlement-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.settlement-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+.settlement-totals article {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5, 1.25rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.settlement-totals span,
+.settlement-totals small {
+  color: var(--text-muted);
+}
+.settlement-totals strong {
+  font-size: var(--font-size-metric);
+  font-variant-numeric: tabular-nums;
+}
+.settlement-totals .is-teachers {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.settlement-warning {
+  border-color: var(--warning-border, var(--border));
+  background: var(--warning-soft);
+}
+.settlement-warning h2,
+.settlement-warning p {
+  margin: 0;
+}
+.settlement-warning ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.settlement-warning li,
+.settlement-plan-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.settlement-teacher-list,
+.settlement-plan-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.settlement-teacher-list > li {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.settlement-teacher-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  list-style: none;
+}
+.settlement-teacher-list summary::-webkit-details-marker {
+  display: none;
+}
+.settlement-teacher-list summary::before {
+  content: '▸';
+  color: var(--text-muted);
+}
+.settlement-teacher-list details[open] summary::before {
+  content: '▾';
+}
+.settlement-teacher-name {
+  display: grid;
+  flex: 1;
+  font-weight: var(--font-weight-semibold);
+}
+.settlement-teacher-name small {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-normal);
+}
+.settlement-teacher-list summary strong {
+  font-size: var(--font-size-heading);
+  font-variant-numeric: tabular-nums;
+}
+.settlement-teacher-list details .table-wrap {
+  padding: 0 var(--space-4) var(--space-3);
+}
+.settlement-lines td {
+  padding-block: var(--space-2);
+}
+
+.settlement-plan-list li {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.settlement-plan-list li.is-missing {
+  border-color: var(--destructive-border);
+  background: var(--destructive-soft);
+}
+.settlement-plan-list li > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.settlement-plan-list strong {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.settlement-plan-list p {
+  margin: 0;
+  color: var(--text-muted);
+}
+.settlement-plan-missing {
+  color: var(--destructive) !important;
+  font-weight: var(--font-weight-medium);
+}
+.settlement-plan-upcoming {
+  font-size: var(--font-size-sm);
+}
+
+/* Modal del reparto */
+dialog.settlement-plan-dialog {
+  width: min(36rem, calc(100% - 2rem));
+  margin: auto;
+  border-top: 3px solid var(--brand);
+  color: var(--text);
+}
+dialog.settlement-plan-dialog:not([open]) {
+  display: none;
+}
+dialog.settlement-plan-dialog::backdrop {
+  background: var(--overlay);
+}
+.settlement-plan-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.settlement-plan-form header {
+  display: grid;
+  gap: var(--space-1);
+}
+.settlement-plan-from input,
+.settlement-plan-form > label input {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+.settlement-plan-shares {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.settlement-plan-shares legend {
+  margin-bottom: var(--space-2);
+  padding: 0;
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+.settlement-share-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+.settlement-share-row select {
+  width: 100%;
+}
+.settlement-share-percent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.settlement-share-percent input {
+  width: 100%;
+  text-align: right;
+}
+.settlement-plan-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+.settlement-plan-rest {
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+.settlement-plan-rest.is-invalid {
+  background: var(--destructive-soft);
+  color: var(--destructive);
+}
+
+@media (max-width: 900px) {
+  .settlement-totals {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .settlements-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .settlement-month-input {
+    flex: 1;
+  }
+  .settlement-month-input input {
+    width: 100%;
+  }
+  .settlement-status-actions > * {
+    flex: 1;
+  }
+}

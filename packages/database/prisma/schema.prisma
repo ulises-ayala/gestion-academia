@@ -179,6 +179,7 @@ model Teacher {
   updatedAt         DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
   classes           AcademyClass[]
   additionalClasses ClassAdditionalTeacher[]
+  settlementShares  ClassSettlementShare[]
   billingConditions EnrollmentBillingCondition[]
   chargeAdjustments MonthlyChargeAdjustment[]
   payments          Payment[]
@@ -243,6 +244,7 @@ model AcademyClass {
   danceType          DanceType                @relation(fields: [danceTypeId], references: [id])
   teacher            Teacher                  @relation(fields: [teacherId], references: [id])
   additionalTeachers ClassAdditionalTeacher[]
+  settlementPlans    ClassSettlementPlan[]
   schedules          ClassSchedule[]
   enrollments        Enrollment[]
   tariffs            Tariff[]
@@ -265,6 +267,51 @@ model ClassAdditionalTeacher {
   @@id([classId, teacherId])
   @@index([teacherId])
   @@map("class_additional_teachers")
+}
+
+/// Reparto de lo cobrado de una clase entre sus profesores, vigente desde un mes (decisión 227).
+/// Lo que no se reparte queda para la academia (Dirección).
+model ClassSettlementPlan {
+  id              String                 @id @default(uuid()) @db.Uuid
+  classId         String                 @map("class_id") @db.Uuid
+  /// Primer día del mes desde el que rige.
+  validFrom       DateTime               @map("valid_from") @db.Date
+  reason          String?                @db.VarChar(500)
+  createdByUserId String                 @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+  class           AcademyClass           @relation(fields: [classId], references: [id], onDelete: Restrict)
+  createdBy       AdminUser              @relation("SettlementPlanCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  shares          ClassSettlementShare[]
+
+  @@unique([classId, validFrom])
+  @@map("class_settlement_plans")
+}
+
+model ClassSettlementShare {
+  planId     String              @map("plan_id") @db.Uuid
+  teacherId  String              @map("teacher_id") @db.Uuid
+  percentage Decimal             @db.Decimal(5, 2)
+  plan       ClassSettlementPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  teacher    Teacher             @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+
+  @@id([planId, teacherId])
+  @@index([teacherId])
+  @@map("class_settlement_shares")
+}
+
+/// Liquidación de un mes cerrada por Dirección: queda fija aunque después cambien los pagos.
+model SettlementClosing {
+  id             String    @id @default(uuid()) @db.Uuid
+  /// Primer día del mes liquidado.
+  period         DateTime  @unique @db.Date
+  snapshot       Json
+  note           String?   @db.VarChar(500)
+  closedByUserId String    @map("closed_by_user_id") @db.Uuid
+  closedAt       DateTime  @default(now()) @map("closed_at") @db.Timestamptz(3)
+  closedBy       AdminUser @relation("SettlementClosedBy", fields: [closedByUserId], references: [id], onDelete: Restrict)
+
+  @@map("settlement_closings")
 }
 
 enum EnrollmentEndReason {
@@ -621,6 +668,8 @@ model AdminUser {
   cashShiftsClosed            CashShift[]                    @relation("CashShiftClosedBy")
   cashMovements               CashMovement[]                 @relation("CashMovementActor")
   cashCorrections             CashReconciliationCorrection[] @relation("CashCorrectionCreatedBy")
+  settlementPlansCreated      ClassSettlementPlan[]          @relation("SettlementPlanCreatedBy")
+  settlementsClosed           SettlementClosing[]            @relation("SettlementClosedBy")
 
   @@map("admin_users")
 }

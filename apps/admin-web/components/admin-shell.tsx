@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Banknote,
   BarChart3,
   Building2,
   CalendarCheck,
@@ -80,6 +81,12 @@ const navigation: readonly NavigationGroup[] = [
         label: 'Reportes',
         permission: 'reports:operational',
         icon: BarChart3,
+      },
+      {
+        href: '/settlements',
+        label: 'Liquidación',
+        permission: 'settlements:manage',
+        icon: Banknote,
       },
     ],
   },

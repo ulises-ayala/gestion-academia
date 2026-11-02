@@ -13,6 +13,7 @@ import './self-check-in.css';
 import './charge-generation.css';
 import './collect-payment.css';
 import './payments.css';
+import './settlements.css';
 import { AuthProvider } from '../components/auth-provider';
 import { Toaster } from 'sonner';
 import { GlobalLoadingIndicator } from '../components/global-loading-indicator';

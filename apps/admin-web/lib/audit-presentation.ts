@@ -19,6 +19,8 @@ export const auditEntityOptions = [
   ['MONTHLY_CHARGE', 'Cuota'],
   ['MONTHLY_CHARGE_ADJUSTMENT', 'Ajuste de cuota'],
   ['CASH_SHIFT', 'Turno de caja'],
+  ['SETTLEMENT', 'Liquidación'],
+  ['CLASS_SETTLEMENT_PLAN', 'Reparto de liquidación'],
 ] as const;
 export const auditActionOptions = [
   ['', 'Todas'],
