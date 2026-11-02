@@ -11,7 +11,7 @@ Desde la raíz (en PowerShell, si la política bloquea `npm.ps1`, usar `npm.cmd`
 ```bash
 docker compose up -d db      # PostgreSQL 16 local (único uso de Docker)
 npm run db:generate          # Prisma Client (necesario antes de typecheck/build)
-npm run db:migrate           # prisma migrate dev (solo local)
+npm run db:migrate           # prisma migrate dev (SOLO con DATABASE_URL en localhost; ver "Bases de datos")
 npm run db:seed              # datos ficticios de desarrollo, idempotente (usuarios admision/administracion/direccion, contraseña DEV_SEED_PASSWORD)
 npm run dev                  # API (3001, /api/v1) + admin-web (3000)
 
@@ -22,7 +22,7 @@ npm test                     # Vitest en todos los workspaces
 npm run build
 ```
 
-Antes de cerrar un cambio: `npm run typecheck`, `npm test` y `npm run lint` (CI además corre `format:check`, `prisma validate`, `migrate deploy` y `build`).
+Antes de cerrar un cambio: `npm run typecheck`, `npm test`, `npm run lint` y `npm run format:check` (CI además corre `prisma validate`, `migrate deploy` y `build`). Formatear siempre con el Prettier del repo (`npm run format` o `npx prettier --write <archivos>`), nunca con uno global.
 
 Tests puntuales (Vitest; `apps/api/vitest.config.ts` corre los unitarios en paralelo y después los `*.integration.spec.ts` de a un archivo):
 
@@ -33,6 +33,21 @@ npm test -w @academy/admin-web -- lib/api-client.spec.ts
 ```
 
 Los `*.integration.spec.ts` escriben en la base y **solo corren si `DATABASE_URL` apunta a `academy_ci` o a una base `*_test`** (guarda en `apps/api/src/database/integration-database.ts`); con otra base se omiten con un aviso. Para correrlos localmente: crear `academy_test` en el contenedor, exportar `DATABASE_URL` hacia ella y aplicar `npx prisma migrate deploy --schema packages/database/prisma/schema.prisma` (ver README). Nunca usar `migrate dev`, `db push` ni reset contra staging/producción.
+
+## Bases de datos y secretos (obligatorio)
+
+- **Antes de cualquier comando de base, mirar a qué host apunta `DATABASE_URL`** (mostrar solo el host, nunca usuario, contraseña ni la URL completa). El `.env` de algunos desarrolladores apunta a Neon (producción).
+- Si el host no es `localhost`/`127.0.0.1`: solo se permite `npm run db:deploy` (aplica migraciones ya commiteadas). Nunca `db:migrate`, `prisma migrate dev`, `migrate reset`, `db push`, `db:seed` ni SQL que escriba.
+- Las migraciones nuevas se escriben a mano en `packages/database/prisma/migrations/<timestamp>_<nombre>/migration.sql` (o con `migrate dev` contra el Postgres local de Docker) y se prueban en local o en CI.
+- En Render, `render:start:api` ya corre `db:deploy` al arrancar: las migraciones mergeadas a `main` se aplican solas en el próximo deploy.
+- Nunca imprimir, copiar ni commitear el contenido de `.env`, contraseñas, tokens ni connection strings. Las credenciales viven solo en Render.
+- Datos reales de alumnos (planillas, exportaciones, respaldos) nunca se versionan (ver `.gitignore`).
+
+## Git
+
+- Una rama por cambio (`feat/…`, `fix/…`); commits con la identidad git configurada del desarrollador.
+- No hacer `git push` ni mergear a `main` sin pedido explícito: lo hace el desarrollador.
+- Cada decisión de negocio nueva se registra en `docs/decisions.md` (numeración correlativa) en el mismo commit.
 
 ## Arquitectura
 
@@ -46,7 +61,7 @@ apps/admin-web (Next.js) --HTTP/JSON--> apps/api (NestJS, /api/v1) --Prisma--> P
 
 ### API (`apps/api/src`)
 
-Un directorio por módulo de negocio (`students`, `enrollments`, `offering`, `billing`, `cash`, `attendances`, `leads`, `reports`, `dashboard`, `users`, `auth`, `audit`…), con capas cuando la lógica lo justifica:
+Un directorio por módulo de negocio (`students`, `enrollments`, `offering`, `billing`, `cash`, `attendances`, `leads`, `reports`, `dashboard`, `settlements`, `users`, `auth`, `audit`…), con capas cuando la lógica lo justifica:
 
 - `domain/`: reglas puras y cálculos (sin NestJS ni Prisma). Errores como `DomainError(code, message, details)` de `shared/domain/domain-error.ts`.
 - `application/`: servicios de casos de uso e interfaces de repositorio (`*.repository.ts`).
@@ -78,7 +93,7 @@ Next.js App Router: rutas en `app/<sección>`, componentes en `components/` (pri
 - Variables nuevas de entorno van a `.env.example` sin secretos.
 - Line endings LF (`.gitattributes`); los scripts sueltos de `scripts/` quedan fuera del lint.
 
-# CLAUDE.md
+## Pautas generales de trabajo
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
@@ -131,16 +146,16 @@ The test: Every changed line should trace directly to the user's request.
 
 Transform tasks into verifiable goals:
 
-- "Add validation" ? "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" ? "Write a test that reproduces it, then make it pass"
-- "Refactor X" ? "Ensure tests pass before and after"
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
 
 For multi-step tasks, state a brief plan:
 
 ```
-1. [Step] ? verify: [check]
-2. [Step] ? verify: [check]
-3. [Step] ? verify: [check]
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.

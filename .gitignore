@@ -47,3 +47,7 @@ coverage/
 
 # Archivos temporales de scripts locales
 .tmp-*
+
+# Claude Code: instrucciones y permisos personales
+CLAUDE.local.md
+.claude/settings.local.json
