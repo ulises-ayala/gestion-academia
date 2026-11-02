@@ -134,25 +134,26 @@ dialog.collect-dialog::backdrop {
   font-size: var(--font-size-sm);
 }
 
+/* Qué se cobra: botones bien marcados; el elegido, relleno con el color de la marca. */
 .collect-tabs {
   display: flex;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  border-radius: var(--radius-md);
-  background: var(--surface-sunken);
+  gap: var(--space-2);
 }
 .collect-tabs button {
   flex: 1;
-  min-height: 2.5rem;
-  border: 0;
-  background: transparent;
-  color: var(--text-muted);
+  min-height: 2.75rem;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--text);
   font-weight: var(--font-weight-medium);
 }
-.collect-tabs button.is-selected {
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--shadow-sm);
+.collect-tabs button.is-selected,
+.collect-tabs button.is-selected:hover:not(:disabled) {
+  border-color: var(--brand-fill);
+  background: var(--brand-fill);
+  color: var(--brand-on-fill);
+  font-weight: var(--font-weight-semibold);
 }
 
 .collect-panel {
