@@ -86,6 +86,7 @@ const valueLabels: Record<string, string> = {
   ENDED: 'Finalizada',
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
+  TRANSFER: 'Transferencia',
   CARD: 'Tarjeta',
   INQUIRY: 'Consulta',
   INTERESTED: 'Interesado/a',

@@ -23,7 +23,7 @@ import {
   type PaymentsRepository,
 } from './payments.repository';
 
-const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'CARD'];
+const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'TRANSFER', 'CARD'];
 
 @Injectable()
 export class PaymentsService {

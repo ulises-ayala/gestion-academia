@@ -48,9 +48,9 @@ export const paymentLocationFromSearch = (search: string): PaymentLocation => {
     paymentStatus: (status === 'CONFIRMED' || status === 'VOID' ? status : '') as
       | ''
       | PaymentStatusDto,
-    paymentMethod: (['CASH', 'MERCADO_PAGO', 'CARD'].includes(method ?? '') ? method : '') as
-      | ''
-      | PaymentMethodDto,
+    paymentMethod: (['CASH', 'MERCADO_PAGO', 'TRANSFER', 'CARD'].includes(method ?? '')
+      ? method
+      : '') as '' | PaymentMethodDto,
     from: date(params.get('from')),
     to: date(params.get('to')),
     historyPage: positivePage(params.get('historyPage')),

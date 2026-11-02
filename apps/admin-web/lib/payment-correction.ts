@@ -17,6 +17,7 @@ export const correctionFormFrom = (payment: PaymentDto): PaymentCorrectionForm =
   tenders: {
     CASH: '',
     MERCADO_PAGO: '',
+    TRANSFER: '',
     CARD: '',
     ...Object.fromEntries(
       payment.tenders.map((tender) => [tender.method, tender.amount.replace(/\.00$/, '')]),

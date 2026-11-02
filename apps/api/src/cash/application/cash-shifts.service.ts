@@ -11,7 +11,7 @@ import { Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
-import { CASH_METHODS, cashTotals, parseCashAmount } from '../domain/cash';
+import { CASH_METHODS, cashTotals, closingLineFor, parseCashAmount } from '../domain/cash';
 
 const detailInclude = {
   user: { select: { id: true, username: true } },
@@ -248,7 +248,7 @@ export class CashShiftsService {
           currentSystem = new Prisma.Decimal(0),
           correctedDeclared = new Prisma.Decimal(0);
         for (const shift of shifts) {
-          const line = shift.closingLines.find((item) => item.method === method)!;
+          const line = closingLineFor(shift.closingLines, method);
           systemAtClose = systemAtClose.plus(line.expectedAmount);
           declaredAtClose = declaredAtClose.plus(line.declaredAmount);
           currentSystem = currentSystem.plus(cashTotals(shift.movements)[method]);
@@ -291,7 +291,7 @@ export class CashShiftsService {
     const correctedByMethod =
       shift.status === 'CLOSED'
         ? CASH_METHODS.map((method) => {
-            const line = shift.closingLines.find((item) => item.method === method)!;
+            const line = closingLineFor(shift.closingLines, method);
             const declared = shift.corrections
               .filter((item) => item.method === method)
               .reduce((sum, item) => sum.plus(item.amountDelta), line.declaredAmount);

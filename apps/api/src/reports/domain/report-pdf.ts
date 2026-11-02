@@ -1,4 +1,8 @@
-import type { OperationalReportsDto, PaymentMethodDto } from '@academy/contracts';
+import type {
+  OperationalReportsDto,
+  PaymentMethodDto,
+  ReportCollectionConceptDto,
+} from '@academy/contracts';
 import PDFDocument from 'pdfkit';
 
 /** Cantidad de deudores que entran en el PDF; la lista completa sale por CSV. */
@@ -7,7 +11,15 @@ export const PDF_DEBTOR_LIMIT = 20;
 const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
+  TRANSFER: 'Transferencia',
   CARD: 'Tarjeta',
+};
+export const CONCEPT_LABELS: Readonly<Record<ReportCollectionConceptDto, string>> = {
+  CHARGES: 'Cuotas',
+  SINGLE_CLASS: 'Clase suelta',
+  APPAREL: 'Indumentaria',
+  GALA_SEAL: 'Precintos de la Gala',
+  OTHER: 'Otros',
 };
 const COLORS = {
   accent: '#7d1d35',
@@ -258,6 +270,33 @@ export function renderOperationalReportPdf(
     ['Clases sueltas', formatMoney(collections.byConcept.singleClass)],
     ['Otros cobros', formatMoney(collections.byConcept.other)],
   ]);
+  if (collections.byConceptAndMethod.length > 0) {
+    subheading('Recaudación por concepto y medio');
+    const methods = collections.byMethod.map((item) => item.method);
+    table(
+      [
+        { header: 'Concepto', width: 0.25 },
+        ...methods.map((method) => ({
+          header: METHOD_LABELS[method],
+          width: 0.6 / methods.length,
+          align: 'right' as const,
+        })),
+        { header: 'Total', width: 0.15, align: 'right' },
+      ],
+      [
+        ...collections.byConceptAndMethod.map((row) => [
+          CONCEPT_LABELS[row.concept],
+          ...row.byMethod.map((item) => formatMoney(item.amount)),
+          formatMoney(row.total),
+        ]),
+        [
+          'Total',
+          ...collections.byMethod.map((item) => formatMoney(item.amount)),
+          formatMoney(collections.total),
+        ],
+      ],
+    );
+  }
   if (collections.byTeacher.length > 0) {
     subheading('Ingresos por profesor');
     table(

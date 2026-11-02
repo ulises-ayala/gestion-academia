@@ -33,6 +33,7 @@ const money = (value: string) =>
 const methodLabels: Readonly<Record<PaymentMethodDto, string>> = {
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
+  TRANSFER: 'Transferencia',
   CARD: 'Tarjeta',
 };
 

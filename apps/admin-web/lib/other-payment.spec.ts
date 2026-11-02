@@ -5,7 +5,7 @@ import {
   otherPaymentProblem,
 } from './other-payment';
 
-const none = { CASH: '', MERCADO_PAGO: '', CARD: '' };
+const none = { CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' };
 describe('otros cobros', () => {
   it('describe a qué corresponde el cobro', () => {
     expect(
@@ -32,6 +32,22 @@ describe('otros cobros', () => {
         teacher: null,
       }),
     ).toBe('Otro: Remera del show');
+    expect(
+      describeOtherPayment({
+        concept: 'APPAREL',
+        detail: 'Remera talle M',
+        academicClass: null,
+        teacher: null,
+      }),
+    ).toBe('Indumentaria (Remera talle M)');
+    expect(
+      describeOtherPayment({
+        concept: 'GALA_SEAL',
+        detail: null,
+        academicClass: null,
+        teacher: null,
+      }),
+    ).toBe('Precintos de la Gala');
     expect(describeOtherPayment(null)).toBe('');
   });
   it('pide la clase, el detalle y el importe según el concepto', () => {
@@ -65,7 +81,7 @@ describe('otros cobros', () => {
       buildOtherPaymentPayload(
         's',
         { concept: 'OTHER', classId: 'c', detail: ' Remera ' },
-        { CASH: '5000', MERCADO_PAGO: '2500,50', CARD: '' },
+        { CASH: '5000', MERCADO_PAGO: '2500,50', TRANSFER: '', CARD: '' },
       ),
     ).toEqual({
       studentId: 's',

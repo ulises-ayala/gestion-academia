@@ -18,8 +18,14 @@ export type CollectTab = 'charges' | 'other' | 'debt';
 export type TenderMode = PaymentMethodDto | 'MIXED';
 export type TenderPick = Readonly<{ mode: TenderMode; amount: string; split: TenderAmounts }>;
 
-export const emptyTenders: TenderAmounts = { CASH: '', MERCADO_PAGO: '', CARD: '' };
-export const tenderModes: readonly TenderMode[] = ['CASH', 'MERCADO_PAGO', 'CARD', 'MIXED'];
+export const emptyTenders: TenderAmounts = { CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' };
+export const tenderModes: readonly TenderMode[] = [
+  'CASH',
+  'MERCADO_PAGO',
+  'TRANSFER',
+  'CARD',
+  'MIXED',
+];
 export const tenderModeLabels: Readonly<Record<TenderMode, string>> = {
   ...paymentMethodLabels,
   MIXED: 'Mixto',
@@ -58,6 +64,7 @@ export const tendersFrom = (pick: TenderPick): TenderAmounts => {
   return {
     CASH: normalizeAmount(raw.CASH),
     MERCADO_PAGO: normalizeAmount(raw.MERCADO_PAGO),
+    TRANSFER: normalizeAmount(raw.TRANSFER),
     CARD: normalizeAmount(raw.CARD),
   };
 };

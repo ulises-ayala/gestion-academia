@@ -3,6 +3,8 @@ import { createPaymentPayload, tenderTotal, type TenderAmounts } from './payment
 
 export const otherConceptLabels: Readonly<Record<OtherPaymentConceptDto, string>> = {
   SINGLE_CLASS: 'Clase suelta',
+  APPAREL: 'Indumentaria',
+  GALA_SEAL: 'Precintos de la Gala',
   OTHER: 'Otro',
 };
 
@@ -21,7 +23,8 @@ export const describeOtherPayment = (other: PaymentDto['otherConcept']) => {
     return `Clase suelta${other.academicClass ? ` · ${other.academicClass.name}` : ''}${
       other.teacher ? ` · Prof. ${other.teacher.firstName} ${other.teacher.lastName}` : ''
     }${other.detail ? ` (${other.detail})` : ''}`;
-  return `Otro: ${other.detail ?? ''}`.trim();
+  if (other.concept === 'OTHER') return `Otro: ${other.detail ?? ''}`.trim();
+  return `${otherConceptLabels[other.concept]}${other.detail ? ` (${other.detail})` : ''}`;
 };
 
 /** Primer motivo por el que no se puede registrar el cobro, o null si está completo. */

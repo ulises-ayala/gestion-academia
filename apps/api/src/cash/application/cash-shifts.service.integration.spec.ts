@@ -57,7 +57,9 @@ describe.runIf(enabled)(
 
         const closed = await service.close(
           opened.id,
-          { declaredByMethod: { CASH: '98.00', MERCADO_PAGO: '50.00', CARD: '0.00' } },
+          {
+            declaredByMethod: { CASH: '98.00', MERCADO_PAGO: '50.00', TRANSFER: '0', CARD: '0.00' },
+          },
           actor.id,
         );
         expect(closed.status).toBe('CLOSED');
@@ -74,7 +76,7 @@ describe.runIf(enabled)(
         await expect(
           service.close(
             opened.id,
-            { declaredByMethod: { CASH: '0', MERCADO_PAGO: '0', CARD: '0' } },
+            { declaredByMethod: { CASH: '0', MERCADO_PAGO: '0', TRANSFER: '0', CARD: '0' } },
             actor.id,
           ),
         ).rejects.toMatchObject({ code: 'CASH_SHIFT_ALREADY_CLOSED' });

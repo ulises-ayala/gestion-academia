@@ -1,7 +1,9 @@
 import type {
   OperationalReportsDto,
+  OtherPaymentConceptDto,
   PaymentMethodDto,
   ReportCashMethodDto,
+  ReportCollectionConceptDto,
 } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
@@ -9,12 +11,13 @@ import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { bornOverdueSql } from '../../billing/infrastructure/late-fee-sql';
 import { toCsv } from '../domain/csv';
-import { PDF_DEBTOR_LIMIT, renderOperationalReportPdf } from '../domain/report-pdf';
+import { CONCEPT_LABELS, PDF_DEBTOR_LIMIT, renderOperationalReportPdf } from '../domain/report-pdf';
 
-const METHODS: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'CARD'];
+const METHODS: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'TRANSFER', 'CARD'];
 const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
+  TRANSFER: 'Transferencia',
   CARD: 'Tarjeta',
 };
 const reportCashInclude = {
@@ -88,6 +91,20 @@ type AttendanceRow = {
   justified: bigint;
 };
 type DayRow = { date: Date; amount: Prisma.Decimal };
+type ConceptMethodRow = {
+  kind: 'CHARGES' | 'OTHER';
+  concept: OtherPaymentConceptDto | null;
+  method: PaymentMethodDto;
+  amount: Prisma.Decimal;
+};
+/** Orden de los conceptos en la recaudación. */
+const CONCEPTS: readonly ReportCollectionConceptDto[] = [
+  'CHARGES',
+  'SINGLE_CLASS',
+  'APPAREL',
+  'GALA_SEAL',
+  'OTHER',
+];
 type TeacherIncomeRow = {
   teacherId: string;
   teacherName: string;
@@ -210,11 +227,13 @@ export class ReportsService {
         orderBy: { closedAt: 'desc' },
       }),
       this.prisma.cashShift.count({ where: { status: 'OPEN' } }),
-      this.prisma.payment.groupBy({
-        by: ['kind', 'concept'],
-        where: { status: 'CONFIRMED', paidAt: { gte: input.from, lt: input.toExclusive } },
-        _sum: { amount: true },
-      }),
+      // Recaudación por concepto y medio: cada medio de un pago mixto va a su columna.
+      this.prisma.$queryRaw<ConceptMethodRow[]>(Prisma.sql`
+          SELECT p.kind::text AS kind, p.concept::text AS concept, t.method::text AS method,
+            SUM(t.amount) AS amount
+          FROM payment_tenders t JOIN payments p ON p.id = t.payment_id
+          WHERE p.status = 'CONFIRMED' AND p.paid_at >= ${input.from} AND p.paid_at < ${input.toExclusive}
+          GROUP BY p.kind, p.concept, t.method`),
       // Clases sueltas por clase y por el profesor que la dictó (foto guardada en el cobro).
       this.prisma.$queryRaw<SingleClassRow[]>(Prisma.sql`
           SELECT c.id AS "classId", c.name AS "className", t.id AS "teacherId",
@@ -254,11 +273,27 @@ export class ReportsService {
           WHERE ci.teacher_id IS NOT NULL OR si.teacher_id IS NOT NULL
           ORDER BY t.last_name, t.first_name`),
     ]);
-    const conceptTotal = (match: (row: (typeof byConcept)[number]) => boolean) =>
+    const conceptTotal = (match: (row: ConceptMethodRow) => boolean) =>
       byConcept
         .filter(match)
-        .reduce((sum, row) => sum.plus(row._sum.amount ?? 0), zero())
+        .reduce((sum, row) => sum.plus(row.amount), zero())
         .toFixed(2);
+    const conceptOf = (row: ConceptMethodRow): ReportCollectionConceptDto =>
+      row.kind === 'CHARGES' ? 'CHARGES' : (row.concept ?? 'OTHER');
+    const byConceptAndMethod = CONCEPTS.map((concept) => {
+      const rows = byConcept.filter((row) => conceptOf(row) === concept);
+      return {
+        concept,
+        byMethod: METHODS.map((method) => ({
+          method,
+          amount: rows
+            .filter((row) => row.method === method)
+            .reduce((sum, row) => sum.plus(row.amount), zero())
+            .toFixed(2),
+        })),
+        total: rows.reduce((sum, row) => sum.plus(row.amount), zero()).toFixed(2),
+      };
+    }).filter((row) => !new Prisma.Decimal(row.total).isZero());
 
     const cash = this.cashReport(shifts);
     const debt = debtRows[0]!;
@@ -318,6 +353,7 @@ export class ReportsService {
           singleClass: conceptTotal((row) => row.concept === 'SINGLE_CLASS'),
           other: conceptTotal((row) => row.kind === 'OTHER' && row.concept !== 'SINGLE_CLASS'),
         },
+        byConceptAndMethod,
         singleClasses: singleClasses.map((item) => ({
           ...item,
           count: Number(item.count),
@@ -493,7 +529,9 @@ export class ReportsService {
         ? 'Cuotas'
         : payment.concept === 'SINGLE_CLASS'
           ? 'Clase suelta'
-          : `Otro: ${payment.conceptDetail ?? ''}`;
+          : payment.concept === 'APPAREL' || payment.concept === 'GALA_SEAL'
+            ? `${CONCEPT_LABELS[payment.concept]}${payment.conceptDetail ? `: ${payment.conceptDetail}` : ''}`
+            : `Otro: ${payment.conceptDetail ?? ''}`;
     return toCsv(
       [
         'Fecha',
@@ -505,6 +543,7 @@ export class ReportsService {
         'Monto total',
         'Efectivo',
         'Mercado Pago',
+        'Transferencia',
         'Tarjeta',
       ],
       payments.map((payment) => [
@@ -517,6 +556,7 @@ export class ReportsService {
         payment.amount.toFixed(2),
         payment.tenders.find((item) => item.method === 'CASH')?.amount.toFixed(2) ?? '0.00',
         payment.tenders.find((item) => item.method === 'MERCADO_PAGO')?.amount.toFixed(2) ?? '0.00',
+        payment.tenders.find((item) => item.method === 'TRANSFER')?.amount.toFixed(2) ?? '0.00',
         payment.tenders.find((item) => item.method === 'CARD')?.amount.toFixed(2) ?? '0.00',
       ]),
     );

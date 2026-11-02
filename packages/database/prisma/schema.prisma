@@ -65,6 +65,7 @@ enum PaymentMethod {
   CASH
   MERCADO_PAGO
   CARD
+  TRANSFER
 }
 
 enum PaymentStatus {
@@ -86,6 +87,10 @@ enum PaymentKind {
 enum OtherPaymentConcept {
   SINGLE_CLASS
   OTHER
+  /// Indumentaria (remeras, vestuario).
+  APPAREL
+  /// Precintos de la Gala.
+  GALA_SEAL
 }
 
 enum AttendanceStatus {

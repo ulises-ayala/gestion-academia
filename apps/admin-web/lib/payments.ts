@@ -3,6 +3,7 @@ import type { CreatePaymentDto, MonthlyChargeDto, PaymentMethodDto } from '@acad
 export const paymentMethodLabels: Readonly<Record<PaymentMethodDto, string>> = {
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
+  TRANSFER: 'Transferencia',
   CARD: 'Tarjeta',
 };
 

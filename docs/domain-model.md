@@ -97,7 +97,7 @@ erDiagram
 - `paidAmount`, `outstandingAmount` y vencimiento son datos derivados exclusivamente de imputaciones pertenecientes a pagos `CONFIRMED`; no se persisten como saldos duplicados.
 - El cobro usa advisory lock por alumno, locks de filas, aislamiento serializable y reintentos. Dos cajas no pueden consumir la misma deuda.
 - Anular conserva `PaymentTender` y `PaymentAllocation`, marca el pago `VOID` y recalcula cada cuota con los demás pagos confirmados; puede quedar `PENDING`, `PARTIAL` o `PAID`.
-- Caja, devoluciones, transferencia bancaria, mora, recargos y descuentos quedan diferidos.
+- Medios de pago: efectivo, Mercado Pago, transferencia y tarjeta (decisión 234). Devoluciones y saldo a favor siguen diferidos.
 
 ## Usuarios y permisos v1
 

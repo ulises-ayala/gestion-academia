@@ -34,12 +34,13 @@ describe('popup de cobro', () => {
     expect(tendersFrom(pick({ mode: 'MERCADO_PAGO', amount: '28000' }))).toEqual({
       CASH: '',
       MERCADO_PAGO: '28000',
+      TRANSFER: '',
       CARD: '',
     });
     const mixed = pick({
       mode: 'MIXED',
       amount: '999',
-      split: { CASH: '10000', MERCADO_PAGO: '', CARD: '5000,50' },
+      split: { CASH: '10000', MERCADO_PAGO: '', TRANSFER: '', CARD: '5000,50' },
     });
     expect(pickTotalCents(mixed)).toBe(1500050n);
   });

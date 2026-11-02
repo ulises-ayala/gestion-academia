@@ -14,10 +14,11 @@ import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { safePaymentReturnTo } from '../../lib/contextual-filters';
 
-const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'CARD'];
+const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'TRANSFER', 'CARD'];
 const labels: Record<PaymentMethodDto, string> = {
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
+  TRANSFER: 'Transferencia',
   CARD: 'Tarjeta',
 };
 const money = (value: string) =>
@@ -36,6 +37,7 @@ export default function CashPage() {
   const [declared, setDeclared] = useState<Record<PaymentMethodDto, string>>({
     CASH: '',
     MERCADO_PAGO: '',
+    TRANSFER: '',
     CARD: '',
   });
   const [closing, setClosing] = useState(false);
@@ -107,7 +109,7 @@ export default function CashPage() {
         body: JSON.stringify({ declaredByMethod: declared }),
       });
       setClosing(false);
-      setDeclared({ CASH: '', MERCADO_PAGO: '', CARD: '' });
+      setDeclared({ CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' });
       await load();
     } catch (error) {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cerrar el turno.');

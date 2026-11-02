@@ -48,6 +48,16 @@ describe('ReportsService', () => {
         },
       ],
       [
+        { kind: 'CHARGES', concept: null, method: 'CASH', amount: decimal('30000.00') },
+        { kind: 'CHARGES', concept: null, method: 'MERCADO_PAGO', amount: decimal('4000.00') },
+        {
+          kind: 'OTHER',
+          concept: 'SINGLE_CLASS',
+          method: 'MERCADO_PAGO',
+          amount: decimal('16000.00'),
+        },
+      ],
+      [
         {
           classId: 'class-2',
           className: 'Zumba',
@@ -80,10 +90,6 @@ describe('ReportsService', () => {
       payment: {
         aggregate: paymentAggregate,
         findMany: vi.fn().mockResolvedValue([]),
-        groupBy: vi.fn().mockResolvedValue([
-          { kind: 'CHARGES', concept: null, _sum: { amount: decimal('34000.00') } },
-          { kind: 'OTHER', concept: 'SINGLE_CLASS', _sum: { amount: decimal('16000.00') } },
-        ]),
       },
       paymentTender: {
         groupBy: vi.fn().mockResolvedValue([
@@ -111,6 +117,7 @@ describe('ReportsService', () => {
     expect(report.collections.byMethod).toEqual([
       { method: 'CASH', amount: '30000.00' },
       { method: 'MERCADO_PAGO', amount: '20000.00' },
+      { method: 'TRANSFER', amount: '0.00' },
       { method: 'CARD', amount: '0.00' },
     ]);
     expect(report.collections.byConcept).toEqual({
@@ -118,6 +125,16 @@ describe('ReportsService', () => {
       singleClass: '16000.00',
       other: '0.00',
     });
+    const methods = (cash: string, mp: string) => [
+      { method: 'CASH', amount: cash },
+      { method: 'MERCADO_PAGO', amount: mp },
+      { method: 'TRANSFER', amount: '0.00' },
+      { method: 'CARD', amount: '0.00' },
+    ];
+    expect(report.collections.byConceptAndMethod).toEqual([
+      { concept: 'CHARGES', byMethod: methods('30000.00', '4000.00'), total: '34000.00' },
+      { concept: 'SINGLE_CLASS', byMethod: methods('0.00', '16000.00'), total: '16000.00' },
+    ]);
     expect(report.collections.singleClasses).toEqual([
       {
         classId: 'class-2',

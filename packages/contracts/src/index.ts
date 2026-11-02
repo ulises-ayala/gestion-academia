@@ -115,6 +115,14 @@ export type ReportMoneyByMethodDto = Readonly<{
   method: PaymentMethodDto;
   amount: string;
 }>;
+/** Concepto de la recaudación: las cuotas o el concepto de un otro cobro. */
+export type ReportCollectionConceptDto = 'CHARGES' | OtherPaymentConceptDto;
+/** Lo cobrado de un concepto, separado por medio de pago. */
+export type ReportConceptByMethodDto = Readonly<{
+  concept: ReportCollectionConceptDto;
+  byMethod: readonly ReportMoneyByMethodDto[];
+  total: string;
+}>;
 export type ReportsSummaryDto = Readonly<{
   activeStudents: number;
   inactiveStudents: number;
@@ -217,6 +225,8 @@ export type OperationalReportsDto = Readonly<{
     byDay: readonly Readonly<{ date: string; amount: string }>[];
     /** Lo cobrado separado por concepto: cuotas, clases sueltas y otros cobros. */
     byConcept: Readonly<{ charges: string; singleClass: string; other: string }>;
+    /** Recaudación por concepto y medio (solo los conceptos con cobros en el período). */
+    byConceptAndMethod: readonly ReportConceptByMethodDto[];
     singleClasses: readonly ReportSingleClassDto[];
     byTeacher: readonly ReportTeacherIncomeDto[];
   }>;
@@ -593,7 +603,7 @@ export type MonthlyChargeListDto = Readonly<{
   total: number;
 }>;
 
-export type PaymentMethodDto = 'CASH' | 'MERCADO_PAGO' | 'CARD';
+export type PaymentMethodDto = 'CASH' | 'MERCADO_PAGO' | 'CARD' | 'TRANSFER';
 export type PaymentStatusDto = 'CONFIRMED' | 'VOID';
 export type CreatePaymentDto = Readonly<{
   studentId: string;
@@ -607,7 +617,7 @@ export type CreatePaymentDto = Readonly<{
   monthlyChargeIds?: readonly string[] | null;
 }>;
 export type PaymentKindDto = 'CHARGES' | 'OTHER';
-export type OtherPaymentConceptDto = 'SINGLE_CLASS' | 'OTHER';
+export type OtherPaymentConceptDto = 'SINGLE_CLASS' | 'OTHER' | 'APPAREL' | 'GALA_SEAL';
 /** Cobro que no se imputa a cuotas: clase suelta (con su clase) u otro concepto (con detalle). */
 export type CreateOtherPaymentDto = Readonly<{
   studentId: string;

@@ -1,7 +1,12 @@
 import type { OtherPaymentConceptDto } from '@academy/contracts';
 import { DomainError } from '../../shared/domain/domain-error';
 
-const concepts: readonly OtherPaymentConceptDto[] = ['SINGLE_CLASS', 'OTHER'];
+const concepts: readonly OtherPaymentConceptDto[] = [
+  'SINGLE_CLASS',
+  'APPAREL',
+  'GALA_SEAL',
+  'OTHER',
+];
 export const OTHER_PAYMENT_DETAIL_MAX = 200;
 
 /**

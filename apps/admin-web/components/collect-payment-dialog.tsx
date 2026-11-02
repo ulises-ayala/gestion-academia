@@ -871,7 +871,9 @@ export function CollectPaymentDialog({
                   maxLength={200}
                   value={detail}
                   disabled={saving}
-                  placeholder={concept === 'OTHER' ? 'Ej.: remera del show, seña de vestuario' : ''}
+                  placeholder={
+                    concept === 'OTHER' ? 'Ej.: seña de un taller, inscripción a un evento' : ''
+                  }
                   aria-invalid={tried && concept === 'OTHER' && detail.trim().length < 3}
                   onChange={(event) => setDetail(event.target.value)}
                 />

@@ -46,6 +46,7 @@ export class PaymentsController {
       paymentMethod &&
       paymentMethod !== 'CASH' &&
       paymentMethod !== 'MERCADO_PAGO' &&
+      paymentMethod !== 'TRANSFER' &&
       paymentMethod !== 'CARD'
     )
       throw new DomainError('VALIDATION_ERROR', 'Medio de pago inválido', {

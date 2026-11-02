@@ -1,11 +1,12 @@
 'use client';
 
-import type { OperationalReportsDto } from '@academy/contracts';
+import type { OperationalReportsDto, ReportCollectionConceptDto } from '@academy/contracts';
 import { FileDown } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
+import { otherConceptLabels } from '../../lib/other-payment';
 
 const tabs = [
   ['summary', 'Resumen'],
@@ -15,7 +16,16 @@ const tabs = [
   ['cash', 'Caja'],
 ] as const;
 type Tab = (typeof tabs)[number][0];
-const methods = { CASH: 'Efectivo', MERCADO_PAGO: 'Mercado Pago', CARD: 'Tarjeta' } as const;
+const conceptLabels: Readonly<Record<ReportCollectionConceptDto, string>> = {
+  CHARGES: 'Cuotas',
+  ...otherConceptLabels,
+};
+const methods = {
+  CASH: 'Efectivo',
+  MERCADO_PAGO: 'Mercado Pago',
+  TRANSFER: 'Transferencia',
+  CARD: 'Tarjeta',
+} as const;
 const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
 const amount = (value: string) => money.format(Number(value));
 const date = (value: string) => value.split('T')[0]!.split('-').reverse().join('/');
@@ -360,6 +370,50 @@ function Collections({
             </article>
           ))}
         </div>
+        {data.collections.byConceptAndMethod.length > 0 && (
+          <div className="table-wrap reports-concepts">
+            <table>
+              <caption>Recaudación por concepto y medio</caption>
+              <thead>
+                <tr>
+                  <th>Concepto</th>
+                  {data.collections.byMethod.map((item) => (
+                    <th key={item.method}>{methods[item.method]}</th>
+                  ))}
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.collections.byConceptAndMethod.map((row) => (
+                  <tr key={row.concept}>
+                    <td data-label="Concepto">{conceptLabels[row.concept]}</td>
+                    {row.byMethod.map((item) => (
+                      <td key={item.method} data-label={methods[item.method]}>
+                        {amount(item.amount)}
+                      </td>
+                    ))}
+                    <td data-label="Total">
+                      <strong>{amount(row.total)}</strong>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row">Total</th>
+                  {data.collections.byMethod.map((item) => (
+                    <td key={item.method} data-label={methods[item.method]}>
+                      {amount(item.amount)}
+                    </td>
+                  ))}
+                  <td data-label="Total">
+                    <strong>{amount(data.collections.total)}</strong>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        )}
         {data.collections.count === 0 ? (
           <p className="empty-state">No hubo cobros en este período.</p>
         ) : (

@@ -18,7 +18,7 @@ const today = '2026-11-01';
 describe('corregir pago', () => {
   it('arranca con los medios y la fecha del pago', () => {
     expect(correctionFormFrom(payment)).toEqual({
-      tenders: { CASH: '40000', MERCADO_PAGO: '', CARD: '' },
+      tenders: { CASH: '40000', MERCADO_PAGO: '', TRANSFER: '', CARD: '' },
       paidDate: '2026-10-30',
       reason: '',
     });
@@ -26,7 +26,7 @@ describe('corregir pago', () => {
 
   it('pasar de efectivo a Mercado Pago', () => {
     const form = {
-      tenders: { CASH: '', MERCADO_PAGO: '40.000', CARD: '' },
+      tenders: { CASH: '', MERCADO_PAGO: '40.000', TRANSFER: '', CARD: '' },
       paidDate: '2026-10-30',
       reason: 'Era Mercado Pago',
     };
@@ -56,7 +56,7 @@ describe('corregir pago', () => {
     expect(
       correctionProblem(
         payment,
-        { ...base, tenders: { CASH: '', MERCADO_PAGO: '', CARD: '' }, reason: 'ok!' },
+        { ...base, tenders: { CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' }, reason: 'ok!' },
         today,
       ),
     ).toBe('Ingresá al menos un medio con importe.');

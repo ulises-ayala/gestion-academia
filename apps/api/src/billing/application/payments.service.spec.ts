@@ -334,7 +334,7 @@ describe('PaymentsService', () => {
   it('rejects an unsupported method', async () => {
     await expect(
       new PaymentsService(new MemoryPayments()).create(
-        { studentId, tenders: [{ method: 'TRANSFER' as PaymentMethodDto, amount: '1' }] },
+        { studentId, tenders: [{ method: 'CHEQUE' as PaymentMethodDto, amount: '1' }] },
         actorId,
       ),
     ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });

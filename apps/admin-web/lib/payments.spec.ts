@@ -27,7 +27,7 @@ const charge = (
 
 describe('payments UI helpers', () => {
   it('suma medios y deuda sin perder centavos', () => {
-    const tenders = { CASH: '100.10', MERCADO_PAGO: '20,20', CARD: '' } as const;
+    const tenders = { CASH: '100.10', MERCADO_PAGO: '20,20', TRANSFER: '', CARD: '' } as const;
     expect(tenderTotal(tenders)).toBe(12030n);
     expect(
       outstandingTotal([charge('a', '100.10', '2026-08-01'), charge('b', '20.20', '2026-09-01')]),
@@ -70,6 +70,7 @@ describe('payments UI helpers', () => {
       createPaymentPayload('student-1', {
         CASH: '1000',
         MERCADO_PAGO: '500.25',
+        TRANSFER: '',
         CARD: '0',
       }),
     ).toEqual({

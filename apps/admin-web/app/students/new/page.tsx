@@ -455,6 +455,7 @@ export default function NewStudentPage() {
                   >
                     <option value="CASH">Efectivo</option>
                     <option value="MERCADO_PAGO">Mercado Pago</option>
+                    <option value="TRANSFER">Transferencia</option>
                     <option value="CARD">Tarjeta</option>
                   </select>
                 </label>
