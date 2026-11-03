@@ -13,6 +13,12 @@ enum RecordStatus {
   INACTIVE
 }
 
+/// Cierre de la recaudación: semanal (rango libre) o mensual (mes calendario).
+enum ClosingKind {
+  WEEKLY
+  MONTHLY
+}
+
 enum AdminRole {
   ADMINISTRATOR
   RECEPTION
@@ -704,6 +710,23 @@ model PaymentCreditUse {
   @@map("payment_credit_uses")
 }
 
+/// Cierre semanal o mensual de la recaudación, guardado como foto (`snapshot`). Las correcciones
+/// posteriores se ven comparando la foto con lo que hay hoy. No se edita ni se borra.
+model CollectionClosing {
+  id              String      @id @default(uuid()) @db.Uuid
+  kind            ClosingKind
+  fromDate        DateTime    @map("from_date") @db.Date
+  toDate          DateTime    @map("to_date") @db.Date
+  snapshot        Json
+  createdByUserId String      @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       AdminUser   @relation("CollectionClosingCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@unique([kind, fromDate])
+  @@index([kind, toDate])
+  @@map("collection_closings")
+}
+
 /// Concepto de ingreso de los otros cobros (indumentaria, inscripciones, talleres…). Lo amplían
 /// Administración y Dirección; se desactiva, no se borra.
 model PaymentConcept {
@@ -828,6 +851,7 @@ model AdminUser {
   leadTrialClassesCreated     LeadTrialClass[]               @relation("LeadTrialClassCreatedBy")
   paymentRefundsCreated       PaymentRefund[]                @relation("PaymentRefundCreatedBy")
   paymentCreditUsesCreated    PaymentCreditUse[]             @relation("PaymentCreditUseCreatedBy")
+  collectionClosingsCreated   CollectionClosing[]            @relation("CollectionClosingCreatedBy")
 
   @@map("admin_users")
 }

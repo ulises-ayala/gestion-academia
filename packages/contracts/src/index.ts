@@ -149,6 +149,73 @@ export type ReportConceptByMethodDto = Readonly<{
   byMethod: readonly ReportMoneyByMethodDto[];
   total: string;
 }>;
+/** Cierre de la recaudación: semanal (rango libre) o mensual (mes calendario). */
+export type ClosingKindDto = 'WEEKLY' | 'MONTHLY';
+/** Lo que guarda un cierre (la "foto") y lo que hay hoy para el mismo período. */
+export type ClosingFiguresDto = Readonly<{
+  collections: Readonly<{
+    total: string;
+    byMethod: readonly ReportMoneyByMethodDto[];
+    byConceptAndMethod: readonly ReportConceptByMethodDto[];
+  }>;
+  refunds: Readonly<{ total: string; byMethod: readonly ReportMoneyByMethodDto[] }>;
+  /** Solo en el cierre mensual: alumnos y deuda al momento del cierre. */
+  students: Readonly<{
+    active: number;
+    newStudents: number;
+    /** Alumnos con una inscripción finalizada en el mes y ninguna activa al cerrar. */
+    dropped: number;
+    pendingCharges: number;
+    pendingDebt: string;
+    overdueCharges: number;
+    overdueDebt: string;
+  }> | null;
+}>;
+export type CollectionClosingSummaryDto = Readonly<{
+  id: string;
+  kind: ClosingKindDto;
+  fromDate: string;
+  toDate: string;
+  total: string;
+  createdBy: Readonly<{ id: string; username: string }>;
+  createdAt: string;
+}>;
+/** Una diferencia entre la foto y hoy: una corrección posterior al cierre. */
+export type ClosingChangeDto = Readonly<{
+  /** Concepto (`CHARGES`, `SINGLE_CLASS`, id del catálogo…) o `REFUNDS` para devoluciones. */
+  concept: string;
+  label: string;
+  method: PaymentMethodDto;
+  original: string;
+  current: string;
+  difference: string;
+}>;
+export type CollectionClosingDto = CollectionClosingSummaryDto &
+  Readonly<{
+    snapshot: ClosingFiguresDto;
+    /** Importes de hoy para el mismo período (sin alumnos: esos quedan como estaban). */
+    current: ClosingFiguresDto;
+    changes: readonly ClosingChangeDto[];
+  }>;
+export type CollectionClosingListDto = PageDto<CollectionClosingSummaryDto>;
+export type CreateClosingDto = Readonly<{
+  kind: ClosingKindDto;
+  /** Semanal: AAAA-MM-DD. */
+  fromDate?: string | null;
+  toDate?: string | null;
+  /** Mensual: AAAA-MM. */
+  month?: string | null;
+}>;
+/** Período que se propone para el próximo cierre, con sus importes de hoy. */
+export type ClosingPreviewDto = Readonly<{
+  kind: ClosingKindDto;
+  fromDate: string;
+  toDate: string;
+  /** false si el período todavía no se puede cerrar (por ejemplo, el mes no terminó). */
+  closable: boolean;
+  reason: string | null;
+  figures: ClosingFiguresDto;
+}>;
 export type ReportsSummaryDto = Readonly<{
   activeStudents: number;
   inactiveStudents: number;
@@ -972,7 +1039,8 @@ export type AuditEntityTypeDto =
   | 'BILLING_CONDITION'
   | 'MONTHLY_CHARGE_ADJUSTMENT'
   | 'CASH_HANDOVER'
-  | 'PAYMENT_CONCEPT';
+  | 'PAYMENT_CONCEPT'
+  | 'COLLECTION_CLOSING';
 export type AuditSnapshotDto = Readonly<Record<string, unknown>>;
 export type AuditLogDto = Readonly<{
   id: string;

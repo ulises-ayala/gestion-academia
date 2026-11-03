@@ -5,6 +5,7 @@ import {
   BarChart3,
   Building2,
   CalendarCheck,
+  ClipboardCheck,
   CalendarDays,
   CalendarRange,
   CreditCard,
@@ -82,6 +83,12 @@ const navigation: readonly NavigationGroup[] = [
         label: 'Reportes',
         permission: 'reports:operational',
         icon: BarChart3,
+      },
+      {
+        href: '/closings',
+        label: 'Cierres',
+        permission: 'cash:reconcile',
+        icon: ClipboardCheck,
       },
       {
         href: '/settlements',
