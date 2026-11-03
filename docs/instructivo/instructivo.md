@@ -11,6 +11,7 @@ Guía práctica del sistema de gestión de la academia, organizada por perfil: *
 | Registrar cobros (cuotas, clase suelta, otros, deuda anterior)          | Sí       | Sí             | Sí        |
 | Cobrar a un alumno eventual                                             | Sí       | Sí             | Sí        |
 | Dejar como saldo a favor lo que se cobra de más                         | Sí       | Sí             | Sí        |
+| Usar el saldo a favor en cuotas u otros cobros                          | Sí       | Sí             | Sí        |
 | Cambiar el vencimiento de una cuota                                     | Sí       | Sí             | Sí        |
 | Cambiar modalidad y día de pago                                         | Sí       | Sí             | Sí        |
 | Reactivar una inscripción finalizada                                    | Sí       | Sí             | Sí        |
@@ -18,7 +19,8 @@ Guía práctica del sistema de gestión de la academia, organizada por perfil: *
 | Abrir y cerrar su turno de caja                                         | Sí       | Sí             | Sí        |
 | Elegir qué cuotas paga el alumno y cargar la fecha real del pago        | No       | Sí             | Sí        |
 | Corregir, reimputar o anular pagos                                      | No       | Sí             | Sí        |
-| Aplicar o devolver saldo a favor                                        | No       | Sí             | Sí        |
+| Devolver saldo a favor (autorización de Charo)                          | No       | No             | Sí        |
+| Conceptos de cobro y cierres semanales y mensuales                      | No       | Sí             | Sí        |
 | Quitar recargo, becas del profesor y descuentos                         | No       | Sí             | Sí        |
 | Pasar una cuota a otra clase                                            | No       | Sí             | Sí        |
 | Corregir la declaración de un cierre y registrar la entrega de efectivo | No       | Sí             | Sí        |
@@ -50,19 +52,22 @@ Al entrar se ve el día: clases, alumnos que deben, seguimientos y accesos rápi
 
 **Si viene a pagar un mes que no está cargado**, usá **Generar cuota** (o **Generar otra cuota (mes adelantado)**) y después cobrala.
 
-**Si paga con tarjeta y se le cobra recargo**, aparece el campo **Recargo por tarjeta (opcional)**. Suma a la recaudación pero no a la liquidación del profesor, y queda ligado al cobro: si se anula el cobro, se anula también el recargo.
+**Si paga con tarjeta**, elegí **Débito 4,04 %** o **Crédito 7,80 %**: el sistema calcula el recargo sobre lo que se paga con tarjeta y lo muestra antes de cobrar. Se cobra aparte con tarjeta, suma a la recaudación pero no a la liquidación del profesor, y queda ligado al cobro: si se anula el cobro, se anula también el recargo.
 
 ### Si paga de más: saldo a favor
 
-Si el importe supera lo que debe, el popup lo avisa: **Paga $X de más: dejarlo como saldo a favor**. Marcá la casilla solo si el alumno efectivamente deja ese dinero. El saldo **no se aplica solo**: Administración lo aplica a otra cuota o lo devuelve.
+Si el importe supera lo que debe, el popup lo avisa: **Paga $X de más: dejarlo como saldo a favor**. Marcá la casilla solo si el alumno efectivamente deja ese dinero. El saldo **no se aplica solo**: queda para lo que el alumno elija.
 
-**Usar el saldo a favor** (Administración y Dirección): cuando el alumno tiene saldo, el cobro lo muestra arriba de las cuotas con el botón **Usar saldo a favor**, que lo aplica a las cuotas pendientes de la más vieja a la más nueva, sin pasar por la caja. Si está al día, primero generá la cuota que viene a pagar.
+**Usar el saldo a favor** (cualquiera que cobra, también Admisión): el alumno elige en qué lo usa.
+
+- **En cuotas**: el cobro lo muestra arriba de las cuotas con el botón **Usar saldo a favor**, que lo aplica a las cuotas pendientes de la más vieja a la más nueva, sin pasar por la caja. Si está al día, primero generá la cuota que viene a pagar.
+- **En otros cobros** (clase suelta, talleres, indumentaria, Gala…): en **Clase suelta u otro**, escribí cuánto se paga con el saldo en **Usar saldo a favor**; el resto se cobra con los medios de siempre (puede ser nada). Se descuenta del saldo y queda registrado quién lo usó.
 
 ![Cobrar de más](capturas/cobro-saldo-a-favor.png)
 
 ### Clase suelta, indumentaria y otros cobros
 
-En **Clase suelta u otro** se elige el concepto: **Clase suelta** (con la clase y el profesor que la dictó), **Indumentaria**, **Precintos de la Gala**, **Recargo por tarjeta** u **Otro** (con detalle obligatorio).
+En **Clase suelta u otro** se elige el concepto: **Clase suelta** (con la clase y el profesor que la dictó), uno de los **conceptos de cobro** (Formaciones docentes, Inscripciones, Workshops y talleres, Indumentaria, Entradas o precintos de la Gala, Otros —este con detalle obligatorio— y los que agregue Administración) o **Recargo por tarjeta** (solo para un caso excepcional cargado a mano).
 
 ### Alumno eventual (no es alumno de la academia)
 
@@ -147,7 +152,7 @@ Cambia a qué cuotas se aplicó el pago, **sin tocar la caja**. Escribí cuánto
 
 ### Devolver saldo
 
-Devuelve todo o parte del saldo a favor de un pago. Elegí el importe, **cómo se devuelve** (puede ser otro medio) y el motivo. La devolución **sale de tu turno de caja abierto** como egreso. Un pago con devoluciones ya no se puede anular ni corregir.
+Solo **Dirección** (las devoluciones las autoriza Charo). Devuelve todo o parte del saldo a favor de un pago: elegí el importe, **cómo se devuelve** y el motivo. Por **Mercado Pago, transferencia o tarjeta** queda registrada fuera de la caja (la hace Charo desde su cuenta). En **efectivo**, marcá **Sale de la caja de mi turno abierto** si sale del cajón (egreso del turno); si no, queda fuera de la caja (efectivo que guarda Dirección). Un pago con devoluciones ya no se puede anular ni corregir.
 
 ![Devolver saldo](capturas/devolver-saldo.png)
 
@@ -182,9 +187,20 @@ Una clase creada en las pruebas que **no tiene inscripciones, cobros ni clases d
 
 ![Clases](capturas/clases.png)
 
-## Reportes: cierre semanal
+## Conceptos de cobro
 
-**Reportes → Cobros y deuda**, con el rango de fechas de la semana: la recaudación por concepto (cuotas, clase suelta, indumentaria, precintos de la Gala, recargo por tarjeta, otros) y por medio, con totales. Debajo aparecen las **devoluciones de saldo a favor** del período. Se descarga en PDF.
+**Configuración → Conceptos de cobro**: los conceptos que se eligen en **Clase suelta u otro** y que separan la recaudación. Se agregan, se renombran y se marca si piden contar qué se cobró. Un concepto que ya tiene cobros no se borra: se **desactiva** y deja de aparecer al cobrar.
+
+## Cierres semanales y mensuales
+
+**Cierres** arma solo el reporte del próximo período y lo guarda como una **foto** con **Guardar cierre**:
+
+- **Semanal**: propone desde el día siguiente al último cierre (hasta 7 días); se pueden cambiar las fechas. Muestra la recaudación por concepto y por medio (efectivo, Mercado Pago, transferencia, tarjeta), con totales, y las devoluciones del período.
+- **Mensual** (para Charo): un mes ya terminado, con la recaudación por concepto y medio, alumnos activos, nuevos ingresos, bajas, cuotas pendientes y montos adeudados.
+
+Un cierre guardado no cambia. Al abrirlo (**Ver**) se ve la foto y, aparte, las **correcciones posteriores al cierre**: lo que hoy da distinto porque se corrigió o anuló un pago después. **Descargar o imprimir PDF** lo abre listo para imprimir. Dirección los consulta desde su usuario.
+
+Para mirar cualquier otro rango, **Reportes → Cobros y deuda** muestra la misma recaudación por concepto y medio (también en PDF).
 
 ![Recaudación](capturas/reportes-recaudacion.png)
 
@@ -210,7 +226,10 @@ Una clase creada en las pruebas que **no tiene inscripciones, cobros ni clases d
 
 Estas reglas se programaron con un criterio provisorio y se ajustan si no son como trabaja la academia:
 
-- Saldo a favor: lo aplican y devuelven Administración y Dirección; la devolución sale de la caja de quien la registra y se puede devolver por otro medio; sirve solo para cuotas.
+- Recargo por tarjeta: se redondea al centavo y también va en otros cobros pagados con tarjeta.
+- Cierres: el sistema propone el período y arma el reporte, y Administración lo guarda (no se genera solo en una fecha); las **bajas** del mes son los alumnos con una inscripción finalizada en el mes y ninguna activa al cerrar.
+- "Formaciones docentes" es un concepto de otros cobros; las cuotas mensuales de una clase de formación siguen en Cuotas.
+- Entrega semanal de efectivo a Charo: está disponible en Caja; falta que Charo confirme si la quiere usar.
 - Clase de prueba: se registra en el potencial alumno y repetir la misma clase se bloquea.
 - Alumno eventual: alcanza con el nombre y no se vincula a una ficha si después se inscribe.
 - Borrar clases: qué cuenta como registro real y quién puede borrar.
