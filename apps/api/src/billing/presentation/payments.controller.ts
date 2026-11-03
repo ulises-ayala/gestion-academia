@@ -1,4 +1,6 @@
 import type {
+  ApplyCreditDto,
+  ApplyCreditResultDto,
   CorrectPaymentDto,
   CreateOtherPaymentDto,
   CreatePaymentDto,
@@ -6,6 +8,7 @@ import type {
   PaymentStatusDto,
   PaymentSummaryDto,
   ReallocatePaymentDto,
+  RefundPaymentDto,
   ReceivablesScopeDto,
   ReceivablesSortDto,
   VoidPaymentDto,
@@ -136,7 +139,7 @@ export class PaymentsController {
     return this.service.createOther(
       {
         ...input,
-        studentId: parseUuid(input.studentId, 'studentId'),
+        studentId: input.studentId ? parseUuid(input.studentId, 'studentId') : null,
         classId: input.classId ? parseUuid(input.classId, 'classId') : null,
         teacherId: input.teacherId ? parseUuid(input.teacherId, 'teacherId') : null,
       },
@@ -149,6 +152,30 @@ export class PaymentsController {
   @Permissions('payments:void')
   void(@Param('id') id: string, @Body() body: VoidPaymentDto, @CurrentUser() user: PublicAuthUser) {
     return this.service.void(parseUuid(id), user.id, body?.reason);
+  }
+
+  /** Usar el saldo a favor del alumno en sus cuotas pendientes: mismos permisos que reimputar. */
+  @Post('apply-credit')
+  @Permissions('payments:void')
+  applyCredit(
+    @Body() body: ApplyCreditDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ): Promise<ApplyCreditResultDto> {
+    return this.service.applyCredit(
+      { ...body, studentId: parseUuid(body?.studentId ?? '', 'studentId') },
+      user.id,
+    );
+  }
+
+  /** Devolver saldo a favor: mismos permisos que anular o corregir. */
+  @Post(':id/refunds')
+  @Permissions('payments:void')
+  refund(
+    @Param('id') id: string,
+    @Body() body: RefundPaymentDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.service.refund(parseUuid(id), body, user.id);
   }
 
   @Post(':id/correct')

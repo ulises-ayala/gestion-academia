@@ -641,9 +641,17 @@ function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
                   minute: '2-digit',
                 })}
               </span>
-              <strong>{item.type === 'COLLECTION' ? 'Cobro' : 'Anulación'}</strong>
+              <strong>
+                {item.type === 'COLLECTION'
+                  ? 'Cobro'
+                  : item.type === 'REFUND'
+                    ? 'Devolución'
+                    : 'Anulación'}
+              </strong>
               <span>
-                {item.student.firstName} {item.student.lastName}
+                {item.student
+                  ? `${item.student.firstName} ${item.student.lastName}`
+                  : `${item.walkInName ?? ''} (eventual)`}
               </span>
               <span>{labels[item.method]}</span>
               <strong>
@@ -652,7 +660,11 @@ function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
               </strong>
               <Link
                 className="text-link"
-                href={`/payments?tab=history&studentId=${item.student.id}`}
+                href={
+                  item.student
+                    ? `/payments?tab=history&studentId=${item.student.id}`
+                    : '/payments?tab=history'
+                }
               >
                 Ver cobro
               </Link>

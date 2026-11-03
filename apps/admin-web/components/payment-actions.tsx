@@ -21,10 +21,18 @@ export const paymentStatusLabel = (payment: PaymentDto) =>
 export const paymentApplication = (payment: PaymentDto) =>
   payment.kind === 'OTHER'
     ? [describeOtherPayment(payment.otherConcept)]
-    : payment.allocations.map(
-        (allocation) =>
-          `${allocation.academicClass.name} · ${chargeLabel(allocation)}: ${money(allocation.amount)}`,
-      );
+    : [
+        ...payment.allocations.map(
+          (allocation) =>
+            `${allocation.academicClass.name} · ${chargeLabel(allocation)}: ${money(allocation.amount)}`,
+        ),
+        ...(Number(payment.creditAmount) > 0
+          ? [`Saldo a favor: ${money(payment.creditAmount)}`]
+          : []),
+        ...(Number(payment.refundedAmount) > 0
+          ? [`Devuelto: ${money(payment.refundedAmount)}`]
+          : []),
+      ];
 
 /**
  * Recibo por WhatsApp, Corregir y Anular: mismo tamaño y un color por acción, para que no se
@@ -48,7 +56,8 @@ export function PaymentActions({
 }>) {
   if (payment.status !== 'CONFIRMED') return null;
   const correct = canVoid && onCorrect;
-  const cancel = canVoid && onVoid;
+  // Con devoluciones de saldo a favor el pago ya no se anula (la plata salió de la caja).
+  const cancel = canVoid && onVoid && Number(payment.refundedAmount) === 0;
   if (receiptPhone === undefined && !correct && !cancel) return null;
   return (
     <div className={`payment-actions is-${layout}`}>
@@ -69,11 +78,15 @@ export function PaymentActions({
         <button
           type="button"
           className="payment-action is-correct"
-          title="Corregir medio, importe o fecha"
+          title={
+            Number(payment.creditAmount) > 0
+              ? 'Corregir, aplicar o devolver el saldo a favor'
+              : 'Corregir medio, importe, fecha o cuotas'
+          }
           onClick={() => onCorrect(payment)}
         >
           <Pencil aria-hidden="true" size={15} />
-          Corregir
+          {Number(payment.creditAmount) > 0 ? 'Saldo a favor' : 'Corregir'}
         </button>
       )}
       {cancel && (

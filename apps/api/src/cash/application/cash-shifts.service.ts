@@ -19,7 +19,10 @@ const detailInclude = {
     include: {
       actor: { select: { id: true, username: true } },
       sourcePayment: {
-        select: { student: { select: { id: true, firstName: true, lastName: true } } },
+        select: {
+          student: { select: { id: true, firstName: true, lastName: true } },
+          walkInName: true,
+        },
       },
     },
     orderBy: [{ createdAt: 'desc' as const }, { id: 'desc' as const }],
@@ -322,6 +325,7 @@ export class CashShiftsService {
         amount: movement.amount.toFixed(2),
         paymentId: movement.sourcePaymentId,
         student: movement.sourcePayment.student,
+        walkInName: movement.sourcePayment.walkInName,
         actor: movement.actor,
         reason: movement.reason,
         createdAt: movement.createdAt.toISOString(),

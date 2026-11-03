@@ -1,7 +1,7 @@
 import type { PaymentDto } from '@academy/contracts';
 import { chargeLabel, money } from './collect-payment';
 import { describeOtherPayment } from './other-payment';
-import { paymentMethodLabels } from './payments';
+import { payerDni, payerName, paymentMethodLabels } from './payments';
 
 /** Teléfono de la academia que figura al pie del recibo. */
 export const ACADEMY_CONTACT_PHONE = '370 508-4498';
@@ -41,9 +41,18 @@ export const receiptText = (payment: PaymentDto, remainingDebt?: string | null):
           (allocation) =>
             `• ${allocation.academicClass.name} · ${chargeLabel(allocation)}: ${money(allocation.amount)}`,
         );
-  const methods = payment.tenders
-    .map((tender) => `${paymentMethodLabels[tender.method]} ${money(tender.amount)}`)
-    .join(' + ');
+  // El recargo por tarjeta se cobra con el cobro de cuotas: va en el mismo recibo.
+  const surcharge = payment.cardSurcharge;
+  if (surcharge) items.push(`• Recargo por tarjeta: ${money(surcharge.amount)}`);
+  const methods = [
+    ...payment.tenders.map(
+      (tender) => `${paymentMethodLabels[tender.method]} ${money(tender.amount)}`,
+    ),
+    ...(surcharge ? [`Tarjeta ${money(surcharge.amount)} (recargo)`] : []),
+  ].join(' + ');
+  const total = surcharge
+    ? (Number(payment.amount) + Number(surcharge.amount)).toFixed(2)
+    : payment.amount;
   const balance =
     remainingDebt === undefined || remainingDebt === null
       ? []
@@ -51,13 +60,14 @@ export const receiptText = (payment: PaymentDto, remainingDebt?: string | null):
   return [
     '*Carmesí* · Comprobante de pago',
     '',
-    `Alumno/a: ${payment.student.firstName} ${payment.student.lastName} (DNI ${payment.student.dni})`,
+    `Alumno/a: ${payerName(payment)}${payerDni(payment) ? ` (DNI ${payerDni(payment)})` : ''}`,
     `Fecha: ${dateTime(payment.paidAt)}`,
     '',
     ...items,
     '',
     `Medio de pago: ${methods}`,
-    `*Total: ${money(payment.amount)}*`,
+    `*Total: ${money(total)}*`,
+    ...(Number(payment.creditAmount) > 0 ? [`Queda a favor: ${money(payment.creditAmount)}`] : []),
     ...balance,
     '',
     `Comprobante N.º ${payment.id.slice(0, 8).toUpperCase()}`,

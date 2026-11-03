@@ -69,6 +69,15 @@ export class ClassesController {
   ) {
     return this.service.deactivate(parseUuid(id), user.id);
   }
+  /** Borrar del todo una clase de prueba sin registros (desactivar es DELETE: archiva). */
+  @Post(':id/remove') @HttpCode(200) @Permissions('offering:manage') async remove(
+    @Param('id') id: string,
+    @Body() input: { reason?: unknown } | null,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    await this.service.remove(parseUuid(id), input?.reason, user.id);
+    return { removed: true };
+  }
   @Post(':id/reactivate') @Permissions('offering:manage') reactivate(
     @Param('id') id: string,
     @CurrentUser() user: PublicAuthUser,

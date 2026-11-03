@@ -84,7 +84,7 @@ export class BillingAdjustmentsController {
   }
 
   @Post('monthly-charges/:chargeId/enrollment')
-  @Permissions('charges:generate')
+  @Permissions('charges:manage')
   moveToEnrollment(
     @Param('chargeId') chargeId: string,
     @Body() input: MoveMonthlyChargeDto | null,

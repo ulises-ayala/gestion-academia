@@ -1,6 +1,7 @@
 'use client';
 
 import type {
+  ApplyCreditResultDto,
   CashShiftDto,
   ClassListDto,
   EnrollmentListDto,
@@ -8,6 +9,7 @@ import type {
   MonthlyChargeListDto,
   OtherPaymentConceptDto,
   PaymentDto,
+  PaymentSummaryDto,
   StudentDto,
   StudentListDto,
   TeacherListDto,
@@ -47,13 +49,17 @@ import {
 } from '../lib/collect-payment';
 import {
   buildOtherPaymentPayload,
+  buildWalkInPaymentPayload,
   otherConceptLabels,
   otherPaymentProblem,
+  walkInProblem,
+  type WalkInForm,
 } from '../lib/other-payment';
 import {
   centsToDecimal,
   createPaymentPayload,
   decimalToCents,
+  payerName,
   paymentMethodLabels,
   previewAllocations,
   type TenderAmounts,
@@ -113,6 +119,9 @@ export function CollectPaymentDialog({
   const [searching, setSearching] = useState(false);
   const [highlight, setHighlight] = useState(0);
   const [student, setStudent] = useState<StudentDto | null>(initialStudent);
+  // Alumno eventual: alguien que toma una clase suelta sin ser alumno (sin ficha ni cuotas).
+  const [walkIn, setWalkIn] = useState<WalkInForm | null>(null);
+  const walkInMode = walkIn !== null;
   const [charges, setCharges] = useState<readonly MonthlyChargeDto[] | null>(null);
   const [enrollments, setEnrollments] = useState<EnrollmentListDto['items']>([]);
   const [classes, setClasses] = useState<ClassListDto['items'] | null>(null);
@@ -125,6 +134,9 @@ export function CollectPaymentDialog({
   const [chosen, setChosen] = useState<readonly string[]>([]);
   /** Recargo por pagar con tarjeta (se registra aparte, como otro cobro). */
   const [surcharge, setSurcharge] = useState('');
+  const [keepCredit, setKeepCredit] = useState(false);
+  const [credit, setCredit] = useState('0.00');
+  const [applyingCredit, setApplyingCredit] = useState(false);
   const [doneSurcharge, setDoneSurcharge] = useState<string | null>(null);
   const [concept, setConcept] = useState<OtherPaymentConceptDto>('SINGLE_CLASS');
   const [classId, setClassId] = useState('');
@@ -192,11 +204,14 @@ export function CollectPaymentDialog({
     };
   }, [query, student]);
 
+  // Cuotas y saldo a favor del alumno: se recargan juntos después de cada cambio.
   const loadCharges = useCallback(async (studentId: string) => {
-    const result = await apiRequest<MonthlyChargeListDto>(
-      `/monthly-charges?studentId=${studentId}`,
-    );
+    const [result, summary] = await Promise.all([
+      apiRequest<MonthlyChargeListDto>(`/monthly-charges?studentId=${studentId}`),
+      apiRequest<PaymentSummaryDto>(`/payments/summary?studentId=${studentId}`).catch(() => null),
+    ]);
     setCharges(result.items);
+    setCredit(summary?.creditTotal ?? '0.00');
     return result.items;
   }, []);
 
@@ -228,6 +243,17 @@ export function CollectPaymentDialog({
       active = false;
     };
   }, [loadCharges, student]);
+
+  useEffect(() => {
+    if (!walkInMode) return;
+    let active = true;
+    apiRequest<CashShiftDto | null>('/cash-shifts/current')
+      .then((shift) => active && setCashOpen(Boolean(shift)))
+      .catch(() => active && setCashOpen(false));
+    return () => {
+      active = false;
+    };
+  }, [walkInMode]);
 
   useEffect(() => {
     if (tab !== 'other' || classes !== null) return;
@@ -294,16 +320,21 @@ export function CollectPaymentDialog({
   const paysByCard = (decimalToCents(tenders.CARD || '0') ?? 0n) > 0n;
   const surchargeCents = paysByCard ? cardSurchargeCents(surcharge) : 0n;
   const selectedClass = classes?.find((item) => item.id === classId) ?? null;
-  const problem =
-    tab === 'charges'
-      ? (chargesProblem(pick, payableCents, chosenOpen.length > 0) ??
+  const otherProblem = pickIsInvalid(pick)
+    ? 'Usá importes positivos con hasta dos decimales.'
+    : otherPaymentProblem(otherForm, tenders);
+  // Cobrar de más: el excedente queda como saldo a favor solo si quien cobra lo confirma.
+  const excessCents = totalCents > payableCents ? totalCents - payableCents : 0n;
+  const allowCredit = keepCredit && excessCents > 0n;
+  const problem = walkIn
+    ? (walkInProblem(walkIn) ?? otherProblem)
+    : tab === 'charges'
+      ? (chargesProblem(pick, payableCents, chosenOpen.length > 0, allowCredit) ??
         (surchargeCents === null
           ? 'El recargo por tarjeta tiene que ser un importe válido.'
           : null))
       : tab === 'other'
-        ? pickIsInvalid(pick)
-          ? 'Usá importes positivos con hasta dos decimales.'
-          : otherPaymentProblem(otherForm, tenders)
+        ? otherProblem
         : historicalDebtProblem(debtForm);
 
   const selectStudent = (next: StudentDto) => {
@@ -320,8 +351,22 @@ export function CollectPaymentDialog({
     setTried(false);
   };
 
+  const startWalkIn = () => {
+    // Si escribió un nombre en el buscador, se usa como nombre del eventual.
+    setWalkIn({ name: /\d/.test(query) ? '' : query.trim(), phone: '', dni: '' });
+    setResults(null);
+    setQuery('');
+    setTab('other');
+    setConcept('SINGLE_CLASS');
+    setPick(freshPick());
+    setTried(false);
+    setNotice('');
+    setError('');
+  };
+
   const backToSearch = () => {
     setStudent(null);
+    setWalkIn(null);
     setCharges(null);
     setEnrollments([]);
     setDone(null);
@@ -367,15 +412,49 @@ export function CollectPaymentDialog({
     }
   }
 
+  // Usar el saldo a favor en las cuotas pendientes (de la más vieja): no pasa por la caja.
+  async function applyCredit() {
+    if (!student || applyingCredit) return;
+    setApplyingCredit(true);
+    setError('');
+    setNotice('');
+    try {
+      const result = await apiRequest<ApplyCreditResultDto>('/payments/apply-credit', {
+        method: 'POST',
+        body: JSON.stringify({ studentId: student.id }),
+      });
+      markChanged();
+      setAmountTouched(false);
+      setChosen([]);
+      await loadCharges(student.id);
+      setNotice(`Se usaron ${money(result.applied)} del saldo a favor en sus cuotas.`);
+    } catch (caught) {
+      setError(errorText(caught, 'No se pudo usar el saldo a favor.'));
+    } finally {
+      setApplyingCredit(false);
+    }
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     setTried(true);
-    if (!student || problem || saving) return;
+    if ((!student && !walkIn) || problem || saving) return;
     if (tab !== 'debt' && !cashOpen) return;
     setSaving(true);
     setError('');
     setNotice('');
     try {
+      if (walkIn) {
+        const payment = await apiRequest<PaymentDto>('/payments/other', {
+          method: 'POST',
+          body: JSON.stringify(dated(buildWalkInPaymentPayload(walkIn, otherForm, tenders))),
+        });
+        markChanged();
+        setDoneSurcharge(null);
+        setDone(payment);
+        return;
+      }
+      if (!student) return;
       if (tab === 'debt') {
         await apiRequest<MonthlyChargeDto>('/monthly-charges/historical-debt', {
           method: 'POST',
@@ -402,6 +481,7 @@ export function CollectPaymentDialog({
                     ? { monthlyChargeIds: chosenOpen.map((charge) => charge.id) }
                     : {}),
                   ...(surchargeCents ? { cardSurcharge: centsToDecimal(surchargeCents) } : {}),
+                  ...(allowCredit ? { allowCredit: true } : {}),
                 }),
               ),
             })
@@ -411,6 +491,7 @@ export function CollectPaymentDialog({
             });
       markChanged();
       setChosen([]);
+      setKeepCredit(false);
       setDoneSurcharge(tab === 'charges' && surchargeCents ? centsToDecimal(surchargeCents) : null);
       setSurcharge('');
       setDone(payment);
@@ -423,7 +504,7 @@ export function CollectPaymentDialog({
         (caught.error.code === 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE' ||
           caught.error.code === 'PAYMENT_NO_OUTSTANDING_BALANCE' ||
           caught.status === 409);
-      if (stale && tab === 'charges') {
+      if (stale && tab === 'charges' && student) {
         await loadCharges(student.id).catch(() => undefined);
         setAmountTouched(false);
         setError(
@@ -520,6 +601,8 @@ export function CollectPaymentDialog({
       </div>
     ) : null;
 
+  const payerPhone = student?.phone ?? (walkIn?.phone.trim() || null);
+
   const submitLabel =
     tab === 'debt'
       ? saving
@@ -540,7 +623,7 @@ export function CollectPaymentDialog({
         )}
       </header>
 
-      {!student ? (
+      {!student && !walkIn ? (
         <div className="collect-search">
           <label className="collect-search-field">
             <span className="sr-only">Buscar alumno</span>
@@ -603,6 +686,9 @@ export function CollectPaymentDialog({
               ))
             )}
           </div>
+          <button type="button" className="link-button collect-walk-in" onClick={startWalkIn}>
+            No es alumno: cobrar una clase suelta a un alumno eventual
+          </button>
         </div>
       ) : done ? (
         <div className="collect-done" role="status">
@@ -615,10 +701,10 @@ export function CollectPaymentDialog({
             <p className="modal-copy">Más {money(doneSurcharge)} de recargo por tarjeta</p>
           )}
           <p className="modal-copy">
-            {student.firstName} {student.lastName} · {paymentSummary(done).methods}
+            {payerName(done)} · {paymentSummary(done).methods}
           </p>
           <p className="modal-copy">{paymentSummary(done).detail}</p>
-          {charges && (
+          {student && charges && (
             <p className="collect-done-balance">
               {debtCents > 0n ? `Le queda por pagar ${money(debt)}.` : 'Queda al día.'}
             </p>
@@ -627,7 +713,7 @@ export function CollectPaymentDialog({
             className="button collect-done-whatsapp"
             href={whatsappReceiptUrl(
               done,
-              student.phone,
+              payerPhone,
               done.kind === 'CHARGES' && charges ? debt : null,
             )}
             target="_blank"
@@ -635,11 +721,11 @@ export function CollectPaymentDialog({
           >
             Enviar recibo por WhatsApp
           </a>
-          {!whatsappNumber(student.phone) && (
+          {!whatsappNumber(payerPhone) && (
             <p className="collect-hint">
-              {student.phone
-                ? `El teléfono cargado (${student.phone}) no parece un celular: WhatsApp te va a pedir el contacto.`
-                : 'El alumno no tiene teléfono cargado: WhatsApp te va a pedir el contacto.'}
+              {payerPhone
+                ? `El teléfono cargado (${payerPhone}) no parece un celular: WhatsApp te va a pedir el contacto.`
+                : 'No hay teléfono cargado: WhatsApp te va a pedir el contacto.'}
             </p>
           )}
           {inline ? (
@@ -656,15 +742,69 @@ export function CollectPaymentDialog({
               <button type="button" className="secondary" onClick={backToSearch}>
                 Cobrar a otro alumno
               </button>
-              <button type="button" onClick={anotherForSameStudent}>
-                Cobrar otra cosa a {student.firstName}
-              </button>
+              {student && (
+                <button type="button" onClick={anotherForSameStudent}>
+                  Cobrar otra cosa a {student.firstName}
+                </button>
+              )}
             </div>
           )}
         </div>
       ) : (
         <form className="collect-form" onSubmit={(event) => void submit(event)} noValidate>
-          {!inline && (
+          {walkIn && (
+            <>
+              <div className="collect-student">
+                <div>
+                  <strong>Alumno eventual</strong>
+                  <span>Sin ficha ni cuotas: se registra solo esta clase suelta.</span>
+                </div>
+                <div className="collect-student-links">
+                  <button
+                    type="button"
+                    className="link-button"
+                    disabled={saving}
+                    onClick={backToSearch}
+                  >
+                    Cambiar alumno
+                  </button>
+                </div>
+              </div>
+              <div className="collect-walk-in-fields">
+                <label className="wide">
+                  Nombre y apellido
+                  <input
+                    maxLength={160}
+                    value={walkIn.name}
+                    disabled={saving}
+                    aria-invalid={tried && walkIn.name.trim().length < 2}
+                    onChange={(event) => setWalkIn({ ...walkIn, name: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Teléfono (opcional)
+                  <input
+                    inputMode="tel"
+                    maxLength={80}
+                    value={walkIn.phone}
+                    disabled={saving}
+                    onChange={(event) => setWalkIn({ ...walkIn, phone: event.target.value })}
+                  />
+                </label>
+                <label>
+                  DNI (opcional)
+                  <input
+                    inputMode="numeric"
+                    maxLength={32}
+                    value={walkIn.dni}
+                    disabled={saving}
+                    onChange={(event) => setWalkIn({ ...walkIn, dni: event.target.value })}
+                  />
+                </label>
+              </div>
+            </>
+          )}
+          {!inline && student && (
             <div className="collect-student">
               <div>
                 <strong>
@@ -677,6 +817,7 @@ export function CollectPaymentDialog({
                     : debtCents > 0n
                       ? `debe ${money(debt)}`
                       : 'al día'}
+                  {Number(credit) > 0 ? ` · a favor ${money(credit)}` : ''}
                 </span>
               </div>
               <div className="collect-student-links">
@@ -695,27 +836,29 @@ export function CollectPaymentDialog({
             </div>
           )}
 
-          <div className="collect-tabs" role="tablist" aria-label="Qué cobrar">
-            {(
-              [
-                ['charges', 'Cuotas'],
-                ['other', 'Clase suelta u otro'],
-                ...(can('charges:generate') ? [['debt', 'Deuda anterior']] : []),
-              ] as [CollectTab, string][]
-            ).map(([value, label]) => (
-              <button
-                key={value}
-                type="button"
-                role="tab"
-                aria-selected={tab === value}
-                className={tab === value ? 'is-selected' : ''}
-                disabled={saving}
-                onClick={() => switchTab(value)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          {!walkInMode && (
+            <div className="collect-tabs" role="tablist" aria-label="Qué cobrar">
+              {(
+                [
+                  ['charges', 'Cuotas'],
+                  ['other', 'Clase suelta u otro'],
+                  ...(can('charges:generate') ? [['debt', 'Deuda anterior']] : []),
+                ] as [CollectTab, string][]
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === value}
+                  className={tab === value ? 'is-selected' : ''}
+                  disabled={saving}
+                  onClick={() => switchTab(value)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
 
           {notice && (
             <p className="collect-notice" role="status">
@@ -725,6 +868,28 @@ export function CollectPaymentDialog({
 
           {tab === 'charges' && (
             <div className="collect-panel" role="tabpanel">
+              {charges !== null && Number(credit) > 0 && (
+                <div className="collect-credit-note" role="status">
+                  <span>
+                    Tiene <strong>{money(credit)}</strong> de saldo a favor.
+                    {!can('payments:void')
+                      ? ' Administración lo aplica a una cuota o lo devuelve.'
+                      : pending.length === 0
+                        ? ' Generá la cuota que paga y después usalo.'
+                        : ' Se usa en las cuotas pendientes, de la más vieja a la más nueva, sin pasar por la caja.'}
+                  </span>
+                  {can('payments:void') && pending.length > 0 && (
+                    <button
+                      type="button"
+                      className="secondary"
+                      disabled={saving || applyingCredit}
+                      onClick={() => void applyCredit()}
+                    >
+                      {applyingCredit ? 'Aplicando…' : 'Usar saldo a favor'}
+                    </button>
+                  )}
+                </div>
+              )}
               {charges === null ? (
                 <p className="modal-copy">Cargando cuotas…</p>
               ) : pending.length === 0 ? (
@@ -807,6 +972,20 @@ export function CollectPaymentDialog({
               {pending.length > 0 && (
                 <>
                   {amountField('Importe que paga')}
+                  {excessCents > 0n && (
+                    <label className="collect-credit">
+                      <input
+                        type="checkbox"
+                        checked={keepCredit}
+                        disabled={saving}
+                        onChange={(event) => setKeepCredit(event.target.checked)}
+                      />
+                      Paga {money(centsToDecimal(excessCents))} de más: dejarlo como saldo a favor
+                      <small className="collect-hint">
+                        No se aplica solo: Administración lo aplica a otra cuota o lo devuelve.
+                      </small>
+                    </label>
+                  )}
                   {tenderFields}
                   {paysByCard && (
                     <label className="collect-surcharge">
@@ -832,20 +1011,22 @@ export function CollectPaymentDialog({
 
           {tab === 'other' && (
             <div className="collect-panel" role="tabpanel">
-              <fieldset className="collect-concepts" disabled={saving}>
-                <legend className="sr-only">¿A qué corresponde?</legend>
-                {(Object.keys(otherConceptLabels) as OtherPaymentConceptDto[]).map((value) => (
-                  <label key={value} className={concept === value ? 'is-selected' : ''}>
-                    <input
-                      type="radio"
-                      name="collect-concept"
-                      checked={concept === value}
-                      onChange={() => setConcept(value)}
-                    />
-                    {otherConceptLabels[value]}
-                  </label>
-                ))}
-              </fieldset>
+              {!walkInMode && (
+                <fieldset className="collect-concepts" disabled={saving}>
+                  <legend className="sr-only">¿A qué corresponde?</legend>
+                  {(Object.keys(otherConceptLabels) as OtherPaymentConceptDto[]).map((value) => (
+                    <label key={value} className={concept === value ? 'is-selected' : ''}>
+                      <input
+                        type="radio"
+                        name="collect-concept"
+                        checked={concept === value}
+                        onChange={() => setConcept(value)}
+                      />
+                      {otherConceptLabels[value]}
+                    </label>
+                  ))}
+                </fieldset>
+              )}
               {concept === 'SINGLE_CLASS' && (
                 <label>
                   Clase

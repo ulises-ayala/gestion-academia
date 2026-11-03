@@ -143,12 +143,14 @@ export class SettlementsService {
         ORDER BY p.paid_at, p.id, c.name`),
       this.prisma.$queryRaw<SingleClassRow[]>(Prisma.sql`
         SELECT p.id AS "paymentId", p.paid_at AS "paidAt",
-          CONCAT(s.first_name, ' ', s.last_name) AS "studentName",
+          CASE WHEN s.id IS NULL THEN CONCAT(p.walk_in_name, ' (eventual)')
+            ELSE CONCAT(s.first_name, ' ', s.last_name) END AS "studentName",
           c.id AS "classId", c.name AS "className", p.teacher_id AS "teacherId",
           p.amount AS collected
         FROM payments p
         JOIN classes c ON c.id = p.class_id
-        JOIN students s ON s.id = p.student_id
+        -- El alumno eventual no tiene ficha: la clase suelta igual se liquida.
+        LEFT JOIN students s ON s.id = p.student_id
         WHERE p.status = 'CONFIRMED' AND p.concept = 'SINGLE_CLASS' AND p.teacher_id IS NOT NULL
           AND p.paid_at >= ${from} AND p.paid_at < ${to}
         ORDER BY p.paid_at, p.id`),

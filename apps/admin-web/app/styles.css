@@ -1064,6 +1064,43 @@ p {
   margin: 0;
   white-space: pre-wrap;
 }
+.lead-trials {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.lead-trials li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.lead-trials li span {
+  display: grid;
+  gap: 2px;
+}
+.lead-trials small {
+  color: var(--text-muted);
+}
+.lead-trial-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  align-items: end;
+}
+.lead-trial-form .wide {
+  grid-column: 1 / -1;
+}
+@media (max-width: 480px) {
+  .lead-trial-form {
+    grid-template-columns: 1fr;
+  }
+}
 .onboarding-form,
 .onboarding-classes {
   display: grid;

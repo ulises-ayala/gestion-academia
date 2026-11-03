@@ -433,3 +433,55 @@ dialog.collect-dialog::backdrop {
   gap: var(--space-1);
   max-width: 20rem;
 }
+
+/* Alumno eventual: acceso desde el buscador y sus datos (nombre, teléfono y DNI). */
+.collect-walk-in {
+  justify-self: start;
+}
+.collect-walk-in-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.collect-walk-in-fields .wide {
+  grid-column: 1 / -1;
+}
+@media (max-width: 480px) {
+  .collect-walk-in-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cobrar de más: confirmar que el excedente queda como saldo a favor. */
+.collect-credit {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.collect-credit small {
+  grid-column: 2;
+}
+.collect-form .collect-credit input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 2px 0 0;
+  padding: 0;
+  accent-color: var(--brand);
+}
+
+/* Saldo a favor del alumno en el cobro, con el botón para usarlo. */
+.collect-credit-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--success-soft, var(--surface-muted));
+}

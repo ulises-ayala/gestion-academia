@@ -298,6 +298,16 @@ export function renderOperationalReportPdf(
       ],
     );
   }
+  if (Number(collections.refunds.total) > 0)
+    metrics([
+      ['Devoluciones de saldo a favor', formatMoney(collections.refunds.total)],
+      ...collections.refunds.byMethod
+        .filter((item) => Number(item.amount) > 0)
+        .map(
+          (item) =>
+            [`Devuelto en ${METHOD_LABELS[item.method]}`, formatMoney(item.amount)] as const,
+        ),
+    ]);
   if (collections.byTeacher.length > 0) {
     subheading('Ingresos por profesor');
     table(

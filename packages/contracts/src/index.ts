@@ -79,6 +79,27 @@ export type LeadDuplicateDto = Readonly<{
 }>;
 export type LeadDuplicateListDto = Readonly<{ items: readonly LeadDuplicateDto[] }>;
 
+/** Clase de prueba gratis de un potencial alumno: una sola vez por clase, sin deuda. */
+export type LeadTrialClassDto = Readonly<{
+  id: string;
+  academicClass: Readonly<{ id: string; name: string }>;
+  /** Día de la prueba (AAAA-MM-DD). */
+  trialDate: string;
+  notes: string | null;
+  createdBy: Readonly<{ id: string; username: string }>;
+  createdAt: string;
+}>;
+
+export type CreateLeadTrialClassDto = Readonly<{
+  classId: string;
+  /** AAAA-MM-DD; si falta, hoy. No puede ser futura. */
+  trialDate?: string | null;
+  notes?: string | null;
+}>;
+
+/** Quitar una clase de prueba cargada por error (queda en la auditoría). */
+export type RemoveLeadTrialClassDto = Readonly<{ reason: string }>;
+
 export type AdminRoleDto = 'ADMINISTRATOR' | 'RECEPTION' | 'MANAGER';
 export type AuthUserDto = Readonly<{
   id: string;
@@ -227,6 +248,12 @@ export type OperationalReportsDto = Readonly<{
     byConcept: Readonly<{ charges: string; singleClass: string; other: string }>;
     /** Recaudación por concepto y medio (solo los conceptos con cobros en el período). */
     byConceptAndMethod: readonly ReportConceptByMethodDto[];
+    /**
+     * Devoluciones de saldo a favor del período (egresos de caja, por el día en que se
+     * registraron). La recaudación de arriba es lo cobrado; lo que quedó en la academia es la
+     * recaudación menos esto.
+     */
+    refunds: Readonly<{ total: string; byMethod: readonly ReportMoneyByMethodDto[] }>;
     singleClasses: readonly ReportSingleClassDto[];
     byTeacher: readonly ReportTeacherIncomeDto[];
   }>;
@@ -620,6 +647,11 @@ export type CreatePaymentDto = Readonly<{
    * "Recargo por tarjeta" pagado con tarjeta. Exige que el cobro tenga tarjeta.
    */
   cardSurcharge?: string | null;
+  /**
+   * Dejar como saldo a favor lo que supere la deuda (o todo, si no debe nada). Sin esto, cobrar de
+   * más se rechaza.
+   */
+  allowCredit?: boolean;
 }>;
 export type PaymentKindDto = 'CHARGES' | 'OTHER';
 export type OtherPaymentConceptDto =
@@ -629,8 +661,13 @@ export type OtherPaymentConceptDto =
   | 'GALA_SEAL'
   | 'CARD_SURCHARGE';
 /** Cobro que no se imputa a cuotas: clase suelta (con su clase) u otro concepto (con detalle). */
+/** Quien toma una clase suelta sin ser alumno regular: no tiene ficha ni cuotas. */
+export type WalkInDto = Readonly<{ name: string; phone: string | null; dni: string | null }>;
+
 export type CreateOtherPaymentDto = Readonly<{
-  studentId: string;
+  /** Alumno del cobro; falta solo en la clase suelta de un alumno eventual (\walkIn\). */
+  studentId?: string | null;
+  walkIn?: Readonly<{ name: string; phone?: string | null; dni?: string | null }> | null;
   concept: OtherPaymentConceptDto;
   classId?: string | null;
   /** Profesor que dictó la clase suelta; si falta se usa el de la clase. */
@@ -661,14 +698,24 @@ export type PaymentDto = Readonly<{
   /** phone: para mandar el recibo por WhatsApp desde el historial de cobros. */
   student: Readonly<
     Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'> & { phone?: string | null }
-  >;
+  > | null;
+  /** Alumno eventual de una clase suelta (sin ficha); null cuando el pago tiene alumno. */
+  walkIn: WalkInDto | null;
   amount: string;
+  /** Saldo a favor: lo cobrado que no quedó imputado a cuotas ni se devolvió. */
+  creditAmount: string;
+  /** Lo devuelto del saldo a favor. */
+  refundedAmount: string;
   tenders: readonly PaymentTenderDto[];
   status: PaymentStatusDto;
   paidAt: string;
   createdBy: Readonly<{ id: string; username: string }>;
   /** Pago anulado que este corrige. */
   correctionOfId: string | null;
+  /** Recargo por tarjeta vigente que se cobró junto con este cobro de cuotas. */
+  cardSurcharge: Readonly<{ id: string; amount: string }> | null;
+  /** En un recargo por tarjeta: el cobro de cuotas al que pertenece. */
+  surchargeOfId: string | null;
   /** Pago que reemplazó a este al corregirlo (este queda anulado). */
   correctedById: string | null;
   voidedAt: string | null;
@@ -716,8 +763,20 @@ export type ReceivablesDto = Readonly<{
   page: number;
   pageSize: number;
 }>;
-export type PaymentSummaryDto = Readonly<{ confirmedTotal: string }>;
+/** creditTotal: saldo a favor del alumno (suma de lo no imputado ni devuelto de sus pagos). */
+export type PaymentSummaryDto = Readonly<{ confirmedTotal: string; creditTotal: string }>;
 export type VoidPaymentDto = Readonly<{ reason: string }>;
+
+/** Usar el saldo a favor del alumno en sus cuotas pendientes (motivo opcional). */
+export type ApplyCreditDto = Readonly<{ studentId: string; reason?: string | null }>;
+export type ApplyCreditResultDto = Readonly<{ applied: string }>;
+
+/** Devolver saldo a favor de un pago: egreso de la caja del turno de quien devuelve. */
+export type RefundPaymentDto = Readonly<{
+  amount: string;
+  method: PaymentMethodDto;
+  reason: string;
+}>;
 /**
  * Corregir un pago: se anula y se reemplaza por uno nuevo con los medios, el importe o la fecha
  * correctos. Los movimientos de caja se corrigen en el turno del pago original.
@@ -768,7 +827,8 @@ export type CreateCashHandoverDto = Readonly<{
 export type CashCollectedDto = Readonly<{ fromDate: string; toDate: string; collected: string }>;
 
 export type CashShiftStatusDto = 'OPEN' | 'CLOSED';
-export type CashMovementTypeDto = 'COLLECTION' | 'REVERSAL';
+/** REFUND: devolución de saldo a favor (egreso). */
+export type CashMovementTypeDto = 'COLLECTION' | 'REVERSAL' | 'REFUND';
 export type CashAmountByMethodDto = Readonly<Record<PaymentMethodDto, string>>;
 export type CashMovementDto = Readonly<{
   id: string;
@@ -776,7 +836,9 @@ export type CashMovementDto = Readonly<{
   method: PaymentMethodDto;
   amount: string;
   paymentId: string;
-  student: Readonly<{ id: string; firstName: string; lastName: string }>;
+  /** Null en la clase suelta de un alumno eventual (ver walkInName). */
+  student: Readonly<{ id: string; firstName: string; lastName: string }> | null;
+  walkInName: string | null;
   actor: Readonly<{ id: string; username: string }>;
   reason: string | null;
   createdAt: string;

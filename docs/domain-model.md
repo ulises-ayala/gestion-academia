@@ -6,7 +6,7 @@
 - `CashMovement` es append-only. Cada tender genera una `COLLECTION`; anular el pago genera su `REVERSAL`, incluso después del cierre. El esperado actual es collections menos reversals por `CASH`, `MERCADO_PAGO` y `CARD`.
 - `CashShiftClosingLine` conserva el snapshot inmutable visto al cerrar: esperado, declarado y diferencia por medio. El backend bloquea el turno y recalcula lo esperado.
 - `CashReconciliationCorrection` corrige únicamente lo declarado, con delta, antes/después, actor, instante y motivo. No permite inventar ni modificar movimientos financieros.
-- V1 no tiene fondo inicial, Income, Expenses, retiros, depósitos, créditos, refunds ni liquidaciones. Payments anteriores no reciben un turno inventado. Los cobros históricos importados de ControlFit (`origin = CONTROLFIT_IMPORT`) tampoco generan movimientos de Caja.
+- V1 no tiene fondo inicial, Income, Expenses, retiros ni depósitos. Las devoluciones de saldo a favor son movimientos `REFUND` (egresos) del turno de quien devuelve (decisión 248). Payments anteriores no reciben un turno inventado. Los cobros históricos importados de ControlFit (`origin = CONTROLFIT_IMPORT`) tampoco generan movimientos de Caja.
 
 ## Contextos y entidades
 
@@ -91,13 +91,14 @@ erDiagram
 ## Pagos v2 core
 
 - `Payment` pertenece a un alumno y conserva importe, instante y usuario responsable. Uno o más `PaymentTender` desglosan efectivo, Mercado Pago y tarjeta; un medio no se repite dentro del pago.
+- La clase suelta de un **alumno eventual** no tiene alumno: el pago guarda su nombre y, si los dio, teléfono y DNI (`walkInName`, `walkInPhone`, `walkInDni`). No es una ficha ni un potencial alumno, no genera cuotas y no cuenta como alumno (decisión 243).
 - `PaymentAllocation` registra cuánto del pago se aplicó a cada cuota. La suma de tenders, el importe del pago y la suma de imputaciones son iguales y se calculan con decimales exactos.
-- El backend recibe alumno y medios, calcula la deuda vigente y distribuye oldest-first por vencimiento con desempate estable por creación e ID. Se admiten pagos parciales y derrame entre cuotas, pero no sobrepago ni saldo a favor.
+- El backend recibe alumno y medios, calcula la deuda vigente y distribuye oldest-first por vencimiento con desempate estable por creación e ID. Se admiten pagos parciales y derrame entre cuotas; el sobrepago solo con confirmación explícita, y el excedente queda como saldo a favor (decisión 246).
 - Administración y Dirección pueden elegir las cuotas que paga el alumno (decisión 232). Reimputar un pago agrega filas de imputación (negativas y positivas) ligadas a una `PaymentReallocation` con motivo, sin modificar las originales ni la caja (decisión 233); la imputación vigente de un pago es la suma de sus filas por cuota.
 - `paidAmount`, `outstandingAmount` y vencimiento son datos derivados exclusivamente de imputaciones pertenecientes a pagos `CONFIRMED`; no se persisten como saldos duplicados.
 - El cobro usa advisory lock por alumno, locks de filas, aislamiento serializable y reintentos. Dos cajas no pueden consumir la misma deuda.
 - Anular conserva `PaymentTender` y `PaymentAllocation`, marca el pago `VOID` y recalcula cada cuota con los demás pagos confirmados; puede quedar `PENDING`, `PARTIAL` o `PAID`.
-- Medios de pago: efectivo, Mercado Pago, transferencia y tarjeta (decisión 234). Devoluciones y saldo a favor siguen diferidos.
+- Medios de pago: efectivo, Mercado Pago, transferencia y tarjeta (decisión 234). El saldo a favor de un pago de cuotas es lo cobrado que no quedó imputado ni se devolvió (decisiones 246 a 248).
 
 ## Usuarios y permisos v1
 

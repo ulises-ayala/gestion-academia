@@ -31,11 +31,17 @@ export interface PaymentsRepository {
     monthlyChargeIds?: readonly string[],
     /** Recargo por tarjeta: otro cobro "Recargo por tarjeta" en la misma transacción. */
     cardSurcharge?: string,
+    /** Lo que supere la deuda queda como saldo a favor del pago (si no, se rechaza). */
+    allowCredit?: boolean,
   ): Promise<PaymentDto>;
-  /** Cobro que no se imputa a cuotas; igual exige turno de caja abierto. */
+  /**
+   * Cobro que no se imputa a cuotas; igual exige turno de caja abierto. Lleva alumno o, solo en la
+   * clase suelta, un alumno eventual.
+   */
   createOther(
     data: Readonly<{
-      studentId: string;
+      studentId: string | null;
+      walkIn: Readonly<{ name: string; phone: string | null; dni: string | null }> | null;
       concept: OtherPaymentConceptDto;
       classId: string | null;
       teacherId: string | null;
@@ -77,4 +83,18 @@ export interface PaymentsRepository {
     actorId: string,
     reason: string,
   ): Promise<PaymentDto>;
+  /** Devuelve saldo a favor del pago: egreso REFUND en el turno abierto de quien devuelve. */
+  refund(
+    id: string,
+    input: Readonly<{ amount: string; method: PaymentMethodDto }>,
+    actorId: string,
+    reason: string,
+  ): Promise<PaymentDto>;
+  /**
+   * Usa el saldo a favor del alumno en sus cuotas pendientes (reimputación de cada pago con saldo,
+   * de la cuota más vieja a la más nueva). No toca la caja.
+   */
+  applyCredit(studentId: string, actorId: string, reason: string): Promise<{ applied: string }>;
+  /** Saldo a favor del alumno: lo no imputado ni devuelto de sus pagos de cuotas. */
+  creditTotal(studentId: string): Promise<string>;
 }

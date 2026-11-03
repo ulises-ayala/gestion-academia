@@ -79,20 +79,21 @@ export type ChargeForReallocation = Readonly<{
 
 /**
  * Filas que agrega una reimputación para pasar el pago de su imputación vigente (`current`) a la
- * pedida (`target`): negativas en las cuotas que pierden, positivas en las que ganan. El total no
- * cambia y ninguna cuota puede quedar pagada de más.
+ * pedida (`target`): negativas en las cuotas que pierden, positivas en las que ganan. Ninguna cuota
+ * puede quedar pagada de más. Lo que el pago no imputa (`allocatable` menos el total pedido) queda
+ * como saldo a favor; `allocatable` es su importe menos lo ya devuelto.
  */
 export function buildReallocationPlan(
-  paymentAmount: Prisma.Decimal,
+  allocatable: Prisma.Decimal,
   current: readonly AllocationRow[],
   target: readonly AllocationRow[],
   charges: readonly ChargeForReallocation[],
 ) {
   const total = target.reduce((sum, row) => sum.plus(row.amount), new Prisma.Decimal(0));
-  if (!total.equals(paymentAmount))
+  if (total.greaterThan(allocatable))
     throw new DomainError(
       'VALIDATION_ERROR',
-      `Las cuotas tienen que sumar el importe del pago (${paymentAmount.toFixed(2)})`,
+      `Las cuotas no pueden sumar más que el pago (${allocatable.toFixed(2)})`,
       { field: 'allocations' },
     );
   const amountOf = (rows: readonly AllocationRow[], chargeId: string) =>

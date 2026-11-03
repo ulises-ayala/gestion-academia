@@ -109,6 +109,8 @@ enum CashShiftStatus {
 enum CashMovementType {
   COLLECTION
   REVERSAL
+  /// Devolución de saldo a favor: egreso del turno de quien devuelve.
+  REFUND
 }
 
 enum LeadSource {
@@ -126,21 +128,22 @@ enum LeadStatus {
 }
 
 model Lead {
-  id                  String     @id @default(uuid()) @db.Uuid
-  name                String     @db.VarChar(180)
-  phone               String?    @db.VarChar(80)
-  normalizedPhone     String?    @map("normalized_phone") @db.VarChar(50)
-  email               String?    @db.VarChar(254)
-  normalizedEmail     String?    @map("normalized_email") @db.VarChar(254)
-  instagram           String?    @db.VarChar(100)
-  normalizedInstagram String?    @map("normalized_instagram") @db.VarChar(100)
+  id                  String           @id @default(uuid()) @db.Uuid
+  name                String           @db.VarChar(180)
+  phone               String?          @db.VarChar(80)
+  normalizedPhone     String?          @map("normalized_phone") @db.VarChar(50)
+  email               String?          @db.VarChar(254)
+  normalizedEmail     String?          @map("normalized_email") @db.VarChar(254)
+  instagram           String?          @db.VarChar(100)
+  normalizedInstagram String?          @map("normalized_instagram") @db.VarChar(100)
   source              LeadSource
-  status              LeadStatus @default(INQUIRY)
+  status              LeadStatus       @default(INQUIRY)
   notes               String?
-  nextFollowUpAt      DateTime?  @map("next_follow_up_at") @db.Timestamptz(3)
-  lastContactAt       DateTime?  @map("last_contact_at") @db.Timestamptz(3)
-  createdAt           DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt           DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  nextFollowUpAt      DateTime?        @map("next_follow_up_at") @db.Timestamptz(3)
+  lastContactAt       DateTime?        @map("last_contact_at") @db.Timestamptz(3)
+  createdAt           DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  trialClasses        LeadTrialClass[]
 
   @@index([name])
   @@index([status, updatedAt(sort: Desc)])
@@ -150,6 +153,24 @@ model Lead {
   @@index([normalizedEmail])
   @@index([normalizedInstagram])
   @@map("leads")
+}
+
+/// Clase de prueba gratis de un potencial alumno: una sola vez por clase, sin deuda ni inscripción.
+model LeadTrialClass {
+  id              String       @id @default(uuid()) @db.Uuid
+  leadId          String       @map("lead_id") @db.Uuid
+  classId         String       @map("class_id") @db.Uuid
+  trialDate       DateTime     @map("trial_date") @db.Date
+  notes           String?      @db.VarChar(500)
+  createdByUserId String       @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  lead            Lead         @relation(fields: [leadId], references: [id], onDelete: Restrict)
+  academicClass   AcademyClass @relation(fields: [classId], references: [id], onDelete: Restrict)
+  createdBy       AdminUser    @relation("LeadTrialClassCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@unique([leadId, classId])
+  @@index([classId, trialDate])
+  @@map("lead_trial_classes")
 }
 
 model Student {
@@ -256,6 +277,7 @@ model AcademyClass {
   enrollments        Enrollment[]
   tariffs            Tariff[]
   payments           Payment[]
+  leadTrialClasses   LeadTrialClass[]
 
   @@index([danceTypeId, status])
   @@index([teacherId, status])
@@ -474,7 +496,12 @@ model MonthlyChargeAdjustment {
 
 model Payment {
   id              String                @id @default(uuid()) @db.Uuid
-  studentId       String                @map("student_id") @db.Uuid
+  /// Null solo en la clase suelta de un alumno eventual (sin ficha): ver walkIn*.
+  studentId       String?               @map("student_id") @db.Uuid
+  /// Alumno eventual: nombre y, si los dio, teléfono y DNI normalizado.
+  walkInName      String?               @map("walk_in_name") @db.VarChar(160)
+  walkInPhone     String?               @map("walk_in_phone") @db.VarChar(80)
+  walkInDni       String?               @map("walk_in_dni") @db.VarChar(20)
   amount          Decimal               @db.Decimal(12, 2)
   status          PaymentStatus         @default(CONFIRMED)
   origin          PaymentOrigin         @default(CASH_DESK)
@@ -488,20 +515,25 @@ model Payment {
   paidAt          DateTime              @default(now()) @map("paid_at") @db.Timestamptz(3)
   /// Pago anulado que este reemplaza al corregirlo (medio, importe o fecha).
   correctionOfId  String?               @unique @map("correction_of_id") @db.Uuid
+  /// Recargo por tarjeta: el cobro de cuotas con el que se cobró (se anula con él).
+  surchargeOfId   String?               @unique @map("surcharge_of_id") @db.Uuid
   createdByUserId String                @map("created_by_user_id") @db.Uuid
   voidedAt        DateTime?             @map("voided_at") @db.Timestamptz(3)
   voidedByUserId  String?               @map("voided_by_user_id") @db.Uuid
   createdAt       DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
-  student         Student               @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  student         Student?              @relation(fields: [studentId], references: [id], onDelete: Restrict)
   createdBy       AdminUser             @relation("PaymentCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
   voidedBy        AdminUser?            @relation("PaymentVoidedBy", fields: [voidedByUserId], references: [id], onDelete: Restrict)
   academicClass   AcademyClass?         @relation(fields: [classId], references: [id], onDelete: Restrict)
   teacher         Teacher?              @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   correctionOf    Payment?              @relation("PaymentCorrection", fields: [correctionOfId], references: [id], onDelete: Restrict)
   correctedBy     Payment?              @relation("PaymentCorrection")
+  surchargeOf     Payment?              @relation("CardSurcharge", fields: [surchargeOfId], references: [id], onDelete: Restrict)
+  cardSurcharge   Payment?              @relation("CardSurcharge")
   allocations     PaymentAllocation[]
   reallocations   PaymentReallocation[]
+  refunds         PaymentRefund[]
   tenders         PaymentTender[]
   cashMovements   CashMovement[]
 
@@ -510,6 +542,26 @@ model Payment {
   @@index([kind, paidAt])
   @@index([teacherId, paidAt])
   @@map("payments")
+}
+
+/// Devolución de saldo a favor de un pago de cuotas: egreso REFUND en el turno de quien devuelve.
+model PaymentRefund {
+  id              String        @id @default(uuid()) @db.Uuid
+  paymentId       String        @map("payment_id") @db.Uuid
+  amount          Decimal       @db.Decimal(12, 2)
+  method          PaymentMethod
+  cashShiftId     String        @map("cash_shift_id") @db.Uuid
+  reason          String        @db.VarChar(500)
+  createdByUserId String        @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  payment         Payment       @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  cashShift       CashShift     @relation(fields: [cashShiftId], references: [id], onDelete: Restrict)
+  createdBy       AdminUser     @relation("PaymentRefundCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  cashMovement    CashMovement?
+
+  @@index([paymentId])
+  @@index([createdAt])
+  @@map("payment_refunds")
 }
 
 model PaymentTender {
@@ -540,6 +592,7 @@ model CashShift {
   movements      CashMovement[]
   closingLines   CashShiftClosingLine[]
   corrections    CashReconciliationCorrection[]
+  refunds        PaymentRefund[]
 
   @@index([userId, openedAt(sort: Desc)])
   @@index([status, openedAt(sort: Desc)])
@@ -553,14 +606,17 @@ model CashMovement {
   method                PaymentMethod
   amount                Decimal          @db.Decimal(12, 2)
   sourcePaymentId       String           @map("source_payment_id") @db.Uuid
-  sourcePaymentTenderId String           @map("source_payment_tender_id") @db.Uuid
+  /// Null en una devolución (REFUND): apunta a la devolución, no a un medio del pago.
+  sourcePaymentTenderId String?          @map("source_payment_tender_id") @db.Uuid
+  refundId              String?          @unique @map("refund_id") @db.Uuid
   reversalOfId          String?          @unique @map("reversal_of_id") @db.Uuid
   actorUserId           String           @map("actor_user_id") @db.Uuid
   reason                String?          @db.VarChar(500)
   createdAt             DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   cashShift             CashShift        @relation(fields: [cashShiftId], references: [id], onDelete: Restrict)
   sourcePayment         Payment          @relation(fields: [sourcePaymentId], references: [id], onDelete: Restrict)
-  sourcePaymentTender   PaymentTender    @relation(fields: [sourcePaymentTenderId], references: [id], onDelete: Restrict)
+  sourcePaymentTender   PaymentTender?   @relation(fields: [sourcePaymentTenderId], references: [id], onDelete: Restrict)
+  refund                PaymentRefund?   @relation(fields: [refundId], references: [id], onDelete: Restrict)
   reversalOf            CashMovement?    @relation("CashMovementReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
   reversal              CashMovement?    @relation("CashMovementReversal")
   actor                 AdminUser        @relation("CashMovementActor", fields: [actorUserId], references: [id], onDelete: Restrict)
@@ -726,6 +782,8 @@ model AdminUser {
   paymentReallocations        PaymentReallocation[]          @relation("PaymentReallocationCreatedBy")
   cashHandoversCreated        CashHandover[]                 @relation("CashHandoverCreatedBy")
   cashHandoversVoided         CashHandover[]                 @relation("CashHandoverVoidedBy")
+  leadTrialClassesCreated     LeadTrialClass[]               @relation("LeadTrialClassCreatedBy")
+  paymentRefundsCreated       PaymentRefund[]                @relation("PaymentRefundCreatedBy")
 
   @@map("admin_users")
 }

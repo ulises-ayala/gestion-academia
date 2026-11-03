@@ -89,11 +89,18 @@ export const cardSurchargeCents = (value: string) => {
 };
 
 /** chosen: debtCents es lo que deben las cuotas marcadas, no toda la deuda. */
-export const chargesProblem = (pick: TenderPick, debtCents: bigint, chosen = false) => {
+/** allowCredit: lo que supere la deuda queda como saldo a favor (lo confirma quien cobra). */
+export const chargesProblem = (
+  pick: TenderPick,
+  debtCents: bigint,
+  chosen = false,
+  allowCredit = false,
+) => {
   if (debtCents <= 0n) return 'No tiene cuotas pendientes: generá la cuota que viene a pagar.';
   if (pickIsInvalid(pick)) return 'Usá importes positivos con hasta dos decimales.';
   const total = pickTotalCents(pick);
   if (total <= 0n) return 'Ingresá el importe recibido.';
+  if (allowCredit) return null;
   if (total > debtCents && chosen)
     return `El importe supera lo que deben las cuotas marcadas (${money(centsToDecimal(debtCents))}). Marcá más cuotas o bajá el importe.`;
   if (total > debtCents)

@@ -50,4 +50,9 @@ export interface ClassRepository {
   findPage(
     query: ClassQuery,
   ): Promise<{ items: ClassData[]; total: number; page: number; pageSize: number }>;
+  /**
+   * Borra una clase sin registros reales (ver assertClassCanBeRemoved) con sus horarios, profesores
+   * adicionales, tarifas y repartos, y lo audita con el motivo.
+   */
+  remove(id: string, reason: string, actorId: string): Promise<void>;
 }

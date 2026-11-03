@@ -1,15 +1,17 @@
 import type {
+  ApplyCreditDto,
   CorrectPaymentDto,
   CreateOtherPaymentDto,
   CreatePaymentDto,
   PaymentMethodDto,
   ReallocatePaymentDto,
+  RefundPaymentDto,
 } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
 import { DomainError } from '../../shared/domain/domain-error';
-import { validateOtherPayment } from '../domain/other-payment';
+import { validateOtherPayment, validateWalkIn } from '../domain/other-payment';
 import {
   backdatedPaidAt,
   correctedPaidAt,
@@ -52,6 +54,7 @@ export class PaymentsService {
       paidAt ?? undefined,
       chargeIds ?? undefined,
       cardSurcharge ?? undefined,
+      input.allowCredit === true,
     );
   }
 
@@ -141,7 +144,24 @@ export class PaymentsService {
           });
       }
     }
-    const data = { studentId: input.studentId, ...other, teacherId };
+    // Alumno o, solo en la clase suelta, alumno eventual (nombre y, si los da, teléfono y DNI).
+    const studentId = input.studentId ?? null;
+    if (studentId && input.walkIn)
+      throw new DomainError(
+        'VALIDATION_ERROR',
+        'Elegí un alumno o un alumno eventual, no los dos',
+        {
+          field: 'walkIn',
+        },
+      );
+    const walkIn = studentId ? null : validateWalkIn(input.walkIn);
+    if (walkIn && other.concept !== 'SINGLE_CLASS')
+      throw new DomainError(
+        'VALIDATION_ERROR',
+        'Solo la clase suelta se puede cobrar a un alumno eventual',
+        { field: 'walkIn' },
+      );
+    const data = { studentId, walkIn, ...other, teacherId };
     return paidAt
       ? this.repository.createOther(data, tenders, actorId, paidAt)
       : this.repository.createOther(data, tenders, actorId);
@@ -192,7 +212,11 @@ export class PaymentsService {
   }
 
   async summary(studentId: string) {
-    return { confirmedTotal: await this.repository.confirmedTotal(studentId) };
+    const [confirmedTotal, creditTotal] = await Promise.all([
+      this.repository.confirmedTotal(studentId),
+      this.repository.creditTotal(studentId),
+    ]);
+    return { confirmedTotal, creditTotal };
   }
 
   void(id: string, actorId: string, reason: unknown) {
@@ -216,12 +240,44 @@ export class PaymentsService {
     return this.repository.correct(id, { tenders, paidAt }, actorId, reason);
   }
 
+  /** Usa el saldo a favor del alumno en sus cuotas pendientes, sin tocar la caja. */
+  async applyCredit(input: ApplyCreditDto | null, actorId: string) {
+    const reason =
+      input?.reason === undefined || input?.reason === null || input.reason === ''
+        ? 'Se aplica el saldo a favor a las cuotas pendientes'
+        : validateReason(input.reason);
+    return this.repository.applyCredit(input?.studentId ?? '', actorId, reason);
+  }
+
+  /** Devuelve saldo a favor de un pago, como egreso del turno de caja de quien devuelve. */
+  async refund(id: string, input: RefundPaymentDto | null, actorId: string) {
+    const reason = validateReason(input?.reason);
+    if (!input || !methods.includes(input.method))
+      throw new DomainError('VALIDATION_ERROR', 'Elegí cómo se devuelve', { field: 'method' });
+    if (typeof input.amount !== 'string' || !/^\d{1,10}(?:\.\d{1,2})?$/.test(input.amount))
+      throw new DomainError('VALIDATION_ERROR', 'El importe debe ser un decimal positivo', {
+        field: 'amount',
+      });
+    const amount = new Prisma.Decimal(input.amount);
+    if (amount.lessThanOrEqualTo(0))
+      throw new DomainError('VALIDATION_ERROR', 'El importe debe ser mayor a cero', {
+        field: 'amount',
+      });
+    return this.repository.refund(
+      id,
+      { amount: amount.toFixed(2), method: input.method },
+      actorId,
+      reason,
+    );
+  }
+
   /** Cambia las cuotas a las que se imputó un pago, sin tocar el pago ni la caja. */
   async reallocate(id: string, input: ReallocatePaymentDto | null, actorId: string) {
     const reason = validateReason(input?.reason);
     const rows = input?.allocations;
-    if (!Array.isArray(rows) || rows.length === 0 || rows.length > 60)
-      throw new DomainError('VALIDATION_ERROR', 'Elegí al menos una cuota', {
+    // Sin cuotas, el pago entero queda como saldo a favor (por ejemplo, un pago duplicado).
+    if (!Array.isArray(rows) || rows.length > 60)
+      throw new DomainError('VALIDATION_ERROR', 'Las cuotas elegidas no son válidas', {
         field: 'allocations',
       });
     const allocations = rows.map((row, index) => {

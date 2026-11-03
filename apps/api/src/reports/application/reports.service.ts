@@ -296,6 +296,12 @@ export class ReportsService {
       };
     }).filter((row) => !new Prisma.Decimal(row.total).isZero());
 
+    // Devoluciones de saldo a favor del período, por medio (egresos de caja).
+    const refunds = await this.prisma.paymentRefund.groupBy({
+      by: ['method'],
+      where: { createdAt: { gte: input.from, lt: input.toExclusive } },
+      _sum: { amount: true },
+    });
     const cash = this.cashReport(shifts);
     const debt = debtRows[0]!;
     const attendanceTotals = attendance.reduce(
@@ -355,6 +361,14 @@ export class ReportsService {
           other: conceptTotal((row) => row.kind === 'OTHER' && row.concept !== 'SINGLE_CLASS'),
         },
         byConceptAndMethod,
+        refunds: {
+          total: refunds.reduce((sum, item) => sum.plus(item._sum.amount ?? 0), zero()).toFixed(2),
+          byMethod: METHODS.map((method) => ({
+            method,
+            amount:
+              refunds.find((item) => item.method === method)?._sum.amount?.toFixed(2) ?? '0.00',
+          })),
+        },
         singleClasses: singleClasses.map((item) => ({
           ...item,
           count: Number(item.count),
@@ -549,8 +563,10 @@ export class ReportsService {
       ],
       payments.map((payment) => [
         payment.paidAt.toISOString(),
-        `${payment.student.firstName} ${payment.student.lastName}`,
-        payment.student.dni,
+        payment.student
+          ? `${payment.student.firstName} ${payment.student.lastName}`
+          : `${payment.walkInName ?? ''} (eventual)`,
+        payment.student?.dni ?? payment.walkInDni ?? '',
         concept(payment),
         payment.academicClass?.name ?? '',
         payment.teacher ? `${payment.teacher.firstName} ${payment.teacher.lastName}` : '',
@@ -584,7 +600,7 @@ export class ReportsService {
             .filter((item) => item.method === method)
             .reduce(
               (sum, item) =>
-                sum.plus(item.type === 'REVERSAL' ? item.amount.negated() : item.amount),
+                sum.plus(item.type === 'COLLECTION' ? item.amount : item.amount.negated()),
               zero(),
             ),
         );
@@ -629,7 +645,7 @@ export class ReportsService {
         zero(),
       );
       const current = shift.movements.reduce(
-        (sum, item) => sum.plus(item.type === 'REVERSAL' ? item.amount.negated() : item.amount),
+        (sum, item) => sum.plus(item.type === 'COLLECTION' ? item.amount : item.amount.negated()),
         zero(),
       );
       const item = operators.get(shift.userId) ?? {

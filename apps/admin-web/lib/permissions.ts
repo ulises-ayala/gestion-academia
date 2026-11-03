@@ -35,6 +35,7 @@ const admissionPermissions: readonly UiPermission[] = [
   'students:manage',
   'leads:manage',
   'enrollments:manage',
+  'enrollments:reactivate',
   'offering:read',
   'classes:update',
   'tariffs:read',
@@ -49,7 +50,6 @@ const admissionPermissions: readonly UiPermission[] = [
 ];
 const administrationPermissions: readonly UiPermission[] = [
   ...admissionPermissions,
-  'enrollments:reactivate',
   'offering:manage',
   'tariffs:manage',
   'charges:manage',

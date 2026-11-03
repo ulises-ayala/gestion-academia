@@ -123,6 +123,70 @@ describe.runIf(integrationDatabaseEnabled)(
         await cleanupFixture(fixture);
       }
     });
+
+    it('borra una clase de prueba sin registros y rechaza una con registros', async () => {
+      const fixture = await createFixture();
+      const lead = await prisma.lead.create({
+        data: { name: `Prueba ${fixture.token}`, source: 'IN_PERSON' },
+      });
+      try {
+        const classInput = (name: string, startTime: string, endTime: string) => ({
+          name: `${name} ${fixture.token}`,
+          danceTypeId: fixture.danceType.id,
+          teacherId: fixture.fernando.id,
+          additionalTeacherIds: [fixture.sofia.id],
+          capacity: 20,
+          schedules: [
+            { dayOfWeek: 'MONDAY' as const, startTime, endTime, roomId: fixture.room.id },
+          ],
+        });
+        const test = await service.create(classInput('Clase de prueba', '10:00', '11:00'));
+        await prisma.tariff.create({
+          data: { classId: test.id, name: 'Mensual', amount: 1, validFrom: new Date('2026-01-01') },
+        });
+        await expect(service.remove(test.id, ' ', fixture.actor.id)).rejects.toMatchObject({
+          details: { field: 'reason' },
+        });
+        await service.remove(test.id, 'Creada en las pruebas', fixture.actor.id);
+        await expect(
+          prisma.academyClass.findUnique({ where: { id: test.id } }),
+        ).resolves.toBeNull();
+        await expect(
+          prisma.auditLog.findFirst({
+            where: { entityId: test.id, action: 'DELETE', entityType: 'CLASS' },
+            select: { reason: true, before: true },
+          }),
+        ).resolves.toMatchObject({
+          reason: 'Creada en las pruebas',
+          before: { additionalTeacherIds: [fixture.sofia.id], tariffs: [{ name: 'Mensual' }] },
+        });
+
+        const used = await service.create(classInput('Clase usada', '12:00', '13:00'));
+        await prisma.leadTrialClass.create({
+          data: {
+            leadId: lead.id,
+            classId: used.id,
+            trialDate: new Date('2026-10-30'),
+            createdByUserId: fixture.actor.id,
+          },
+        });
+        await expect(service.remove(used.id, 'Probar', fixture.actor.id)).rejects.toMatchObject({
+          code: 'CLASS_IN_USE',
+          details: { trialClasses: 1 },
+        });
+        await expect(
+          prisma.academyClass.findUnique({ where: { id: used.id } }),
+        ).resolves.not.toBeNull();
+      } finally {
+        await prisma.leadTrialClass.deleteMany({ where: { leadId: lead.id } });
+        await prisma.lead.delete({ where: { id: lead.id } });
+        await prisma.classAdditionalTeacher.deleteMany({
+          where: { class: { danceTypeId: fixture.danceType.id } },
+        });
+        await prisma.tariff.deleteMany({ where: { class: { danceTypeId: fixture.danceType.id } } });
+        await cleanupFixture(fixture);
+      }
+    });
   },
   integrationTestTimeoutMs,
 );

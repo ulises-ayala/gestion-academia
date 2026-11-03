@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateClass } from './academic-class';
+import { assertClassCanBeRemoved, validateClass } from './academic-class';
 const base = {
   name: 'Bachata Inicial',
   danceTypeId: crypto.randomUUID(),
@@ -100,5 +100,16 @@ describe('academic class invariants', () => {
         additionalTeacherIds: Array.from({ length: 11 }, () => crypto.randomUUID()),
       }),
     ).toThrow('hasta 10 profesores adicionales');
+  });
+});
+
+describe('borrar una clase de prueba', () => {
+  it('solo se borra sin inscripciones, cobros ni clases de prueba', () => {
+    expect(() =>
+      assertClassCanBeRemoved({ enrollments: 0, payments: 0, trialClasses: 0 }),
+    ).not.toThrow();
+    expect(() => assertClassCanBeRemoved({ enrollments: 2, payments: 1, trialClasses: 0 })).toThrow(
+      'La clase tiene registros (2 inscripción(es), 1 cobro(s)): no se puede borrar. Desactivala para archivarla sin perder su historial.',
+    );
   });
 });

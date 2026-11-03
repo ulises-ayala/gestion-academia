@@ -9,7 +9,12 @@ import { PaymentHistory } from '../../components/payment-history';
 const payment: PaymentDto = {
   id: 'payment-id',
   student: { id: 'student-id', dni: '30100100', firstName: 'Ana', lastName: 'Pérez' },
+  walkIn: null,
   amount: '50000.00',
+  creditAmount: '0.00',
+  refundedAmount: '0.00',
+  cardSurcharge: null,
+  surchargeOfId: null,
   tenders: [
     { id: 'cash-id', method: 'CASH', amount: '30000.00' },
     { id: 'mp-id', method: 'MERCADO_PAGO', amount: '20000.00' },
@@ -174,12 +179,53 @@ describe('Acciones de un pago', () => {
     const markup = renderToStaticMarkup(
       <PaymentHistory
         canVoid={false}
-        payments={[{ ...payment, student: { ...payment.student, phone: '0370 15 455-9012' } }]}
+        payments={[
+          {
+            ...payment,
+            student: {
+              id: 'student-id',
+              dni: '30100100',
+              firstName: 'Ana',
+              lastName: 'Pérez',
+              phone: '0370 15 455-9012',
+            },
+          },
+        ]}
         showReceipts
         showStudent
         onVoid={() => undefined}
       />,
     );
+    expect(markup).toContain('https://wa.me/5493704559012');
+  });
+
+  it('muestra al alumno eventual de una clase suelta sin link a una ficha', () => {
+    const markup = renderToStaticMarkup(
+      <PaymentHistory
+        canVoid={false}
+        payments={[
+          {
+            ...payment,
+            student: null,
+            walkIn: { name: 'Lucía Gómez', phone: '3704559012', dni: null },
+            allocations: [],
+            kind: 'OTHER',
+            otherConcept: {
+              concept: 'SINGLE_CLASS',
+              detail: null,
+              academicClass: { id: 'class-id', name: 'Salsa' },
+              teacher: null,
+            },
+          },
+        ]}
+        showReceipts
+        showStudent
+        studentHref={(id) => `/students/${id}`}
+        onVoid={() => undefined}
+      />,
+    );
+    expect(markup).toContain('Lucía Gómez (eventual)');
+    expect(markup).not.toContain('/students/');
     expect(markup).toContain('https://wa.me/5493704559012');
   });
 

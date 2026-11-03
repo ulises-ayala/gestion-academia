@@ -24,7 +24,7 @@ export default function Page() {
   const [draft, setDraft] = useState('');
   const [filters, setFilters] = useState({
     q: '',
-    status: '',
+    status: 'ACTIVE',
     danceTypeId: '',
     teacherId: '',
     branchId: '',

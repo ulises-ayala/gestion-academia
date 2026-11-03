@@ -98,6 +98,11 @@ describe('ReportsService', () => {
         ]),
       },
       cashShift: { findMany: vi.fn().mockResolvedValue([]), count: vi.fn().mockResolvedValue(0) },
+      paymentRefund: {
+        groupBy: vi
+          .fn()
+          .mockResolvedValue([{ method: 'CASH', _sum: { amount: decimal('5000.00') } }]),
+      },
       $queryRaw: vi.fn().mockImplementation(() => Promise.resolve(queryRows.shift())),
     };
     const service = new ReportsService(prisma as never);
@@ -135,6 +140,11 @@ describe('ReportsService', () => {
       { concept: 'CHARGES', byMethod: methods('30000.00', '4000.00'), total: '34000.00' },
       { concept: 'SINGLE_CLASS', byMethod: methods('0.00', '16000.00'), total: '16000.00' },
     ]);
+    // Las devoluciones de saldo a favor van aparte, sin restarse de lo cobrado.
+    expect(report.collections.refunds).toEqual({
+      total: '5000.00',
+      byMethod: methods('5000.00', '0.00'),
+    });
     expect(report.collections.singleClasses).toEqual([
       {
         classId: 'class-2',

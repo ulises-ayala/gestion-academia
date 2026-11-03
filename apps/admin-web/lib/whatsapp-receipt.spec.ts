@@ -53,6 +53,24 @@ describe('recibo por WhatsApp', () => {
     expect(receiptText(payment())).not.toMatch(/Saldo|al día/);
   });
 
+  it('suma el recargo por tarjeta del cobro y avisa el saldo a favor', () => {
+    const text = receiptText(
+      payment({
+        tenders: [{ id: 't1', method: 'CARD', amount: '40000.00' }],
+        cardSurcharge: { id: 'r1', amount: '4000.00' },
+        creditAmount: '0.00',
+      }),
+    );
+    expect(text).toMatch(/• Recargo por tarjeta: \$\s?4\.000,00/);
+    expect(text).toMatch(
+      /Medio de pago: Tarjeta \$\s?40\.000,00 \+ Tarjeta \$\s?4\.000,00 \(recargo\)/,
+    );
+    expect(text).toMatch(/\*Total: \$\s?44\.000,00\*/);
+    expect(receiptText(payment({ amount: '45000.00', creditAmount: '5000.00' }))).toMatch(
+      /Queda a favor: \$\s?5\.000,00/,
+    );
+  });
+
   it('abre el chat del alumno o, sin teléfono válido, deja elegir el contacto', () => {
     expect(whatsappReceiptUrl(payment(), '3705032792')).toMatch(
       /^https:\/\/wa\.me\/5493705032792\?text=\*Carmes%C3%AD\*/,

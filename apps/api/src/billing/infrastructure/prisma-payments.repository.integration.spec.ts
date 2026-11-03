@@ -139,6 +139,8 @@ describe.runIf(enabled)(
                 },
                 // Otros cobros del alumno (p. ej. el recargo por tarjeta) no tienen imputaciones.
                 { studentId: fixture.student.id },
+                // Clases sueltas de alumnos eventuales (sin alumno).
+                { classId: fixture.academicClass.id },
               ],
             },
             select: { id: true },
@@ -149,7 +151,11 @@ describe.runIf(enabled)(
           await tx.paymentTender.deleteMany({ where: { paymentId: { in: paymentIds } } });
           await tx.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
           await tx.paymentReallocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
-          // Primero los reemplazos de una corrección: apuntan al pago original.
+          // Primero los recargos ligados a un cobro y los reemplazos de una corrección: apuntan a
+          // otro pago.
+          await tx.payment.deleteMany({
+            where: { id: { in: paymentIds }, surchargeOfId: { not: null } },
+          });
           await tx.payment.deleteMany({
             where: { id: { in: paymentIds }, correctionOfId: { not: null } },
           });
@@ -187,6 +193,184 @@ describe.runIf(enabled)(
       vi.setSystemTime(new Date('2026-08-31T15:00:00.000Z'));
     });
     afterEach(() => vi.useRealTimers());
+
+    it('cobra y corrige la clase suelta de un alumno eventual sin ficha de alumno', async () => {
+      const fixture = await createFixture();
+      try {
+        const walkIn = { name: `Eventual ${fixture.student.firstName}`, phone: null, dni: null };
+        const payment = await repository.createOther(
+          {
+            studentId: null,
+            walkIn,
+            concept: 'SINGLE_CLASS',
+            classId: fixture.academicClass.id,
+            teacherId: fixture.teacher.id,
+            detail: null,
+          },
+          [{ method: 'CASH', amount: '8000.00' }],
+          fixture.actor.id,
+        );
+        expect(payment).toMatchObject({ student: null, walkIn, amount: '8000.00' });
+        await expect(
+          repository.findPage({ q: walkIn.name, page: 1, pageSize: 5 }),
+        ).resolves.toMatchObject({ total: 1 });
+        const corrected = await repository.correct(
+          payment.id,
+          { tenders: [{ method: 'MERCADO_PAGO', amount: '8000.00' }], paidAt: new Date() },
+          fixture.actor.id,
+          'Era Mercado Pago',
+        );
+        expect(corrected).toMatchObject({ student: null, walkIn, correctionOfId: payment.id });
+        // La base no admite un pago sin alumno que no sea una clase suelta de un eventual.
+        await expect(
+          prisma.payment.create({
+            data: {
+              amount: '1000.00',
+              kind: 'OTHER',
+              concept: 'APPAREL',
+              walkInName: 'Sin ficha',
+              createdByUserId: fixture.actor.id,
+            },
+          }),
+        ).rejects.toThrow(/payments_payer_check/);
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('saldo a favor: cobrar de más, desimputar un duplicado, aplicarlo y devolverlo', async () => {
+      const fixture = await createFixture();
+      try {
+        // Debe 80.000 (agosto con recargo 41.000 + septiembre 40.000); paga 85.000 con permiso.
+        await expect(
+          repository.create(
+            fixture.student.id,
+            [{ method: 'CASH', amount: '85000.00' }],
+            fixture.actor.id,
+          ),
+        ).rejects.toMatchObject({ code: 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE' });
+        const over = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '85000.00' }],
+          fixture.actor.id,
+          undefined,
+          undefined,
+          undefined,
+          true,
+        );
+        expect(over.creditAmount).toBe('4000.00');
+        await expect(repository.creditTotal(fixture.student.id)).resolves.toBe('4000.00');
+        // Sin cuotas pendientes no hay dónde usarlo.
+        await expect(
+          repository.applyCredit(fixture.student.id, fixture.actor.id, 'Usar saldo'),
+        ).rejects.toMatchObject({ code: 'PAYMENT_NO_CREDIT' });
+        // Con una cuota nueva, el saldo se usa en ella sin tocar la caja.
+        const december = await prisma.monthlyCharge.create({
+          data: {
+            studentId: fixture.student.id,
+            enrollmentId: fixture.enrollment.id,
+            tariffId: fixture.tariff.id,
+            period: new Date('2026-12-01T00:00:00.000Z'),
+            baseAmount: '40000.00',
+            discountAmount: '0.00',
+            finalAmount: '40000.00',
+            dueDate: new Date('2026-12-10T00:00:00.000Z'),
+          },
+        });
+        const movementsBefore = await prisma.cashMovement.count({
+          where: { cashShiftId: fixture.cashShift.id },
+        });
+        await expect(
+          repository.applyCredit(fixture.student.id, fixture.actor.id, 'Usar saldo'),
+        ).resolves.toEqual({ applied: '4000.00' });
+        await expect(repository.creditTotal(fixture.student.id)).resolves.toBe('0.00');
+        await expect(billing.findCharge(december.id)).resolves.toMatchObject({
+          status: 'PARTIAL',
+          outstandingAmount: '36000.00',
+        });
+        await expect(
+          prisma.cashMovement.count({ where: { cashShiftId: fixture.cashShift.id } }),
+        ).resolves.toBe(movementsBefore);
+
+        // Un pago duplicado se desimputa entero: queda todo como saldo a favor.
+        await repository.void(over.id, fixture.actor.id, 'Rehacer');
+        const first = await repository.create(
+          fixture.student.id,
+          [{ method: 'CASH', amount: '41000.00' }],
+          fixture.actor.id,
+        );
+        const duplicate = await repository.create(
+          fixture.student.id,
+          [{ method: 'MERCADO_PAGO', amount: '40000.00' }],
+          fixture.actor.id,
+        );
+        const unallocated = await repository.reallocate(
+          duplicate.id,
+          [],
+          fixture.actor.id,
+          'Pagó dos veces',
+        );
+        expect(unallocated).toMatchObject({ creditAmount: '40000.00', allocations: [] });
+        await expect(billing.findCharge(fixture.secondCharge.id)).resolves.toMatchObject({
+          status: 'PENDING',
+        });
+
+        // Se aplica la mitad a septiembre (sin caja) y se devuelve el resto por Mercado Pago.
+        const applied = await repository.reallocate(
+          duplicate.id,
+          [{ monthlyChargeId: fixture.secondCharge.id, amount: '20000.00' }],
+          fixture.actor.id,
+          'Aplica saldo a septiembre',
+        );
+        expect(applied.creditAmount).toBe('20000.00');
+        await expect(
+          repository.refund(
+            duplicate.id,
+            { amount: '20000.01', method: 'MERCADO_PAGO' },
+            fixture.actor.id,
+            'Devolución',
+          ),
+        ).rejects.toMatchObject({ code: 'PAYMENT_REFUND_EXCEEDS_CREDIT' });
+        const refunded = await repository.refund(
+          duplicate.id,
+          { amount: '20000.00', method: 'MERCADO_PAGO' },
+          fixture.actor.id,
+          'Devolución del duplicado',
+        );
+        expect(refunded).toMatchObject({ creditAmount: '0.00', refundedAmount: '20000.00' });
+        const refundMovement = await prisma.cashMovement.findFirst({
+          where: { sourcePaymentId: duplicate.id, type: 'REFUND' },
+        });
+        expect(refundMovement).toMatchObject({
+          cashShiftId: fixture.cashShift.id,
+          method: 'MERCADO_PAGO',
+          sourcePaymentTenderId: null,
+        });
+        expect(refundMovement?.amount.toFixed(2)).toBe('20000.00');
+
+        // Lo devuelto ya no se puede volver a imputar, y el pago no se anula ni se corrige.
+        await expect(
+          repository.reallocate(
+            duplicate.id,
+            [{ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }],
+            fixture.actor.id,
+            'Intento',
+          ),
+        ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+        await expect(repository.void(duplicate.id, fixture.actor.id, 'x')).rejects.toMatchObject({
+          code: 'PAYMENT_REFUND_CONFLICT',
+        });
+        expect(first.creditAmount).toBe('0.00');
+      } finally {
+        await prisma.cashMovement.deleteMany({
+          where: { sourcePayment: { studentId: fixture.student.id }, type: 'REFUND' },
+        });
+        await prisma.paymentRefund.deleteMany({
+          where: { payment: { studentId: fixture.student.id } },
+        });
+        await cleanupFixture(fixture);
+      }
+    });
 
     it('rechaza un Payment sin turno abierto sin persistirlo', async () => {
       const fixture = await createFixture();
@@ -441,6 +625,28 @@ describe.runIf(enabled)(
         });
         expect(movements).toHaveLength(2);
         expect(movements.every((movement) => movement.method === 'CARD')).toBe(true);
+
+        // Queda ligado al cobro: el recibo lo muestra y corregir el cobro pasa el vínculo.
+        expect(payment.cardSurcharge).toEqual({ id: surcharge.id, amount: '4000.00' });
+        const corrected = await repository.correct(
+          payment.id,
+          {
+            tenders: [{ method: 'CARD', amount: '40000.00' }],
+            paidAt: new Date('2026-08-30T15:00:00Z'),
+          },
+          fixture.actor.id,
+          'Fecha real',
+        );
+        expect(corrected.cardSurcharge).toEqual({ id: surcharge.id, amount: '4000.00' });
+
+        // Anular el cobro anula también su recargo, con la reversa en el turno.
+        await repository.void(corrected.id, fixture.actor.id, 'No correspondía');
+        await expect(
+          prisma.payment.findUnique({ where: { id: surcharge.id }, select: { status: true } }),
+        ).resolves.toEqual({ status: 'VOID' });
+        await expect(
+          prisma.cashMovement.count({ where: { sourcePaymentId: surcharge.id, type: 'REVERSAL' } }),
+        ).resolves.toBe(1);
       } finally {
         await cleanupFixture(fixture);
       }

@@ -1,7 +1,7 @@
 'use client';
 import type { ClassDto, EnrollmentListDto } from '@academy/contracts';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ClassForm } from '../../../components/class-form';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
@@ -14,6 +14,7 @@ import { notifySuccess } from '../../../lib/notify';
 const pageSize = 25;
 export default function ClassDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [item, setItem] = useState<ClassDto | null>(null);
   const [enrollments, setEnrollments] = useState<EnrollmentListDto>({
     items: [],
@@ -70,6 +71,24 @@ export default function ClassDetailPage() {
       setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cambiar el estado');
     }
   }
+  // Borrar del todo: solo clases de prueba sin registros; las demás quedan archivadas (inactivas).
+  async function remove() {
+    if (!item) return;
+    const reason = window.prompt(
+      `¿Borrar "${item.name}" para siempre? Solo se puede si no tiene inscripciones, cobros ni clases de prueba. Contá por qué:`,
+    );
+    if (!reason?.trim()) return;
+    try {
+      await apiRequest(`/classes/${item.id}/remove`, {
+        method: 'POST',
+        body: JSON.stringify({ reason }),
+      });
+      notifySuccess('Clase borrada.');
+      router.push('/classes');
+    } catch (error) {
+      setMessage(error instanceof ApiClientError ? error.message : 'No se pudo borrar la clase');
+    }
+  }
   return (
     <>
       <div className="page-heading">
@@ -94,6 +113,11 @@ export default function ClassDetailPage() {
               <button className="secondary" onClick={() => void toggle()}>
                 {item.status === 'ACTIVE' ? 'Desactivar' : 'Reactivar'}
               </button>
+              {item.status === 'INACTIVE' && (
+                <button className="danger-link" onClick={() => void remove()}>
+                  Borrar clase de prueba
+                </button>
+              )}
             </PermissionGate>
           </div>
         </PermissionGate>

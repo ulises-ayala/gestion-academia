@@ -53,3 +53,40 @@ export const validateOtherPayment = (input: {
     teacherId: concept === 'SINGLE_CLASS' ? teacherId : null,
   };
 };
+
+const optionalText = (value: unknown, field: string, max: number, label: string) => {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== 'string')
+    throw new DomainError('VALIDATION_ERROR', `${label} no es válido`, { field });
+  const text = value.trim().replace(/\s+/g, ' ');
+  if (text.length > max)
+    throw new DomainError('VALIDATION_ERROR', `${label} admite hasta ${max} caracteres`, {
+      field,
+    });
+  return text || null;
+};
+
+/**
+ * Alumno eventual: quien toma una clase suelta sin ser alumno regular. Nombre obligatorio;
+ * teléfono y DNI opcionales (el DNI se guarda solo con dígitos).
+ */
+export const validateWalkIn = (input: unknown) => {
+  if (!input || typeof input !== 'object')
+    throw new DomainError('VALIDATION_ERROR', 'Indicá el alumno o el alumno eventual', {
+      field: 'studentId',
+    });
+  const walkIn = input as { name?: unknown; phone?: unknown; dni?: unknown };
+  const name = optionalText(walkIn.name, 'walkIn.name', 160, 'El nombre');
+  if (!name || name.length < 2)
+    throw new DomainError('VALIDATION_ERROR', 'Escribí el nombre del alumno eventual', {
+      field: 'walkIn.name',
+    });
+  const phone = optionalText(walkIn.phone, 'walkIn.phone', 80, 'El teléfono');
+  const rawDni = optionalText(walkIn.dni, 'walkIn.dni', 32, 'El DNI');
+  const dni = rawDni ? rawDni.replace(/\D/g, '') : null;
+  if (rawDni && (!/^[\d.\-\s]+$/.test(rawDni) || !dni || dni.length < 6 || dni.length > 9))
+    throw new DomainError('VALIDATION_ERROR', 'El DNI debe tener entre 6 y 9 dígitos', {
+      field: 'walkIn.dni',
+    });
+  return { name, phone, dni };
+};

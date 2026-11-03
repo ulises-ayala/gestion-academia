@@ -1,4 +1,9 @@
-import type { CreatePaymentDto, MonthlyChargeDto, PaymentMethodDto } from '@academy/contracts';
+import type {
+  CreatePaymentDto,
+  MonthlyChargeDto,
+  PaymentDto,
+  PaymentMethodDto,
+} from '@academy/contracts';
 
 export const paymentMethodLabels: Readonly<Record<PaymentMethodDto, string>> = {
   CASH: 'Efectivo',
@@ -96,3 +101,13 @@ export const createPaymentPayload = (
     )
     .map(({ method, cents }) => ({ method, amount: centsToDecimal(cents) })),
 });
+
+/** Quién pagó: el alumno o, en una clase suelta, el alumno eventual (sin ficha). */
+export const payerName = (payment: Pick<PaymentDto, 'student' | 'walkIn'>) =>
+  payment.student
+    ? `${payment.student.firstName} ${payment.student.lastName}`
+    : `${payment.walkIn?.name ?? ''} (eventual)`;
+
+/** DNI de quien pagó, si se conoce (el alumno eventual puede no darlo). */
+export const payerDni = (payment: Pick<PaymentDto, 'student' | 'walkIn'>) =>
+  payment.student?.dni ?? payment.walkIn?.dni ?? null;

@@ -21,8 +21,8 @@ describe('lead UI permission', () => {
     expect(roleCan('MANAGER', 'classes:update')).toBe(true);
   });
 
-  it('muestra reactivar inscripciones solo a Administración y Dirección', () => {
-    expect(roleCan('RECEPTION', 'enrollments:reactivate')).toBe(false);
+  it('muestra reactivar inscripciones a Admisión, Administración y Dirección', () => {
+    expect(roleCan('RECEPTION', 'enrollments:reactivate')).toBe(true);
     expect(roleCan('MANAGER', 'enrollments:reactivate')).toBe(true);
     expect(roleCan('ADMINISTRATOR', 'enrollments:reactivate')).toBe(true);
   });

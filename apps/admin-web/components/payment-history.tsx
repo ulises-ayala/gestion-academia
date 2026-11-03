@@ -1,7 +1,7 @@
 import type { PaymentDto } from '@academy/contracts';
 import React from 'react';
 import { describeOtherPayment } from '../lib/other-payment';
-import { paymentMethodLabels } from '../lib/payments';
+import { payerDni, payerName, paymentMethodLabels } from '../lib/payments';
 import { chargeLabel } from '../lib/collect-payment';
 import { PaymentActions, paymentStatusLabel } from './payment-actions';
 
@@ -57,10 +57,16 @@ export function PaymentHistory({
               <td data-label="Fecha">{dateTime(payment.paidAt)}</td>
               {showStudent && (
                 <td data-label="Alumno">
-                  <a className="text-link" href={studentHref?.(payment.student.id)}>
-                    {payment.student.firstName} {payment.student.lastName}
-                  </a>
-                  <small className="table-subline">DNI {payment.student.dni}</small>
+                  {payment.student ? (
+                    <a className="text-link" href={studentHref?.(payment.student.id)}>
+                      {payerName(payment)}
+                    </a>
+                  ) : (
+                    payerName(payment)
+                  )}
+                  {payerDni(payment) && (
+                    <small className="table-subline">DNI {payerDni(payment)}</small>
+                  )}
                 </td>
               )}
               <td data-label="Monto" className="nowrap">
@@ -86,6 +92,12 @@ export function PaymentHistory({
                       {money(allocation.amount)}
                     </li>
                   ))}
+                  {Number(payment.creditAmount) > 0 && (
+                    <li>Saldo a favor: {money(payment.creditAmount)}</li>
+                  )}
+                  {Number(payment.refundedAmount) > 0 && (
+                    <li>Devuelto: {money(payment.refundedAmount)}</li>
+                  )}
                 </ul>
               </td>
               <td data-label="Registrado por">{payment.createdBy.username}</td>
@@ -104,7 +116,7 @@ export function PaymentHistory({
                     receiptPhone !== undefined
                       ? receiptPhone
                       : showReceipts
-                        ? (payment.student.phone ?? null)
+                        ? (payment.student?.phone ?? payment.walkIn?.phone ?? null)
                         : undefined
                   }
                   canVoid={canVoid}

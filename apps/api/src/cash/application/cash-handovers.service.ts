@@ -58,9 +58,10 @@ export class CashHandoversService {
       where: { method: 'CASH', createdAt: { gte: from, lt: toExclusive } },
       _sum: { amount: true },
     });
-    const sum = (type: 'COLLECTION' | 'REVERSAL') =>
+    const sum = (type: 'COLLECTION' | 'REVERSAL' | 'REFUND') =>
       totals.find((row) => row.type === type)?._sum.amount ?? new Prisma.Decimal(0);
-    return sum('COLLECTION').minus(sum('REVERSAL'));
+    // Las devoluciones de saldo a favor en efectivo también salen del cajón.
+    return sum('COLLECTION').minus(sum('REVERSAL')).minus(sum('REFUND'));
   }
 
   /** Efectivo que entró a la caja en el período (movimientos de los turnos). */

@@ -410,6 +410,19 @@ function Collections({
                     <strong>{amount(data.collections.total)}</strong>
                   </td>
                 </tr>
+                {Number(data.collections.refunds.total) > 0 && (
+                  <tr>
+                    <th scope="row">Devoluciones de saldo a favor</th>
+                    {data.collections.refunds.byMethod.map((item) => (
+                      <td key={item.method} data-label={methods[item.method]}>
+                        -{amount(item.amount)}
+                      </td>
+                    ))}
+                    <td data-label="Total">
+                      <strong>-{amount(data.collections.refunds.total)}</strong>
+                    </td>
+                  </tr>
+                )}
               </tfoot>
             </table>
           </div>

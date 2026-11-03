@@ -1,5 +1,6 @@
 import type { CreateClassDto, UpdateClassDto } from '@academy/contracts';
 import { Inject, Injectable, Optional } from '@nestjs/common';
+import { validateReason } from '../../audit/domain/audit';
 import { EnrollmentsService } from '../../enrollments/application/enrollments.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import { validateClass } from '../domain/academic-class';
@@ -50,6 +51,10 @@ export class ClassesService {
     await this.get(id);
     await this.enrollments?.assertClassCanDeactivate(id);
     return this.update(id, { status: 'INACTIVE' }, actorId);
+  }
+  /** Borra una clase de prueba sin registros reales; las demás se archivan desactivándolas. */
+  async remove(id: string, reason: unknown, actorId: string) {
+    return this.repo.remove(id, validateReason(reason), actorId);
   }
   reactivate(id: string, actorId?: string) {
     return this.update(id, { status: 'ACTIVE' }, actorId);

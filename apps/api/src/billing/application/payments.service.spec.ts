@@ -10,7 +10,12 @@ const chargeId = crypto.randomUUID();
 const payment = (): PaymentDto => ({
   id: crypto.randomUUID(),
   student: { id: studentId, dni: '30100001', firstName: 'Ana', lastName: 'Pérez' },
+  walkIn: null,
   amount: '40000.00',
+  creditAmount: '0.00',
+  refundedAmount: '0.00',
+  cardSurcharge: null,
+  surchargeOfId: null,
   tenders: [{ id: crypto.randomUUID(), method: 'CASH', amount: '40000.00' }],
   status: 'CONFIRMED',
   paidAt: new Date().toISOString(),
@@ -55,7 +60,9 @@ class MemoryPayments implements PaymentsRepository {
     paidAt?: Date,
     monthlyChargeIds?: readonly string[],
     cardSurcharge?: string,
+    allowCredit?: boolean,
   ) {
+    this.lastAllowCredit = allowCredit;
     this.last = { studentId: id, tenders, actorId: userId };
     this.lastPaidAt = paidAt;
     this.lastChargeIds = monthlyChargeIds;
@@ -70,7 +77,8 @@ class MemoryPayments implements PaymentsRepository {
   }
   other: {
     data: {
-      studentId: string;
+      studentId: string | null;
+      walkIn: { name: string; phone: string | null; dni: string | null } | null;
       concept: string;
       classId: string | null;
       teacherId: string | null;
@@ -83,7 +91,8 @@ class MemoryPayments implements PaymentsRepository {
   teacherStatus: 'ACTIVE' | 'INACTIVE' | null = 'ACTIVE';
   async createOther(
     data: {
-      studentId: string;
+      studentId: string | null;
+      walkIn: { name: string; phone: string | null; dni: string | null } | null;
       concept: 'SINGLE_CLASS' | 'OTHER';
       classId: string | null;
       teacherId: string | null;
@@ -109,6 +118,29 @@ class MemoryPayments implements PaymentsRepository {
   async confirmedTotal() {
     return this.item.status === 'CONFIRMED' ? this.item.amount : '0.00';
   }
+  async creditTotal() {
+    return this.item.creditAmount;
+  }
+  appliedCredit: { studentId: string; reason: string } | null = null;
+  async applyCredit(studentId: string, _actorId: string, reason: string) {
+    this.appliedCredit = { studentId, reason };
+    return { applied: '8000.00' };
+  }
+  refunded: {
+    id: string;
+    input: { amount: string; method: PaymentMethodDto };
+    reason: string;
+  } | null = null;
+  async refund(
+    id: string,
+    input: { amount: string; method: PaymentMethodDto },
+    _actorId: string,
+    reason: string,
+  ) {
+    this.refunded = { id, input, reason };
+    return this.item;
+  }
+  lastAllowCredit: boolean | undefined = undefined;
   corrected: {
     id: string;
     input: { tenders: readonly { method: PaymentMethodDto; amount: string }[]; paidAt: Date };
@@ -242,6 +274,7 @@ describe('PaymentsService', () => {
     expect(repository.other).toEqual({
       data: {
         studentId,
+        walkIn: null,
         concept: 'SINGLE_CLASS',
         classId,
         teacherId: 'teacher-of-class',
@@ -249,6 +282,56 @@ describe('PaymentsService', () => {
       },
       tenders: [{ method: 'CASH', amount: '8000.00' }],
     });
+  });
+
+  it('cobra la clase suelta a un alumno eventual sin ficha', async () => {
+    const repository = new MemoryPayments();
+    const classId = crypto.randomUUID();
+    await new PaymentsService(repository).createOther(
+      {
+        walkIn: { name: '  Lucía   Gómez ', phone: ' 3705 123456 ', dni: '30.111.222' },
+        concept: 'SINGLE_CLASS',
+        classId,
+        tenders: [{ method: 'CASH', amount: '8000' }],
+      },
+      actorId,
+    );
+    expect(repository.other?.data).toMatchObject({
+      studentId: null,
+      walkIn: { name: 'Lucía Gómez', phone: '3705 123456', dni: '30111222' },
+      classId,
+      teacherId: 'teacher-of-class',
+    });
+  });
+
+  it('el alumno eventual exige nombre, solo paga clases sueltas y no se combina con un alumno', async () => {
+    const service = new PaymentsService(new MemoryPayments());
+    const tenders = [{ method: 'CASH' as const, amount: '8000' }];
+    const classId = crypto.randomUUID();
+    await expect(
+      service.createOther({ concept: 'SINGLE_CLASS', classId, tenders }, actorId),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'studentId' } });
+    await expect(
+      service.createOther(
+        { walkIn: { name: ' ' }, concept: 'SINGLE_CLASS', classId, tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ details: { field: 'walkIn.name' } });
+    await expect(
+      service.createOther(
+        { walkIn: { name: 'Lucía', dni: '12' }, concept: 'SINGLE_CLASS', classId, tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ details: { field: 'walkIn.dni' } });
+    await expect(
+      service.createOther({ walkIn: { name: 'Lucía' }, concept: 'APPAREL', tenders }, actorId),
+    ).rejects.toMatchObject({ details: { field: 'walkIn' } });
+    await expect(
+      service.createOther(
+        { studentId, walkIn: { name: 'Lucía' }, concept: 'SINGLE_CLASS', classId, tenders },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ details: { field: 'walkIn' } });
   });
 
   it('“Otro” exige detalle y no guarda clase', async () => {
@@ -603,6 +686,69 @@ describe('PaymentsService', () => {
         actorId,
       );
       expect(repository.other?.data.concept).toBe('CARD_SURCHARGE');
+    });
+  });
+
+  describe('saldo a favor', () => {
+    it('cobrar de más se pide de forma explícita', async () => {
+      const repository = new MemoryPayments();
+      const service = new PaymentsService(repository);
+      const tenders = [{ method: 'CASH' as const, amount: '50000' }];
+      await service.create({ studentId, tenders }, actorId);
+      expect(repository.lastAllowCredit).toBe(false);
+      await service.create({ studentId, tenders, allowCredit: true }, actorId);
+      expect(repository.lastAllowCredit).toBe(true);
+    });
+
+    it('la devolución pide medio, importe positivo y motivo', async () => {
+      const repository = new MemoryPayments();
+      const service = new PaymentsService(repository);
+      const id = repository.item.id;
+      await expect(
+        service.refund(id, { amount: '1000', method: 'CASH', reason: ' ' }, actorId),
+      ).rejects.toMatchObject({ details: { field: 'reason' } });
+      await expect(
+        service.refund(
+          id,
+          { amount: '1000', method: 'CHEQUE' as never, reason: 'Pagó dos veces' },
+          actorId,
+        ),
+      ).rejects.toMatchObject({ details: { field: 'method' } });
+      await expect(
+        service.refund(id, { amount: '0', method: 'CASH', reason: 'Pagó dos veces' }, actorId),
+      ).rejects.toMatchObject({ details: { field: 'amount' } });
+      await service.refund(
+        id,
+        { amount: '10000.5', method: 'MERCADO_PAGO', reason: ' Pagó dos veces ' },
+        actorId,
+      );
+      expect(repository.refunded).toEqual({
+        id,
+        input: { amount: '10000.50', method: 'MERCADO_PAGO' },
+        reason: 'Pagó dos veces',
+      });
+    });
+
+    it('usar el saldo a favor lleva un motivo por defecto si no se escribe uno', async () => {
+      const repository = new MemoryPayments();
+      const service = new PaymentsService(repository);
+      await service.applyCredit({ studentId }, actorId);
+      expect(repository.appliedCredit).toEqual({
+        studentId,
+        reason: 'Se aplica el saldo a favor a las cuotas pendientes',
+      });
+      await service.applyCredit({ studentId, reason: ' Pagó noviembre por adelantado ' }, actorId);
+      expect(repository.appliedCredit?.reason).toBe('Pagó noviembre por adelantado');
+    });
+
+    it('una reimputación sin cuotas deja todo el pago como saldo a favor', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).reallocate(
+        repository.item.id,
+        { reason: 'Pago duplicado', allocations: [] },
+        actorId,
+      );
+      expect(repository.reallocated?.allocations).toEqual([]);
     });
   });
 });

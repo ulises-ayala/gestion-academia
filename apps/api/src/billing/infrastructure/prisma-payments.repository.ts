@@ -18,6 +18,12 @@ import {
 } from '../domain/payment-allocation';
 import { adjustedAmounts, lateFeeAdjustment, lateFeeApplies } from '../domain/billing-adjustments';
 import { businessDayAt } from '../../dashboard/application/business-day';
+import {
+  allocatableAmount,
+  assertRefundFits,
+  buildCreditApplicationPlan,
+  paymentCredit,
+} from '../domain/payment-credit';
 
 const include = {
   student: { select: { id: true, dni: true, firstName: true, lastName: true, phone: true } },
@@ -26,7 +32,9 @@ const include = {
   academicClass: { select: { id: true, name: true } },
   teacher: { select: { id: true, firstName: true, lastName: true } },
   correctedBy: { select: { id: true } },
+  cardSurcharge: { select: { id: true, amount: true, status: true } },
   tenders: { orderBy: [{ method: 'asc' as const }, { id: 'asc' as const }] },
+  refunds: { select: { amount: true } },
   allocations: {
     include: {
       monthlyCharge: {
@@ -44,7 +52,18 @@ const isoDate = (date: Date) => date.toISOString().slice(0, 10);
 const mapPayment = (item: IncludedPayment): PaymentDto => ({
   id: item.id,
   student: item.student,
+  walkIn: item.walkInName
+    ? { name: item.walkInName, phone: item.walkInPhone, dni: item.walkInDni }
+    : null,
   amount: item.amount.toFixed(2),
+  // Saldo a favor: lo cobrado que no quedó imputado a cuotas ni se devolvió.
+  creditAmount:
+    item.kind === 'CHARGES' && item.status === 'CONFIRMED'
+      ? paymentCredit(item.amount, item.allocations, item.refunds).toFixed(2)
+      : '0.00',
+  refundedAmount: item.refunds
+    .reduce((sum, refund) => sum.plus(refund.amount), new Prisma.Decimal(0))
+    .toFixed(2),
   tenders: item.tenders.map((tender) => ({
     id: tender.id,
     method: tender.method,
@@ -55,6 +74,11 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   createdBy: item.createdBy,
   correctionOfId: item.correctionOfId,
   correctedById: item.correctedBy?.id ?? null,
+  cardSurcharge:
+    item.cardSurcharge?.status === 'CONFIRMED'
+      ? { id: item.cardSurcharge.id, amount: item.cardSurcharge.amount.toFixed(2) }
+      : null,
+  surchargeOfId: item.surchargeOfId,
   voidedAt: item.voidedAt?.toISOString() ?? null,
   voidedBy: item.voidedBy,
   allocations: netAllocations(item.allocations).map(({ monthlyCharge, amount }) => ({
@@ -99,6 +123,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     paidAt?: Date,
     monthlyChargeIds?: readonly string[],
     cardSurcharge?: string,
+    allowCredit = false,
   ) {
     for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
       try {
@@ -177,7 +202,8 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               );
             const plan = buildPaymentAllocationPlan(selected, amount);
             const { allocations, balances, totalOutstanding } = plan;
-            if (amount.greaterThan(totalOutstanding))
+            // Con allowCredit, lo que supera la deuda queda como saldo a favor del pago.
+            if (amount.greaterThan(totalOutstanding) && !allowCredit)
               throw new DomainError(
                 'PAYMENT_EXCEEDS_OUTSTANDING_BALANCE',
                 monthlyChargeIds
@@ -185,7 +211,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                   : 'El cobro supera la deuda pendiente actual del alumno',
                 { outstandingAmount: totalOutstanding.toFixed(2) },
               );
-            if (!plan.remaining.isZero() || allocations.length === 0)
+            if (!allowCredit && (!plan.remaining.isZero() || allocations.length === 0))
               throw new DomainError(
                 'PAYMENT_NO_OUTSTANDING_BALANCE',
                 'El alumno no tiene deuda pendiente',
@@ -225,6 +251,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                   amount: cardSurcharge,
                   kind: 'OTHER',
                   concept: 'CARD_SURCHARGE',
+                  surchargeOfId: payment.id,
                   ...(paidAt ? { paidAt } : {}),
                   createdByUserId: actorId,
                   tenders: { create: [{ method: 'CARD', amount: cardSurcharge }] },
@@ -257,7 +284,12 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 },
               });
             }
-            return mapPayment(payment);
+            // Con recargo por tarjeta se relee el cobro para que lo traiga (recibo, comprobante).
+            return mapPayment(
+              cardSurcharge
+                ? await tx.payment.findUniqueOrThrow({ where: { id: payment.id }, include })
+                : payment,
+            );
           },
           { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
         );
@@ -288,7 +320,8 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
 
   async createOther(
     data: Readonly<{
-      studentId: string;
+      studentId: string | null;
+      walkIn: Readonly<{ name: string; phone: string | null; dni: string | null }> | null;
       concept: OtherPaymentConceptDto;
       classId: string | null;
       teacherId: string | null;
@@ -318,6 +351,9 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
         const payment = await tx.payment.create({
           data: {
             studentId: data.studentId,
+            walkInName: data.walkIn?.name ?? null,
+            walkInPhone: data.walkIn?.phone ?? null,
+            walkInDni: data.walkIn?.dni ?? null,
             amount,
             ...(paidAt ? { paidAt } : {}),
             kind: 'OTHER',
@@ -358,7 +394,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               amount: amount.toFixed(2),
               tenders: tenders.map((tender) => ({ method: tender.method, amount: tender.amount })),
             },
-            metadata: { studentId: data.studentId },
+            metadata: { studentId: data.studentId, walkIn: data.walkIn },
           },
         });
         return mapPayment(payment);
@@ -406,6 +442,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 { student: { firstName: { contains: term, mode: 'insensitive' as const } } },
                 { student: { lastName: { contains: term, mode: 'insensitive' as const } } },
                 { student: { dni: { contains: term.replace(/\D/g, '') || term } } },
+                { walkInName: { contains: term, mode: 'insensitive' as const } },
               ],
             })),
           }
@@ -448,13 +485,27 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             await tx.$queryRaw`SELECT id FROM payments WHERE id = ${id}::uuid FOR UPDATE`;
             const current = await tx.payment.findUnique({
               where: { id },
-              include: { allocations: { select: { monthlyChargeId: true } }, tenders: true },
+              include: {
+                allocations: { select: { monthlyChargeId: true } },
+                tenders: true,
+                refunds: { select: { id: true } },
+                cardSurcharge: { select: { id: true, status: true } },
+              },
             });
             if (!current) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
             if (current.status === 'VOID')
               throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+            if (current.refunds.length > 0)
+              throw new DomainError(
+                'PAYMENT_REFUND_CONFLICT',
+                'El pago tiene devoluciones de saldo a favor: no se puede anular ni corregir.',
+              );
+            // El recargo por tarjeta del cobro se anula con él (mismo turno, mismo motivo).
+            const surchargeId =
+              current.cardSurcharge?.status === 'CONFIRMED' ? current.cardSurcharge.id : null;
+            const voidedIds = surchargeId ? [id, surchargeId] : [id];
             const collections = await tx.cashMovement.findMany({
-              where: { sourcePaymentId: id, type: 'COLLECTION' },
+              where: { sourcePaymentId: { in: voidedIds }, type: 'COLLECTION' },
               orderBy: [{ cashShiftId: 'asc' }, { id: 'asc' }],
             });
             const shiftIds = [...new Set(collections.map(({ cashShiftId }) => cashShiftId))];
@@ -466,10 +517,23 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             // Un cobro de otro concepto no tiene cuotas que bloquear (IN () sería inválido).
             if (chargeIds.length > 0)
               await tx.$queryRaw`SELECT id FROM monthly_charges WHERE id IN (${Prisma.join(chargeIds.map((chargeId) => Prisma.sql`${chargeId}::uuid`))}) ORDER BY id FOR UPDATE`;
-            await tx.payment.update({
-              where: { id },
+            await tx.payment.updateMany({
+              where: { id: { in: voidedIds } },
               data: { status: 'VOID', voidedAt: new Date(), voidedByUserId: actorId },
             });
+            if (surchargeId)
+              await tx.auditLog.create({
+                data: {
+                  actorUserId: actorId,
+                  action: 'VOID',
+                  entityType: 'PAYMENT',
+                  entityId: surchargeId,
+                  reason,
+                  before: { status: 'CONFIRMED' },
+                  after: { status: 'VOID' },
+                  metadata: { source: 'CARD_SURCHARGE_OF', paymentId: id },
+                },
+              });
             if (collections.length > 0)
               await tx.cashMovement.createMany({
                 data: collections.map((collection) => ({
@@ -566,13 +630,20 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             await tx.$queryRaw`SELECT id FROM payments WHERE id = ${id}::uuid FOR UPDATE`;
             const original = await tx.payment.findUnique({
               where: { id },
-              include: { allocations: true, tenders: true },
+              include: { allocations: true, tenders: true, refunds: { select: { id: true } } },
             });
             if (!original) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
             if (original.status === 'VOID')
               throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+            if (original.refunds.length > 0)
+              throw new DomainError(
+                'PAYMENT_REFUND_CONFLICT',
+                'El pago tiene devoluciones de saldo a favor: no se puede anular ni corregir.',
+              );
+            // La clase suelta de un alumno eventual no tiene alumno ni cuotas que bloquear.
             const studentId = original.studentId;
-            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
+            if (studentId)
+              await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
             const collections = await tx.cashMovement.findMany({
               where: { sourcePaymentId: id, type: 'COLLECTION' },
               orderBy: [{ cashShiftId: 'asc' }, { id: 'asc' }],
@@ -581,7 +652,8 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             const shiftId = collections[0]?.cashShiftId ?? null;
             if (shiftId)
               await tx.$queryRaw`SELECT id FROM cash_shifts WHERE id = ${shiftId}::uuid FOR UPDATE`;
-            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status <> 'VOID' ORDER BY due_date, created_at, id FOR UPDATE`;
+            if (studentId)
+              await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status <> 'VOID' ORDER BY due_date, created_at, id FOR UPDATE`;
 
             // 1. El original queda anulado, con la reversa de sus cobros en su turno.
             await tx.payment.update({
@@ -610,7 +682,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               new Prisma.Decimal(0),
             );
             let allocations: { monthlyChargeId: string; amount: Prisma.Decimal }[] = [];
-            if (original.kind === 'CHARGES') {
+            if (original.kind === 'CHARGES' && studentId) {
               if (amount.equals(original.amount))
                 allocations = netAllocations(original.allocations).map((allocation) => ({
                   monthlyChargeId: allocation.monthlyChargeId,
@@ -648,6 +720,9 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             const replacement = await tx.payment.create({
               data: {
                 studentId,
+                walkInName: original.walkInName,
+                walkInPhone: original.walkInPhone,
+                walkInDni: original.walkInDni,
                 amount,
                 origin: original.origin,
                 kind: original.kind,
@@ -668,6 +743,10 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 allocations: { create: allocations },
               },
               include: { tenders: true },
+            });
+            await tx.payment.updateMany({
+              where: { surchargeOfId: original.id },
+              data: { surchargeOfId: replacement.id },
             });
             if (shiftId)
               await tx.cashMovement.createMany({
@@ -780,12 +859,13 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             await tx.$queryRaw`SELECT id FROM payments WHERE id = ${id}::uuid FOR UPDATE`;
             const payment = await tx.payment.findUnique({
               where: { id },
-              include: { allocations: true },
+              include: { allocations: true, refunds: { select: { amount: true } } },
             });
             if (!payment) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
             if (payment.status === 'VOID')
               throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
-            if (payment.kind !== 'CHARGES')
+            // Un cobro de cuotas siempre tiene alumno (payments_payer_check).
+            if (payment.kind !== 'CHARGES' || !payment.studentId)
               throw new DomainError('VALIDATION_ERROR', 'Este cobro no se imputa a cuotas', {
                 field: 'allocations',
               });
@@ -805,7 +885,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             });
             const current = netAllocations(payment.allocations);
             const rows = buildReallocationPlan(
-              payment.amount,
+              allocatableAmount(payment.amount, payment.refunds),
               current,
               target.map((row) => ({
                 monthlyChargeId: row.monthlyChargeId,
@@ -897,5 +977,228 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
       'PAYMENT_CONCURRENCY_CONFLICT',
       'El pago fue modificado al mismo tiempo.',
     );
+  }
+
+  async refund(
+    id: string,
+    input: Readonly<{ amount: string; method: PaymentMethodDto }>,
+    actorId: string,
+    reason: string,
+  ) {
+    for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
+      try {
+        return await this.prisma.$transaction(
+          async (tx) => {
+            await tx.$queryRaw`SELECT id FROM payments WHERE id = ${id}::uuid FOR UPDATE`;
+            const payment = await tx.payment.findUnique({
+              where: { id },
+              include: { allocations: true, refunds: { select: { amount: true } } },
+            });
+            if (!payment) throw new DomainError('PAYMENT_NOT_FOUND', 'Pago no encontrado');
+            if (payment.status === 'VOID')
+              throw new DomainError('PAYMENT_ALREADY_VOID', 'El pago ya está anulado');
+            if (payment.kind !== 'CHARGES' || !payment.studentId)
+              throw new DomainError('PAYMENT_NO_CREDIT', 'Este cobro no tiene saldo a favor');
+            // Mismo bloqueo por alumno que el cobro y la reimputación.
+            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${payment.studentId}))`;
+            // La devolución sale de la caja de quien la registra, como egreso de su turno.
+            const [cashShift] = await tx.$queryRaw<readonly { id: string }[]>`
+              SELECT id FROM cash_shifts
+              WHERE user_id = ${actorId}::uuid AND status = 'OPEN'
+              FOR UPDATE
+            `;
+            if (!cashShift)
+              throw new DomainError(
+                'CASH_SHIFT_REQUIRED',
+                'Necesitás abrir tu turno de caja antes de registrar una devolución.',
+              );
+            const amount = new Prisma.Decimal(input.amount);
+            const credit = paymentCredit(payment.amount, payment.allocations, payment.refunds);
+            assertRefundFits(amount, credit);
+            const refund = await tx.paymentRefund.create({
+              data: {
+                paymentId: id,
+                amount,
+                method: input.method,
+                cashShiftId: cashShift.id,
+                reason,
+                createdByUserId: actorId,
+              },
+            });
+            await tx.cashMovement.create({
+              data: {
+                cashShiftId: cashShift.id,
+                type: 'REFUND',
+                method: input.method,
+                amount,
+                sourcePaymentId: id,
+                refundId: refund.id,
+                actorUserId: actorId,
+                reason,
+              },
+            });
+            await tx.auditLog.create({
+              data: {
+                actorUserId: actorId,
+                action: 'CREATE',
+                entityType: 'PAYMENT_REFUND',
+                entityId: refund.id,
+                reason,
+                after: { paymentId: id, amount: amount.toFixed(2), method: input.method },
+                metadata: {
+                  studentId: payment.studentId,
+                  creditBefore: credit.toFixed(2),
+                  cashShiftId: cashShift.id,
+                },
+              },
+            });
+            return mapPayment(await tx.payment.findUniqueOrThrow({ where: { id }, include }));
+          },
+          { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+        );
+      } catch (error) {
+        if (isRetryableTransactionError(error)) {
+          if (attempt < PAYMENT_TRANSACTION_ATTEMPTS - 1) {
+            await waitBeforeRetry(attempt);
+            continue;
+          }
+          throw new DomainError(
+            'PAYMENT_CONCURRENCY_CONFLICT',
+            'El pago fue modificado al mismo tiempo.',
+          );
+        }
+        throw error;
+      }
+    }
+    throw new DomainError(
+      'PAYMENT_CONCURRENCY_CONFLICT',
+      'El pago fue modificado al mismo tiempo.',
+    );
+  }
+
+  async applyCredit(studentId: string, actorId: string, reason: string) {
+    for (let attempt = 0; attempt < PAYMENT_TRANSACTION_ATTEMPTS; attempt++) {
+      try {
+        return await this.prisma.$transaction(
+          async (tx) => {
+            // Mismo bloqueo por alumno que el cobro y la reimputación.
+            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${studentId}))`;
+            await tx.$queryRaw`SELECT id FROM monthly_charges WHERE student_id = ${studentId}::uuid AND status <> 'VOID' ORDER BY due_date, created_at, id FOR UPDATE`;
+            const payments = await tx.payment.findMany({
+              where: { studentId, status: 'CONFIRMED', kind: 'CHARGES' },
+              include: { allocations: true, refunds: { select: { amount: true } } },
+              orderBy: [{ paidAt: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+            });
+            const charges = await tx.monthlyCharge.findMany({
+              where: { studentId, status: { not: 'VOID' } },
+              include: {
+                adjustments: true,
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+            });
+            const plan = buildCreditApplicationPlan(
+              payments.map((payment) => ({
+                paymentId: payment.id,
+                credit: paymentCredit(payment.amount, payment.allocations, payment.refunds),
+              })),
+              charges.map((charge) => ({
+                ...charge,
+                studentDueAmount: adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue,
+              })),
+            );
+            for (const { paymentId, allocations } of plan) {
+              await tx.paymentReallocation.create({
+                data: {
+                  paymentId,
+                  reason,
+                  createdByUserId: actorId,
+                  allocations: { create: allocations.map((row) => ({ paymentId, ...row })) },
+                },
+              });
+              await tx.auditLog.create({
+                data: {
+                  actorUserId: actorId,
+                  action: 'UPDATE',
+                  entityType: 'PAYMENT',
+                  entityId: paymentId,
+                  reason,
+                  after: {
+                    applied: allocations.map((row) => ({
+                      monthlyChargeId: row.monthlyChargeId,
+                      amount: row.amount.toFixed(2),
+                    })),
+                  },
+                  metadata: { source: 'CREDIT_APPLICATION', studentId },
+                },
+              });
+            }
+            const touchedIds = [
+              ...new Set(
+                plan.flatMap(({ allocations }) => allocations.map((row) => row.monthlyChargeId)),
+              ),
+            ];
+            const touched = await tx.monthlyCharge.findMany({
+              where: { id: { in: touchedIds } },
+              include: {
+                adjustments: true,
+                allocations: {
+                  where: { payment: { status: 'CONFIRMED' } },
+                  select: { amount: true },
+                },
+              },
+            });
+            for (const charge of touched)
+              await tx.monthlyCharge.update({
+                where: { id: charge.id },
+                data: {
+                  status: paymentChargeStatus(
+                    confirmedAllocatedAmount(charge.allocations),
+                    adjustedAmounts(charge.baseAmount, charge.adjustments).studentDue,
+                  ),
+                },
+              });
+            const applied = plan
+              .flatMap(({ allocations }) => allocations)
+              .reduce((sum, row) => sum.plus(row.amount), new Prisma.Decimal(0));
+            return { applied: applied.toFixed(2) };
+          },
+          { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+        );
+      } catch (error) {
+        if (isRetryableTransactionError(error)) {
+          if (attempt < PAYMENT_TRANSACTION_ATTEMPTS - 1) {
+            await waitBeforeRetry(attempt);
+            continue;
+          }
+          throw new DomainError(
+            'PAYMENT_CONCURRENCY_CONFLICT',
+            'La cuenta del alumno cambió al mismo tiempo.',
+          );
+        }
+        throw error;
+      }
+    }
+    throw new DomainError(
+      'PAYMENT_CONCURRENCY_CONFLICT',
+      'La cuenta del alumno cambió al mismo tiempo.',
+    );
+  }
+
+  async creditTotal(studentId: string) {
+    const [row] = await this.prisma.$queryRaw<readonly { credit: Prisma.Decimal | null }[]>`
+      SELECT SUM(GREATEST(p.amount - COALESCE(a.allocated, 0) - COALESCE(r.refunded, 0), 0)) AS credit
+      FROM payments p
+      LEFT JOIN (
+        SELECT payment_id, SUM(amount) AS allocated FROM payment_allocations GROUP BY payment_id
+      ) a ON a.payment_id = p.id
+      LEFT JOIN (
+        SELECT payment_id, SUM(amount) AS refunded FROM payment_refunds GROUP BY payment_id
+      ) r ON r.payment_id = p.id
+      WHERE p.student_id = ${studentId}::uuid AND p.status = 'CONFIRMED' AND p.kind = 'CHARGES'
+    `;
+    return new Prisma.Decimal(row?.credit ?? 0).toFixed(2);
   }
 }

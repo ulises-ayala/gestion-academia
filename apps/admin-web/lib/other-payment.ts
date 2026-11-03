@@ -48,3 +48,35 @@ export const buildOtherPaymentPayload = (
   teacherId: form.concept === 'SINGLE_CLASS' && form.teacherId ? form.teacherId : null,
   detail: form.detail.trim() || null,
 });
+
+/** Alumno eventual de una clase suelta: nombre obligatorio, teléfono y DNI opcionales. */
+export type WalkInForm = Readonly<{ name: string; phone: string; dni: string }>;
+
+export const walkInProblem = (form: WalkInForm) => {
+  if (form.name.trim().length < 2) return 'Escribí el nombre del alumno eventual.';
+  const dni = form.dni.replace(/\D/g, '');
+  if (
+    form.dni.trim() &&
+    (!/^[\d.\-\s]+$/.test(form.dni.trim()) || dni.length < 6 || dni.length > 9)
+  )
+    return 'El DNI debe tener entre 6 y 9 dígitos.';
+  return null;
+};
+
+/** Clase suelta cobrada a un alumno eventual: sin alumno, con su nombre y datos opcionales. */
+export const buildWalkInPaymentPayload = (
+  walkIn: WalkInForm,
+  form: OtherPaymentForm,
+  tenders: TenderAmounts,
+): CreateOtherPaymentDto => ({
+  walkIn: {
+    name: walkIn.name.trim(),
+    phone: walkIn.phone.trim() || null,
+    dni: walkIn.dni.trim() || null,
+  },
+  tenders: createPaymentPayload('', tenders).tenders,
+  concept: 'SINGLE_CLASS',
+  classId: form.classId,
+  teacherId: form.teacherId || null,
+  detail: form.detail.trim() || null,
+});

@@ -125,3 +125,28 @@ export const validateClass = (
     status: input.status ?? 'ACTIVE',
   };
 };
+
+export type ClassRecordCounts = Readonly<{
+  enrollments: number;
+  payments: number;
+  trialClasses: number;
+}>;
+
+/**
+ * Una clase se borra solo si no tiene registros reales: inscripciones (y con ellas cuotas y
+ * asistencias), cobros de clase suelta ni clases de prueba. Si los tiene, se archiva
+ * desactivándola.
+ */
+export const assertClassCanBeRemoved = (counts: ClassRecordCounts) => {
+  const records = [
+    counts.enrollments ? `${counts.enrollments} inscripción(es)` : null,
+    counts.payments ? `${counts.payments} cobro(s)` : null,
+    counts.trialClasses ? `${counts.trialClasses} clase(s) de prueba` : null,
+  ].filter((item): item is string => item !== null);
+  if (records.length)
+    throw new DomainError(
+      'CLASS_IN_USE',
+      `La clase tiene registros (${records.join(', ')}): no se puede borrar. Desactivala para archivarla sin perder su historial.`,
+      { ...counts },
+    );
+};

@@ -60,15 +60,29 @@ describe('reimputar un pago', () => {
     ]);
   });
 
-  it('exige que las cuotas sumen el importe del pago', () => {
+  it('las cuotas no suman más que el pago; lo que no se imputa queda como saldo a favor', () => {
     expect(() =>
       buildReallocationPlan(
         d('40000'),
         current,
-        [row('oct', '30000')],
-        [charge('oct', '40000', '0')],
+        [row('oct', '40000.01')],
+        [charge('oct', '50000', '0')],
       ),
     ).toThrow(expect.objectContaining({ code: 'VALIDATION_ERROR' }));
+    const plan = buildReallocationPlan(
+      d('40000'),
+      current,
+      [row('oct', '30000')],
+      [charge('oct', '40000', '0')],
+    );
+    const total = plan.reduce((sum, item) => sum.plus(item.amount), d('0'));
+    // La imputación vigente baja 10.000: ese importe pasa a saldo a favor.
+    expect(total.toFixed(2)).toBe('-10000.00');
+  });
+
+  it('un pago duplicado se desimputa entero a saldo a favor', () => {
+    const plan = buildReallocationPlan(d('40000'), current, [], []);
+    expect(plan.every((item) => item.amount.isNegative())).toBe(true);
   });
 
   it('no deja pagar de más una cuota (otro pago ya cubre parte)', () => {

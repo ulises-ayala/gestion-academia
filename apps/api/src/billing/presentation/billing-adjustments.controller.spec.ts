@@ -1,0 +1,14 @@
+import { describe, expect, it } from 'vitest';
+import { PERMISSIONS_KEY } from '../../auth/presentation/permissions.decorator';
+import { BillingAdjustmentsController } from './billing-adjustments.controller';
+
+describe('BillingAdjustmentsController permissions', () => {
+  it('deja el vencimiento a Admisión y el pase de cuota a Administración y Dirección', () => {
+    expect(
+      Reflect.getMetadata(PERMISSIONS_KEY, BillingAdjustmentsController.prototype.changeDueDate),
+    ).toEqual(['charges:generate']);
+    expect(
+      Reflect.getMetadata(PERMISSIONS_KEY, BillingAdjustmentsController.prototype.moveToEnrollment),
+    ).toEqual(['charges:manage']);
+  });
+});

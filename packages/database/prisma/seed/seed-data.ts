@@ -425,7 +425,8 @@ export const applySeedData = async (
         ],
       ] as const;
       for (const [id, name, amount, validFrom, validTo, status] of tariffDefinitions) {
-        const data = { name, amount, validFrom, validTo, status };
+        // La tarifa es por clase: las de ejemplo van a la primera clase.
+        const data = { classId: uuid('6', 1), name, amount, validFrom, validTo, status };
         await tx.tariff.upsert({ where: { id }, create: { id, ...data }, update: data });
       }
 

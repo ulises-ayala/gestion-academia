@@ -5,6 +5,7 @@ import {
   leadPrimaryContact,
   leadSourceLabels,
   leadStatusLabels,
+  trialClassOptions,
 } from './leads';
 
 const lead = (patch: Partial<LeadDto> = {}) =>
@@ -56,5 +57,22 @@ describe('leads presentation', () => {
         now,
       ),
     ).toBe(false);
+  });
+});
+
+describe('clases de prueba', () => {
+  it('marca las clases que ya probó y deja elegir las demás', () => {
+    const classes = [
+      { id: 'salsa', name: 'Salsa' },
+      { id: 'kizomba', name: 'Kizomba' },
+    ];
+    expect(
+      trialClassOptions(classes, [
+        { academicClass: { id: 'kizomba', name: 'Kizomba' }, trialDate: '2026-10-30' },
+      ]),
+    ).toEqual([
+      { item: classes[0], triedOn: null },
+      { item: classes[1], triedOn: '2026-10-30' },
+    ]);
   });
 });

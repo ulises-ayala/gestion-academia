@@ -48,6 +48,7 @@ const report = (overrides: Partial<OperationalReportsDto> = {}): OperationalRepo
     ],
     byConcept: { charges: '1800500.50', singleClass: '24000.00', other: '6000.00' },
     byConceptAndMethod: [],
+    refunds: { total: '0.00', byMethod: [] },
     singleClasses: [
       {
         classId: 'c1',
@@ -175,6 +176,7 @@ describe('renderOperationalReportPdf', () => {
         byDay: [],
         byConcept: { charges: '0.00', singleClass: '0.00', other: '0.00' },
         byConceptAndMethod: [],
+        refunds: { total: '0.00', byMethod: [] },
         singleClasses: [],
         byTeacher: [],
       },

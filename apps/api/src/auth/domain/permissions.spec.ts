@@ -33,8 +33,8 @@ describe('role permissions', () => {
     expect(hasPermissions(reception, ['offering:manage'])).toBe(false);
     expect(hasPermissions(user('MANAGER'), ['classes:update', 'offering:manage'])).toBe(true);
   });
-  it('solo Administración y Dirección reactivan inscripciones finalizadas', () => {
-    expect(hasPermissions(user('RECEPTION'), ['enrollments:reactivate'])).toBe(false);
+  it('Admisión, Administración y Dirección reactivan inscripciones finalizadas', () => {
+    expect(hasPermissions(user('RECEPTION'), ['enrollments:reactivate'])).toBe(true);
     expect(hasPermissions(user('MANAGER'), ['enrollments:reactivate'])).toBe(true);
     expect(hasPermissions(user('ADMINISTRATOR'), ['enrollments:reactivate'])).toBe(true);
   });

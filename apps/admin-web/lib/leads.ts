@@ -1,4 +1,4 @@
-import type { LeadDto, LeadSourceDto, LeadStatusDto } from '@academy/contracts';
+import type { LeadDto, LeadSourceDto, LeadStatusDto, LeadTrialClassDto } from '@academy/contracts';
 
 export const leadStatusLabels: Readonly<Record<LeadStatusDto, string>> = {
   INQUIRY: 'Consulta',
@@ -34,3 +34,16 @@ export const localDateTimeValue = (value: string | null) => {
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
   return local.toISOString().slice(0, 16);
 };
+
+/**
+ * Clases que el potencial alumno todavía puede probar: la clase de prueba gratis es una sola vez
+ * por clase. Las que ya probó quedan marcadas para mostrarlas deshabilitadas.
+ */
+export const trialClassOptions = <T extends { id: string }>(
+  classes: readonly T[],
+  trials: readonly Pick<LeadTrialClassDto, 'academicClass' | 'trialDate'>[],
+) =>
+  classes.map((item) => ({
+    item,
+    triedOn: trials.find((trial) => trial.academicClass.id === item.id)?.trialDate ?? null,
+  }));

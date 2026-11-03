@@ -173,6 +173,36 @@ describe.runIf(integrationDatabaseEnabled)(
         await cleanupFixture(fixture);
       }
     });
+
+    it('liquida la clase suelta de un alumno eventual (sin ficha)', async () => {
+      const fixture = await createFixture();
+      const walkIn = await prisma.payment.create({
+        data: {
+          walkInName: 'Lucía Eventual',
+          amount: 8000,
+          kind: 'OTHER',
+          concept: 'SINGLE_CLASS',
+          classId: fixture.academyClass.id,
+          teacherId: fixture.teacher.id,
+          createdByUserId: fixture.user.id,
+          paidAt: new Date('2019-03-15T15:00:00.000Z'),
+        },
+      });
+      try {
+        await service.savePlan(
+          fixture.academyClass.id,
+          { validFrom: '2019-01', shares: [{ teacherId: fixture.teacher.id, percentage: '50' }] },
+          fixture.actor,
+        );
+        const march = await service.get('2019-03');
+        expect(march.teachers.find((item) => item.teacher.id === fixture.teacher.id)).toMatchObject(
+          { total: '4000.00' },
+        );
+      } finally {
+        await prisma.payment.delete({ where: { id: walkIn.id } });
+        await cleanupFixture(fixture);
+      }
+    });
   },
   integrationTestTimeoutMs,
 );

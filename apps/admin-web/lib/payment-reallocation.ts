@@ -50,6 +50,19 @@ const parsed = (form: Readonly<Record<string, string>>) =>
 export const reallocationTotalCents = (form: Readonly<Record<string, string>>) =>
   parsed(form).reduce((sum, row) => sum + (row.cents ?? 0n), 0n);
 
+/** Lo que el pago puede imputar: su importe menos lo ya devuelto del saldo a favor. */
+const allocatableCents = (payment: Pick<PaymentDto, 'amount' | 'refundedAmount'>) =>
+  cents(payment.amount) - cents(payment.refundedAmount);
+
+/** Lo que queda como saldo a favor con la imputación del formulario (nunca negativo). */
+export const reallocationCreditCents = (
+  payment: Pick<PaymentDto, 'amount' | 'refundedAmount'>,
+  form: Readonly<Record<string, string>>,
+) => {
+  const credit = allocatableCents(payment) - reallocationTotalCents(form);
+  return credit > 0n ? credit : 0n;
+};
+
 /** Primer motivo por el que no se puede reimputar, o null. */
 export const reallocationProblem = (
   payment: PaymentDto,
@@ -66,8 +79,9 @@ export const reallocationProblem = (
       return `A esa cuota le podés aplicar hasta ${centsToDecimal(row.maxCents)}.`;
   }
   const total = reallocationTotalCents(form);
-  if (total !== cents(payment.amount))
-    return `Las cuotas tienen que sumar ${centsToDecimal(cents(payment.amount))} (hoy suman ${centsToDecimal(total)}).`;
+  const allocatable = allocatableCents(payment);
+  if (total > allocatable)
+    return `Las cuotas no pueden sumar más de ${centsToDecimal(allocatable)} (hoy suman ${centsToDecimal(total)}).`;
   if (
     rows.every(
       (row) =>

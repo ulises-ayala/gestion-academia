@@ -3,7 +3,7 @@ import { Prisma } from '@academy/database';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { ClassData, ClassQuery, ClassRepository } from '../application/class.repository';
-import type { ValidClassInput } from '../domain/academic-class';
+import { assertClassCanBeRemoved, type ValidClassInput } from '../domain/academic-class';
 
 const atTime = (value: string) => new Date(`1970-01-01T${value}:00.000Z`);
 const fromTime = (value: Date) => value.toISOString().slice(11, 16);
@@ -77,6 +77,87 @@ export class PrismaClassRepository implements ClassRepository {
   }
   update(id: string, data: ValidClassInput, validateCapacity = false, actorId?: string) {
     return this.write(id, data, validateCapacity, actorId);
+  }
+  async remove(id: string, reason: string, actorId: string) {
+    try {
+      await this.prisma.$transaction(
+        async (tx) => {
+          await tx.$queryRaw`SELECT id FROM classes WHERE id = ${id}::uuid FOR UPDATE`;
+          const item = await tx.academyClass.findUnique({
+            where: { id },
+            include: {
+              schedules: true,
+              additionalTeachers: true,
+              tariffs: true,
+              settlementPlans: { include: { shares: true } },
+              _count: { select: { enrollments: true, payments: true, leadTrialClasses: true } },
+            },
+          });
+          if (!item) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
+          assertClassCanBeRemoved({
+            enrollments: item._count.enrollments,
+            payments: item._count.payments,
+            trialClasses: item._count.leadTrialClasses,
+          });
+          // Los porcentajes de cada reparto se borran en cascada con él.
+          await tx.classSettlementPlan.deleteMany({ where: { classId: id } });
+          await tx.tariff.deleteMany({ where: { classId: id } });
+          await tx.classAdditionalTeacher.deleteMany({ where: { classId: id } });
+          await tx.classSchedule.deleteMany({ where: { classId: id } });
+          await tx.academyClass.delete({ where: { id } });
+          await tx.auditLog.create({
+            data: {
+              actorUserId: actorId,
+              action: 'DELETE',
+              entityType: 'CLASS',
+              entityId: id,
+              reason,
+              before: {
+                name: item.name,
+                level: item.level,
+                capacity: item.capacity,
+                status: item.status,
+                danceTypeId: item.danceTypeId,
+                teacherId: item.teacherId,
+                additionalTeacherIds: item.additionalTeachers.map(({ teacherId }) => teacherId),
+                schedules: item.schedules.map((schedule) => ({
+                  dayOfWeek: schedule.dayOfWeek,
+                  startTime: fromTime(schedule.startTime),
+                  endTime: fromTime(schedule.endTime),
+                  roomId: schedule.roomId,
+                })),
+                tariffs: item.tariffs.map((tariff) => ({
+                  name: tariff.name,
+                  amount: tariff.amount.toFixed(2),
+                  validFrom: tariff.validFrom.toISOString().slice(0, 10),
+                })),
+                settlementPlans: item.settlementPlans.map((plan) => ({
+                  validFrom: plan.validFrom.toISOString().slice(0, 7),
+                  shares: plan.shares.map((share) => ({
+                    teacherId: share.teacherId,
+                    percentage: share.percentage.toFixed(2),
+                  })),
+                })),
+              },
+            },
+          });
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
+    } catch (error) {
+      // Un registro que apunta a la clase y no contamos (o que llegó a la vez): no se borra.
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003')
+        throw new DomainError(
+          'CLASS_IN_USE',
+          'La clase tiene registros: no se puede borrar. Desactivala para archivarla.',
+        );
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034')
+        throw new DomainError(
+          'CLASS_CONCURRENCY_CONFLICT',
+          'La clase cambió mientras la borrabas.',
+        );
+      throw error;
+    }
   }
   async findPage(query: ClassQuery) {
     const where: Prisma.AcademyClassWhereInput = {

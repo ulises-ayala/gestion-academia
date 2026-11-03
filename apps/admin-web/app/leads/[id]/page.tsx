@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { LeadForm } from '../../../components/lead-form';
+import { LeadTrialClasses } from '../../../components/lead-trial-classes';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import {
   isLeadFollowUpOverdue,
@@ -92,6 +93,7 @@ export default function LeadDetailPage() {
           </div>
         </dl>
       </section>
+      <LeadTrialClasses leadId={lead.id} onChanged={() => void load()} />
       <section className="card">
         <h2>Contacto</h2>
         <dl className="detail-grid">

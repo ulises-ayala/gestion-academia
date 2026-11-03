@@ -51,6 +51,8 @@ describe('popup de cobro', () => {
     expect(chargesProblem(pick({ amount: '100000' }), debt)).toBeNull();
     expect(chargesProblem(pick({ amount: '250000' }), debt)).toMatch(/supera la deuda/);
     expect(chargesProblem(pick({ amount: '250000' }), debt, true)).toMatch(/cuotas marcadas/);
+    // Confirmando el saldo a favor, el excedente se acepta.
+    expect(chargesProblem(pick({ amount: '250000' }), debt, false, true)).toBeNull();
     expect(chargesProblem(pick({ amount: '' }), debt)).toBe('Ingresá el importe recibido.');
     expect(chargesProblem(pick({ amount: '1000' }), 0n)).toMatch(/generá la cuota/);
   });

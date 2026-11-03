@@ -1,6 +1,7 @@
 import type { MonthlyChargeDto, PaymentDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import {
+  reallocationCreditCents,
   reallocationFormFrom,
   reallocationPayload,
   reallocationProblem,
@@ -18,6 +19,7 @@ const charge = (id: string, period: string, outstanding: string, status = 'PENDI
   }) as MonthlyChargeDto;
 const payment = {
   amount: '40000.00',
+  refundedAmount: '0.00',
   allocations: [{ monthlyChargeId: 'sep', amount: '40000.00' }],
 } as unknown as PaymentDto;
 const charges = [
@@ -46,12 +48,27 @@ describe('reimputar un pago', () => {
     });
   });
 
+  it('lo que no se imputa queda como saldo a favor (un pago duplicado, entero)', () => {
+    const partial = { sep: '10000', oct: '20000' };
+    expect(reallocationProblem(payment, rows, partial, 'motivo')).toBeNull();
+    expect(reallocationCreditCents(payment, partial)).toBe(1000000n);
+    const none = { sep: '', oct: '' };
+    expect(reallocationProblem(payment, rows, none, 'pagó dos veces')).toBeNull();
+    expect(reallocationPayload(none, 'pagó dos veces').allocations).toEqual([]);
+    expect(reallocationCreditCents(payment, none)).toBe(4000000n);
+    // Lo ya devuelto no se puede volver a imputar.
+    const refunded = { ...payment, refundedAmount: '10000.00' };
+    expect(reallocationProblem(refunded, rows, { sep: '', oct: '40000' }, 'motivo')).toMatch(
+      /no pueden sumar más de 30000.00/,
+    );
+  });
+
   it('explica por qué no se puede', () => {
     expect(reallocationProblem(payment, rows, { sep: '40000', oct: '' }, 'x')).toMatch(
       /No cambiaste/,
     );
-    expect(reallocationProblem(payment, rows, { sep: '10000', oct: '20000' }, 'motivo')).toMatch(
-      /tienen que sumar 40000.00/,
+    expect(reallocationProblem(payment, rows, { sep: '40000', oct: '10000' }, 'motivo')).toMatch(
+      /no pueden sumar más de 40000.00/,
     );
     expect(reallocationProblem(payment, rows, { sep: '', oct: '50000' }, 'motivo')).toMatch(
       /hasta 40000.00/,

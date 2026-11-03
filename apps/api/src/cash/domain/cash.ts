@@ -16,7 +16,8 @@ export const zeroByMethod = () => ({
 });
 export const cashTotals = (
   movements: readonly {
-    type: 'COLLECTION' | 'REVERSAL';
+    /** Las reversas (anulaciones) y las devoluciones de saldo a favor restan. */
+    type: 'COLLECTION' | 'REVERSAL' | 'REFUND';
     method: PaymentMethodDto;
     amount: Prisma.Decimal;
   }[],

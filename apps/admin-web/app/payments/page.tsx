@@ -838,6 +838,11 @@ function PaymentsCenter() {
           >
             <h2 id="void-title">Anular pago</h2>
             <p className="modal-copy">Indicá por qué necesitás anular este pago.</p>
+            {voidTarget.cardSurcharge && (
+              <p className="modal-copy">
+                También se anula su recargo por tarjeta de {money(voidTarget.cardSurcharge.amount)}.
+              </p>
+            )}
             <label>
               Motivo
               <textarea
@@ -1046,6 +1051,10 @@ function StudentAccount({
   const debt = outstandingTotal(charges);
   const overdueCount = pending.filter((charge) => charge.overdue).length;
   const partialCount = pending.filter((charge) => charge.status === 'PARTIAL').length;
+  // Saldo a favor: lo no imputado ni devuelto de sus pagos. Nunca se aplica solo.
+  const credit = payments
+    .filter((payment) => payment.status === 'CONFIRMED')
+    .reduce((sum, payment) => sum + Number(payment.creditAmount), 0);
   return (
     <>
       <div className="page-heading payments-heading account-heading">
@@ -1068,6 +1077,14 @@ function StudentAccount({
             {partialCount > 0 && (
               <li>
                 {partialCount} {partialCount === 1 ? 'parcial' : 'parciales'}
+              </li>
+            )}
+            {credit > 0 && (
+              <li
+                className="is-ok"
+                title="Se aplica o se devuelve desde el pago, con Saldo a favor"
+              >
+                Saldo a favor {money(credit)}
               </li>
             )}
           </ul>

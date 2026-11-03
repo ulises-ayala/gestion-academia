@@ -50,6 +50,10 @@ class MemoryClasses implements ClassRepository {
     const items = this.items.filter((item) => !query.status || item.status === query.status);
     return { items, total: items.length, page: query.page, pageSize: query.pageSize };
   }
+  removed: { id: string; reason: string } | null = null;
+  async remove(id: string, reason: string) {
+    this.removed = { id, reason };
+  }
   private save(id: string, data: ValidClassInput): ClassData {
     const now = new Date();
     const item: ClassData = {

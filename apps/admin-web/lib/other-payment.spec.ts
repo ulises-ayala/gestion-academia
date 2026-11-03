@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildOtherPaymentPayload,
+  buildWalkInPaymentPayload,
   describeOtherPayment,
   otherPaymentProblem,
+  walkInProblem,
 } from './other-payment';
 
 const none = { CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' };
@@ -93,6 +95,36 @@ describe('otros cobros', () => {
         { method: 'CASH', amount: '5000.00' },
         { method: 'MERCADO_PAGO', amount: '2500.50' },
       ],
+    });
+  });
+});
+
+describe('alumno eventual', () => {
+  it('exige el nombre y valida el DNI solo si se carga', () => {
+    expect(walkInProblem({ name: ' L ', phone: '', dni: '' })).toBe(
+      'Escribí el nombre del alumno eventual.',
+    );
+    expect(walkInProblem({ name: 'Lucía', phone: '', dni: '123' })).toBe(
+      'El DNI debe tener entre 6 y 9 dígitos.',
+    );
+    expect(walkInProblem({ name: 'Lucía', phone: '', dni: '30.111.222' })).toBeNull();
+    expect(walkInProblem({ name: 'Lucía', phone: '', dni: '' })).toBeNull();
+  });
+
+  it('arma la clase suelta sin alumno y con los datos del eventual', () => {
+    expect(
+      buildWalkInPaymentPayload(
+        { name: ' Lucía Gómez ', phone: ' ', dni: '30111222' },
+        { concept: 'SINGLE_CLASS', classId: 'class-1', teacherId: '', detail: '' },
+        { ...none, CASH: '8000' },
+      ),
+    ).toEqual({
+      walkIn: { name: 'Lucía Gómez', phone: null, dni: '30111222' },
+      tenders: [{ method: 'CASH', amount: '8000.00' }],
+      concept: 'SINGLE_CLASS',
+      classId: 'class-1',
+      teacherId: null,
+      detail: null,
     });
   });
 });

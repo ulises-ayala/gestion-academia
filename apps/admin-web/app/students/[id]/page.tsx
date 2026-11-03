@@ -537,7 +537,7 @@ export default function StudentDetailPage() {
   // Cambiar el vencimiento de una cuota con saldo, a mano desde la tabla.
   const canChangeDueDate = can('charges:generate');
   const canMoveCharges =
-    can('charges:generate') &&
+    can('charges:manage') &&
     enrollments.filter((item) => item.status === 'ACTIVE').length > 0 &&
     enrollments.length > 1;
   const age = student ? calculateAge(student.birthDate) : null;
@@ -1125,7 +1125,7 @@ export default function StudentDetailPage() {
             setChangeTarget(null);
             void load().then(() =>
               setMessage(
-                `Cambio de clase registrado: ${newClassName}. Si ya pagó la cuota del mes, pasala a la nueva clase desde "Pasar a otra clase" en sus cuotas.`,
+                `Cambio de clase registrado: ${newClassName}. Si ya pagó la cuota del mes, Administración o Dirección la pasan a la nueva clase desde "Pasar a otra clase" en sus cuotas.`,
               ),
             );
           }}
