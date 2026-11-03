@@ -9,6 +9,8 @@ import { PAYMENTS_REPOSITORY } from './application/payments.repository';
 import { PaymentsService } from './application/payments.service';
 import { PrismaPaymentsRepository } from './infrastructure/prisma-payments.repository';
 import { PaymentsController } from './presentation/payments.controller';
+import { PaymentConceptsService } from './application/payment-concepts.service';
+import { PaymentConceptsController } from './presentation/payment-concepts.controller';
 import { ReceivablesService } from './application/receivables.service';
 import { BillingAdjustmentsService } from './application/billing-adjustments.service';
 import { BillingAdjustmentsController } from './presentation/billing-adjustments.controller';
@@ -22,11 +24,13 @@ import { PrismaChargeGenerationRepository } from './infrastructure/prisma-charge
     TariffsController,
     MonthlyChargesController,
     PaymentsController,
+    PaymentConceptsController,
     BillingAdjustmentsController,
   ],
   providers: [
     BillingService,
     PaymentsService,
+    PaymentConceptsService,
     ReceivablesService,
     BillingAdjustmentsService,
     ChargeGenerationService,

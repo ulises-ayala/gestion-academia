@@ -1,21 +1,16 @@
 import type { OtherPaymentConceptDto } from '@academy/contracts';
 import { DomainError } from '../../shared/domain/domain-error';
 
-const concepts: readonly OtherPaymentConceptDto[] = [
-  'SINGLE_CLASS',
-  'APPAREL',
-  'GALA_SEAL',
-  'CARD_SURCHARGE',
-  'OTHER',
-];
+const concepts: readonly OtherPaymentConceptDto[] = ['SINGLE_CLASS', 'OTHER', 'CARD_SURCHARGE'];
 export const OTHER_PAYMENT_DETAIL_MAX = 200;
 
 /**
- * Valida el concepto de un cobro que no es de cuotas. La clase suelta exige la clase;
- * "Otro" exige un detalle que explique qué se cobró.
+ * Valida el concepto de un cobro que no es de cuotas. La clase suelta exige la clase; un concepto
+ * del catálogo (`OTHER`) exige cuál es. Si el concepto pide detalle lo valida `assertConceptDetail`.
  */
 export const validateOtherPayment = (input: {
   concept: unknown;
+  conceptId?: unknown;
   classId?: unknown;
   teacherId?: unknown;
   detail?: unknown;
@@ -37,9 +32,13 @@ export const validateOtherPayment = (input: {
       `El detalle admite hasta ${OTHER_PAYMENT_DETAIL_MAX} caracteres`,
       { field: 'detail' },
     );
-  if (concept === 'OTHER' && detail.length < 3)
-    throw new DomainError('VALIDATION_ERROR', 'Contá brevemente qué se cobra', {
-      field: 'detail',
+  const conceptId =
+    concept === 'OTHER' && typeof input.conceptId === 'string' && input.conceptId
+      ? input.conceptId
+      : null;
+  if (concept === 'OTHER' && !conceptId)
+    throw new DomainError('VALIDATION_ERROR', 'Elegí a qué corresponde el cobro', {
+      field: 'conceptId',
     });
   const classId = typeof input.classId === 'string' && input.classId ? input.classId : null;
   if (concept === 'SINGLE_CLASS' && !classId)
@@ -47,10 +46,51 @@ export const validateOtherPayment = (input: {
   const teacherId = typeof input.teacherId === 'string' && input.teacherId ? input.teacherId : null;
   return {
     concept,
+    conceptId,
     detail: detail || null,
     // Clase y profesor solo se registran en la clase suelta.
     classId: concept === 'SINGLE_CLASS' ? classId : null,
     teacherId: concept === 'SINGLE_CLASS' ? teacherId : null,
+  };
+};
+
+/** Un concepto del catálogo que pide detalle (por ejemplo, "Otros") exige contar qué se cobró. */
+export const assertConceptDetail = (requiresDetail: boolean, detail: string | null) => {
+  if (requiresDetail && (detail ?? '').length < 3)
+    throw new DomainError('VALIDATION_ERROR', 'Contá brevemente qué se cobra', {
+      field: 'detail',
+    });
+};
+
+/** Nombre del concepto como se guarda para no repetirlo (sin mayúsculas, tildes ni espacios de más). */
+export const normalizeConceptName = (name: string) =>
+  name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('es')
+    .trim()
+    .replace(/\s+/g, ' ');
+
+/** Valida el alta o la edición de un concepto del catálogo. */
+export const validatePaymentConcept = (input: {
+  name?: unknown;
+  requiresDetail?: unknown;
+  status?: unknown;
+}) => {
+  const name = typeof input.name === 'string' ? input.name.trim().replace(/\s+/g, ' ') : '';
+  if (name.length < 2 || name.length > 80)
+    throw new DomainError('VALIDATION_ERROR', 'El nombre debe tener entre 2 y 80 caracteres', {
+      field: 'name',
+    });
+  if (input.requiresDetail !== undefined && typeof input.requiresDetail !== 'boolean')
+    throw new DomainError('VALIDATION_ERROR', 'El valor no es válido', { field: 'requiresDetail' });
+  if (input.status !== undefined && input.status !== 'ACTIVE' && input.status !== 'INACTIVE')
+    throw new DomainError('VALIDATION_ERROR', 'Estado inválido', { field: 'status' });
+  return {
+    name,
+    normalizedName: normalizeConceptName(name),
+    requiresDetail: input.requiresDetail === true,
+    ...(input.status ? { status: input.status as 'ACTIVE' | 'INACTIVE' } : {}),
   };
 };
 

@@ -48,8 +48,24 @@ describe('ReportsService', () => {
         },
       ],
       [
-        { kind: 'CHARGES', concept: null, method: 'CASH', amount: decimal('30000.00') },
-        { kind: 'CHARGES', concept: null, method: 'MERCADO_PAGO', amount: decimal('4000.00') },
+        {
+          kind: 'CHARGES',
+          concept: null,
+          conceptId: null,
+          conceptName: null,
+          conceptOrder: null,
+          method: 'CASH',
+          amount: decimal('30000.00'),
+        },
+        {
+          kind: 'CHARGES',
+          concept: null,
+          conceptId: null,
+          conceptName: null,
+          conceptOrder: null,
+          method: 'MERCADO_PAGO',
+          amount: decimal('4000.00'),
+        },
         {
           kind: 'OTHER',
           concept: 'SINGLE_CLASS',
@@ -137,8 +153,18 @@ describe('ReportsService', () => {
       { method: 'CARD', amount: '0.00' },
     ];
     expect(report.collections.byConceptAndMethod).toEqual([
-      { concept: 'CHARGES', byMethod: methods('30000.00', '4000.00'), total: '34000.00' },
-      { concept: 'SINGLE_CLASS', byMethod: methods('0.00', '16000.00'), total: '16000.00' },
+      {
+        concept: 'CHARGES',
+        label: 'Cuotas',
+        byMethod: methods('30000.00', '4000.00'),
+        total: '34000.00',
+      },
+      {
+        concept: 'SINGLE_CLASS',
+        label: 'Clase suelta',
+        byMethod: methods('0.00', '16000.00'),
+        total: '16000.00',
+      },
     ]);
     // Las devoluciones de saldo a favor van aparte, sin restarse de lo cobrado.
     expect(report.collections.refunds).toEqual({

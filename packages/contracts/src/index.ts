@@ -136,11 +136,16 @@ export type ReportMoneyByMethodDto = Readonly<{
   method: PaymentMethodDto;
   amount: string;
 }>;
-/** Concepto de la recaudación: las cuotas o el concepto de un otro cobro. */
-export type ReportCollectionConceptDto = 'CHARGES' | OtherPaymentConceptDto;
+/**
+ * Concepto de la recaudación: `CHARGES` (cuotas), `SINGLE_CLASS`, `CARD_SURCHARGE` o el id de un
+ * concepto del catálogo.
+ */
+export type ReportCollectionConceptDto = string;
 /** Lo cobrado de un concepto, separado por medio de pago. */
 export type ReportConceptByMethodDto = Readonly<{
   concept: ReportCollectionConceptDto;
+  /** Nombre para mostrar (Cuotas, Clase suelta, el del catálogo, Recargo por tarjeta). */
+  label: string;
   byMethod: readonly ReportMoneyByMethodDto[];
   total: string;
 }>;
@@ -654,12 +659,25 @@ export type CreatePaymentDto = Readonly<{
   allowCredit?: boolean;
 }>;
 export type PaymentKindDto = 'CHARGES' | 'OTHER';
-export type OtherPaymentConceptDto =
-  | 'SINGLE_CLASS'
-  | 'OTHER'
-  | 'APPAREL'
-  | 'GALA_SEAL'
-  | 'CARD_SURCHARGE';
+/**
+ * Tipo de otro cobro: clase suelta (clase y profesor), recargo por tarjeta, o un concepto del
+ * catálogo (`OTHER` + `conceptId`: indumentaria, inscripciones, talleres, Gala, otros…).
+ */
+export type OtherPaymentConceptDto = 'SINGLE_CLASS' | 'OTHER' | 'CARD_SURCHARGE';
+/** Concepto de ingreso del catálogo; lo amplían Administración y Dirección. */
+export type PaymentConceptDto = Readonly<{
+  id: string;
+  name: string;
+  /** Exige contar qué se cobró (por ejemplo, "Otros"). */
+  requiresDetail: boolean;
+  status: 'ACTIVE' | 'INACTIVE';
+  sortOrder: number;
+}>;
+export type SavePaymentConceptDto = Readonly<{
+  name: string;
+  requiresDetail?: boolean;
+  status?: 'ACTIVE' | 'INACTIVE';
+}>;
 /** Cobro que no se imputa a cuotas: clase suelta (con su clase) u otro concepto (con detalle). */
 /** Quien toma una clase suelta sin ser alumno regular: no tiene ficha ni cuotas. */
 export type WalkInDto = Readonly<{ name: string; phone: string | null; dni: string | null }>;
@@ -669,6 +687,8 @@ export type CreateOtherPaymentDto = Readonly<{
   studentId?: string | null;
   walkIn?: Readonly<{ name: string; phone?: string | null; dni?: string | null }> | null;
   concept: OtherPaymentConceptDto;
+  /** Concepto del catálogo; obligatorio con `concept = OTHER`. */
+  conceptId?: string | null;
   classId?: string | null;
   /** Profesor que dictó la clase suelta; si falta se usa el de la clase. */
   teacherId?: string | null;
@@ -725,6 +745,8 @@ export type PaymentDto = Readonly<{
   /** Solo en cobros OTHER. */
   otherConcept: Readonly<{
     concept: OtherPaymentConceptDto;
+    /** Concepto del catálogo (con `concept = OTHER`). */
+    catalogConcept: Readonly<{ id: string; name: string }> | null;
     detail: string | null;
     academicClass: Readonly<{ id: string; name: string }> | null;
     teacher: Readonly<{ id: string; firstName: string; lastName: string }> | null;
@@ -937,7 +959,8 @@ export type AuditEntityTypeDto =
   | 'ENROLLMENT'
   | 'BILLING_CONDITION'
   | 'MONTHLY_CHARGE_ADJUSTMENT'
-  | 'CASH_HANDOVER';
+  | 'CASH_HANDOVER'
+  | 'PAYMENT_CONCEPT';
 export type AuditSnapshotDto = Readonly<Record<string, unknown>>;
 export type AuditLogDto = Readonly<{
   id: string;

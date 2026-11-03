@@ -1,8 +1,4 @@
-import type {
-  OperationalReportsDto,
-  PaymentMethodDto,
-  ReportCollectionConceptDto,
-} from '@academy/contracts';
+import type { OperationalReportsDto, PaymentMethodDto } from '@academy/contracts';
 import PDFDocument from 'pdfkit';
 
 /** Cantidad de deudores que entran en el PDF; la lista completa sale por CSV. */
@@ -14,11 +10,10 @@ const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
   TRANSFER: 'Transferencia',
   CARD: 'Tarjeta',
 };
-export const CONCEPT_LABELS: Readonly<Record<ReportCollectionConceptDto, string>> = {
+/** Nombres de los conceptos que no vienen del catálogo (`payment_concepts`). */
+export const CONCEPT_LABELS: Readonly<Record<string, string>> = {
   CHARGES: 'Cuotas',
   SINGLE_CLASS: 'Clase suelta',
-  APPAREL: 'Indumentaria',
-  GALA_SEAL: 'Precintos de la Gala',
   CARD_SURCHARGE: 'Recargo por tarjeta',
   OTHER: 'Otros',
 };
@@ -286,7 +281,7 @@ export function renderOperationalReportPdf(
       ],
       [
         ...collections.byConceptAndMethod.map((row) => [
-          CONCEPT_LABELS[row.concept],
+          row.label,
           ...row.byMethod.map((item) => formatMoney(item.amount)),
           formatMoney(row.total),
         ]),

@@ -43,7 +43,7 @@ describe.runIf(integrationDatabaseEnabled)(
           studentId: student.id,
           amount: '50000.00',
           kind: 'OTHER',
-          concept: 'APPAREL',
+          concept: 'CARD_SURCHARGE',
           paidAt: new Date('2031-03-03T15:00:00.000Z'),
           createdByUserId: actor.id,
           tenders: {

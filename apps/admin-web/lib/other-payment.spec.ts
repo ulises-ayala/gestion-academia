@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildOtherPaymentPayload,
+  conceptOptions,
   buildWalkInPaymentPayload,
   describeOtherPayment,
   otherPaymentProblem,
@@ -10,58 +11,71 @@ import {
 const none = { CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' };
 describe('otros cobros', () => {
   it('describe a qué corresponde el cobro', () => {
+    const base = { catalogConcept: null, detail: null, academicClass: null, teacher: null };
     expect(
       describeOtherPayment({
+        ...base,
         concept: 'SINGLE_CLASS',
-        detail: null,
         academicClass: { id: 'c', name: 'Zumba' },
-        teacher: null,
       }),
     ).toBe('Clase suelta · Zumba');
     expect(
       describeOtherPayment({
+        ...base,
         concept: 'SINGLE_CLASS',
-        detail: null,
         academicClass: { id: 'c', name: 'Zumba' },
         teacher: { id: 't', firstName: 'Jose Luis', lastName: 'Barrios' },
       }),
     ).toBe('Clase suelta · Zumba · Prof. Jose Luis Barrios');
     expect(
       describeOtherPayment({
+        ...base,
         concept: 'OTHER',
-        detail: 'Remera del show',
-        academicClass: null,
-        teacher: null,
-      }),
-    ).toBe('Otro: Remera del show');
-    expect(
-      describeOtherPayment({
-        concept: 'APPAREL',
+        catalogConcept: { id: 'i', name: 'Indumentaria' },
         detail: 'Remera talle M',
-        academicClass: null,
-        teacher: null,
       }),
     ).toBe('Indumentaria (Remera talle M)');
     expect(
       describeOtherPayment({
-        concept: 'GALA_SEAL',
-        detail: null,
-        academicClass: null,
-        teacher: null,
+        ...base,
+        concept: 'OTHER',
+        catalogConcept: { id: 'g', name: 'Entradas o precintos de la Gala' },
       }),
-    ).toBe('Precintos de la Gala');
+    ).toBe('Entradas o precintos de la Gala');
+    expect(describeOtherPayment({ ...base, concept: 'CARD_SURCHARGE' })).toBe(
+      'Recargo por tarjeta',
+    );
     expect(describeOtherPayment(null)).toBe('');
+  });
+  it('ofrece clase suelta, los conceptos activos del catálogo y el recargo', () => {
+    const catalog = [
+      { id: 'i', name: 'Indumentaria', requiresDetail: false, status: 'ACTIVE', sortOrder: 40 },
+      { id: 'v', name: 'Viejo', requiresDetail: false, status: 'INACTIVE', sortOrder: 50 },
+      { id: 'o', name: 'Otros', requiresDetail: true, status: 'ACTIVE', sortOrder: 1000 },
+    ] as const;
+    expect(conceptOptions(catalog).map((option) => option.label)).toEqual([
+      'Clase suelta',
+      'Indumentaria',
+      'Otros',
+      'Recargo por tarjeta',
+    ]);
   });
   it('pide la clase, el detalle y el importe según el concepto', () => {
     expect(otherPaymentProblem({ concept: 'SINGLE_CLASS', classId: '', detail: '' }, none)).toBe(
       'Elegí la clase.',
     );
-    expect(otherPaymentProblem({ concept: 'OTHER', classId: '', detail: ' a ' }, none)).toBe(
-      'Contá brevemente qué se cobra.',
+    expect(otherPaymentProblem({ concept: 'OTHER', classId: '', detail: 'x' }, none)).toBe(
+      'Elegí a qué corresponde el cobro.',
     );
-    expect(otherPaymentProblem({ concept: 'OTHER', classId: '', detail: 'Remera' }, none)).toBe(
-      'Ingresá el importe recibido.',
-    );
+    expect(
+      otherPaymentProblem(
+        { concept: 'OTHER', conceptId: 'o', requiresDetail: true, classId: '', detail: ' a ' },
+        none,
+      ),
+    ).toBe('Contá brevemente qué se cobra.');
+    expect(
+      otherPaymentProblem({ concept: 'OTHER', conceptId: 'i', classId: '', detail: '' }, none),
+    ).toBe('Ingresá el importe recibido.');
     expect(
       otherPaymentProblem(
         { concept: 'SINGLE_CLASS', classId: 'c', detail: '' },
@@ -82,12 +96,13 @@ describe('otros cobros', () => {
     expect(
       buildOtherPaymentPayload(
         's',
-        { concept: 'OTHER', classId: 'c', detail: ' Remera ' },
+        { concept: 'OTHER', conceptId: 'i', classId: 'c', detail: ' Remera ' },
         { CASH: '5000', MERCADO_PAGO: '2500,50', TRANSFER: '', CARD: '' },
       ),
     ).toEqual({
       studentId: 's',
       concept: 'OTHER',
+      conceptId: 'i',
       classId: null,
       teacherId: null,
       detail: 'Remera',

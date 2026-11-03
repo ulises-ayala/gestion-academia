@@ -3266,3 +3266,17 @@ td .link-button {
     grid-template-columns: 1fr;
   }
 }
+.payment-concept-form {
+  grid-template-columns: minmax(14rem, 1fr) auto auto;
+}
+.payment-concept-form .payment-concept-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+}
+@media (max-width: 48rem) {
+  .payment-concept-form {
+    grid-template-columns: 1fr;
+  }
+}

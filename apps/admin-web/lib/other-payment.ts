@@ -1,16 +1,60 @@
-import type { CreateOtherPaymentDto, OtherPaymentConceptDto, PaymentDto } from '@academy/contracts';
+import type {
+  CreateOtherPaymentDto,
+  OtherPaymentConceptDto,
+  PaymentConceptDto,
+  PaymentDto,
+} from '@academy/contracts';
 import { createPaymentPayload, tenderTotal, type TenderAmounts } from './payments';
 
+/** Nombres de los otros cobros que no vienen del catálogo de conceptos. */
 export const otherConceptLabels: Readonly<Record<OtherPaymentConceptDto, string>> = {
   SINGLE_CLASS: 'Clase suelta',
-  APPAREL: 'Indumentaria',
-  GALA_SEAL: 'Precintos de la Gala',
   CARD_SURCHARGE: 'Recargo por tarjeta',
   OTHER: 'Otro',
 };
 
+/** Opción para elegir a qué corresponde un otro cobro: clase suelta, catálogo o recargo. */
+export type ConceptOption = Readonly<{
+  key: string;
+  label: string;
+  concept: OtherPaymentConceptDto;
+  conceptId: string | null;
+  requiresDetail: boolean;
+}>;
+
+/** Clase suelta primero, después los conceptos activos del catálogo y al final el recargo. */
+export const conceptOptions = (catalog: readonly PaymentConceptDto[]): readonly ConceptOption[] => [
+  {
+    key: 'SINGLE_CLASS',
+    label: otherConceptLabels.SINGLE_CLASS,
+    concept: 'SINGLE_CLASS',
+    conceptId: null,
+    requiresDetail: false,
+  },
+  ...catalog
+    .filter((item) => item.status === 'ACTIVE')
+    .map((item) => ({
+      key: item.id,
+      label: item.name,
+      concept: 'OTHER' as const,
+      conceptId: item.id,
+      requiresDetail: item.requiresDetail,
+    })),
+  {
+    key: 'CARD_SURCHARGE',
+    label: otherConceptLabels.CARD_SURCHARGE,
+    concept: 'CARD_SURCHARGE',
+    conceptId: null,
+    requiresDetail: false,
+  },
+];
+
 export type OtherPaymentForm = Readonly<{
   concept: OtherPaymentConceptDto;
+  /** Concepto del catálogo (con `concept = OTHER`). */
+  conceptId?: string | null;
+  /** El concepto elegido pide contar qué se cobró. */
+  requiresDetail?: boolean;
   classId: string;
   /** Profesor que dictó la clase suelta; vacío = el de la clase. */
   teacherId?: string;
@@ -24,15 +68,18 @@ export const describeOtherPayment = (other: PaymentDto['otherConcept']) => {
     return `Clase suelta${other.academicClass ? ` · ${other.academicClass.name}` : ''}${
       other.teacher ? ` · Prof. ${other.teacher.firstName} ${other.teacher.lastName}` : ''
     }${other.detail ? ` (${other.detail})` : ''}`;
-  if (other.concept === 'OTHER') return `Otro: ${other.detail ?? ''}`.trim();
-  return `${otherConceptLabels[other.concept]}${other.detail ? ` (${other.detail})` : ''}`;
+  const name =
+    other.concept === 'OTHER'
+      ? (other.catalogConcept?.name ?? otherConceptLabels.OTHER)
+      : otherConceptLabels[other.concept];
+  return `${name}${other.detail ? ` (${other.detail})` : ''}`;
 };
 
 /** Primer motivo por el que no se puede registrar el cobro, o null si está completo. */
 export const otherPaymentProblem = (form: OtherPaymentForm, tenders: TenderAmounts) => {
   if (form.concept === 'SINGLE_CLASS' && !form.classId) return 'Elegí la clase.';
-  if (form.concept === 'OTHER' && form.detail.trim().length < 3)
-    return 'Contá brevemente qué se cobra.';
+  if (form.concept === 'OTHER' && !form.conceptId) return 'Elegí a qué corresponde el cobro.';
+  if (form.requiresDetail && form.detail.trim().length < 3) return 'Contá brevemente qué se cobra.';
   if (tenderTotal(tenders) <= 0n) return 'Ingresá el importe recibido.';
   return null;
 };
@@ -44,6 +91,7 @@ export const buildOtherPaymentPayload = (
 ): CreateOtherPaymentDto => ({
   ...createPaymentPayload(studentId, tenders),
   concept: form.concept,
+  ...(form.concept === 'OTHER' && form.conceptId ? { conceptId: form.conceptId } : {}),
   classId: form.concept === 'SINGLE_CLASS' ? form.classId : null,
   teacherId: form.concept === 'SINGLE_CLASS' && form.teacherId ? form.teacherId : null,
   detail: form.detail.trim() || null,

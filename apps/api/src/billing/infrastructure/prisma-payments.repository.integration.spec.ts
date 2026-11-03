@@ -203,6 +203,7 @@ describe.runIf(enabled)(
             studentId: null,
             walkIn,
             concept: 'SINGLE_CLASS',
+            conceptId: null,
             classId: fixture.academicClass.id,
             teacherId: fixture.teacher.id,
             detail: null,
@@ -227,7 +228,7 @@ describe.runIf(enabled)(
             data: {
               amount: '1000.00',
               kind: 'OTHER',
-              concept: 'APPAREL',
+              concept: 'CARD_SURCHARGE',
               walkInName: 'Sin ficha',
               createdByUserId: fixture.actor.id,
             },

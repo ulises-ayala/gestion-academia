@@ -1,12 +1,11 @@
 'use client';
 
-import type { OperationalReportsDto, ReportCollectionConceptDto } from '@academy/contracts';
+import type { OperationalReportsDto } from '@academy/contracts';
 import { FileDown } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
-import { otherConceptLabels } from '../../lib/other-payment';
 
 const tabs = [
   ['summary', 'Resumen'],
@@ -16,10 +15,6 @@ const tabs = [
   ['cash', 'Caja'],
 ] as const;
 type Tab = (typeof tabs)[number][0];
-const conceptLabels: Readonly<Record<ReportCollectionConceptDto, string>> = {
-  CHARGES: 'Cuotas',
-  ...otherConceptLabels,
-};
 const methods = {
   CASH: 'Efectivo',
   MERCADO_PAGO: 'Mercado Pago',
@@ -386,7 +381,7 @@ function Collections({
               <tbody>
                 {data.collections.byConceptAndMethod.map((row) => (
                   <tr key={row.concept}>
-                    <td data-label="Concepto">{conceptLabels[row.concept]}</td>
+                    <td data-label="Concepto">{row.label}</td>
                     {row.byMethod.map((item) => (
                       <td key={item.method} data-label={methods[item.method]}>
                         {amount(item.amount)}

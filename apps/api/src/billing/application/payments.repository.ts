@@ -43,6 +43,7 @@ export interface PaymentsRepository {
       studentId: string | null;
       walkIn: Readonly<{ name: string; phone: string | null; dni: string | null }> | null;
       concept: OtherPaymentConceptDto;
+      conceptId: string | null;
       classId: string | null;
       teacherId: string | null;
       detail: string | null;
@@ -54,6 +55,10 @@ export interface PaymentsRepository {
   /** Estado y profesor actual de la clase de una clase suelta, o null si no existe. */
   findClass(classId: string): Promise<{ status: 'ACTIVE' | 'INACTIVE'; teacherId: string } | null>;
   findTeacherStatus(teacherId: string): Promise<'ACTIVE' | 'INACTIVE' | null>;
+  /** Concepto del catálogo, o null si no existe. */
+  findConcept(
+    conceptId: string,
+  ): Promise<{ status: 'ACTIVE' | 'INACTIVE'; requiresDetail: boolean } | null>;
   findById(id: string): Promise<PaymentDto | null>;
   findPage(
     query: PaymentQuery,

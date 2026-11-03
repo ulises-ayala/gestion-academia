@@ -89,15 +89,15 @@ class MemoryPayments implements PaymentsRepository {
   classStatus: 'ACTIVE' | 'INACTIVE' | null = 'ACTIVE';
   classTeacherId = 'teacher-of-class';
   teacherStatus: 'ACTIVE' | 'INACTIVE' | null = 'ACTIVE';
+  conceptStatus: 'ACTIVE' | 'INACTIVE' | null = 'ACTIVE';
+  conceptRequiresDetail = false;
+  async findConcept() {
+    return this.conceptStatus
+      ? { status: this.conceptStatus, requiresDetail: this.conceptRequiresDetail }
+      : null;
+  }
   async createOther(
-    data: {
-      studentId: string | null;
-      walkIn: { name: string; phone: string | null; dni: string | null } | null;
-      concept: 'SINGLE_CLASS' | 'OTHER';
-      classId: string | null;
-      teacherId: string | null;
-      detail: string | null;
-    },
+    data: Parameters<PaymentsRepository['createOther']>[0],
     tenders: readonly { method: PaymentMethodDto; amount: string }[],
   ) {
     this.other = { data, tenders };
@@ -276,6 +276,7 @@ describe('PaymentsService', () => {
         studentId,
         walkIn: null,
         concept: 'SINGLE_CLASS',
+        conceptId: null,
         classId,
         teacherId: 'teacher-of-class',
         detail: 'vino a probar',
@@ -324,7 +325,10 @@ describe('PaymentsService', () => {
       ),
     ).rejects.toMatchObject({ details: { field: 'walkIn.dni' } });
     await expect(
-      service.createOther({ walkIn: { name: 'Lucía' }, concept: 'APPAREL', tenders }, actorId),
+      service.createOther(
+        { walkIn: { name: 'Lucía' }, concept: 'OTHER', conceptId: 'indumentaria', tenders },
+        actorId,
+      ),
     ).rejects.toMatchObject({ details: { field: 'walkIn' } });
     await expect(
       service.createOther(
@@ -334,19 +338,31 @@ describe('PaymentsService', () => {
     ).rejects.toMatchObject({ details: { field: 'walkIn' } });
   });
 
-  it('“Otro” exige detalle y no guarda clase', async () => {
+  it('un concepto del catálogo exige estar activo, pide detalle si corresponde y no guarda clase', async () => {
     const repository = new MemoryPayments();
     const service = new PaymentsService(repository);
+    const tenders = [{ method: 'CASH' as const, amount: '1' }];
+    repository.conceptRequiresDetail = true;
     await expect(
       service.createOther(
-        { studentId, concept: 'OTHER', detail: ' ', tenders: [{ method: 'CASH', amount: '1' }] },
+        { studentId, concept: 'OTHER', conceptId: 'otros', detail: ' ', tenders },
         actorId,
       ),
     ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'detail' } });
+    repository.conceptStatus = 'INACTIVE';
+    await expect(
+      service.createOther({ studentId, concept: 'OTHER', conceptId: 'viejo', tenders }, actorId),
+    ).rejects.toMatchObject({ code: 'PAYMENT_CONCEPT_INACTIVE' });
+    repository.conceptStatus = null;
+    await expect(
+      service.createOther({ studentId, concept: 'OTHER', conceptId: 'nada', tenders }, actorId),
+    ).rejects.toMatchObject({ code: 'PAYMENT_CONCEPT_NOT_FOUND' });
+    repository.conceptStatus = 'ACTIVE';
     await service.createOther(
       {
         studentId,
         concept: 'OTHER',
+        conceptId: 'indumentaria',
         classId: crypto.randomUUID(),
         detail: 'Remera del show',
         tenders: [{ method: 'MERCADO_PAGO', amount: '15000' }],
@@ -354,6 +370,7 @@ describe('PaymentsService', () => {
       actorId,
     );
     expect(repository.other?.data).toMatchObject({
+      conceptId: 'indumentaria',
       classId: null,
       teacherId: null,
       detail: 'Remera del show',

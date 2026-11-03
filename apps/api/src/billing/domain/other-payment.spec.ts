@@ -1,26 +1,54 @@
 import { describe, expect, it } from 'vitest';
-import { validateOtherPayment } from './other-payment';
+import {
+  assertConceptDetail,
+  normalizeConceptName,
+  validateOtherPayment,
+  validatePaymentConcept,
+} from './other-payment';
 
 describe('conceptos de otros cobros', () => {
-  it('indumentaria y precintos de la Gala no exigen detalle ni llevan clase', () => {
-    expect(validateOtherPayment({ concept: 'APPAREL', classId: 'c', detail: '' })).toEqual({
-      concept: 'APPAREL',
+  it('un concepto del catálogo exige cuál es y no lleva clase', () => {
+    expect(
+      validateOtherPayment({
+        concept: 'OTHER',
+        conceptId: 'indumentaria',
+        classId: 'c',
+        detail: '',
+      }),
+    ).toEqual({
+      concept: 'OTHER',
+      conceptId: 'indumentaria',
       detail: null,
       classId: null,
       teacherId: null,
     });
-    expect(validateOtherPayment({ concept: 'GALA_SEAL', detail: ' 2 precintos ' })).toMatchObject({
-      concept: 'GALA_SEAL',
-      detail: '2 precintos',
-    });
+    expect(() => validateOtherPayment({ concept: 'OTHER', detail: 'algo' })).toThrow(
+      expect.objectContaining({ code: 'VALIDATION_ERROR', details: { field: 'conceptId' } }),
+    );
   });
 
-  it('"Otro" sigue exigiendo detalle y rechaza conceptos desconocidos', () => {
-    expect(() => validateOtherPayment({ concept: 'OTHER', detail: '' })).toThrow(
+  it('el detalle es obligatorio solo si el concepto lo pide, y rechaza conceptos desconocidos', () => {
+    expect(() => assertConceptDetail(true, null)).toThrow(
+      expect.objectContaining({ details: { field: 'detail' } }),
+    );
+    expect(() => assertConceptDetail(false, null)).not.toThrow();
+    expect(() => validateOtherPayment({ concept: 'APPAREL' })).toThrow(
       expect.objectContaining({ code: 'VALIDATION_ERROR' }),
     );
-    expect(() => validateOtherPayment({ concept: 'CARD_FEE' })).toThrow(
-      expect.objectContaining({ code: 'VALIDATION_ERROR' }),
+  });
+
+  it('valida el alta de un concepto y normaliza el nombre para no repetirlo', () => {
+    expect(normalizeConceptName('  Entradas o Precintos  de la GALA ')).toBe(
+      'entradas o precintos de la gala',
+    );
+    expect(normalizeConceptName('Inscripción')).toBe('inscripcion');
+    expect(validatePaymentConcept({ name: ' Workshops ', requiresDetail: true })).toEqual({
+      name: 'Workshops',
+      normalizedName: 'workshops',
+      requiresDetail: true,
+    });
+    expect(() => validatePaymentConcept({ name: 'x' })).toThrow(
+      expect.objectContaining({ details: { field: 'name' } }),
     );
   });
 });

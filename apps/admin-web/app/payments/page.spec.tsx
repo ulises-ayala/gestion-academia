@@ -76,6 +76,7 @@ describe('PaymentHistory', () => {
             kind: 'OTHER',
             otherConcept: {
               concept: 'SINGLE_CLASS',
+              catalogConcept: null,
               detail: null,
               academicClass: { id: 'class-id', name: 'Zumba' },
               teacher: { id: 'teacher-id', firstName: 'Jose Luis', lastName: 'Barrios' },
@@ -212,6 +213,7 @@ describe('Acciones de un pago', () => {
             kind: 'OTHER',
             otherConcept: {
               concept: 'SINGLE_CLASS',
+              catalogConcept: null,
               detail: null,
               academicClass: { id: 'class-id', name: 'Salsa' },
               teacher: null,

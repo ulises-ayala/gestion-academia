@@ -87,9 +87,9 @@ enum PaymentKind {
 enum OtherPaymentConcept {
   SINGLE_CLASS
   OTHER
-  /// Indumentaria (remeras, vestuario).
+  /// Legado: pasó al catálogo (`payment_concepts`). No se usa en cobros nuevos.
   APPAREL
-  /// Precintos de la Gala.
+  /// Legado: pasó al catálogo (`payment_concepts`). No se usa en cobros nuevos.
   GALA_SEAL
   /// Recargo por pagar con tarjeta (de la academia, fuera de la liquidación).
   CARD_SURCHARGE
@@ -509,6 +509,8 @@ model Payment {
   kind            PaymentKind           @default(CHARGES)
   concept         OtherPaymentConcept?
   conceptDetail   String?               @map("concept_detail") @db.VarChar(200)
+  /// Concepto del catálogo (solo con `concept = OTHER`).
+  conceptId       String?               @map("concept_id") @db.Uuid
   classId         String?               @map("class_id") @db.Uuid
   /// Profesor que dictó la clase suelta (foto al cobrar, para liquidaciones).
   teacherId       String?               @map("teacher_id") @db.Uuid
@@ -531,6 +533,7 @@ model Payment {
   correctedBy     Payment?              @relation("PaymentCorrection")
   surchargeOf     Payment?              @relation("CardSurcharge", fields: [surchargeOfId], references: [id], onDelete: Restrict)
   cardSurcharge   Payment?              @relation("CardSurcharge")
+  catalogConcept  PaymentConcept?       @relation(fields: [conceptId], references: [id], onDelete: Restrict)
   allocations     PaymentAllocation[]
   reallocations   PaymentReallocation[]
   refunds         PaymentRefund[]
@@ -677,6 +680,23 @@ model PaymentAllocation {
   @@index([paymentId])
   @@index([monthlyChargeId])
   @@map("payment_allocations")
+}
+
+/// Concepto de ingreso de los otros cobros (indumentaria, inscripciones, talleres…). Lo amplían
+/// Administración y Dirección; se desactiva, no se borra.
+model PaymentConcept {
+  id             String       @id @default(uuid()) @db.Uuid
+  name           String       @db.VarChar(80)
+  normalizedName String       @unique @map("normalized_name") @db.VarChar(80)
+  /// Exige contar qué se cobró (por ejemplo, "Otros").
+  requiresDetail Boolean      @default(false) @map("requires_detail")
+  status         RecordStatus @default(ACTIVE)
+  sortOrder      Int          @default(100) @map("sort_order")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  payments       Payment[]
+
+  @@map("payment_concepts")
 }
 
 /// Entrega del efectivo recaudado a Dirección: no es un gasto ni un movimiento de turno.

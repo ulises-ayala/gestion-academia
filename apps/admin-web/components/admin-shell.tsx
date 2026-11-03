@@ -15,6 +15,7 @@ import {
   Moon,
   Music,
   ReceiptText,
+  Tags,
   ShieldCheck,
   Sun,
   UserCog,
@@ -108,6 +109,12 @@ const navigation: readonly NavigationGroup[] = [
       },
       { href: '/rooms', label: 'Salones', permission: 'offering:manage', icon: DoorOpen },
       { href: '/tariffs', label: 'Tarifas', permission: 'tariffs:read', icon: ReceiptText },
+      {
+        href: '/payment-concepts',
+        label: 'Conceptos de cobro',
+        permission: 'charges:manage',
+        icon: Tags,
+      },
     ],
   },
   {

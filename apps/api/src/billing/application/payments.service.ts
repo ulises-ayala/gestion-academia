@@ -11,7 +11,7 @@ import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
 import { DomainError } from '../../shared/domain/domain-error';
-import { validateOtherPayment, validateWalkIn } from '../domain/other-payment';
+import { assertConceptDetail, validateOtherPayment, validateWalkIn } from '../domain/other-payment';
 import {
   backdatedPaidAt,
   correctedPaidAt,
@@ -121,6 +121,16 @@ export class PaymentsService {
     const tenders = this.tenders(input.tenders);
     const paidAt = this.paidAt(input.paidDate, canBackdate, now);
     const other = validateOtherPayment(input);
+    if (other.conceptId) {
+      const concept = await this.repository.findConcept(other.conceptId);
+      if (!concept)
+        throw new DomainError('PAYMENT_CONCEPT_NOT_FOUND', 'Concepto de cobro no encontrado');
+      if (concept.status !== 'ACTIVE')
+        throw new DomainError('PAYMENT_CONCEPT_INACTIVE', 'El concepto elegido está desactivado', {
+          field: 'conceptId',
+        });
+      assertConceptDetail(concept.requiresDetail, other.detail);
+    }
     if (other.concept === 'CARD_SURCHARGE' && tenders.some((tender) => tender.method !== 'CARD'))
       throw new DomainError('VALIDATION_ERROR', 'El recargo por tarjeta se cobra con tarjeta', {
         field: 'tenders',

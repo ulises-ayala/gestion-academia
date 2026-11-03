@@ -3,7 +3,6 @@ import type {
   OtherPaymentConceptDto,
   PaymentMethodDto,
   ReportCashMethodDto,
-  ReportCollectionConceptDto,
 } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
@@ -94,18 +93,12 @@ type DayRow = { date: Date; amount: Prisma.Decimal };
 type ConceptMethodRow = {
   kind: 'CHARGES' | 'OTHER';
   concept: OtherPaymentConceptDto | null;
+  conceptId: string | null;
+  conceptName: string | null;
+  conceptOrder: number | null;
   method: PaymentMethodDto;
   amount: Prisma.Decimal;
 };
-/** Orden de los conceptos en la recaudación. */
-const CONCEPTS: readonly ReportCollectionConceptDto[] = [
-  'CHARGES',
-  'SINGLE_CLASS',
-  'APPAREL',
-  'GALA_SEAL',
-  'CARD_SURCHARGE',
-  'OTHER',
-];
 type TeacherIncomeRow = {
   teacherId: string;
   teacherName: string;
@@ -230,11 +223,13 @@ export class ReportsService {
       this.prisma.cashShift.count({ where: { status: 'OPEN' } }),
       // Recaudación por concepto y medio: cada medio de un pago mixto va a su columna.
       this.prisma.$queryRaw<ConceptMethodRow[]>(Prisma.sql`
-          SELECT p.kind::text AS kind, p.concept::text AS concept, t.method::text AS method,
+          SELECT p.kind::text AS kind, p.concept::text AS concept, p.concept_id AS "conceptId",
+            pc.name AS "conceptName", pc.sort_order AS "conceptOrder", t.method::text AS method,
             SUM(t.amount) AS amount
           FROM payment_tenders t JOIN payments p ON p.id = t.payment_id
+          LEFT JOIN payment_concepts pc ON pc.id = p.concept_id
           WHERE p.status = 'CONFIRMED' AND p.paid_at >= ${input.from} AND p.paid_at < ${input.toExclusive}
-          GROUP BY p.kind, p.concept, t.method`),
+          GROUP BY p.kind, p.concept, p.concept_id, pc.name, pc.sort_order, t.method`),
       // Clases sueltas por clase y por el profesor que la dictó (foto guardada en el cobro).
       this.prisma.$queryRaw<SingleClassRow[]>(Prisma.sql`
           SELECT c.id AS "classId", c.name AS "className", t.id AS "teacherId",
@@ -279,22 +274,43 @@ export class ReportsService {
         .filter(match)
         .reduce((sum, row) => sum.plus(row.amount), zero())
         .toFixed(2);
-    const conceptOf = (row: ConceptMethodRow): ReportCollectionConceptDto =>
-      row.kind === 'CHARGES' ? 'CHARGES' : (row.concept ?? 'OTHER');
-    const byConceptAndMethod = CONCEPTS.map((concept) => {
-      const rows = byConcept.filter((row) => conceptOf(row) === concept);
-      return {
-        concept,
-        byMethod: METHODS.map((method) => ({
-          method,
-          amount: rows
-            .filter((row) => row.method === method)
-            .reduce((sum, row) => sum.plus(row.amount), zero())
-            .toFixed(2),
-        })),
-        total: rows.reduce((sum, row) => sum.plus(row.amount), zero()).toFixed(2),
-      };
-    }).filter((row) => !new Prisma.Decimal(row.total).isZero());
+    // Cuotas y clase suelta primero, los conceptos del catálogo en su orden y el recargo al final.
+    const conceptOf = (row: ConceptMethodRow) =>
+      row.kind === 'CHARGES'
+        ? { key: 'CHARGES', label: CONCEPT_LABELS.CHARGES!, order: 0 }
+        : row.concept === 'SINGLE_CLASS' || row.concept === 'CARD_SURCHARGE' || !row.conceptId
+          ? {
+              key: row.concept ?? 'OTHER',
+              label: CONCEPT_LABELS[row.concept ?? 'OTHER'] ?? 'Otros',
+              order: row.concept === 'CARD_SURCHARGE' ? 100_000 : 1,
+            }
+          : {
+              key: row.conceptId,
+              label: row.conceptName ?? 'Otros',
+              order: 10 + (row.conceptOrder ?? 100),
+            };
+    const concepts = [
+      ...new Map(byConcept.map((row) => [conceptOf(row).key, conceptOf(row)])).values(),
+    ].sort(
+      (left, right) => left.order - right.order || left.label.localeCompare(right.label, 'es'),
+    );
+    const byConceptAndMethod = concepts
+      .map(({ key: concept, label }) => {
+        const rows = byConcept.filter((row) => conceptOf(row).key === concept);
+        return {
+          concept,
+          label,
+          byMethod: METHODS.map((method) => ({
+            method,
+            amount: rows
+              .filter((row) => row.method === method)
+              .reduce((sum, row) => sum.plus(row.amount), zero())
+              .toFixed(2),
+          })),
+          total: rows.reduce((sum, row) => sum.plus(row.amount), zero()).toFixed(2),
+        };
+      })
+      .filter((row) => !new Prisma.Decimal(row.total).isZero());
 
     // Devoluciones de saldo a favor del período, por medio (egresos de caja).
     const refunds = await this.prisma.paymentRefund.groupBy({
@@ -536,7 +552,13 @@ export class ReportsService {
       );
     const payments = await this.prisma.payment.findMany({
       where: { status: 'CONFIRMED', paidAt: { gte: input.from, lt: input.toExclusive } },
-      include: { student: true, tenders: true, academicClass: true, teacher: true },
+      include: {
+        student: true,
+        tenders: true,
+        academicClass: true,
+        teacher: true,
+        catalogConcept: { select: { name: true } },
+      },
       orderBy: [{ paidAt: 'asc' }, { id: 'asc' }],
     });
     const concept = (payment: (typeof payments)[number]) =>
@@ -544,9 +566,9 @@ export class ReportsService {
         ? 'Cuotas'
         : payment.concept === 'SINGLE_CLASS'
           ? 'Clase suelta'
-          : payment.concept && payment.concept !== 'OTHER'
-            ? `${CONCEPT_LABELS[payment.concept]}${payment.conceptDetail ? `: ${payment.conceptDetail}` : ''}`
-            : `Otro: ${payment.conceptDetail ?? ''}`;
+          : `${payment.catalogConcept?.name ?? CONCEPT_LABELS[payment.concept ?? 'OTHER'] ?? 'Otros'}${
+              payment.conceptDetail ? `: ${payment.conceptDetail}` : ''
+            }`;
     return toCsv(
       [
         'Fecha',

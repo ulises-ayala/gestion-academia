@@ -22,6 +22,7 @@ export const auditEntityOptions = [
   ['SETTLEMENT', 'Liquidación'],
   ['CLASS_SETTLEMENT_PLAN', 'Reparto de liquidación'],
   ['CASH_HANDOVER', 'Entrega de efectivo'],
+  ['PAYMENT_CONCEPT', 'Concepto de cobro'],
 ] as const;
 export const auditActionOptions = [
   ['', 'Todas'],

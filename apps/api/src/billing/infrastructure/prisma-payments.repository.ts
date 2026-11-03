@@ -32,6 +32,7 @@ const include = {
   academicClass: { select: { id: true, name: true } },
   teacher: { select: { id: true, firstName: true, lastName: true } },
   correctedBy: { select: { id: true } },
+  catalogConcept: { select: { id: true, name: true } },
   cardSurcharge: { select: { id: true, amount: true, status: true } },
   tenders: { orderBy: [{ method: 'asc' as const }, { id: 'asc' as const }] },
   refunds: { select: { amount: true } },
@@ -99,7 +100,9 @@ const mapPayment = (item: IncludedPayment): PaymentDto => ({
   otherConcept:
     item.kind === 'OTHER' && item.concept
       ? {
-          concept: item.concept,
+          // APPAREL y GALA_SEAL son legado: la migración los pasó al catálogo.
+          concept: item.concept as OtherPaymentConceptDto,
+          catalogConcept: item.catalogConcept,
           detail: item.conceptDetail,
           academicClass: item.academicClass,
           teacher: item.teacher,
@@ -323,6 +326,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
       studentId: string | null;
       walkIn: Readonly<{ name: string; phone: string | null; dni: string | null }> | null;
       concept: OtherPaymentConceptDto;
+      conceptId: string | null;
       classId: string | null;
       teacherId: string | null;
       detail: string | null;
@@ -358,6 +362,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             ...(paidAt ? { paidAt } : {}),
             kind: 'OTHER',
             concept: data.concept,
+            conceptId: data.conceptId,
             conceptDetail: data.detail,
             classId: data.classId,
             teacherId: data.teacherId,
@@ -388,6 +393,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
             after: {
               kind: 'OTHER',
               concept: data.concept,
+              conceptId: data.conceptId,
               detail: data.detail,
               classId: data.classId,
               teacherId: data.teacherId,
@@ -413,6 +419,13 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
     return this.prisma.academyClass.findUnique({
       where: { id: classId },
       select: { status: true, teacherId: true },
+    });
+  }
+
+  findConcept(conceptId: string) {
+    return this.prisma.paymentConcept.findUnique({
+      where: { id: conceptId },
+      select: { status: true, requiresDetail: true },
     });
   }
 

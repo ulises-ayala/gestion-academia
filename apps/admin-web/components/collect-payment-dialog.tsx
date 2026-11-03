@@ -8,6 +8,7 @@ import type {
   MonthlyChargeDto,
   MonthlyChargeListDto,
   OtherPaymentConceptDto,
+  PaymentConceptDto,
   PaymentDto,
   PaymentSummaryDto,
   StudentDto,
@@ -50,7 +51,7 @@ import {
 import {
   buildOtherPaymentPayload,
   buildWalkInPaymentPayload,
-  otherConceptLabels,
+  conceptOptions,
   otherPaymentProblem,
   walkInProblem,
   type WalkInForm,
@@ -139,6 +140,8 @@ export function CollectPaymentDialog({
   const [applyingCredit, setApplyingCredit] = useState(false);
   const [doneSurcharge, setDoneSurcharge] = useState<string | null>(null);
   const [concept, setConcept] = useState<OtherPaymentConceptDto>('SINGLE_CLASS');
+  const [conceptId, setConceptId] = useState<string | null>(null);
+  const [catalog, setCatalog] = useState<readonly PaymentConceptDto[] | null>(null);
   const [classId, setClassId] = useState('');
   const [teachers, setTeachers] = useState<TeacherListDto['items'] | null>(null);
   const [teacherId, setTeacherId] = useState('');
@@ -263,6 +266,9 @@ export function CollectPaymentDialog({
     apiRequest<TeacherListDto>('/teachers?status=ACTIVE&pageSize=100')
       .then((result) => setTeachers(result.items))
       .catch(() => setTeachers([]));
+    apiRequest<PaymentConceptDto[]>('/payment-concepts')
+      .then(setCatalog)
+      .catch(() => setCatalog([]));
   }, [classes, tab]);
 
   const pending = useMemo(
@@ -316,7 +322,17 @@ export function CollectPaymentDialog({
   const totalCents = pickTotalCents(pick);
   const preview = previewAllocations(payable, totalCents);
   const tenders: TenderAmounts = tendersFrom(pick);
-  const otherForm = { concept, classId, teacherId, detail };
+  const options = conceptOptions(catalog ?? []);
+  const selectedOption =
+    options.find((option) => option.key === (concept === 'OTHER' ? conceptId : concept)) ?? null;
+  const otherForm = {
+    concept,
+    conceptId,
+    requiresDetail: selectedOption?.requiresDetail ?? false,
+    classId,
+    teacherId,
+    detail,
+  };
   const paysByCard = (decimalToCents(tenders.CARD || '0') ?? 0n) > 0n;
   const surchargeCents = paysByCard ? cardSurchargeCents(surcharge) : 0n;
   const selectedClass = classes?.find((item) => item.id === classId) ?? null;
@@ -358,6 +374,7 @@ export function CollectPaymentDialog({
     setQuery('');
     setTab('other');
     setConcept('SINGLE_CLASS');
+    setConceptId(null);
     setPick(freshPick());
     setTried(false);
     setNotice('');
@@ -1014,17 +1031,24 @@ export function CollectPaymentDialog({
               {!walkInMode && (
                 <fieldset className="collect-concepts" disabled={saving}>
                   <legend className="sr-only">¿A qué corresponde?</legend>
-                  {(Object.keys(otherConceptLabels) as OtherPaymentConceptDto[]).map((value) => (
-                    <label key={value} className={concept === value ? 'is-selected' : ''}>
+                  {options.map((option) => (
+                    <label
+                      key={option.key}
+                      className={selectedOption?.key === option.key ? 'is-selected' : ''}
+                    >
                       <input
                         type="radio"
                         name="collect-concept"
-                        checked={concept === value}
-                        onChange={() => setConcept(value)}
+                        checked={selectedOption?.key === option.key}
+                        onChange={() => {
+                          setConcept(option.concept);
+                          setConceptId(option.conceptId);
+                        }}
                       />
-                      {otherConceptLabels[value]}
+                      {option.label}
                     </label>
                   ))}
+                  {catalog === null && <span className="collect-hint">Cargando conceptos…</span>}
                 </fieldset>
               )}
               {concept === 'SINGLE_CLASS' && (
@@ -1081,15 +1105,17 @@ export function CollectPaymentDialog({
                 </label>
               )}
               <label>
-                {concept === 'OTHER' ? 'Detalle' : 'Detalle (opcional)'}
+                {otherForm.requiresDetail ? 'Detalle' : 'Detalle (opcional)'}
                 <input
                   maxLength={200}
                   value={detail}
                   disabled={saving}
                   placeholder={
-                    concept === 'OTHER' ? 'Ej.: seña de un taller, inscripción a un evento' : ''
+                    otherForm.requiresDetail
+                      ? 'Ej.: seña de un taller, inscripción a un evento'
+                      : ''
                   }
-                  aria-invalid={tried && concept === 'OTHER' && detail.trim().length < 3}
+                  aria-invalid={tried && otherForm.requiresDetail && detail.trim().length < 3}
                   onChange={(event) => setDetail(event.target.value)}
                 />
               </label>
