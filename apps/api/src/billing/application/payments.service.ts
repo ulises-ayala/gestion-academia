@@ -81,6 +81,17 @@ export class PaymentsService {
     return amount.toFixed(2);
   }
 
+  /** Parte de un otro cobro pagada con saldo a favor; null si no se usa. */
+  private creditAmount(value: unknown) {
+    if (value === undefined || value === null || value === '') return null;
+    if (typeof value !== 'string' || !/^\d{1,10}(?:\.\d{1,2})?$/.test(value))
+      throw new DomainError('VALIDATION_ERROR', 'El saldo a usar debe ser un decimal positivo', {
+        field: 'creditAmount',
+      });
+    const amount = new Prisma.Decimal(value);
+    return amount.isZero() ? null : amount.toFixed(2);
+  }
+
   /** Cuotas elegidas; null si no se eligió ninguna (se imputa desde la más vieja). */
   private chargeIds(value: unknown) {
     if (value === undefined || value === null) return null;
@@ -118,7 +129,12 @@ export class PaymentsService {
     canBackdate = false,
     now = new Date(),
   ) {
-    const tenders = this.tenders(input.tenders);
+    const creditAmount = this.creditAmount(input.creditAmount);
+    // Si todo se paga con saldo a favor, no hace falta ningún medio.
+    const tenders =
+      creditAmount && Array.isArray(input.tenders) && input.tenders.length === 0
+        ? []
+        : this.tenders(input.tenders);
     const paidAt = this.paidAt(input.paidDate, canBackdate, now);
     const other = validateOtherPayment(input);
     if (other.conceptId) {
@@ -165,13 +181,19 @@ export class PaymentsService {
         },
       );
     const walkIn = studentId ? null : validateWalkIn(input.walkIn);
+    if (creditAmount && (!studentId || other.concept === 'CARD_SURCHARGE'))
+      throw new DomainError(
+        'VALIDATION_ERROR',
+        'El saldo a favor solo se usa en cobros de un alumno, no en el recargo por tarjeta',
+        { field: 'creditAmount' },
+      );
     if (walkIn && other.concept !== 'SINGLE_CLASS')
       throw new DomainError(
         'VALIDATION_ERROR',
         'Solo la clase suelta se puede cobrar a un alumno eventual',
         { field: 'walkIn' },
       );
-    const data = { studentId, walkIn, ...other, teacherId };
+    const data = { studentId, walkIn, ...other, teacherId, creditAmount };
     return paidAt
       ? this.repository.createOther(data, tenders, actorId, paidAt)
       : this.repository.createOther(data, tenders, actorId);

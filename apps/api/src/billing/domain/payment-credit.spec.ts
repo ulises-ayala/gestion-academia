@@ -4,6 +4,7 @@ import {
   allocatableAmount,
   assertRefundFits,
   buildCreditApplicationPlan,
+  buildCreditUsePlan,
   paymentCredit,
 } from './payment-credit';
 
@@ -66,5 +67,26 @@ describe('saldo a favor', () => {
       expect.objectContaining({ code: 'PAYMENT_REFUND_EXCEEDS_CREDIT' }),
     );
     expect(() => assertRefundFits(d('10000'), d('10000'))).not.toThrow();
+  });
+
+  it('usa el saldo de los pagos del más viejo al más nuevo y no deja pasarse', () => {
+    const plan = buildCreditUsePlan(
+      [
+        { paymentId: 'viejo', credit: d('3000') },
+        { paymentId: 'sin-saldo', credit: d('0') },
+        { paymentId: 'nuevo', credit: d('10000') },
+      ],
+      d('5000'),
+    );
+    expect(plan.map((row) => [row.sourcePaymentId, row.amount.toFixed(2)])).toEqual([
+      ['viejo', '3000.00'],
+      ['nuevo', '2000.00'],
+    ]);
+    expect(() => buildCreditUsePlan([{ paymentId: 'p', credit: d('3000') }], d('3000.01'))).toThrow(
+      expect.objectContaining({
+        code: 'PAYMENT_EXCEEDS_CREDIT',
+        details: { field: 'creditAmount', creditAmount: '3000.00' },
+      }),
+    );
   });
 });

@@ -8,7 +8,8 @@ const sum = (rows: readonly Amount[]) =>
 
 /**
  * Saldo a favor de un pago de cuotas: lo que no está imputado a ninguna cuota (se cobró de más o
- * se desimputó) menos lo ya devuelto. Nunca se aplica solo.
+ * se desimputó) menos lo ya devuelto o usado en otros cobros (`refunds` recibe ambos). Nunca se
+ * aplica solo.
  */
 export const paymentCredit = (
   amount: Prisma.Decimal,
@@ -51,6 +52,37 @@ export function buildCreditApplicationPlan(
       'PAYMENT_NO_CREDIT',
       'No hay saldo a favor o cuotas pendientes donde aplicarlo',
     );
+  return rows;
+}
+
+/**
+ * Usar saldo a favor en un otro cobro: toma de cada pago con saldo (del más viejo al más nuevo)
+ * hasta cubrir el importe. Si no alcanza, se rechaza con el disponible.
+ */
+export function buildCreditUsePlan(
+  credits: readonly Readonly<{ paymentId: string; credit: Prisma.Decimal }>[],
+  amount: Prisma.Decimal,
+) {
+  let remaining = amount;
+  const rows: { sourcePaymentId: string; amount: Prisma.Decimal }[] = [];
+  for (const { paymentId, credit } of credits) {
+    if (remaining.isZero()) break;
+    if (credit.lessThanOrEqualTo(0)) continue;
+    const used = Prisma.Decimal.min(credit, remaining);
+    rows.push({ sourcePaymentId: paymentId, amount: used });
+    remaining = remaining.minus(used);
+  }
+  if (!remaining.isZero()) {
+    const available = credits.reduce(
+      (total, { credit }) => total.plus(Prisma.Decimal.max(credit, 0)),
+      new Prisma.Decimal(0),
+    );
+    throw new DomainError(
+      'PAYMENT_EXCEEDS_CREDIT',
+      `El saldo a favor disponible es ${available.toFixed(2)}`,
+      { field: 'creditAmount', creditAmount: available.toFixed(2) },
+    );
+  }
   return rows;
 }
 

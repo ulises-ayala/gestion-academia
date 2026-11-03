@@ -49,6 +49,10 @@ export const receiptText = (payment: PaymentDto, remainingDebt?: string | null):
       (tender) => `${paymentMethodLabels[tender.method]} ${money(tender.amount)}`,
     ),
     ...(surcharge ? [`Tarjeta ${money(surcharge.amount)} (recargo)`] : []),
+    // Lo que se pagó con saldo a favor no pasó por la caja.
+    ...(Number(payment.paidWithCreditAmount) > 0
+      ? [`Saldo a favor ${money(payment.paidWithCreditAmount)}`]
+      : []),
   ].join(' + ');
   const total = surcharge
     ? (Number(payment.amount) + Number(surcharge.amount)).toFixed(2)

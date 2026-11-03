@@ -20,7 +20,12 @@ export const paymentStatusLabel = (payment: PaymentDto) =>
 
 export const paymentApplication = (payment: PaymentDto) =>
   payment.kind === 'OTHER'
-    ? [describeOtherPayment(payment.otherConcept)]
+    ? [
+        describeOtherPayment(payment.otherConcept),
+        ...(Number(payment.paidWithCreditAmount) > 0
+          ? [`Con saldo a favor: ${money(payment.paidWithCreditAmount)}`]
+          : []),
+      ]
     : [
         ...payment.allocations.map(
           (allocation) =>

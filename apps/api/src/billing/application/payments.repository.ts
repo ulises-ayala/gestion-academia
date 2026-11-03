@@ -47,6 +47,8 @@ export interface PaymentsRepository {
       classId: string | null;
       teacherId: string | null;
       detail: string | null;
+      /** Parte pagada con saldo a favor del alumno (sin caja). */
+      creditAmount?: string | null;
     }>,
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,

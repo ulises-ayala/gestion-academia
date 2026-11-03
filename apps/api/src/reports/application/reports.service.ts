@@ -341,7 +341,9 @@ export class ReportsService {
         pendingDebt: debt.pendingDebt.toFixed(2),
         overdueCharges: Number(debt.overdueCharges),
         overdueDebt: debt.overdueDebt.toFixed(2),
-        collectedAmount: payments._sum.amount?.toFixed(2) ?? '0.00',
+        collectedAmount: tenders
+          .reduce((sum, item) => sum.plus(item._sum.amount ?? 0), zero())
+          .toFixed(2),
         confirmedPayments: payments._count.id,
         closedCashShifts: shifts.length,
         cashDifference: cash.byMethod
@@ -361,7 +363,8 @@ export class ReportsService {
         pageSize: input.pageSize,
       },
       collections: {
-        total: payments._sum.amount?.toFixed(2) ?? '0.00',
+        // Lo que entró por los medios: lo pagado con saldo a favor ya se contó cuando se cobró.
+        total: tenders.reduce((sum, item) => sum.plus(item._sum.amount ?? 0), zero()).toFixed(2),
         count: payments._count.id,
         byMethod: METHODS.map((method) => ({
           method,

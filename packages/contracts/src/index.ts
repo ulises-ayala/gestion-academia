@@ -693,9 +693,15 @@ export type CreateOtherPaymentDto = Readonly<{
   /** Profesor que dictó la clase suelta; si falta se usa el de la clase. */
   teacherId?: string | null;
   detail?: string | null;
+  /** Puede estar vacío si todo se paga con saldo a favor (`creditAmount`). */
   tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[];
   /** Fecha real de un pago cargado tarde (AAAA-MM-DD). Solo Administración y Dirección. */
   paidDate?: string | null;
+  /**
+   * Parte que se paga con el saldo a favor del alumno (no pasa por la caja). Solo con alumno y no
+   * en el recargo por tarjeta.
+   */
+  creditAmount?: string | null;
 }>;
 export type PaymentTenderDto = Readonly<{
   id: string;
@@ -722,10 +728,12 @@ export type PaymentDto = Readonly<{
   /** Alumno eventual de una clase suelta (sin ficha); null cuando el pago tiene alumno. */
   walkIn: WalkInDto | null;
   amount: string;
-  /** Saldo a favor: lo cobrado que no quedó imputado a cuotas ni se devolvió. */
+  /** Saldo a favor: lo cobrado que no quedó imputado a cuotas, no se devolvió ni se usó. */
   creditAmount: string;
   /** Lo devuelto del saldo a favor. */
   refundedAmount: string;
+  /** En un otro cobro: la parte que se pagó con saldo a favor (no pasó por la caja). */
+  paidWithCreditAmount: string;
   tenders: readonly PaymentTenderDto[];
   status: PaymentStatusDto;
   paidAt: string;

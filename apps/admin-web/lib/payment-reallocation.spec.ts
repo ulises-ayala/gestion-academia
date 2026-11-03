@@ -20,6 +20,7 @@ const charge = (id: string, period: string, outstanding: string, status = 'PENDI
 const payment = {
   amount: '40000.00',
   refundedAmount: '0.00',
+  paidWithCreditAmount: '0.00',
   allocations: [{ monthlyChargeId: 'sep', amount: '40000.00' }],
 } as unknown as PaymentDto;
 const charges = [

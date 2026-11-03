@@ -4,7 +4,7 @@ import type {
   PaymentConceptDto,
   PaymentDto,
 } from '@academy/contracts';
-import { createPaymentPayload, tenderTotal, type TenderAmounts } from './payments';
+import { centsToDecimal, createPaymentPayload, tenderTotal, type TenderAmounts } from './payments';
 
 /** Nombres de los otros cobros que no vienen del catálogo de conceptos. */
 export const otherConceptLabels: Readonly<Record<OtherPaymentConceptDto, string>> = {
@@ -75,21 +75,37 @@ export const describeOtherPayment = (other: PaymentDto['otherConcept']) => {
   return `${name}${other.detail ? ` (${other.detail})` : ''}`;
 };
 
-/** Primer motivo por el que no se puede registrar el cobro, o null si está completo. */
-export const otherPaymentProblem = (form: OtherPaymentForm, tenders: TenderAmounts) => {
+/**
+ * Primer motivo por el que no se puede registrar el cobro, o null si está completo. `credit`: saldo
+ * a favor que se usa (en centavos) y el disponible del alumno.
+ */
+export const otherPaymentProblem = (
+  form: OtherPaymentForm,
+  tenders: TenderAmounts,
+  credit: Readonly<{ usedCents: bigint | null; availableCents: bigint }> = {
+    usedCents: 0n,
+    availableCents: 0n,
+  },
+) => {
   if (form.concept === 'SINGLE_CLASS' && !form.classId) return 'Elegí la clase.';
   if (form.concept === 'OTHER' && !form.conceptId) return 'Elegí a qué corresponde el cobro.';
   if (form.requiresDetail && form.detail.trim().length < 3) return 'Contá brevemente qué se cobra.';
-  if (tenderTotal(tenders) <= 0n) return 'Ingresá el importe recibido.';
+  if (credit.usedCents === null) return 'El saldo a usar tiene que ser un importe válido.';
+  if (credit.usedCents > credit.availableCents)
+    return `Tiene ${centsToDecimal(credit.availableCents)} de saldo a favor.`;
+  if (tenderTotal(tenders) <= 0n && credit.usedCents <= 0n) return 'Ingresá el importe recibido.';
   return null;
 };
 
+/** creditCents: parte que se paga con saldo a favor (no pasa por la caja). */
 export const buildOtherPaymentPayload = (
   studentId: string,
   form: OtherPaymentForm,
   tenders: TenderAmounts,
+  creditCents = 0n,
 ): CreateOtherPaymentDto => ({
   ...createPaymentPayload(studentId, tenders),
+  ...(creditCents > 0n ? { creditAmount: centsToDecimal(creditCents) } : {}),
   concept: form.concept,
   ...(form.concept === 'OTHER' && form.conceptId ? { conceptId: form.conceptId } : {}),
   classId: form.concept === 'SINGLE_CLASS' ? form.classId : null,

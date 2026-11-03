@@ -76,6 +76,17 @@ describe('otros cobros', () => {
     expect(
       otherPaymentProblem({ concept: 'OTHER', conceptId: 'i', classId: '', detail: '' }, none),
     ).toBe('Ingresá el importe recibido.');
+    // Con saldo a favor puede no haber medios, pero no más que lo disponible.
+    const form = { concept: 'OTHER' as const, conceptId: 'i', classId: '', detail: '' };
+    expect(
+      otherPaymentProblem(form, none, { usedCents: 500000n, availableCents: 500000n }),
+    ).toBeNull();
+    expect(otherPaymentProblem(form, none, { usedCents: 500001n, availableCents: 500000n })).toBe(
+      'Tiene 5000.00 de saldo a favor.',
+    );
+    expect(otherPaymentProblem(form, none, { usedCents: null, availableCents: 500000n })).toMatch(
+      /importe válido/,
+    );
     expect(
       otherPaymentProblem(
         { concept: 'SINGLE_CLASS', classId: 'c', detail: '' },

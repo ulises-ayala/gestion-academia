@@ -13,6 +13,7 @@ const payment: PaymentDto = {
   amount: '50000.00',
   creditAmount: '0.00',
   refundedAmount: '0.00',
+  paidWithCreditAmount: '0.00',
   cardSurcharge: null,
   surchargeOfId: null,
   tenders: [

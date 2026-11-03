@@ -387,6 +387,73 @@ describe.runIf(enabled)(
       }
     });
 
+    it('usa el saldo a favor en un otro cobro sin caja y lo devuelve al anularlo', async () => {
+      const fixture = await createFixture();
+      try {
+        const source = await repository.create(
+          fixture.student.id,
+          [{ method: 'MERCADO_PAGO', amount: '40000.00' }],
+          fixture.actor.id,
+        );
+        await repository.reallocate(source.id, [], fixture.actor.id, 'Queda como saldo');
+        const apparel = await prisma.paymentConcept.findUniqueOrThrow({
+          where: { normalizedName: 'indumentaria' },
+        });
+        const remera = await repository.createOther(
+          {
+            studentId: fixture.student.id,
+            walkIn: null,
+            concept: 'OTHER',
+            conceptId: apparel.id,
+            classId: null,
+            teacherId: null,
+            detail: 'Remera',
+            creditAmount: '9000.00',
+          },
+          [{ method: 'CASH', amount: '1000.00' }],
+          fixture.actor.id,
+        );
+        expect(remera).toMatchObject({
+          amount: '10000.00',
+          paidWithCreditAmount: '9000.00',
+          otherConcept: { catalogConcept: { id: apparel.id, name: 'Indumentaria' } },
+        });
+        // Solo el efectivo entra a la caja; el saldo ya había entrado.
+        expect(await prisma.cashMovement.count({ where: { sourcePaymentId: remera.id } })).toBe(1);
+        await expect(repository.findById(source.id)).resolves.toMatchObject({
+          creditAmount: '31000.00',
+        });
+        await expect(
+          repository.createOther(
+            {
+              studentId: fixture.student.id,
+              walkIn: null,
+              concept: 'OTHER',
+              conceptId: apparel.id,
+              classId: null,
+              teacherId: null,
+              detail: null,
+              creditAmount: '31000.01',
+            },
+            [],
+            fixture.actor.id,
+          ),
+        ).rejects.toMatchObject({ code: 'PAYMENT_EXCEEDS_CREDIT' });
+        await expect(repository.void(source.id, fixture.actor.id, 'x')).rejects.toMatchObject({
+          code: 'PAYMENT_CREDIT_USED_CONFLICT',
+        });
+        await repository.void(remera.id, fixture.actor.id, 'Se equivocó de talle');
+        await expect(repository.findById(source.id)).resolves.toMatchObject({
+          creditAmount: '40000.00',
+        });
+      } finally {
+        await prisma.paymentCreditUse.deleteMany({
+          where: { source: { studentId: fixture.student.id } },
+        });
+        await cleanupFixture(fixture);
+      }
+    });
+
     it('rechaza un Payment sin turno abierto sin persistirlo', async () => {
       const fixture = await createFixture();
       try {

@@ -14,6 +14,7 @@ const payment = (): PaymentDto => ({
   amount: '40000.00',
   creditAmount: '0.00',
   refundedAmount: '0.00',
+  paidWithCreditAmount: '0.00',
   cardSurcharge: null,
   surchargeOfId: null,
   tenders: [{ id: crypto.randomUUID(), method: 'CASH', amount: '40000.00' }],
@@ -280,6 +281,7 @@ describe('PaymentsService', () => {
         classId,
         teacherId: 'teacher-of-class',
         detail: 'vino a probar',
+        creditAmount: null,
       },
       tenders: [{ method: 'CASH', amount: '8000.00' }],
     });
@@ -779,6 +781,59 @@ describe('PaymentsService', () => {
         actorId,
       );
       expect(repository.reallocated?.allocations).toEqual([]);
+    });
+  });
+
+  describe('saldo a favor en otros cobros', () => {
+    it('se puede pagar todo con saldo, sin medios', async () => {
+      const repository = new MemoryPayments();
+      await new PaymentsService(repository).createOther(
+        {
+          studentId,
+          concept: 'OTHER',
+          conceptId: 'indumentaria',
+          tenders: [],
+          creditAmount: '5000',
+        },
+        actorId,
+      );
+      expect(repository.other).toMatchObject({
+        data: { creditAmount: '5000.00' },
+        tenders: [],
+      });
+    });
+
+    it('no va en el recargo por tarjeta ni a un alumno eventual', async () => {
+      const service = new PaymentsService(new MemoryPayments());
+      await expect(
+        service.createOther(
+          {
+            studentId,
+            concept: 'CARD_SURCHARGE',
+            tenders: [{ method: 'CARD', amount: '100' }],
+            creditAmount: '100',
+          },
+          actorId,
+        ),
+      ).rejects.toMatchObject({ details: { field: 'creditAmount' } });
+      await expect(
+        service.createOther(
+          {
+            walkIn: { name: 'Lucía' },
+            concept: 'SINGLE_CLASS',
+            classId: crypto.randomUUID(),
+            tenders: [],
+            creditAmount: '100',
+          },
+          actorId,
+        ),
+      ).rejects.toMatchObject({ details: { field: 'creditAmount' } });
+      await expect(
+        service.createOther(
+          { studentId, concept: 'OTHER', conceptId: 'i', tenders: [], creditAmount: 'x' },
+          actorId,
+        ),
+      ).rejects.toMatchObject({ details: { field: 'creditAmount' } });
     });
   });
 });

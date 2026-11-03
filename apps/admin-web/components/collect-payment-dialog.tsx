@@ -136,6 +136,8 @@ export function CollectPaymentDialog({
   /** Recargo por pagar con tarjeta (se registra aparte, como otro cobro). */
   const [surcharge, setSurcharge] = useState('');
   const [keepCredit, setKeepCredit] = useState(false);
+  /** En "Clase suelta u otro": cuánto se paga con el saldo a favor del alumno. */
+  const [creditUse, setCreditUse] = useState('');
   const [credit, setCredit] = useState('0.00');
   const [applyingCredit, setApplyingCredit] = useState(false);
   const [doneSurcharge, setDoneSurcharge] = useState<string | null>(null);
@@ -336,9 +338,15 @@ export function CollectPaymentDialog({
   const paysByCard = (decimalToCents(tenders.CARD || '0') ?? 0n) > 0n;
   const surchargeCents = paysByCard ? cardSurchargeCents(surcharge) : 0n;
   const selectedClass = classes?.find((item) => item.id === classId) ?? null;
+  const creditAvailableCents = decimalToCents(credit) ?? 0n;
+  const canUseCredit = !walkInMode && concept !== 'CARD_SURCHARGE' && creditAvailableCents > 0n;
+  const creditUseCents = canUseCredit ? cardSurchargeCents(creditUse) : 0n;
   const otherProblem = pickIsInvalid(pick)
     ? 'Usá importes positivos con hasta dos decimales.'
-    : otherPaymentProblem(otherForm, tenders);
+    : otherPaymentProblem(otherForm, tenders, {
+        usedCents: creditUseCents,
+        availableCents: creditAvailableCents,
+      });
   // Cobrar de más: el excedente queda como saldo a favor solo si quien cobra lo confirma.
   const excessCents = totalCents > payableCents ? totalCents - payableCents : 0n;
   const allowCredit = keepCredit && excessCents > 0n;
@@ -362,6 +370,7 @@ export function CollectPaymentDialog({
     setAmountTouched(false);
     setChosen([]);
     setSurcharge('');
+    setCreditUse('');
     setDebtForm({ enrollmentId: '', amount: '', description: '' });
     setNotice('');
     setTried(false);
@@ -396,6 +405,7 @@ export function CollectPaymentDialog({
     if (!student) return;
     setDone(null);
     setSurcharge('');
+    setCreditUse('');
     setPick(freshPick());
     setAmountTouched(false);
     setDetail('');
@@ -504,11 +514,16 @@ export function CollectPaymentDialog({
             })
           : await apiRequest<PaymentDto>('/payments/other', {
               method: 'POST',
-              body: JSON.stringify(dated(buildOtherPaymentPayload(student.id, otherForm, tenders))),
+              body: JSON.stringify(
+                dated(
+                  buildOtherPaymentPayload(student.id, otherForm, tenders, creditUseCents ?? 0n),
+                ),
+              ),
             });
       markChanged();
       setChosen([]);
       setKeepCredit(false);
+      setCreditUse('');
       setDoneSurcharge(tab === 'charges' && surchargeCents ? centsToDecimal(surchargeCents) : null);
       setSurcharge('');
       setDone(payment);
@@ -1119,7 +1134,23 @@ export function CollectPaymentDialog({
                   onChange={(event) => setDetail(event.target.value)}
                 />
               </label>
-              {amountField('Importe')}
+              {canUseCredit && (
+                <label className="collect-surcharge">
+                  Usar saldo a favor (tiene {money(credit)})
+                  <input
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={creditUse}
+                    disabled={saving}
+                    aria-invalid={tried && creditUseCents === null}
+                    onChange={(event) => setCreditUse(event.target.value)}
+                  />
+                  <small className="collect-hint">
+                    Se descuenta de su saldo sin pasar por la caja. El resto se cobra abajo.
+                  </small>
+                </label>
+              )}
+              {amountField(creditUseCents ? 'Importe en otros medios' : 'Importe')}
               {tenderFields}
             </div>
           )}
