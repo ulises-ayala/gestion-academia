@@ -10,6 +10,7 @@ import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { PrismaService } from '../../database/prisma.service';
+import { isSerializationConflict } from '../../database/serializable-retry';
 import { DomainError } from '../../shared/domain/domain-error';
 import {
   addDays,
@@ -209,13 +210,15 @@ export class ClosingsService {
       );
       return summary(created);
     } catch (error) {
-      if (
-        (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') ||
-        (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034')
-      )
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
         throw new DomainError(
           'COLLECTION_CLOSING_OVERLAP_CONFLICT',
           'Ese período ya se cerró. Actualizá la lista.',
+        );
+      if (isSerializationConflict(error))
+        throw new DomainError(
+          'COLLECTION_CLOSING_CONCURRENCY_CONFLICT',
+          'Se guardó otro cierre al mismo tiempo. Volvé a intentar.',
         );
       throw error;
     }

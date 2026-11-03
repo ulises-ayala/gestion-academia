@@ -341,7 +341,8 @@ export function CollectPaymentDialog({
   const paysByCard = (decimalToCents(tenders.CARD || '0') ?? 0n) > 0n;
   const cardCents = decimalToCents(tenders.CARD || '0') ?? 0n;
   // En el recargo cargado a mano no se calcula otro recargo.
-  const needsCardType = paysByCard && !(tab === 'other' && concept === 'CARD_SURCHARGE');
+  const needsCardType =
+    paysByCard && !walkInMode && !(tab === 'other' && concept === 'CARD_SURCHARGE');
   const surchargeCents =
     needsCardType && cardType ? cardSurchargePreviewCents(cardCents, cardType) : 0n;
   const cardTypeProblem =

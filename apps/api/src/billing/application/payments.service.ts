@@ -173,6 +173,12 @@ export class PaymentsService {
         { field: 'walkIn' },
       );
     const cardType = parseCardType(input.cardType);
+    if (cardType && walkIn)
+      throw new DomainError(
+        'VALIDATION_ERROR',
+        'Al alumno eventual no se le calcula recargo: cobralo como Recargo por tarjeta a un alumno',
+        { field: 'cardType' },
+      );
     if (cardType && other.concept === 'CARD_SURCHARGE')
       throw new DomainError('VALIDATION_ERROR', 'El recargo no lleva otro recargo', {
         field: 'cardType',

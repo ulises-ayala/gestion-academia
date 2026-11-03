@@ -27,10 +27,10 @@ describe('cierres de la recaudación', () => {
       reason: null,
     });
     expect(nextClosingPeriod('WEEKLY', null, '2026-11-10')).toMatchObject({
-      fromDate: '2026-11-04',
-      toDate: '2026-11-10',
+      fromDate: '2026-11-03',
+      toDate: '2026-11-09',
     });
-    expect(nextClosingPeriod('WEEKLY', '2026-11-10', '2026-11-10')).toMatchObject({
+    expect(nextClosingPeriod('WEEKLY', '2026-11-09', '2026-11-10')).toMatchObject({
       closable: false,
     });
     expect(nextClosingPeriod('MONTHLY', null, '2026-11-03')).toEqual({
@@ -49,10 +49,10 @@ describe('cierres de la recaudación', () => {
 
   it('valida el período: semana de hasta 31 días sin futuro, mes ya terminado', () => {
     expect(
-      closingPeriod({ kind: 'WEEKLY', fromDate: '2026-11-02', toDate: '2026-11-08' }, '2026-11-08'),
+      closingPeriod({ kind: 'WEEKLY', fromDate: '2026-11-02', toDate: '2026-11-08' }, '2026-11-09'),
     ).toEqual({ kind: 'WEEKLY', fromDate: '2026-11-02', toDate: '2026-11-08' });
     expect(() =>
-      closingPeriod({ kind: 'WEEKLY', fromDate: '2026-11-02', toDate: '2026-11-09' }, '2026-11-08'),
+      closingPeriod({ kind: 'WEEKLY', fromDate: '2026-11-02', toDate: '2026-11-08' }, '2026-11-08'),
     ).toThrow(expect.objectContaining({ details: { field: 'toDate' } }));
     expect(() =>
       closingPeriod({ kind: 'WEEKLY', fromDate: '2026-10-01', toDate: '2026-11-02' }, '2026-11-08'),

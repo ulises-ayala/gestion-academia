@@ -89,7 +89,8 @@ export const validatePaymentConcept = (input: {
   return {
     name,
     normalizedName: normalizeConceptName(name),
-    requiresDetail: input.requiresDetail === true,
+    // Sin dato, el alta no pide detalle y la edición lo deja como estaba.
+    ...(typeof input.requiresDetail === 'boolean' ? { requiresDetail: input.requiresDetail } : {}),
     ...(input.status ? { status: input.status as 'ACTIVE' | 'INACTIVE' } : {}),
   };
 };

@@ -29,7 +29,7 @@ const validDate = (value: unknown): value is string =>
   new Date(`${value}T00:00:00.000Z`).toISOString().slice(0, 10) === value;
 
 /**
- * Período de un cierre. Semanal: rango libre (desde/hasta) de hasta 31 días que termina hoy o
+ * Período de un cierre. Semanal: rango libre (desde/hasta) de hasta 31 días que termina ayer o
  * antes. Mensual: un mes calendario ya terminado.
  */
 export const closingPeriod = (input: CreateClosingDto | null, today: string) => {
@@ -53,8 +53,9 @@ export const closingPeriod = (input: CreateClosingDto | null, today: string) => 
     throw new DomainError('VALIDATION_ERROR', 'La fecha final no puede ser anterior a la inicial', {
       field: 'toDate',
     });
-  if (input.toDate > today)
-    throw new DomainError('VALIDATION_ERROR', 'El período no puede terminar en el futuro', {
+  // Hasta ayer: lo que se cobre más tarde en el día aparecería como corrección posterior.
+  if (input.toDate >= today)
+    throw new DomainError('VALIDATION_ERROR', 'El cierre semanal llega hasta ayer como máximo', {
       field: 'toDate',
     });
   if (addDays(input.fromDate, 30) < input.toDate)
@@ -66,7 +67,7 @@ export const closingPeriod = (input: CreateClosingDto | null, today: string) => 
 
 /**
  * Próximo cierre que se propone: el semanal arranca el día siguiente al último cierre (o hace una
- * semana) y llega hasta 7 días o hoy; el mensual es el mes siguiente al último cerrado (o el mes
+ * semana) y llega hasta 7 días o ayer; el mensual es el mes siguiente al último cerrado (o el mes
  * pasado). `closable` dice si ya se puede guardar.
  */
 export const nextClosingPeriod = (
@@ -82,15 +83,16 @@ export const nextClosingPeriod = (
     const closable = range.toDate < today;
     return { ...range, closable, reason: closable ? null : 'El mes todavía no terminó.' };
   }
-  const fromDate = lastToDate ? addDays(lastToDate, 1) : addDays(today, -6);
+  const yesterday = addDays(today, -1);
+  const fromDate = lastToDate ? addDays(lastToDate, 1) : addDays(today, -7);
   const sevenDays = addDays(fromDate, 6);
-  const toDate = sevenDays < today ? sevenDays : today;
-  const closable = fromDate <= today;
+  const toDate = sevenDays < yesterday ? sevenDays : yesterday;
+  const closable = fromDate <= yesterday;
   return {
     fromDate,
     toDate: closable ? toDate : fromDate,
     closable,
-    reason: closable ? null : 'Ya está cerrado hasta hoy.',
+    reason: closable ? null : 'Ya está cerrado hasta ayer.',
   };
 };
 

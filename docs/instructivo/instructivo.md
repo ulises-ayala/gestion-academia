@@ -195,7 +195,7 @@ Una clase creada en las pruebas que **no tiene inscripciones, cobros ni clases d
 
 **Cierres** arma solo el reporte del próximo período y lo guarda como una **foto** con **Guardar cierre**:
 
-- **Semanal**: propone desde el día siguiente al último cierre (hasta 7 días); se pueden cambiar las fechas. Muestra la recaudación por concepto y por medio (efectivo, Mercado Pago, transferencia, tarjeta), con totales, y las devoluciones del período.
+- **Semanal**: propone desde el día siguiente al último cierre (hasta 7 días, como mucho hasta ayer); se pueden cambiar las fechas. Muestra la recaudación por concepto y por medio (efectivo, Mercado Pago, transferencia, tarjeta), con totales, y las devoluciones del período.
 - **Mensual** (para Charo): un mes ya terminado, con la recaudación por concepto y medio, alumnos activos, nuevos ingresos, bajas, cuotas pendientes y montos adeudados.
 
 Un cierre guardado no cambia. Al abrirlo (**Ver**) se ve la foto y, aparte, las **correcciones posteriores al cierre**: lo que hoy da distinto porque se corrigió o anuló un pago después. **Descargar o imprimir PDF** lo abre listo para imprimir. Dirección los consulta desde su usuario.

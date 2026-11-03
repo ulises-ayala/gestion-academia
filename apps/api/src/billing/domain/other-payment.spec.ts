@@ -47,6 +47,8 @@ describe('conceptos de otros cobros', () => {
       normalizedName: 'workshops',
       requiresDetail: true,
     });
+    // En una edición, lo que no se manda queda como estaba.
+    expect(validatePaymentConcept({ name: 'Otros' })).not.toHaveProperty('requiresDetail');
     expect(() => validatePaymentConcept({ name: 'x' })).toThrow(
       expect.objectContaining({ details: { field: 'name' } }),
     );

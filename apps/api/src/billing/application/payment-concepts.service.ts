@@ -37,7 +37,7 @@ export class PaymentConceptsService {
         data: {
           name: data.name,
           normalizedName: data.normalizedName,
-          requiresDetail: data.requiresDetail,
+          requiresDetail: data.requiresDetail ?? false,
           status: data.status ?? 'ACTIVE',
         },
       });
@@ -65,7 +65,7 @@ export class PaymentConceptsService {
         data: {
           name: data.name,
           normalizedName: data.normalizedName,
-          requiresDetail: data.requiresDetail,
+          ...(data.requiresDetail !== undefined ? { requiresDetail: data.requiresDetail } : {}),
           ...(data.status ? { status: data.status } : {}),
         },
       });

@@ -9,7 +9,7 @@ import type {
   PaymentMethodDto,
 } from '@academy/contracts';
 import { FileDown } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import {
   closingKindLabels,
@@ -132,6 +132,8 @@ export default function ClosingsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  // El período que llega con la propuesta ya trae sus importes: no se vuelve a pedir.
+  const proposed = useRef<string | null>(null);
 
   const loadList = useCallback(
     async (value: ClosingKindDto) =>
@@ -140,6 +142,7 @@ export default function ClosingsPage() {
   );
 
   useEffect(() => {
+    proposed.current = null;
     setPeriod(null);
     setSelected(null);
     setNotice('');
@@ -148,13 +151,19 @@ export default function ClosingsPage() {
 
   // Vista previa del período propuesto o del elegido.
   useEffect(() => {
+    const query = closingPreviewQuery(kind, period);
+    if (period && proposed.current === query) return;
     let active = true;
     setError('');
-    apiRequest<ClosingPreviewDto>(`/closings/preview?${closingPreviewQuery(kind, period)}`)
+    apiRequest<ClosingPreviewDto>(`/closings/preview?${query}`)
       .then((result) => {
         if (!active) return;
         setPreview(result);
-        if (!period) setPeriod({ fromDate: result.fromDate, toDate: result.toDate });
+        if (!period) {
+          const next = { fromDate: result.fromDate, toDate: result.toDate };
+          proposed.current = closingPreviewQuery(kind, next);
+          setPeriod(next);
+        }
       })
       .catch((caught) => {
         if (!active) return;
