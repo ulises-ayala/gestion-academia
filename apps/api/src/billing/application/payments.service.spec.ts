@@ -724,9 +724,22 @@ describe('PaymentsService', () => {
       );
       expect(repository.refunded).toEqual({
         id,
-        input: { amount: '10000.50', method: 'MERCADO_PAGO' },
+        input: { amount: '10000.50', method: 'MERCADO_PAGO', fromCashShift: false },
         reason: 'Pagó dos veces',
       });
+      // Solo el efectivo puede salir de la caja del turno.
+      await service.refund(
+        id,
+        { amount: '100', method: 'MERCADO_PAGO', reason: 'x de nuevo', fromCashShift: true },
+        actorId,
+      );
+      expect(repository.refunded?.input).toMatchObject({ fromCashShift: false });
+      await service.refund(
+        id,
+        { amount: '100', method: 'CASH', reason: 'en efectivo', fromCashShift: true },
+        actorId,
+      );
+      expect(repository.refunded?.input).toMatchObject({ fromCashShift: true });
     });
 
     it('usar el saldo a favor lleva un motivo por defecto si no se escribe uno', async () => {

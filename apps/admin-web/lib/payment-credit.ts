@@ -23,12 +23,15 @@ export const refundProblem = (
   return null;
 };
 
+/** fromCashShift: solo en efectivo, si sale de la caja del turno abierto de quien devuelve. */
 export const refundPayload = (
   amount: string,
   method: PaymentMethodDto,
   reason: string,
+  fromCashShift = false,
 ): RefundPaymentDto => ({
   amount: centsToDecimal(decimalToCents(normalizeAmount(amount)) ?? 0n),
   method,
   reason: reason.trim(),
+  ...(method === 'CASH' && fromCashShift ? { fromCashShift: true } : {}),
 });

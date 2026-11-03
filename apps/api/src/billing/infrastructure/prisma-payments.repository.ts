@@ -981,7 +981,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
 
   async refund(
     id: string,
-    input: Readonly<{ amount: string; method: PaymentMethodDto }>,
+    input: Readonly<{ amount: string; method: PaymentMethodDto; fromCashShift: boolean }>,
     actorId: string,
     reason: string,
   ) {
@@ -1001,17 +1001,22 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
               throw new DomainError('PAYMENT_NO_CREDIT', 'Este cobro no tiene saldo a favor');
             // Mismo bloqueo por alumno que el cobro y la reimputación.
             await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${payment.studentId}))`;
-            // La devolución sale de la caja de quien la registra, como egreso de su turno.
-            const [cashShift] = await tx.$queryRaw<readonly { id: string }[]>`
-              SELECT id FROM cash_shifts
-              WHERE user_id = ${actorId}::uuid AND status = 'OPEN'
-              FOR UPDATE
-            `;
-            if (!cashShift)
-              throw new DomainError(
-                'CASH_SHIFT_REQUIRED',
-                'Necesitás abrir tu turno de caja antes de registrar una devolución.',
-              );
+            // Solo el efectivo que sale de la caja es un egreso del turno de quien la registra; lo
+            // demás (Mercado Pago, transferencia, tarjeta o efectivo que guarda Dirección) queda
+            // registrado fuera de la caja.
+            let cashShift: { id: string } | null = null;
+            if (input.fromCashShift) {
+              [cashShift = null] = await tx.$queryRaw<readonly { id: string }[]>`
+                SELECT id FROM cash_shifts
+                WHERE user_id = ${actorId}::uuid AND status = 'OPEN'
+                FOR UPDATE
+              `;
+              if (!cashShift)
+                throw new DomainError(
+                  'CASH_SHIFT_REQUIRED',
+                  'Para devolver efectivo de la caja necesitás tu turno abierto.',
+                );
+            }
             const amount = new Prisma.Decimal(input.amount);
             const credit = paymentCredit(payment.amount, payment.allocations, payment.refunds);
             assertRefundFits(amount, credit);
@@ -1020,23 +1025,24 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 paymentId: id,
                 amount,
                 method: input.method,
-                cashShiftId: cashShift.id,
+                cashShiftId: cashShift?.id ?? null,
                 reason,
                 createdByUserId: actorId,
               },
             });
-            await tx.cashMovement.create({
-              data: {
-                cashShiftId: cashShift.id,
-                type: 'REFUND',
-                method: input.method,
-                amount,
-                sourcePaymentId: id,
-                refundId: refund.id,
-                actorUserId: actorId,
-                reason,
-              },
-            });
+            if (cashShift)
+              await tx.cashMovement.create({
+                data: {
+                  cashShiftId: cashShift.id,
+                  type: 'REFUND',
+                  method: input.method,
+                  amount,
+                  sourcePaymentId: id,
+                  refundId: refund.id,
+                  actorUserId: actorId,
+                  reason,
+                },
+              });
             await tx.auditLog.create({
               data: {
                 actorUserId: actorId,
@@ -1048,7 +1054,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 metadata: {
                   studentId: payment.studentId,
                   creditBefore: credit.toFixed(2),
-                  cashShiftId: cashShift.id,
+                  cashShiftId: cashShift?.id ?? null,
                 },
               },
             });

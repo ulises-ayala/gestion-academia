@@ -3,6 +3,7 @@
 import type { MonthlyChargeListDto, PaymentDto, PaymentMethodDto } from '@academy/contracts';
 import React, { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
+import { useAuth } from './auth-provider';
 import { chargeLabel } from '../lib/collect-payment';
 import { businessToday } from '../lib/dates';
 import { hasCredit, refundPayload, refundProblem } from '../lib/payment-credit';
@@ -57,7 +58,9 @@ export function CorrectPaymentDialog({
   const [error, setError] = useState('');
   const today = businessToday();
   const byCharges = payment.kind === 'CHARGES';
-  const credit = hasCredit(payment);
+  const { can } = useAuth();
+  // Devolver dinero lo autoriza Dirección (Charo); aplicar el saldo lo hace quien cobra.
+  const credit = hasCredit(payment) && can('payments:refund');
   // Con devoluciones el pago ya no se anula ni se reemplaza: solo se reimputa o se devuelve más.
   const refunded = (decimalToCents(payment.refundedAmount) ?? 0n) > 0n;
   const modes: readonly (readonly [CorrectionMode, string])[] = [
@@ -70,9 +73,14 @@ export function CorrectPaymentDialog({
       ? initialMode
       : (modes[0]?.[0] ?? 'tenders'),
   );
-  const [refund, setRefund] = useState<{ amount: string; method: PaymentMethodDto }>({
+  const [refund, setRefund] = useState<{
+    amount: string;
+    method: PaymentMethodDto;
+    fromCashShift: boolean;
+  }>({
     amount: payment.creditAmount.replace(/\.00$/, ''),
     method: 'CASH',
+    fromCashShift: false,
   });
   const [charges, setCharges] = useState<MonthlyChargeListDto['items'] | null>(null);
   const rows = useMemo(
@@ -131,7 +139,9 @@ export function CorrectPaymentDialog({
           : mode === 'refund'
             ? await apiRequest<PaymentDto>(`/payments/${payment.id}/refunds`, {
                 method: 'POST',
-                body: JSON.stringify(refundPayload(refund.amount, refund.method, form.reason)),
+                body: JSON.stringify(
+                  refundPayload(refund.amount, refund.method, form.reason, refund.fromCashShift),
+                ),
               })
             : await apiRequest<PaymentDto>(`/payments/${payment.id}/allocations`, {
                 method: 'POST',
@@ -259,6 +269,26 @@ export function CorrectPaymentDialog({
                 ))}
               </select>
             </label>
+            {refund.method === 'CASH' ? (
+              <label className="wide refund-from-cash">
+                <input
+                  type="checkbox"
+                  checked={refund.fromCashShift}
+                  disabled={saving}
+                  onChange={(event) =>
+                    setRefund({ ...refund, fromCashShift: event.target.checked })
+                  }
+                />
+                Sale de la caja de mi turno abierto
+                <small className="collect-hint">
+                  Sin marcar, queda registrada fuera de la caja (efectivo que guarda Dirección).
+                </small>
+              </label>
+            ) : (
+              <p className="wide collect-hint">
+                Se registra fuera de la caja: la devolución la hace Dirección desde su cuenta.
+              </p>
+            )}
           </div>
         ) : (
           <div className="generate-charge-preview other-payment-tenders">

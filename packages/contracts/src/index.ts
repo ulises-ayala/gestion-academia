@@ -776,6 +776,12 @@ export type RefundPaymentDto = Readonly<{
   amount: string;
   method: PaymentMethodDto;
   reason: string;
+  /**
+   * Solo en efectivo: true si sale de la caja del turno abierto de quien la registra (egreso del
+   * turno). Si no, queda registrada fuera de la caja (Dirección la hace desde su cuenta o con el
+   * efectivo que guarda); Mercado Pago, transferencia y tarjeta siempre van fuera de la caja.
+   */
+  fromCashShift?: boolean | null;
 }>;
 /**
  * Corregir un pago: se anula y se reemplaza por uno nuevo con los medios, el importe o la fecha

@@ -86,7 +86,7 @@ export interface PaymentsRepository {
   /** Devuelve saldo a favor del pago: egreso REFUND en el turno abierto de quien devuelve. */
   refund(
     id: string,
-    input: Readonly<{ amount: string; method: PaymentMethodDto }>,
+    input: Readonly<{ amount: string; method: PaymentMethodDto; fromCashShift: boolean }>,
     actorId: string,
     reason: string,
   ): Promise<PaymentDto>;

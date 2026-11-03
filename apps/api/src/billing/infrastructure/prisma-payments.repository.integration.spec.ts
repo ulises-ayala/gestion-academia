@@ -326,27 +326,41 @@ describe.runIf(enabled)(
         await expect(
           repository.refund(
             duplicate.id,
-            { amount: '20000.01', method: 'MERCADO_PAGO' },
+            { amount: '20000.01', method: 'MERCADO_PAGO', fromCashShift: false },
             fixture.actor.id,
             'Devolución',
           ),
         ).rejects.toMatchObject({ code: 'PAYMENT_REFUND_EXCEEDS_CREDIT' });
-        const refunded = await repository.refund(
+        // Por Mercado Pago la hace Dirección desde su cuenta: queda registrada fuera de la caja.
+        await repository.refund(
           duplicate.id,
-          { amount: '20000.00', method: 'MERCADO_PAGO' },
+          { amount: '15000.00', method: 'MERCADO_PAGO', fromCashShift: false },
           fixture.actor.id,
           'Devolución del duplicado',
         );
+        await expect(
+          prisma.paymentRefund.findFirst({
+            where: { paymentId: duplicate.id, method: 'MERCADO_PAGO' },
+          }),
+        ).resolves.toMatchObject({ cashShiftId: null });
+        // El efectivo que sale de la caja es un egreso del turno de quien devuelve.
+        const refunded = await repository.refund(
+          duplicate.id,
+          { amount: '5000.00', method: 'CASH', fromCashShift: true },
+          fixture.actor.id,
+          'Resto en efectivo',
+        );
         expect(refunded).toMatchObject({ creditAmount: '0.00', refundedAmount: '20000.00' });
-        const refundMovement = await prisma.cashMovement.findFirst({
+        const refundMovements = await prisma.cashMovement.findMany({
           where: { sourcePaymentId: duplicate.id, type: 'REFUND' },
         });
-        expect(refundMovement).toMatchObject({
+        expect(refundMovements).toHaveLength(1);
+        expect(refundMovements[0]).toMatchObject({
           cashShiftId: fixture.cashShift.id,
-          method: 'MERCADO_PAGO',
+          method: 'CASH',
           sourcePaymentTenderId: null,
         });
-        expect(refundMovement?.amount.toFixed(2)).toBe('20000.00');
+        expect(refundMovements[0]?.amount.toFixed(2)).toBe('5000.00');
 
         // Lo devuelto ya no se puede volver a imputar, y el pago no se anula ni se corrige.
         await expect(

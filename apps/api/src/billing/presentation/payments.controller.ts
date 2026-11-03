@@ -154,9 +154,9 @@ export class PaymentsController {
     return this.service.void(parseUuid(id), user.id, body?.reason);
   }
 
-  /** Usar el saldo a favor del alumno en sus cuotas pendientes: mismos permisos que reimputar. */
+  /** Usar el saldo a favor del alumno en sus cuotas pendientes: quien cobra, también Admisión. */
   @Post('apply-credit')
-  @Permissions('payments:void')
+  @Permissions('payments:collect')
   applyCredit(
     @Body() body: ApplyCreditDto | null,
     @CurrentUser() user: PublicAuthUser,
@@ -167,9 +167,9 @@ export class PaymentsController {
     );
   }
 
-  /** Devolver saldo a favor: mismos permisos que anular o corregir. */
+  /** Devolver saldo a favor: solo Dirección (la devolución la autoriza Charo). */
   @Post(':id/refunds')
-  @Permissions('payments:void')
+  @Permissions('payments:refund')
   refund(
     @Param('id') id: string,
     @Body() body: RefundPaymentDto | null,

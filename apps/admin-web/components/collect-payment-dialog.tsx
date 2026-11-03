@@ -872,13 +872,13 @@ export function CollectPaymentDialog({
                 <div className="collect-credit-note" role="status">
                   <span>
                     Tiene <strong>{money(credit)}</strong> de saldo a favor.
-                    {!can('payments:void')
-                      ? ' Administración lo aplica a una cuota o lo devuelve.'
+                    {!can('payments:collect')
+                      ? ''
                       : pending.length === 0
                         ? ' Generá la cuota que paga y después usalo.'
                         : ' Se usa en las cuotas pendientes, de la más vieja a la más nueva, sin pasar por la caja.'}
                   </span>
-                  {can('payments:void') && pending.length > 0 && (
+                  {can('payments:collect') && pending.length > 0 && (
                     <button
                       type="button"
                       className="secondary"

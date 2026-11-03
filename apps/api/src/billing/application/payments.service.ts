@@ -249,7 +249,7 @@ export class PaymentsService {
     return this.repository.applyCredit(input?.studentId ?? '', actorId, reason);
   }
 
-  /** Devuelve saldo a favor de un pago, como egreso del turno de caja de quien devuelve. */
+  /** Devuelve saldo a favor de un pago (Dirección); solo el efectivo puede salir de su turno. */
   async refund(id: string, input: RefundPaymentDto | null, actorId: string) {
     const reason = validateReason(input?.reason);
     if (!input || !methods.includes(input.method))
@@ -265,7 +265,11 @@ export class PaymentsService {
       });
     return this.repository.refund(
       id,
-      { amount: amount.toFixed(2), method: input.method },
+      {
+        amount: amount.toFixed(2),
+        method: input.method,
+        fromCashShift: input.method === 'CASH' && input.fromCashShift === true,
+      },
       actorId,
       reason,
     );

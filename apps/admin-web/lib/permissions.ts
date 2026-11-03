@@ -16,6 +16,8 @@ export type UiPermission =
   | 'payments:read'
   | 'payments:collect'
   | 'payments:void'
+  /** Devolver saldo a favor: solo Dirección (autorización de Charo). */
+  | 'payments:refund'
   | 'cash:manage'
   | 'cash:reconcile'
   | 'attendance:manage'
@@ -71,6 +73,7 @@ const byRole: Readonly<Record<AdminRoleDto, readonly UiPermission[]>> = {
     'users:manage-direction',
     'reports:all',
     'settlements:approve',
+    'payments:refund',
   ],
 };
 
