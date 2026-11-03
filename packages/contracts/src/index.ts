@@ -648,10 +648,10 @@ export type CreatePaymentDto = Readonly<{
    */
   monthlyChargeIds?: readonly string[] | null;
   /**
-   * Recargo por pagar con tarjeta: se registra en la misma operación como otro cobro
-   * "Recargo por tarjeta" pagado con tarjeta. Exige que el cobro tenga tarjeta.
+   * Tipo de tarjeta: el recargo (débito 4,04 %, crédito 7,80 % de lo que se paga con tarjeta) se
+   * calcula en el servidor y se registra como otro cobro "Recargo por tarjeta". Exige tarjeta.
    */
-  cardSurcharge?: string | null;
+  cardType?: CardTypeDto | null;
   /**
    * Dejar como saldo a favor lo que supere la deuda (o todo, si no debe nada). Sin esto, cobrar de
    * más se rechaza.
@@ -659,6 +659,8 @@ export type CreatePaymentDto = Readonly<{
   allowCredit?: boolean;
 }>;
 export type PaymentKindDto = 'CHARGES' | 'OTHER';
+/** Tarjeta de débito o de crédito: define el recargo por pagar con tarjeta. */
+export type CardTypeDto = 'DEBIT' | 'CREDIT';
 /**
  * Tipo de otro cobro: clase suelta (clase y profesor), recargo por tarjeta, o un concepto del
  * catálogo (`OTHER` + `conceptId`: indumentaria, inscripciones, talleres, Gala, otros…).
@@ -702,6 +704,8 @@ export type CreateOtherPaymentDto = Readonly<{
    * en el recargo por tarjeta.
    */
   creditAmount?: string | null;
+  /** Tipo de tarjeta para calcular el recargo (como en `CreatePaymentDto`); no en el recargo mismo. */
+  cardType?: CardTypeDto | null;
 }>;
 export type PaymentTenderDto = Readonly<{
   id: string;

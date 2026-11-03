@@ -12,6 +12,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { validateReason } from '../../audit/domain/audit';
 import { DomainError } from '../../shared/domain/domain-error';
 import { assertConceptDetail, validateOtherPayment, validateWalkIn } from '../domain/other-payment';
+import { cardSurchargeFor, parseCardType } from '../domain/card-surcharge';
 import {
   backdatedPaidAt,
   correctedPaidAt,
@@ -41,7 +42,8 @@ export class PaymentsService {
     const tenders = this.tenders(input.tenders);
     const paidAt = this.paidAt(input.paidDate, isAdministration, now);
     const chargeIds = this.chargeIds(input.monthlyChargeIds);
-    const cardSurcharge = this.cardSurcharge(input.cardSurcharge, tenders);
+    const cardType = parseCardType(input.cardType);
+    const cardSurcharge = cardType ? cardSurchargeFor(tenders, cardType) : null;
     if (chargeIds && !isAdministration)
       throw new DomainError(
         'FORBIDDEN',
@@ -56,29 +58,6 @@ export class PaymentsService {
       cardSurcharge ?? undefined,
       input.allowCredit === true,
     );
-  }
-
-  /** Recargo por tarjeta (decimal positivo); null si no hay. Exige que el cobro tenga tarjeta. */
-  private cardSurcharge(
-    value: unknown,
-    tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
-  ) {
-    if (value === undefined || value === null || value === '') return null;
-    if (typeof value !== 'string' || !/^\d{1,10}(?:\.\d{1,2})?$/.test(value))
-      throw new DomainError('VALIDATION_ERROR', 'El recargo debe ser un decimal positivo', {
-        field: 'cardSurcharge',
-      });
-    const amount = new Prisma.Decimal(value);
-    if (amount.isZero()) return null;
-    if (!tenders.some((tender) => tender.method === 'CARD'))
-      throw new DomainError(
-        'VALIDATION_ERROR',
-        'El recargo por tarjeta solo va si se paga con tarjeta',
-        {
-          field: 'cardSurcharge',
-        },
-      );
-    return amount.toFixed(2);
   }
 
   /** Parte de un otro cobro pagada con saldo a favor; null si no se usa. */
@@ -193,7 +172,13 @@ export class PaymentsService {
         'Solo la clase suelta se puede cobrar a un alumno eventual',
         { field: 'walkIn' },
       );
-    const data = { studentId, walkIn, ...other, teacherId, creditAmount };
+    const cardType = parseCardType(input.cardType);
+    if (cardType && other.concept === 'CARD_SURCHARGE')
+      throw new DomainError('VALIDATION_ERROR', 'El recargo no lleva otro recargo', {
+        field: 'cardType',
+      });
+    const cardSurcharge = cardType ? cardSurchargeFor(tenders, cardType) : null;
+    const data = { studentId, walkIn, ...other, teacherId, creditAmount, cardSurcharge };
     return paidAt
       ? this.repository.createOther(data, tenders, actorId, paidAt)
       : this.repository.createOther(data, tenders, actorId);

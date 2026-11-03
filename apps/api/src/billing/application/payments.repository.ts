@@ -30,7 +30,8 @@ export interface PaymentsRepository {
     paidAt?: Date,
     monthlyChargeIds?: readonly string[],
     /** Recargo por tarjeta: otro cobro "Recargo por tarjeta" en la misma transacción. */
-    cardSurcharge?: string,
+    /** Recargo por tarjeta ya calculado: otro cobro "Recargo por tarjeta" en la misma operación. */
+    cardSurcharge?: Readonly<{ amount: string; detail: string | null }>,
     /** Lo que supere la deuda queda como saldo a favor del pago (si no, se rechaza). */
     allowCredit?: boolean,
   ): Promise<PaymentDto>;
@@ -49,6 +50,8 @@ export interface PaymentsRepository {
       detail: string | null;
       /** Parte pagada con saldo a favor del alumno (sin caja). */
       creditAmount?: string | null;
+      /** Recargo por tarjeta ya calculado (otro cobro ligado a este). */
+      cardSurcharge?: Readonly<{ amount: string; detail: string | null }> | null;
     }>,
     tenders: readonly Readonly<{ method: PaymentMethodDto; amount: string }>[],
     actorId: string,

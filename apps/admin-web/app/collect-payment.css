@@ -485,3 +485,14 @@ dialog.collect-dialog::backdrop {
   border-radius: var(--radius-md);
   background: var(--success-soft, var(--surface-muted));
 }
+.collect-card-type {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.collect-card-type legend {
+  margin-bottom: var(--space-1);
+  font-weight: var(--font-weight-medium);
+}

@@ -53,14 +53,14 @@ class MemoryPayments implements PaymentsRepository {
   item = payment();
   lastPaidAt: Date | undefined = undefined;
   lastChargeIds: readonly string[] | undefined = undefined;
-  lastSurcharge: string | undefined = undefined;
+  lastSurcharge: Readonly<{ amount: string; detail: string | null }> | undefined = undefined;
   async create(
     id: string,
     tenders: readonly { method: PaymentMethodDto; amount: string }[],
     userId: string,
     paidAt?: Date,
     monthlyChargeIds?: readonly string[],
-    cardSurcharge?: string,
+    cardSurcharge?: Readonly<{ amount: string; detail: string | null }>,
     allowCredit?: boolean,
   ) {
     this.lastAllowCredit = allowCredit;
@@ -282,6 +282,7 @@ describe('PaymentsService', () => {
         teacherId: 'teacher-of-class',
         detail: 'vino a probar',
         creditAmount: null,
+        cardSurcharge: null,
       },
       tenders: [{ method: 'CASH', amount: '8000.00' }],
     });
@@ -671,22 +672,22 @@ describe('PaymentsService', () => {
     it('va con el cobro si se paga con tarjeta', async () => {
       const repository = new MemoryPayments();
       await new PaymentsService(repository).create(
-        { studentId, tenders: [{ method: 'CARD', amount: '40000' }], cardSurcharge: '4000' },
+        { studentId, tenders: [{ method: 'CARD', amount: '40000' }], cardType: 'CREDIT' },
         actorId,
       );
-      expect(repository.lastSurcharge).toBe('4000.00');
+      expect(repository.lastSurcharge).toEqual({ amount: '3120.00', detail: 'Crédito 7,80 %' });
     });
 
     it('no se acepta sin tarjeta y cero es sin recargo', async () => {
       const repository = new MemoryPayments();
       await expect(
         new PaymentsService(repository).create(
-          { studentId, tenders: [{ method: 'CASH', amount: '40000' }], cardSurcharge: '4000' },
+          { studentId, tenders: [{ method: 'CASH', amount: '40000' }], cardType: 'DEBIT' },
           actorId,
         ),
-      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'cardSurcharge' } });
+      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'cardType' } });
       await new PaymentsService(repository).create(
-        { studentId, tenders: [{ method: 'CARD', amount: '40000' }], cardSurcharge: '0' },
+        { studentId, tenders: [{ method: 'CARD', amount: '40000' }] },
         actorId,
       );
       expect(repository.lastSurcharge).toBeUndefined();

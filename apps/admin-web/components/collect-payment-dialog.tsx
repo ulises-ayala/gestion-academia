@@ -2,6 +2,7 @@
 
 import type {
   ApplyCreditResultDto,
+  CardTypeDto,
   CashShiftDto,
   ClassListDto,
   EnrollmentListDto,
@@ -27,11 +28,12 @@ import React, {
   type ReactNode,
 } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
+import { cardSurchargePreviewCents, cardTypeLabels } from '../lib/card-surcharge';
 import { businessToday } from '../lib/dates';
 import {
   amountInputValue,
   chargeLabel,
-  cardSurchargeCents,
+  optionalAmountCents,
   chargesProblem,
   emptyTenders,
   historicalDebtPayload,
@@ -134,7 +136,8 @@ export function CollectPaymentDialog({
   /** Cuotas que eligió Administración; vacío = desde la más vieja. */
   const [chosen, setChosen] = useState<readonly string[]>([]);
   /** Recargo por pagar con tarjeta (se registra aparte, como otro cobro). */
-  const [surcharge, setSurcharge] = useState('');
+  /** Débito o crédito: define el recargo por pagar con tarjeta (lo calcula la API). */
+  const [cardType, setCardType] = useState<CardTypeDto | null>(null);
   const [keepCredit, setKeepCredit] = useState(false);
   /** En "Clase suelta u otro": cuánto se paga con el saldo a favor del alumno. */
   const [creditUse, setCreditUse] = useState('');
@@ -336,11 +339,17 @@ export function CollectPaymentDialog({
     detail,
   };
   const paysByCard = (decimalToCents(tenders.CARD || '0') ?? 0n) > 0n;
-  const surchargeCents = paysByCard ? cardSurchargeCents(surcharge) : 0n;
+  const cardCents = decimalToCents(tenders.CARD || '0') ?? 0n;
+  // En el recargo cargado a mano no se calcula otro recargo.
+  const needsCardType = paysByCard && !(tab === 'other' && concept === 'CARD_SURCHARGE');
+  const surchargeCents =
+    needsCardType && cardType ? cardSurchargePreviewCents(cardCents, cardType) : 0n;
+  const cardTypeProblem =
+    needsCardType && !cardType ? 'Elegí si la tarjeta es de débito o de crédito.' : null;
   const selectedClass = classes?.find((item) => item.id === classId) ?? null;
   const creditAvailableCents = decimalToCents(credit) ?? 0n;
   const canUseCredit = !walkInMode && concept !== 'CARD_SURCHARGE' && creditAvailableCents > 0n;
-  const creditUseCents = canUseCredit ? cardSurchargeCents(creditUse) : 0n;
+  const creditUseCents = canUseCredit ? optionalAmountCents(creditUse) : 0n;
   const otherProblem = pickIsInvalid(pick)
     ? 'Usá importes positivos con hasta dos decimales.'
     : otherPaymentProblem(otherForm, tenders, {
@@ -353,12 +362,9 @@ export function CollectPaymentDialog({
   const problem = walkIn
     ? (walkInProblem(walkIn) ?? otherProblem)
     : tab === 'charges'
-      ? (chargesProblem(pick, payableCents, chosenOpen.length > 0, allowCredit) ??
-        (surchargeCents === null
-          ? 'El recargo por tarjeta tiene que ser un importe válido.'
-          : null))
+      ? (chargesProblem(pick, payableCents, chosenOpen.length > 0, allowCredit) ?? cardTypeProblem)
       : tab === 'other'
-        ? otherProblem
+        ? (otherProblem ?? cardTypeProblem)
         : historicalDebtProblem(debtForm);
 
   const selectStudent = (next: StudentDto) => {
@@ -369,7 +375,7 @@ export function CollectPaymentDialog({
     setPick(freshPick());
     setAmountTouched(false);
     setChosen([]);
-    setSurcharge('');
+    setCardType(null);
     setCreditUse('');
     setDebtForm({ enrollmentId: '', amount: '', description: '' });
     setNotice('');
@@ -404,7 +410,7 @@ export function CollectPaymentDialog({
   const anotherForSameStudent = () => {
     if (!student) return;
     setDone(null);
-    setSurcharge('');
+    setCardType(null);
     setCreditUse('');
     setPick(freshPick());
     setAmountTouched(false);
@@ -507,7 +513,7 @@ export function CollectPaymentDialog({
                   ...(chosenOpen.length > 0
                     ? { monthlyChargeIds: chosenOpen.map((charge) => charge.id) }
                     : {}),
-                  ...(surchargeCents ? { cardSurcharge: centsToDecimal(surchargeCents) } : {}),
+                  ...(needsCardType && cardType ? { cardType } : {}),
                   ...(allowCredit ? { allowCredit: true } : {}),
                 }),
               ),
@@ -515,17 +521,19 @@ export function CollectPaymentDialog({
           : await apiRequest<PaymentDto>('/payments/other', {
               method: 'POST',
               body: JSON.stringify(
-                dated(
-                  buildOtherPaymentPayload(student.id, otherForm, tenders, creditUseCents ?? 0n),
-                ),
+                dated({
+                  ...buildOtherPaymentPayload(student.id, otherForm, tenders, creditUseCents ?? 0n),
+                  ...(needsCardType && cardType ? { cardType } : {}),
+                }),
               ),
             });
       markChanged();
       setChosen([]);
       setKeepCredit(false);
       setCreditUse('');
-      setDoneSurcharge(tab === 'charges' && surchargeCents ? centsToDecimal(surchargeCents) : null);
-      setSurcharge('');
+      // El recargo que vale es el que calculó la API.
+      setDoneSurcharge(payment.cardSurcharge?.amount ?? null);
+      setCardType(null);
       setDone(payment);
       void loadCharges(student.id).catch(() => undefined);
     } catch (caught) {
@@ -594,6 +602,31 @@ export function CollectPaymentDialog({
       ) : null}
     </fieldset>
   );
+
+  // Al pagar con tarjeta: débito o crédito, con el recargo que se cobra aparte.
+  const cardTypeFields = needsCardType ? (
+    <fieldset className="collect-card-type" disabled={saving}>
+      <legend>Tarjeta</legend>
+      <div className="collect-concepts">
+        {(Object.keys(cardTypeLabels) as CardTypeDto[]).map((value) => (
+          <label key={value} className={cardType === value ? 'is-selected' : ''}>
+            <input
+              type="radio"
+              name="collect-card-type"
+              checked={cardType === value}
+              onChange={() => setCardType(value)}
+            />
+            {cardTypeLabels[value]}
+          </label>
+        ))}
+      </div>
+      <small className="collect-hint">
+        {cardType
+          ? `Recargo ${money(centsToDecimal(surchargeCents))}: se cobra aparte con tarjeta (total con tarjeta ${money(centsToDecimal(cardCents + surchargeCents))}) y no entra en la liquidación del profesor.`
+          : 'El recargo se calcula sobre lo que se paga con tarjeta.'}
+      </small>
+    </fieldset>
+  ) : null;
 
   const amountField = (label: string) =>
     pick.mode === 'MIXED' ? null : (
@@ -1014,28 +1047,12 @@ export function CollectPaymentDialog({
                       />
                       Paga {money(centsToDecimal(excessCents))} de más: dejarlo como saldo a favor
                       <small className="collect-hint">
-                        No se aplica solo: Administración lo aplica a otra cuota o lo devuelve.
+                        No se aplica solo: queda para otro cobro del alumno o para devolver.
                       </small>
                     </label>
                   )}
                   {tenderFields}
-                  {paysByCard && (
-                    <label className="collect-surcharge">
-                      Recargo por tarjeta (opcional)
-                      <input
-                        inputMode="decimal"
-                        placeholder="0,00"
-                        value={surcharge}
-                        disabled={saving}
-                        aria-invalid={tried && surchargeCents === null}
-                        onChange={(event) => setSurcharge(event.target.value)}
-                      />
-                      <small className="collect-hint">
-                        Se suma a la recaudación como otro cobro; no entra en la liquidación del
-                        profesor.
-                      </small>
-                    </label>
-                  )}
+                  {cardTypeFields}
                 </>
               )}
             </div>
@@ -1152,6 +1169,7 @@ export function CollectPaymentDialog({
               )}
               {amountField(creditUseCents ? 'Importe en otros medios' : 'Importe')}
               {tenderFields}
+              {cardTypeFields}
             </div>
           )}
 

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   amountInputValue,
   chargeLabel,
-  cardSurchargeCents,
+  optionalAmountCents,
   chargesProblem,
   emptyTenders,
   historicalDebtPayload,
@@ -109,8 +109,8 @@ describe('popup de cobro', () => {
   });
 
   it('entiende el recargo por tarjeta', () => {
-    expect(cardSurchargeCents('')).toBe(0n);
-    expect(cardSurchargeCents('4.000')).toBe(400000n);
-    expect(cardSurchargeCents('abc')).toBeNull();
+    expect(optionalAmountCents('')).toBe(0n);
+    expect(optionalAmountCents('4.000')).toBe(400000n);
+    expect(optionalAmountCents('abc')).toBeNull();
   });
 });

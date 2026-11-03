@@ -688,7 +688,7 @@ describe.runIf(enabled)(
           fixture.actor.id,
           undefined,
           [fixture.secondCharge.id],
-          '4000.00',
+          { amount: '4000.00', detail: 'Crédito 7,80 %' },
         );
         expect(payment.allocations).toEqual([
           expect.objectContaining({ monthlyChargeId: fixture.secondCharge.id, amount: '40000.00' }),
