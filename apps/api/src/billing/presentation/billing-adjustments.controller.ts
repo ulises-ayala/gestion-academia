@@ -4,6 +4,7 @@ import type {
   EndEnrollmentBillingConditionDto,
   MoveMonthlyChargeDto,
   ReverseMonthlyChargeAdjustmentDto,
+  UpdateMonthlyChargeTariffDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
@@ -93,6 +94,27 @@ export class BillingAdjustmentsController {
     return this.service.moveToEnrollment(
       parseUuid(chargeId, 'chargeId'),
       parseUuid(input?.enrollmentId ?? '', 'enrollmentId'),
+      input?.reason ?? '',
+      actor.id,
+    );
+  }
+
+  @Get('monthly-charges/:chargeId/tariff-update')
+  @Permissions('charges:manage')
+  previewTariffUpdate(@Param('chargeId') chargeId: string) {
+    return this.service.previewTariffUpdate(parseUuid(chargeId, 'chargeId'));
+  }
+
+  /** Actualizar una cuota sin pagos al importe de la modalidad de la inscripción. */
+  @Post('monthly-charges/:chargeId/tariff-update')
+  @Permissions('charges:manage')
+  updateTariff(
+    @Param('chargeId') chargeId: string,
+    @Body() input: UpdateMonthlyChargeTariffDto | null,
+    @CurrentUser() actor: PublicAuthUser,
+  ) {
+    return this.service.updateTariff(
+      parseUuid(chargeId, 'chargeId'),
       input?.reason ?? '',
       actor.id,
     );

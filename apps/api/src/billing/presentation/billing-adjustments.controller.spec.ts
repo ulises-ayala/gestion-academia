@@ -11,4 +11,11 @@ describe('BillingAdjustmentsController permissions', () => {
       Reflect.getMetadata(PERMISSIONS_KEY, BillingAdjustmentsController.prototype.moveToEnrollment),
     ).toEqual(['charges:manage']);
   });
+
+  it('deja actualizar el importe de una cuota solo a Administración y Dirección', () => {
+    for (const handler of ['previewTariffUpdate', 'updateTariff'] as const)
+      expect(
+        Reflect.getMetadata(PERMISSIONS_KEY, BillingAdjustmentsController.prototype[handler]),
+      ).toEqual(['charges:manage']);
+  });
 });

@@ -40,6 +40,7 @@ import {
   historicalDebtProblem,
   isOpenCharge,
   money,
+  tariffUpdatable,
   normalizeAmount,
   paymentSummary,
   pickIsInvalid,
@@ -71,6 +72,7 @@ import { classTeachersLabel } from '../lib/offering';
 import { whatsappNumber, whatsappReceiptUrl } from '../lib/whatsapp-receipt';
 import { useAuth } from './auth-provider';
 import { ChargeDueDateModal } from './charge-due-date-modal';
+import { ChargeTariffUpdateModal } from './charge-tariff-update-modal';
 import { GenerateChargeDialog } from './generate-charge-dialog';
 
 const freshPick = (amount = ''): TenderPick => ({ mode: 'CASH', amount, split: emptyTenders });
@@ -159,6 +161,7 @@ export function CollectPaymentDialog({
   const [debtForm, setDebtForm] = useState({ enrollmentId: '', amount: '', description: '' });
   const [generating, setGenerating] = useState(false);
   const [dueDateTarget, setDueDateTarget] = useState<MonthlyChargeDto | null>(null);
+  const [tariffTarget, setTariffTarget] = useState<MonthlyChargeDto | null>(null);
   const [saving, setSaving] = useState(false);
   const [tried, setTried] = useState(false);
   const [notice, setNotice] = useState('');
@@ -1009,6 +1012,16 @@ export function CollectPaymentDialog({
                                     Cambiar vencimiento
                                   </button>
                                 )}
+                                {can('charges:manage') && tariffUpdatable(charge) && (
+                                  <button
+                                    type="button"
+                                    className="link-button"
+                                    disabled={saving}
+                                    onClick={() => setTariffTarget(charge)}
+                                  >
+                                    Actualizar importe
+                                  </button>
+                                )}
                                 {chargeActions?.(charge)}
                               </span>
                             )}
@@ -1312,6 +1325,19 @@ export function CollectPaymentDialog({
           }}
         />
       )}
+      {tariffTarget && (
+        <ChargeTariffUpdateModal
+          charge={tariffTarget}
+          onClose={() => setTariffTarget(null)}
+          onSaved={(result) => {
+            setTariffTarget(null);
+            markChanged();
+            setAmountTouched(false);
+            setNotice(`Importe actualizado a ${money(result.next.amount)}.`);
+            if (student) void loadCharges(student.id).catch(() => undefined);
+          }}
+        />
+      )}
     </>
   );
 
@@ -1326,7 +1352,7 @@ export function CollectPaymentDialog({
       aria-labelledby="collect-title"
       onCancel={(event) => {
         event.preventDefault();
-        if (!generating && !dueDateTarget) close();
+        if (!generating && !dueDateTarget && !tariffTarget) close();
       }}
     >
       {content}

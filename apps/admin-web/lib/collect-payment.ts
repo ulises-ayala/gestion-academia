@@ -58,6 +58,23 @@ export const chargeLabel = (
     ? `Deuda anterior${charge.description ? `: ${charge.description}` : ''}`
     : periodLabel(charge.period);
 
+/**
+ * "Actualizar importe" (a la modalidad de la inscripción) solo en cuotas mensuales pendientes, sin
+ * pagos ni becas, descuentos o recargo guardados (el recargo que solo se muestra no cuenta). La API
+ * vuelve a validarlo.
+ */
+export const tariffUpdatable = (
+  charge: Pick<MonthlyChargeDto, 'kind' | 'status' | 'paidAmount' | 'adjustments'>,
+) => {
+  const reversed = new Set(charge.adjustments.map(({ reversalOfId }) => reversalOfId));
+  return (
+    charge.kind === 'MONTHLY' &&
+    charge.status === 'PENDING' &&
+    Number(charge.paidAmount) === 0 &&
+    charge.adjustments.every(({ id, reversalOfId }) => !id || reversalOfId || reversed.has(id))
+  );
+};
+
 /** Con un solo medio, el importe va todo a ese medio; con "Mixto", cada medio lleva el suyo. */
 export const tendersFrom = (pick: TenderPick): TenderAmounts => {
   const raw = pick.mode === 'MIXED' ? pick.split : { ...emptyTenders, [pick.mode]: pick.amount };

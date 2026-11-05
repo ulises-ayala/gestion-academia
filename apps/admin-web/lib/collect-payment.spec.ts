@@ -10,6 +10,7 @@ import {
   historicalDebtProblem,
   paymentSummary,
   pickTotalCents,
+  tariffUpdatable,
   tendersFrom,
   type TenderPick,
 } from './collect-payment';
@@ -19,6 +20,37 @@ const pick = (over: Partial<TenderPick> = {}): TenderPick => ({
   amount: '',
   split: emptyTenders,
   ...over,
+});
+
+describe('actualizar el importe de una cuota', () => {
+  const charge = {
+    kind: 'MONTHLY' as const,
+    status: 'PENDING' as const,
+    paidAmount: '0.00',
+    adjustments: [] as { id: string | null; reversalOfId: string | null }[],
+  };
+  const adjustment = (id: string | null, reversalOfId: string | null = null) =>
+    ({ id, reversalOfId }) as never;
+
+  it('se ofrece en una cuota mensual pendiente sin pagos ni ajustes', () => {
+    expect(tariffUpdatable(charge as never)).toBe(true);
+    // El recargo que solo se muestra (sin guardar) o un ajuste revertido no lo impiden.
+    expect(tariffUpdatable({ ...charge, adjustments: [adjustment(null)] } as never)).toBe(true);
+    expect(
+      tariffUpdatable({
+        ...charge,
+        adjustments: [adjustment('beca'), adjustment('rev', 'beca')],
+      } as never),
+    ).toBe(true);
+  });
+
+  it('no se ofrece con pagos, becas guardadas ni en la deuda anterior', () => {
+    expect(tariffUpdatable({ ...charge, paidAmount: '1.00', status: 'PARTIAL' } as never)).toBe(
+      false,
+    );
+    expect(tariffUpdatable({ ...charge, adjustments: [adjustment('beca')] } as never)).toBe(false);
+    expect(tariffUpdatable({ ...charge, kind: 'HISTORICAL_DEBT' } as never)).toBe(false);
+  });
 });
 
 describe('popup de cobro', () => {

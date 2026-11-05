@@ -2,12 +2,17 @@ import type {
   CreateEnrollmentBillingConditionDto,
   EndEnrollmentBillingConditionDto,
   EnrollmentBillingConditionDto,
+  MonthlyChargeTariffUpdateDto,
+  TariffDto,
 } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { validateChargeDates } from '../domain/billing';
+import { pickTariff } from '../domain/charge-generation';
+import { assertTariffUpdatable } from '../domain/charge-tariff-update';
+import { mapTariff } from '../infrastructure/prisma-billing.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import {
@@ -41,6 +46,14 @@ const mapCondition = (item: any): EnrollmentBillingConditionDto => ({
   endReason: item.endReason,
   renewedFromId: item.renewedFromId,
   createdAt: item.createdAt.toISOString(),
+});
+const tariffUpdateResult = (
+  charge: Readonly<{ id: string; baseAmount: Prisma.Decimal; tariff: { name: string } | null }>,
+  tariff: TariffDto,
+): MonthlyChargeTariffUpdateDto => ({
+  chargeId: charge.id,
+  current: { tariffName: charge.tariff?.name ?? null, amount: charge.baseAmount.toFixed(2) },
+  next: { tariffId: tariff.id, tariffName: tariff.name, amount: tariff.amount },
 });
 const reason = (value: string) => {
   const normalized = value?.trim();
@@ -413,6 +426,89 @@ export class BillingAdjustmentsService {
       });
       return { id: chargeId, dueDate };
     });
+  }
+
+  /** Lo que haría "Actualizar importe": la tarifa de la modalidad de la inscripción para ese mes. */
+  async previewTariffUpdate(chargeId: string, now = new Date()) {
+    return this.prisma.$transaction(async (tx) => {
+      const { charge, tariff } = await this.resolveTariffUpdate(tx, chargeId, now);
+      return tariffUpdateResult(charge, tariff);
+    });
+  }
+
+  /**
+   * Actualiza una cuota sin pagos ni ajustes al importe de la modalidad que hoy tiene la
+   * inscripción (decisión 257): por ejemplo, si la modalidad se cambió después de generar la
+   * cuota. Cambia tarifa e importe de esa cuota, con motivo y auditoría.
+   */
+  async updateTariff(chargeId: string, why: string, actorId: string, now = new Date()) {
+    const motive = reason(why);
+    return this.prisma.$transaction(async (tx) => {
+      const owner = await tx.monthlyCharge.findUnique({
+        where: { id: chargeId },
+        select: { studentId: true },
+      });
+      if (!owner) throw new DomainError('MONTHLY_CHARGE_NOT_FOUND', 'Cuota no encontrada');
+      // Mismo bloqueo que el cobro: un pago en curso no puede imputar al importe viejo.
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${owner.studentId}))`;
+      const { charge, tariff } = await this.resolveTariffUpdate(tx, chargeId, now);
+      const result = tariffUpdateResult(charge, tariff);
+      await tx.monthlyCharge.update({
+        where: { id: chargeId },
+        data: {
+          tariffId: tariff.id,
+          baseAmount: tariff.amount,
+          finalAmount: new Prisma.Decimal(tariff.amount).minus(charge.discountAmount),
+        },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actorId,
+          action: 'UPDATE',
+          entityType: 'MONTHLY_CHARGE',
+          entityId: chargeId,
+          reason: motive,
+          before: { tariffId: charge.tariffId, baseAmount: charge.baseAmount.toFixed(2) },
+          after: { tariffId: tariff.id, baseAmount: tariff.amount },
+          metadata: { studentId: charge.studentId, source: 'TARIFF_UPDATE' },
+        },
+      });
+      return result;
+    });
+  }
+
+  private async resolveTariffUpdate(tx: Prisma.TransactionClient, chargeId: string, now: Date) {
+    const charge = await tx.monthlyCharge.findUnique({
+      where: { id: chargeId },
+      include: {
+        tariff: { select: { name: true } },
+        adjustments: { select: { id: true, reversalOfId: true } },
+        allocations: { where: { payment: { status: 'CONFIRMED' } }, select: { amount: true } },
+        enrollment: { select: { classId: true, tariff: { select: { id: true, name: true } } } },
+      },
+    });
+    if (!charge) throw new DomainError('MONTHLY_CHARGE_NOT_FOUND', 'Cuota no encontrada');
+    const tariffs = (
+      await tx.tariff.findMany({ where: { classId: charge.enrollment.classId } })
+    ).map(mapTariff);
+    const currentPeriod = businessDayAt(
+      now,
+      process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
+    ).date.slice(0, 7);
+    const tariff = pickTariff(
+      tariffs,
+      isoPeriod(charge.period),
+      currentPeriod,
+      charge.enrollment.tariff,
+    );
+    assertTariffUpdatable(
+      {
+        ...charge,
+        paid: charge.allocations.reduce((sum, row) => sum.plus(row.amount), new Prisma.Decimal(0)),
+      },
+      { id: tariff.id, amount: new Prisma.Decimal(tariff.amount) },
+    );
+    return { charge, tariff };
   }
 
   /**
