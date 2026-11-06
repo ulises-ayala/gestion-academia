@@ -40,7 +40,7 @@ Los `*.integration.spec.ts` escriben en la base y **solo corren si `DATABASE_URL
 - Si el host no es `localhost`/`127.0.0.1`: solo se permite `npm run db:deploy` (aplica migraciones ya commiteadas). Nunca `db:migrate`, `prisma migrate dev`, `migrate reset`, `db push`, `db:seed` ni SQL que escriba.
 - Las migraciones nuevas se escriben a mano en `packages/database/prisma/migrations/<timestamp>_<nombre>/migration.sql` (o con `migrate dev` contra el Postgres local de Docker) y se prueban en local o en CI.
 - En Render, `render:start:api` ya corre `db:deploy` al arrancar: las migraciones mergeadas a `main` se aplican solas en el próximo deploy.
-- Nunca imprimir, copiar ni commitear el contenido de `.env`, contraseñas, tokens ni connection strings. Las credenciales viven solo en Render.
+- Nunca imprimir, copiar ni commitear el contenido de `.env`, contraseñas, tokens ni connection strings. Las credenciales viven solo en Render. Única excepción: los secretos `BACKUP_DATABASE_URL` y `BACKUP_PASSPHRASE` de GitHub Actions para el respaldo cifrado cada 3 días (ver `docs/backups.md`).
 - Datos reales de alumnos (planillas, exportaciones, respaldos) nunca se versionan (ver `.gitignore`).
 
 ## Git

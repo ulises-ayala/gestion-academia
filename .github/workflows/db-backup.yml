@@ -1,0 +1,69 @@
+# Respaldo de la base de producción (Neon) cada 3 días, cifrado, como archivo del workflow.
+# Ver docs/backups.md para configurar los secretos y para restaurar.
+name: Respaldo de la base
+
+on:
+  schedule:
+    # 06:00 UTC (03:00 en Argentina) los días 1, 4, 7, … de cada mes.
+    - cron: '0 6 */3 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+    steps:
+      - name: Verificar los secretos
+        run: |
+          if [ -z "$BACKUP_DATABASE_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Faltan los secretos BACKUP_DATABASE_URL o BACKUP_PASSPHRASE (ver docs/backups.md)."
+            exit 1
+          fi
+
+      - name: Instalar pg_dump 16 (misma versión que Neon)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq curl ca-certificates gnupg
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-16
+          /usr/lib/postgresql/16/bin/pg_dump --version
+
+      - name: Respaldar, verificar y cifrar
+        run: |
+          set -euo pipefail
+          STAMP="$(TZ=America/Argentina/Buenos_Aires date +%Y-%m-%d_%H%M)"
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+          umask 077
+          /usr/lib/postgresql/16/bin/pg_dump "$BACKUP_DATABASE_URL" \
+            --format=custom --no-owner --no-privileges --file=carmesi.dump
+          # El respaldo tiene que poder leerse antes de guardarlo.
+          /usr/lib/postgresql/16/bin/pg_restore --list carmesi.dump > /dev/null
+          echo "Tablas respaldadas: $(/usr/lib/postgresql/16/bin/pg_restore --list carmesi.dump | grep -c ' TABLE DATA ')"
+          gpg --batch --yes --pinentry-mode loopback --symmetric --cipher-algo AES256 \
+            --passphrase "$BACKUP_PASSPHRASE" \
+            --output "carmesi-$STAMP.dump.gpg" carmesi.dump
+          # Solo se sube el archivo cifrado.
+          shred -u carmesi.dump
+
+      - name: Guardar el respaldo cifrado (90 días)
+        uses: actions/upload-artifact@v4
+        with:
+          name: carmesi-${{ env.STAMP }}
+          path: carmesi-${{ env.STAMP }}.dump.gpg
+          retention-days: 90
+          if-no-files-found: error
