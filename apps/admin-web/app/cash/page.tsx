@@ -35,6 +35,9 @@ export default function CashPage() {
   const [currentLoading, setCurrentLoading] = useState(true);
   const [history, setHistory] = useState<CashShiftListDto | null>(null);
   const [selected, setSelected] = useState<CashShiftDto | null>(null);
+  /** Turno cuyo detalle está abierto (en un popup), mientras carga o si falló. */
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const [detailError, setDetailError] = useState('');
   const [declared, setDeclared] = useState<Record<PaymentMethodDto, string>>({
     CASH: '',
     MERCADO_PAGO: '',
@@ -87,6 +90,7 @@ export default function CashPage() {
     setCurrent(null);
     setHistory(null);
     setSelected(null);
+    setDetailId(null);
     setClosing(false);
     void load(controller.signal);
     return () => controller.abort();
@@ -123,13 +127,25 @@ export default function CashPage() {
       setBusy(false);
     }
   }
+  // El detalle se abre en un popup al instante: carga ahí y, si falla, muestra el error ahí
+  // (antes aparecía debajo de la tabla y el error arriba de todo, fuera de la vista).
   async function detail(id: string) {
+    setDetailId(id);
+    setSelected(null);
+    setDetailError('');
     try {
       setSelected(await apiRequest<CashShiftDto>(`/cash-shifts/${id}`));
     } catch (error) {
-      setMessage(error instanceof ApiClientError ? error.message : 'No se pudo cargar el cierre.');
+      setDetailError(
+        error instanceof ApiClientError ? error.message : 'No se pudo cargar el detalle del turno.',
+      );
     }
   }
+  const closeDetail = () => {
+    setDetailId(null);
+    setSelected(null);
+    setDetailError('');
+  };
   async function consolidate() {
     try {
       setConsolidated(
@@ -480,76 +496,93 @@ export default function CashPage() {
           <p>Todavía no hay turnos para mostrar.</p>
         )}
       </section>
-      {selected && (
-        <section className="panel">
+      {detailId && (
+        <CashDialog
+          titleId="shift-detail-title"
+          busy={false}
+          className="cash-detail-dialog"
+          onClose={closeDetail}
+        >
           <div className="cash-heading">
-            <h2>Detalle del turno</h2>
-            <button className="secondary" onClick={() => setSelected(null)}>
-              Cerrar detalle
+            <h2 id="shift-detail-title">Detalle del turno</h2>
+            <button className="secondary" onClick={closeDetail}>
+              Cerrar
             </button>
           </div>
-          <p>
-            {selected.user.username} · {new Date(selected.openedAt).toLocaleString('es-AR')}
-          </p>
-          {selected.hasPostCloseMovements && (
-            <p className="form-message">
-              Hubo movimientos posteriores al cierre. El cierre original se conserva.
+          {detailError ? (
+            <p className="error" role="alert">
+              {detailError}
             </p>
-          )}
-          <h3>Cierre original</h3>
-          <ClosingLines lines={selected.closingLines} />
-          {selected.corrections.length > 0 || selected.hasPostCloseMovements ? (
+          ) : !selected ? (
+            <p className="modal-copy" role="status">
+              Cargando el turno…
+            </p>
+          ) : (
             <>
-              <h3>Estado corregido</h3>
-              <ClosingLines lines={selected.correctedByMethod} />
+              <p>
+                {selected.user.username} · {new Date(selected.openedAt).toLocaleString('es-AR')}
+              </p>
+              {selected.hasPostCloseMovements && (
+                <p className="form-message">
+                  Hubo movimientos posteriores al cierre. El cierre original se conserva.
+                </p>
+              )}
+              <h3>Cierre original</h3>
+              <ClosingLines lines={selected.closingLines} />
+              {selected.corrections.length > 0 || selected.hasPostCloseMovements ? (
+                <>
+                  <h3>Estado corregido</h3>
+                  <ClosingLines lines={selected.correctedByMethod} />
+                </>
+              ) : null}
+              {can('cash:reconcile') && (
+                <div className="cash-correction">
+                  <h3>Corregir declaración</h3>
+                  <p>La corrección es append-only: el cierre original no se modifica.</p>
+                  <div className="cash-range">
+                    <label>
+                      Medio
+                      <select
+                        value={correctionMethod}
+                        onChange={(event) =>
+                          setCorrectionMethod(event.target.value as PaymentMethodDto)
+                        }
+                      >
+                        {methods.map((method) => (
+                          <option key={method} value={method}>
+                            {labels[method]}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Declarado corregido
+                      <input
+                        inputMode="decimal"
+                        value={correctedDeclared}
+                        onChange={(event) => setCorrectedDeclared(event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Motivo
+                      <input
+                        value={correctionReason}
+                        onChange={(event) => setCorrectionReason(event.target.value)}
+                      />
+                    </label>
+                    <button
+                      disabled={!correctedDeclared || !correctionReason.trim()}
+                      onClick={() => void correct()}
+                    >
+                      Guardar corrección
+                    </button>
+                  </div>
+                </div>
+              )}
+              <MovementList shift={selected} />
             </>
-          ) : null}
-          {can('cash:reconcile') && (
-            <div className="cash-correction">
-              <h3>Corregir declaración</h3>
-              <p>La corrección es append-only: el cierre original no se modifica.</p>
-              <div className="cash-range">
-                <label>
-                  Medio
-                  <select
-                    value={correctionMethod}
-                    onChange={(event) =>
-                      setCorrectionMethod(event.target.value as PaymentMethodDto)
-                    }
-                  >
-                    {methods.map((method) => (
-                      <option key={method} value={method}>
-                        {labels[method]}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Declarado corregido
-                  <input
-                    inputMode="decimal"
-                    value={correctedDeclared}
-                    onChange={(event) => setCorrectedDeclared(event.target.value)}
-                  />
-                </label>
-                <label>
-                  Motivo
-                  <input
-                    value={correctionReason}
-                    onChange={(event) => setCorrectionReason(event.target.value)}
-                  />
-                </label>
-                <button
-                  disabled={!correctedDeclared || !correctionReason.trim()}
-                  onClick={() => void correct()}
-                >
-                  Guardar corrección
-                </button>
-              </div>
-            </div>
           )}
-          <MovementList shift={selected} />
-        </section>
+        </CashDialog>
       )}
       {can('cash:reconcile') && (
         <section className="panel cash-consolidated">
@@ -600,8 +633,15 @@ function CashDialog({
   titleId,
   busy,
   onClose,
+  className = 'cash-close-dialog',
   children,
-}: Readonly<{ titleId: string; busy: boolean; onClose(): void; children: ReactNode }>) {
+}: Readonly<{
+  titleId: string;
+  busy: boolean;
+  onClose(): void;
+  className?: string;
+  children: ReactNode;
+}>) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
@@ -615,7 +655,7 @@ function CashDialog({
   return (
     <dialog
       ref={dialog}
-      className="modal card generate-charge-dialog cash-close-dialog"
+      className={`modal card generate-charge-dialog ${className}`}
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault();

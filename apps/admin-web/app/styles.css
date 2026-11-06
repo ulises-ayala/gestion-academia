@@ -3356,3 +3356,12 @@ td .link-button {
     justify-self: start;
   }
 }
+dialog.cash-detail-dialog {
+  width: min(56rem, calc(100% - 2rem));
+}
+.cash-detail-dialog .cash-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
