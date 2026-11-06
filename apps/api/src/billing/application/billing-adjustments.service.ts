@@ -12,6 +12,7 @@ import { businessDayAt } from '../../dashboard/application/business-day';
 import { validateChargeDates } from '../domain/billing';
 import { pickTariff } from '../domain/charge-generation';
 import { assertTariffUpdatable } from '../domain/charge-tariff-update';
+import { assertChargeVoidable } from '../domain/charge-void';
 import { mapTariff } from '../infrastructure/prisma-billing.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
@@ -428,6 +429,53 @@ export class BillingAdjustmentsService {
     });
   }
 
+  /**
+   * Anula una cuota generada por error (decisión 258): sin pagos imputados, con motivo y
+   * auditoría. Queda guardada como anulada y deja de contar como deuda; su recargo, becas y
+   * descuentos quedan con ella. No toca pagos ni caja.
+   */
+  async voidCharge(chargeId: string, why: string, actorId: string) {
+    const motive = reason(why);
+    return this.prisma.$transaction(async (tx) => {
+      const owner = await tx.monthlyCharge.findUnique({
+        where: { id: chargeId },
+        select: { studentId: true },
+      });
+      if (!owner) throw new DomainError('MONTHLY_CHARGE_NOT_FOUND', 'Cuota no encontrada');
+      // Mismo bloqueo que el cobro: un pago en curso no puede imputar a la cuota que se anula.
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${owner.studentId}))`;
+      const charge = await tx.monthlyCharge.findUniqueOrThrow({
+        where: { id: chargeId },
+        include: {
+          allocations: { where: { payment: { status: 'CONFIRMED' } }, select: { amount: true } },
+        },
+      });
+      assertChargeVoidable({
+        status: charge.status,
+        paid: charge.allocations.reduce((sum, row) => sum.plus(row.amount), new Prisma.Decimal(0)),
+      });
+      await tx.monthlyCharge.update({ where: { id: chargeId }, data: { status: 'VOID' } });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actorId,
+          action: 'VOID',
+          entityType: 'MONTHLY_CHARGE',
+          entityId: chargeId,
+          reason: motive,
+          before: {
+            status: charge.status,
+            kind: charge.kind,
+            period: isoPeriod(charge.period),
+            baseAmount: charge.baseAmount.toFixed(2),
+          },
+          after: { status: 'VOID' },
+          metadata: { studentId: charge.studentId, source: 'CHARGE_VOID' },
+        },
+      });
+      return { chargeId, status: 'VOID' as const };
+    });
+  }
+
   /** Lo que haría "Actualizar importe": la tarifa de la modalidad de la inscripción para ese mes. */
   async previewTariffUpdate(chargeId: string, now = new Date()) {
     return this.prisma.$transaction(async (tx) => {
@@ -554,7 +602,12 @@ export class BillingAdjustmentsService {
         );
       // Una cuota mensual por inscripción y mes (índice parcial de la decisión 194).
       const existing = await tx.monthlyCharge.count({
-        where: { enrollmentId: target.id, period: charge.period, kind: 'MONTHLY' },
+        where: {
+          enrollmentId: target.id,
+          period: charge.period,
+          kind: 'MONTHLY',
+          status: { not: 'VOID' },
+        },
       });
       if (existing > 0)
         throw new DomainError(

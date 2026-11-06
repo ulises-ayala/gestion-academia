@@ -91,7 +91,7 @@ describe.runIf(integrationDatabaseEnabled)(
       });
       await prisma.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
       await prisma.payment.deleteMany({ where: { id: { in: paymentIds } } });
-      await prisma.monthlyCharge.deleteMany({ where: { id: fixture.charge.id } });
+      await prisma.monthlyCharge.deleteMany({ where: { enrollmentId: fixture.enrollment.id } });
       await prisma.enrollment.deleteMany({ where: { id: fixture.enrollment.id } });
       await prisma.tariff.deleteMany({ where: { classId: fixture.academyClass.id } });
       await prisma.student.deleteMany({ where: { id: fixture.student.id } });
@@ -190,6 +190,50 @@ describe.runIf(integrationDatabaseEnabled)(
           where: { id: fixture.charge.id },
         });
         expect(charge.baseAmount.toFixed(2)).toBe('40000.00');
+      } finally {
+        await cleanup(fixture);
+      }
+    });
+
+    it('anula una cuota sin pagos y deja generar otra para ese mes', async () => {
+      const fixture = await createFixture();
+      try {
+        const payment = await prisma.payment.create({
+          data: {
+            studentId: fixture.student.id,
+            amount: 10000,
+            createdByUserId: fixture.user.id,
+            paidAt: NOW,
+            allocations: { create: { monthlyChargeId: fixture.charge.id, amount: 10000 } },
+          },
+        });
+        await expect(
+          service.voidCharge(fixture.charge.id, 'Con pago', fixture.user.id),
+        ).rejects.toMatchObject({ code: 'MONTHLY_CHARGE_PAID_CONFLICT' });
+        await prisma.payment.update({ where: { id: payment.id }, data: { status: 'VOID' } });
+        await expect(
+          service.voidCharge(fixture.charge.id, 'Se generó por error', fixture.user.id),
+        ).resolves.toEqual({ chargeId: fixture.charge.id, status: 'VOID' });
+        await expect(
+          prisma.auditLog.findFirst({ where: { entityId: fixture.charge.id, action: 'VOID' } }),
+        ).resolves.toMatchObject({ reason: 'Se generó por error' });
+        await expect(
+          service.voidCharge(fixture.charge.id, 'Otra vez', fixture.user.id),
+        ).rejects.toMatchObject({ code: 'MONTHLY_CHARGE_VOID_CONFLICT' });
+        // El mes queda libre: se puede generar la cuota que corresponde.
+        await expect(
+          prisma.monthlyCharge.create({
+            data: {
+              studentId: fixture.student.id,
+              enrollmentId: fixture.enrollment.id,
+              tariffId: fixture.reduced.id,
+              period: new Date('2026-11-01T00:00:00.000Z'),
+              baseAmount: 25000,
+              finalAmount: 25000,
+              dueDate: new Date('2026-11-10T00:00:00.000Z'),
+            },
+          }),
+        ).resolves.toMatchObject({ status: 'PENDING' });
       } finally {
         await cleanup(fixture);
       }

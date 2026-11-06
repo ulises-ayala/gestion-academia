@@ -74,7 +74,7 @@ export class PrismaChargeGenerationRepository implements ChargeGenerationReposit
 
   async chargeExists(enrollmentId: string, period: string) {
     const count = await this.prisma.monthlyCharge.count({
-      where: { enrollmentId, period: periodDate(period), kind: 'MONTHLY' },
+      where: { enrollmentId, period: periodDate(period), kind: 'MONTHLY', status: { not: 'VOID' } },
     });
     return count > 0;
   }

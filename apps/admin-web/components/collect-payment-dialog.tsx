@@ -73,6 +73,7 @@ import { whatsappNumber, whatsappReceiptUrl } from '../lib/whatsapp-receipt';
 import { useAuth } from './auth-provider';
 import { ChargeDueDateModal } from './charge-due-date-modal';
 import { ChargeTariffUpdateModal } from './charge-tariff-update-modal';
+import { ChargeVoidModal } from './charge-void-modal';
 import { GenerateChargeDialog } from './generate-charge-dialog';
 
 const freshPick = (amount = ''): TenderPick => ({ mode: 'CASH', amount, split: emptyTenders });
@@ -162,6 +163,7 @@ export function CollectPaymentDialog({
   const [generating, setGenerating] = useState(false);
   const [dueDateTarget, setDueDateTarget] = useState<MonthlyChargeDto | null>(null);
   const [tariffTarget, setTariffTarget] = useState<MonthlyChargeDto | null>(null);
+  const [voidTarget, setVoidTarget] = useState<MonthlyChargeDto | null>(null);
   const [saving, setSaving] = useState(false);
   const [tried, setTried] = useState(false);
   const [notice, setNotice] = useState('');
@@ -1022,6 +1024,16 @@ export function CollectPaymentDialog({
                                     Actualizar importe
                                   </button>
                                 )}
+                                {can('charges:manage') && Number(charge.paidAmount) === 0 && (
+                                  <button
+                                    type="button"
+                                    className="link-button danger-link"
+                                    disabled={saving}
+                                    onClick={() => setVoidTarget(charge)}
+                                  >
+                                    Anular cuota
+                                  </button>
+                                )}
                                 {chargeActions?.(charge)}
                               </span>
                             )}
@@ -1325,6 +1337,20 @@ export function CollectPaymentDialog({
           }}
         />
       )}
+      {voidTarget && (
+        <ChargeVoidModal
+          charge={voidTarget}
+          onClose={() => setVoidTarget(null)}
+          onSaved={() => {
+            setVoidTarget(null);
+            setChosen((current) => current.filter((id) => id !== voidTarget.id));
+            markChanged();
+            setAmountTouched(false);
+            setNotice(`Cuota de ${chargeLabel(voidTarget)} anulada.`);
+            if (student) void loadCharges(student.id).catch(() => undefined);
+          }}
+        />
+      )}
       {tariffTarget && (
         <ChargeTariffUpdateModal
           charge={tariffTarget}
@@ -1352,7 +1378,7 @@ export function CollectPaymentDialog({
       aria-labelledby="collect-title"
       onCancel={(event) => {
         event.preventDefault();
-        if (!generating && !dueDateTarget && !tariffTarget) close();
+        if (!generating && !dueDateTarget && !tariffTarget && !voidTarget) close();
       }}
     >
       {content}

@@ -653,6 +653,8 @@ export type ReverseMonthlyChargeAdjustmentDto = Readonly<{ reason: string }>;
 export type ChangeMonthlyChargeDueDateDto = Readonly<{ dueDate: string; reason: string }>;
 /** Pasar una cuota a otra clase del alumno (cambio de clase sin volver a cobrar). */
 export type MoveMonthlyChargeDto = Readonly<{ enrollmentId: string; reason: string }>;
+/** Anular una cuota generada por error (sin pagos imputados), con motivo. */
+export type VoidMonthlyChargeDto = Readonly<{ reason: string }>;
 /** Actualizar una cuota sin pagos a la modalidad (tarifa) de la inscripción. */
 export type UpdateMonthlyChargeTariffDto = Readonly<{ reason: string }>;
 /** Importe actual de la cuota y el que tendría con la modalidad de la inscripción. */

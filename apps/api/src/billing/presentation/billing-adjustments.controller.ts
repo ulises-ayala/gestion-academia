@@ -5,6 +5,7 @@ import type {
   MoveMonthlyChargeDto,
   ReverseMonthlyChargeAdjustmentDto,
   UpdateMonthlyChargeTariffDto,
+  VoidMonthlyChargeDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
@@ -118,6 +119,17 @@ export class BillingAdjustmentsController {
       input?.reason ?? '',
       actor.id,
     );
+  }
+
+  /** Anular una cuota generada por error, sin pagos imputados. */
+  @Post('monthly-charges/:chargeId/void')
+  @Permissions('charges:manage')
+  voidCharge(
+    @Param('chargeId') chargeId: string,
+    @Body() input: VoidMonthlyChargeDto | null,
+    @CurrentUser() actor: PublicAuthUser,
+  ) {
+    return this.service.voidCharge(parseUuid(chargeId, 'chargeId'), input?.reason ?? '', actor.id);
   }
 
   @Post('monthly-charges/:chargeId/late-fee/waive')

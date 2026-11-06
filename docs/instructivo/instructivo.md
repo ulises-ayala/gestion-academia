@@ -23,6 +23,7 @@ Guía práctica del sistema de gestión de la academia, organizada por perfil: *
 | Conceptos de cobro y cierres semanales y mensuales                      | No       | Sí             | Sí        |
 | Quitar recargo, becas del profesor y descuentos                         | No       | Sí             | Sí        |
 | Pasar una cuota a otra clase                                            | No       | Sí             | Sí        |
+| Anular una cuota generada por error (sin pagos)                         | No       | Sí             | Sí        |
 | Corregir la declaración de un cierre y registrar la entrega de efectivo | No       | Sí             | Sí        |
 | Borrar clases de prueba sin registros                                   | No       | Sí             | Sí        |
 | Repartos de liquidación por clase                                       | No       | Sí             | Sí        |
@@ -169,6 +170,8 @@ Solo **Dirección** (las devoluciones las autoriza Charo). Devuelve todo o parte
 ![Historial de cobros](capturas/historial-cobros.png)
 
 ## Excepciones de cuotas
+
+- **Anular cuota**: para una cuota generada por error (un mes que no correspondía). En el cobro o el estado de cuenta, en la cuota, **Anular cuota** con motivo. Solo si no tiene pagos: si los tiene, primero **Corregir → Cuotas** en el pago para pasarlo a la cuota que corresponde (lo que sobre queda como saldo a favor). La cuota queda anulada, deja de ser deuda y ese mes se puede volver a generar.
 
 - **Quitar recargo**: en el estado de cuenta, en la cuota con recargo. Si el recargo ya se cobró, primero se anula el pago.
 - **Pasar una cuota a otra clase**: en la ficha, tabla Cuotas, **Pasar a otra clase** debajo del nombre de la clase. Se usa cuando un alumno pagó una clase y se cambió a otra: no se le cobra de nuevo.
