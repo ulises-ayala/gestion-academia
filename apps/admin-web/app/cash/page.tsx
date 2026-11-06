@@ -532,7 +532,10 @@ export default function CashPage() {
               {selected.corrections.length > 0 || selected.hasPostCloseMovements ? (
                 <>
                   <h3>Estado corregido</h3>
-                  <ClosingLines lines={selected.correctedByMethod} />
+                  <ClosingLines
+                    lines={selected.correctedByMethod}
+                    original={selected.closingLines}
+                  />
                 </>
               ) : null}
               {can('cash:reconcile') && (
@@ -749,38 +752,65 @@ function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
   );
 }
 
-/** Cierre por medio en una tabla: lo que dio el sistema, lo declarado y la diferencia. */
-function ClosingLines({ lines }: Readonly<{ lines: CashShiftDto['closingLines'] }>) {
+type ClosingLine = CashShiftDto['closingLines'][number];
+
+/** Los cuatro medios en el mismo orden; un turno viejo sin un medio lo muestra en cero. */
+const orderedLines = (lines: readonly ClosingLine[]): ClosingLine[] =>
+  methods.map(
+    (method) =>
+      lines.find((line) => line.method === method) ?? {
+        method,
+        expectedAmount: '0.00',
+        declaredAmount: '0.00',
+        differenceAmount: '0.00',
+      },
+  );
+
+/**
+ * Cierre por medio en cards alineadas: lo que dio el sistema, lo declarado y la diferencia
+ * (faltan, sobran o sin diferencia). Con `original`, marca lo que se corrigió y el valor de antes.
+ */
+function ClosingLines({
+  lines,
+  original,
+}: Readonly<{ lines: readonly ClosingLine[]; original?: readonly ClosingLine[] }>) {
+  const before = original ? orderedLines(original) : null;
   return (
-    <div className="table-wrap">
-      <table className="cash-lines">
-        <thead>
-          <tr>
-            <th>Medio</th>
-            <th>Sistema</th>
-            <th>Declarado</th>
-            <th>Diferencia</th>
-          </tr>
-        </thead>
-        <tbody>
-          {lines.map((line) => (
-            <tr key={line.method}>
-              <td data-label="Medio" data-method={line.method}>
-                <span className="cash-method">{labels[line.method]}</span>
-              </td>
-              <td data-label="Sistema" className="cash-amount">
-                {money(line.expectedAmount)}
-              </td>
-              <td data-label="Declarado" className="cash-amount">
-                {money(line.declaredAmount)}
-              </td>
-              <td data-label="Diferencia" className={moneyClass(line.differenceAmount)}>
-                {money(line.differenceAmount)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="cash-closing-grid">
+      {orderedLines(lines).map((line) => {
+        const previous = before?.find((item) => item.method === line.method);
+        const corrected = previous && previous.declaredAmount !== line.declaredAmount;
+        const difference = Number(line.differenceAmount);
+        return (
+          <article key={line.method} className="cash-closing-card" data-method={line.method}>
+            <header>
+              <span className="cash-method">{labels[line.method]}</span>
+              {corrected && <span className="cash-closing-tag">Corregido</span>}
+            </header>
+            <dl>
+              <div>
+                <dt>Sistema</dt>
+                <dd>{money(line.expectedAmount)}</dd>
+              </div>
+              <div>
+                <dt>Declarado</dt>
+                <dd>
+                  {money(line.declaredAmount)}
+                  {corrected && <small>antes {money(previous.declaredAmount)}</small>}
+                </dd>
+              </div>
+            </dl>
+            <p
+              className={`cash-closing-diff${difference < 0 ? ' is-short' : difference > 0 ? ' is-over' : ''}`}
+            >
+              <span>
+                {difference < 0 ? 'Faltan' : difference > 0 ? 'Sobran' : 'Sin diferencia'}
+              </span>
+              {difference !== 0 && <strong>{money(Math.abs(difference).toFixed(2))}</strong>}
+            </p>
+          </article>
+        );
+      })}
     </div>
   );
 }

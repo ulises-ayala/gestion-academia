@@ -285,22 +285,22 @@
   margin: var(--space-4) 0;
 }
 /* Un color por medio de pago, para distinguirlos de un vistazo. */
-:is(.cash-totals, .cash-lines) [data-method='CASH'] {
+:is(.cash-totals, .cash-closing-grid) [data-method='CASH'] {
   --method: var(--success);
   --method-soft: var(--success-soft);
   --method-border: var(--success-border);
 }
-:is(.cash-totals, .cash-lines) [data-method='MERCADO_PAGO'] {
+:is(.cash-totals, .cash-closing-grid) [data-method='MERCADO_PAGO'] {
   --method: var(--info);
   --method-soft: var(--info-soft);
   --method-border: var(--info-border);
 }
-:is(.cash-totals, .cash-lines) [data-method='TRANSFER'] {
+:is(.cash-totals, .cash-closing-grid) [data-method='TRANSFER'] {
   --method: var(--violet);
   --method-soft: var(--violet-soft);
   --method-border: var(--violet-border);
 }
-:is(.cash-totals, .cash-lines) [data-method='CARD'] {
+:is(.cash-totals, .cash-closing-grid) [data-method='CARD'] {
   --method: var(--brand);
   --method-soft: var(--brand-soft);
   --method-border: color-mix(in srgb, var(--brand) 28%, transparent);
@@ -3351,23 +3351,12 @@ dialog.generate-charge-dialog.cash-detail-dialog {
 .cash-detail-dialog h3 {
   margin: var(--space-2) 0 var(--space-2);
 }
-.cash-lines,
 .cash-movement-table {
   font-variant-numeric: tabular-nums;
 }
-/* Cuatro columnas cortas: más angosta, para que los importes queden cerca de su medio. */
-.cash-detail-dialog .table-wrap:has(> .cash-lines) {
-  max-width: 44rem;
-}
-.cash-lines th,
 .cash-movement-table th {
   white-space: nowrap;
 }
-.cash-lines .cash-method {
-  color: var(--method);
-  font-weight: var(--font-weight-semibold);
-}
-.cash-lines :is(th, td):not(:first-child),
 .cash-movement-table .cash-amount,
 .cash-movement-table th:nth-child(5) {
   text-align: right;
@@ -3398,7 +3387,6 @@ dialog.generate-charge-dialog.cash-detail-dialog {
   margin-top: var(--space-2);
 }
 @media (max-width: 48rem) {
-  .cash-lines :is(th, td):not(:first-child),
   .cash-movement-table .cash-amount {
     text-align: left;
   }
@@ -3408,4 +3396,101 @@ dialog.generate-charge-dialog.cash-detail-dialog {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+}
+/* Cierre por medio: cuatro cards en el mismo orden en "Cierre original" y "Estado corregido". */
+.cash-closing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.cash-closing-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--method-border);
+  border-radius: var(--radius-md);
+  background: var(--method-soft);
+  font-variant-numeric: tabular-nums;
+}
+.cash-closing-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 1.5rem;
+}
+.cash-closing-card .cash-method {
+  color: var(--method);
+  font-weight: var(--font-weight-semibold);
+}
+.cash-closing-tag {
+  padding: 0.125rem var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.cash-closing-card dl {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  margin: 0;
+}
+.cash-closing-card dl > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.cash-closing-card dt {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  letter-spacing: normal;
+  text-transform: none;
+}
+.cash-closing-card dd {
+  display: grid;
+  justify-items: end;
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+.cash-closing-card dd small {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+}
+.modal .cash-closing-diff,
+.cash-closing-diff {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--method-border);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.cash-closing-diff strong {
+  font-size: 1rem;
+  white-space: nowrap;
+}
+.cash-closing-diff.is-short {
+  color: var(--destructive);
+}
+.cash-closing-diff.is-over {
+  color: var(--warning);
+}
+@media (max-width: 60rem) {
+  .cash-closing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 30rem) {
+  .cash-closing-grid {
+    grid-template-columns: 1fr;
+  }
 }
