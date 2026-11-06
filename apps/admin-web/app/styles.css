@@ -272,8 +272,7 @@
   text-align: center;
 }
 .cash-heading,
-.cash-range,
-.cash-movements article {
+.cash-range {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -286,22 +285,22 @@
   margin: var(--space-4) 0;
 }
 /* Un color por medio de pago, para distinguirlos de un vistazo. */
-.cash-totals [data-method='CASH'] {
+:is(.cash-totals, .cash-lines) [data-method='CASH'] {
   --method: var(--success);
   --method-soft: var(--success-soft);
   --method-border: var(--success-border);
 }
-.cash-totals [data-method='MERCADO_PAGO'] {
+:is(.cash-totals, .cash-lines) [data-method='MERCADO_PAGO'] {
   --method: var(--info);
   --method-soft: var(--info-soft);
   --method-border: var(--info-border);
 }
-.cash-totals [data-method='TRANSFER'] {
+:is(.cash-totals, .cash-lines) [data-method='TRANSFER'] {
   --method: var(--violet);
   --method-soft: var(--violet-soft);
   --method-border: var(--violet-border);
 }
-.cash-totals [data-method='CARD'] {
+:is(.cash-totals, .cash-lines) [data-method='CARD'] {
   --method: var(--brand);
   --method-soft: var(--brand-soft);
   --method-border: color-mix(in srgb, var(--brand) 28%, transparent);
@@ -425,15 +424,6 @@
 .cash-totals strong {
   font-size: 1.2rem;
 }
-.cash-movements {
-  display: grid;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-.cash-movements article {
-  padding: var(--space-3);
-  border-bottom: 1px solid var(--border);
-}
 .cash-range {
   align-items: flex-end;
   justify-content: flex-start;
@@ -458,8 +448,7 @@
   .page-heading .cash-handover-button {
     width: 100%;
   }
-  .cash-heading,
-  .cash-movements article {
+  .cash-heading {
     align-items: stretch;
     flex-direction: column;
   }
@@ -3356,8 +3345,63 @@ td .link-button {
     justify-self: start;
   }
 }
-dialog.cash-detail-dialog {
-  width: min(56rem, calc(100% - 2rem));
+dialog.generate-charge-dialog.cash-detail-dialog {
+  width: min(72rem, calc(100% - 2rem));
+}
+.cash-detail-dialog h3 {
+  margin: var(--space-2) 0 var(--space-2);
+}
+.cash-lines,
+.cash-movement-table {
+  font-variant-numeric: tabular-nums;
+}
+/* Cuatro columnas cortas: más angosta, para que los importes queden cerca de su medio. */
+.cash-detail-dialog .table-wrap:has(> .cash-lines) {
+  max-width: 44rem;
+}
+.cash-lines th,
+.cash-movement-table th {
+  white-space: nowrap;
+}
+.cash-lines .cash-method {
+  color: var(--method);
+  font-weight: var(--font-weight-semibold);
+}
+.cash-lines :is(th, td):not(:first-child),
+.cash-movement-table .cash-amount,
+.cash-movement-table th:nth-child(5) {
+  text-align: right;
+}
+.cash-amount {
+  white-space: nowrap;
+}
+.cash-amount.is-negative {
+  color: var(--destructive);
+}
+.cash-movement-table .cash-amount.is-positive {
+  color: var(--success);
+}
+.cash-movement-table td:first-child,
+.cash-movement-table td:nth-child(2),
+.cash-movement-table td:nth-child(4),
+.cash-movement-table td:last-child {
+  white-space: nowrap;
+}
+.cash-movement-type {
+  font-weight: var(--font-weight-semibold);
+}
+.cash-movement-type.is-reversal,
+.cash-movement-type.is-refund {
+  color: var(--destructive);
+}
+.cash-movement-list {
+  margin-top: var(--space-2);
+}
+@media (max-width: 48rem) {
+  .cash-lines :is(th, td):not(:first-child),
+  .cash-movement-table .cash-amount {
+    text-align: left;
+  }
 }
 .cash-detail-dialog .cash-heading {
   display: flex;

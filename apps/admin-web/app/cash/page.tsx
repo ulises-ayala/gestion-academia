@@ -667,49 +667,80 @@ function CashDialog({
   );
 }
 
+const movementLabel = (type: CashShiftDto['movements'][number]['type']) =>
+  type === 'COLLECTION' ? 'Cobro' : type === 'REFUND' ? 'Devolución' : 'Anulación';
+const moneyClass = (value: string) =>
+  Number(value) < 0
+    ? 'cash-amount is-negative'
+    : Number(value) > 0
+      ? 'cash-amount is-positive'
+      : 'cash-amount';
+
+/** Movimientos del turno en una tabla: hora, tipo, alumno, medio e importe alineados. */
 function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
   return (
-    <div>
+    <div className="cash-movement-list">
       <h3>Movimientos</h3>
       {shift.movements.length ? (
-        <div className="cash-movements">
-          {shift.movements.map((item) => (
-            <article key={item.id}>
-              <span>
-                {new Date(item.createdAt).toLocaleTimeString('es-AR', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </span>
-              <strong>
-                {item.type === 'COLLECTION'
-                  ? 'Cobro'
-                  : item.type === 'REFUND'
-                    ? 'Devolución'
-                    : 'Anulación'}
-              </strong>
-              <span>
-                {item.student
-                  ? `${item.student.firstName} ${item.student.lastName}`
-                  : `${item.walkInName ?? ''} (eventual)`}
-              </span>
-              <span>{labels[item.method]}</span>
-              <strong>
-                {item.type === 'COLLECTION' ? '+' : '-'}
-                {money(item.amount)}
-              </strong>
-              <Link
-                className="text-link"
-                href={
-                  item.student
-                    ? `/payments?tab=history&studentId=${item.student.id}`
-                    : '/payments?tab=history'
-                }
-              >
-                Ver cobro
-              </Link>
-            </article>
-          ))}
+        <div className="table-wrap">
+          <table className="cash-movement-table">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Tipo</th>
+                <th>Alumno</th>
+                <th>Medio</th>
+                <th>Importe</th>
+                <th>
+                  <span className="sr-only">Acciones</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {shift.movements.map((item) => {
+                const signed = item.type === 'COLLECTION' ? item.amount : `-${item.amount}`;
+                return (
+                  <tr key={item.id}>
+                    <td data-label="Hora">
+                      {new Date(item.createdAt).toLocaleString('es-AR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </td>
+                    <td data-label="Tipo">
+                      <span className={`cash-movement-type is-${item.type.toLowerCase()}`}>
+                        {movementLabel(item.type)}
+                      </span>
+                    </td>
+                    <td data-label="Alumno">
+                      {item.student
+                        ? `${item.student.firstName} ${item.student.lastName}`
+                        : `${item.walkInName ?? ''} (eventual)`}
+                    </td>
+                    <td data-label="Medio">{labels[item.method]}</td>
+                    <td data-label="Importe" className={moneyClass(signed)}>
+                      {item.type === 'COLLECTION' ? '+' : '−'}
+                      {money(item.amount)}
+                    </td>
+                    <td data-label="Acciones">
+                      <Link
+                        className="text-link"
+                        href={
+                          item.student
+                            ? `/payments?tab=history&studentId=${item.student.id}`
+                            : '/payments?tab=history'
+                        }
+                      >
+                        Ver cobro
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       ) : (
         <p>No hay movimientos en este turno.</p>
@@ -717,17 +748,39 @@ function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
     </div>
   );
 }
+
+/** Cierre por medio en una tabla: lo que dio el sistema, lo declarado y la diferencia. */
 function ClosingLines({ lines }: Readonly<{ lines: CashShiftDto['closingLines'] }>) {
   return (
-    <div className="cash-totals">
-      {lines.map((line) => (
-        <article key={line.method}>
-          <strong>{labels[line.method]}</strong>
-          <span>Sistema: {money(line.expectedAmount)}</span>
-          <span>Declarado: {money(line.declaredAmount)}</span>
-          <span>Diferencia: {money(line.differenceAmount)}</span>
-        </article>
-      ))}
+    <div className="table-wrap">
+      <table className="cash-lines">
+        <thead>
+          <tr>
+            <th>Medio</th>
+            <th>Sistema</th>
+            <th>Declarado</th>
+            <th>Diferencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lines.map((line) => (
+            <tr key={line.method}>
+              <td data-label="Medio" data-method={line.method}>
+                <span className="cash-method">{labels[line.method]}</span>
+              </td>
+              <td data-label="Sistema" className="cash-amount">
+                {money(line.expectedAmount)}
+              </td>
+              <td data-label="Declarado" className="cash-amount">
+                {money(line.declaredAmount)}
+              </td>
+              <td data-label="Diferencia" className={moneyClass(line.differenceAmount)}>
+                {money(line.differenceAmount)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
