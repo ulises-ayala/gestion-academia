@@ -25,6 +25,8 @@ const debtor = {
   originalAmount: new Prisma.Decimal('80000'),
   paidAmount: new Prisma.Decimal('10000'),
   outstandingAmount: new Prisma.Decimal('70000'),
+  overdueAmount: new Prisma.Decimal('40000'),
+  phone: '3705032792',
 };
 
 const run = async (scope: ReceivablesScopeDto, sort: ReceivablesSortDto = 'oldest', q?: string) => {
@@ -71,8 +73,10 @@ describe('ReceivablesService', () => {
       partialChargeCount: 1,
       paidAmount: '10000.00',
       outstandingAmount: '70000.00',
+      overdueAmount: '40000.00',
       oldestDueDate: '2026-07-10',
     });
+    expect(result.items[0]?.student.phone).toBe('3705032792');
     expect(sql).toContain("p.status = 'CONFIRMED'");
     expect(sql).toContain("mc.status <> 'VOID'");
     expect(sql).toContain('student_amount_delta');

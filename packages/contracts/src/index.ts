@@ -856,7 +856,8 @@ export type ReceivablesSummaryDto = Readonly<{
   totalOutstanding: string;
 }>;
 export type ReceivableDebtorDto = Readonly<{
-  student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName'>>;
+  /** phone: para avisarle por WhatsApp. */
+  student: Readonly<Pick<StudentDto, 'id' | 'dni' | 'firstName' | 'lastName' | 'phone'>>;
   openChargeCount: number;
   overdueChargeCount: number;
   partialChargeCount: number;
@@ -864,6 +865,8 @@ export type ReceivableDebtorDto = Readonly<{
   originalAmount: string;
   paidAmount: string;
   outstandingAmount: string;
+  /** Saldo de las cuotas vencidas (dentro del filtro elegido). */
+  overdueAmount: string;
 }>;
 export type ReceivablesDto = Readonly<{
   scope: ReceivablesScopeDto;

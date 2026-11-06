@@ -19,6 +19,7 @@ type DebtorRow = {
   dni: string;
   firstName: string;
   lastName: string;
+  phone: string | null;
   openChargeCount: bigint;
   overdueChargeCount: bigint;
   partialChargeCount: bigint;
@@ -26,6 +27,7 @@ type DebtorRow = {
   originalAmount: Prisma.Decimal;
   paidAmount: Prisma.Decimal;
   outstandingAmount: Prisma.Decimal;
+  overdueAmount: Prisma.Decimal;
 };
 
 export type ReceivablesQuery = Readonly<{
@@ -117,17 +119,18 @@ export class ReceivablesService {
       this.prisma.$queryRaw<DebtorRow[]>(Prisma.sql`
         ${baseCtes}
         SELECT s.id AS "studentId", s.dni, s.first_name AS "firstName",
-               s.last_name AS "lastName",
+               s.last_name AS "lastName", s.phone,
                COUNT(*) AS "openChargeCount",
                COUNT(*) FILTER (WHERE fc.due_date < ${today}) AS "overdueChargeCount",
                COUNT(*) FILTER (WHERE fc.status = 'PARTIAL') AS "partialChargeCount",
                MIN(fc.due_date) AS "oldestDueDate",
                SUM(fc.final_amount) AS "originalAmount",
                SUM(fc.paid) AS "paidAmount",
-               SUM(fc.outstanding) AS "outstandingAmount"
+               SUM(fc.outstanding) AS "outstandingAmount",
+               COALESCE(SUM(fc.outstanding) FILTER (WHERE fc.due_date < ${today}), 0) AS "overdueAmount"
         FROM filtered_charges fc
         JOIN students s ON s.id = fc.student_id
-        GROUP BY s.id, s.dni, s.first_name, s.last_name
+        GROUP BY s.id, s.dni, s.first_name, s.last_name, s.phone
         ORDER BY ${orderBy}
         LIMIT ${query.pageSize} OFFSET ${(query.page - 1) * query.pageSize}
       `),
@@ -159,6 +162,7 @@ export class ReceivablesService {
           dni: item.dni,
           firstName: item.firstName,
           lastName: item.lastName,
+          phone: item.phone,
         },
         openChargeCount: Number(item.openChargeCount),
         overdueChargeCount: Number(item.overdueChargeCount),
@@ -167,6 +171,7 @@ export class ReceivablesService {
         originalAmount: item.originalAmount.toFixed(2),
         paidAmount: item.paidAmount.toFixed(2),
         outstandingAmount: item.outstandingAmount.toFixed(2),
+        overdueAmount: new Prisma.Decimal(item.overdueAmount).toFixed(2),
       })),
       total: Number(summary.totalStudents),
       page: query.page,

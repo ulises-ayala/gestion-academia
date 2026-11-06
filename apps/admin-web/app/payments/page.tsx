@@ -25,6 +25,8 @@ import { PaymentHistory } from '../../components/payment-history';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { chargeLabel } from '../../lib/collect-payment';
 import { formatDate } from '../../lib/dates';
+import { debtReminderUrl, whatsappNumber } from '../../lib/whatsapp-receipt';
+import { MessageCircle } from 'lucide-react';
 import {
   paymentBackHref,
   paymentLocationFromSearch,
@@ -578,6 +580,20 @@ function PaymentsCenter() {
                         <strong>{money(debtor.outstandingAmount)}</strong>
                       </div>
                       <div className="debtor-actions">
+                        <a
+                          className="payment-action is-whatsapp"
+                          href={debtReminderUrl(debtor)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={
+                            whatsappNumber(debtor.student.phone)
+                              ? 'Abrir WhatsApp con el aviso de deuda'
+                              : 'Sin teléfono válido en la ficha: WhatsApp pide elegir el chat'
+                          }
+                        >
+                          <MessageCircle aria-hidden="true" size={15} />
+                          Avisar
+                        </a>
                         <a className="button secondary" href={studentHref(debtor.student.id)}>
                           Ver cuenta
                         </a>

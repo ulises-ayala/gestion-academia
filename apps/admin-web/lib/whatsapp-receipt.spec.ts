@@ -1,6 +1,12 @@
 import type { PaymentDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
-import { receiptText, whatsappNumber, whatsappReceiptUrl } from './whatsapp-receipt';
+import {
+  debtReminderText,
+  debtReminderUrl,
+  receiptText,
+  whatsappNumber,
+  whatsappReceiptUrl,
+} from './whatsapp-receipt';
 
 const payment = (overrides: Partial<PaymentDto> = {}) =>
   ({
@@ -76,5 +82,41 @@ describe('recibo por WhatsApp', () => {
       /^https:\/\/wa\.me\/5493705032792\?text=\*Carmes%C3%AD\*/,
     );
     expect(whatsappReceiptUrl(payment(), '')).toMatch(/^https:\/\/wa\.me\/\?text=/);
+  });
+
+  it('arma el aviso de deuda con las vencidas y, si debe más, el total', () => {
+    const debtor = {
+      student: {
+        id: 's',
+        dni: '30111222',
+        firstName: 'Ana',
+        lastName: 'Pérez',
+        phone: '370 503-2792',
+      },
+      openChargeCount: 3,
+      overdueChargeCount: 2,
+      partialChargeCount: 0,
+      oldestDueDate: '2026-10-10',
+      originalAmount: '120000.00',
+      paidAmount: '0.00',
+      outstandingAmount: '120000.00',
+      overdueAmount: '80000.00',
+    };
+    const text = debtReminderText(debtor);
+    expect(text).toContain('Hola Ana');
+    expect(text).toContain('2 cuotas vencidas');
+    expect(text).toContain('venció el 10/10/2026');
+    expect(text).toContain('Saldo total de tu cuenta');
+    expect(debtReminderUrl(debtor)).toMatch(/^https:\/\/wa\.me\/5493705032792\?text=/);
+    const oneDue = debtReminderText({
+      ...debtor,
+      overdueChargeCount: 1,
+      outstandingAmount: '80000.00',
+    });
+    expect(oneDue).toContain('1 cuota vencida');
+    expect(oneDue).not.toContain('Saldo total');
+    expect(debtReminderUrl({ ...debtor, student: { ...debtor.student, phone: null } })).toMatch(
+      /^https:\/\/wa\.me\/\?text=/,
+    );
   });
 });

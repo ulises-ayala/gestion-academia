@@ -1,4 +1,4 @@
-import type { PaymentDto } from '@academy/contracts';
+import type { PaymentDto, ReceivableDebtorDto } from '@academy/contracts';
 import { chargeLabel, money } from './collect-payment';
 import { describeOtherPayment } from './other-payment';
 import { payerDni, payerName, paymentMethodLabels } from './payments';
@@ -88,3 +88,31 @@ export const whatsappReceiptUrl = (
   const number = whatsappNumber(phone);
   return `https://wa.me/${number ?? ''}?text=${encodeURIComponent(receiptText(payment, remainingDebt))}`;
 };
+
+const shortDate = (value: string) => value.slice(0, 10).split('-').reverse().join('/');
+
+/**
+ * Aviso de deuda por WhatsApp (decisión 259): las cuotas vencidas y su saldo; si además debe
+ * cuotas que todavía no vencieron, el total. No lo manda solo: se abre el chat para enviarlo.
+ */
+export const debtReminderText = (debtor: ReceivableDebtorDto): string => {
+  const overdue = debtor.overdueChargeCount;
+  const owesMore = Number(debtor.outstandingAmount) > Number(debtor.overdueAmount);
+  return [
+    `Hola ${debtor.student.firstName}, te escribimos de *Carmesí*.`,
+    '',
+    overdue > 0
+      ? `Te recordamos que tenés ${overdue === 1 ? '1 cuota vencida' : `${overdue} cuotas vencidas`} por *${money(debtor.overdueAmount)}* (la más antigua venció el ${shortDate(debtor.oldestDueDate)}).`
+      : `Te recordamos que tenés un saldo pendiente de *${money(debtor.outstandingAmount)}*.`,
+    ...(overdue > 0 && owesMore
+      ? [`Saldo total de tu cuenta: ${money(debtor.outstandingAmount)}.`]
+      : []),
+    '',
+    'Podés abonarla en recepción. Si ya la pagaste, avisanos así lo revisamos.',
+    `Consultas: ${ACADEMY_CONTACT_PHONE}`,
+  ].join('\n');
+};
+
+/** Enlace que abre WhatsApp con el aviso escrito; sin número válido, WhatsApp pide elegir el chat. */
+export const debtReminderUrl = (debtor: ReceivableDebtorDto) =>
+  `https://wa.me/${whatsappNumber(debtor.student.phone) ?? ''}?text=${encodeURIComponent(debtReminderText(debtor))}`;

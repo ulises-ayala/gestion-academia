@@ -163,6 +163,10 @@ Solo **Dirección** (las devoluciones las autoriza Charo). Devuelve todo o parte
 
 **Anular** con motivo, para un cobro que no existió (cargado dos veces o al alumno equivocado). La deuda vuelve a quedar pendiente y en la caja se registra la reversa en el turno original. Si el cobro tenía recargo por tarjeta ligado, se anula también.
 
+## Avisar vencidos
+
+**Pagos → Cuentas por cobrar**, vista **Vencidas**: cada alumno tiene **Avisar**, que abre WhatsApp con el aviso ya escrito (cuotas vencidas, saldo y fecha de la más antigua). Revisalo y envialo; si la ficha no tiene un teléfono válido, WhatsApp te pide elegir el chat. El sistema no manda nada solo.
+
 ## Historial de cobros
 
 **Pagos → Historial de cobros**: todos los cobros con filtros por fecha, medio y alumno (también los eventuales). Cada uno muestra en qué se aplicó, el saldo a favor y lo devuelto.
