@@ -272,7 +272,6 @@ Las decisiones 81–88 describen el contrato anterior y quedan reemplazadas por 
 - Relación entre frecuencia semanal, clases elegidas y tarifa/plan.
 - Alta de inscripción a mitad de mes, prorrateos y elección del primer período a cobrar.
 - Becas y combinación/prioridad de descuentos.
-- Devoluciones de pagos y cualquier tratamiento de saldo a favor (definido provisoriamente en las decisiones 246 a 248).
 - Apertura/cierre formal de caja y cajas por sucursal, usuario o caja única.
 - Asistencia docente; recuperos, feriados, reemplazos y asistencia fuera de inscripción.
 - Vinculación de la asistencia a un `ClassSchedule` específico.
