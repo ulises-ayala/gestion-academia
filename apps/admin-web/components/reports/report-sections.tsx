@@ -187,6 +187,9 @@ function DailyChart({ data }: Readonly<{ data: Data }>) {
   const series = dailySeries(data.from, data.to, data.collections.byDay);
   const maximum = Math.max(...series.map((item) => item.amount), 0);
   const step = dayLabelStep(series.length);
+  // Dentro de un mismo mes alcanza con el día: las fechas completas se pisan en el celular.
+  const sameMonth = data.from.slice(0, 7) === data.to.slice(0, 7);
+  const dayLabel = (value: string) => (sameMonth ? value.slice(8, 10) : shortDate(value));
   const best = series.reduce((top, item) => (item.amount > top.amount ? item : top), series[0]!);
   return (
     <>
@@ -204,7 +207,7 @@ function DailyChart({ data }: Readonly<{ data: Data }>) {
           >
             <span>{series.length <= 14 && item.amount > 0 ? compactMoney(item.amount) : ''}</span>
             <i style={{ height: `${barWidth(item.amount, maximum)}%` }} />
-            <small>{index % step === 0 ? shortDate(item.date) : ''}</small>
+            <small>{index % step === 0 ? dayLabel(item.date) : ''}</small>
           </div>
         ))}
       </div>

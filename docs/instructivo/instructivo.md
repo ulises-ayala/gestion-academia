@@ -218,7 +218,7 @@ Una clase creada en las pruebas que **no tiene inscripciones, cobros ni clases d
 
 Un cierre guardado no cambia. Al abrirlo (**Ver**) se ve la foto y, aparte, las **correcciones posteriores al cierre**: lo que hoy da distinto porque se corrigió o anuló un pago después. **Descargar o imprimir PDF** lo abre listo para imprimir. Dirección los consulta desde su usuario.
 
-Para mirar cualquier otro rango, **Reportes → Cobros y deuda** muestra la misma recaudación por concepto y medio (también en PDF).
+Para mirar cualquier otro rango, **Reportes → Cobros** muestra la misma recaudación por concepto y medio (en "Detalle por concepto y medio", y también en PDF). En Reportes, **Resumen** compara lo cobrado y las altas con el período anterior de igual largo, y **Profesores**, **Deudores**, **Asistencia** y **Caja** tienen cada uno su pestaña.
 
 ![Recaudación](capturas/reportes-recaudacion.png)
 

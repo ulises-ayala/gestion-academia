@@ -3583,6 +3583,10 @@ dialog.generate-charge-dialog.cash-detail-dialog {
   .reports-split {
     grid-template-columns: 1fr;
   }
+  /* En el celular los importes de cada día se pisan: queda solo el del mejor día. */
+  .reports-daily > div:not(.is-best) > span {
+    visibility: hidden;
+  }
   .reports-rate {
     grid-template-columns: 1fr;
     min-width: 0;
