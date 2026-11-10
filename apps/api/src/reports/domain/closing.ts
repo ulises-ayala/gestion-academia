@@ -16,6 +16,15 @@ export const addDays = (date: string, days: number) => {
   return value.toISOString().slice(0, 10);
 };
 
+/** El período de igual largo que termina el día anterior a `fromDate`. */
+export const previousPeriod = (fromDate: string, toDate: string) => {
+  const days = Math.round(
+    (Date.parse(`${toDate}T00:00:00.000Z`) - Date.parse(`${fromDate}T00:00:00.000Z`)) / 86_400_000,
+  );
+  const previousTo = addDays(fromDate, -1);
+  return { fromDate: addDays(previousTo, -Math.max(days, 0)), toDate: previousTo };
+};
+
 /** Primer y último día del mes (AAAA-MM). */
 export const monthRange = (month: string) => {
   const [year, value] = month.split('-').map(Number) as [number, number];

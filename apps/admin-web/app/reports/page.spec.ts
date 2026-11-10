@@ -1,13 +1,24 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const page = readFileSync(new URL('./page.tsx', import.meta.url), 'utf8');
+// La página (período, pestañas y carga) y sus secciones.
+const page = ['./page.tsx', '../../components/reports/report-sections.tsx', '../../lib/reports.ts']
+  .map((path) => readFileSync(new URL(path, import.meta.url), 'utf8'))
+  .join('\n');
 const shell = readFileSync(new URL('../../components/admin-shell.tsx', import.meta.url), 'utf8');
 const styles = readFileSync(new URL('../styles.css', import.meta.url), 'utf8');
 
 describe('Reports page', () => {
   it('expone tabs, filtros URL, exports y estados operativos', () => {
-    for (const label of ['Resumen', 'Alumnos', 'Cobros y deuda', 'Asistencia', 'Caja'])
+    for (const label of [
+      'Resumen',
+      'Alumnos',
+      'Cobros',
+      'Profesores',
+      'Deudores',
+      'Asistencia',
+      'Caja',
+    ])
       expect(page).toContain(label);
     expect(page).toContain('`/reports/operational?${params}`');
     expect(page).toContain('/reports/export/');

@@ -14,7 +14,7 @@ import { compactMoney } from '../confirmed-payments-chart';
 type History = MonthlyBoardDto['history'][number];
 const amount = (value: string | undefined) => compactMoney(Number(value ?? 0));
 
-function Kpi({
+export function Kpi({
   label,
   value,
   delta,
@@ -101,7 +101,7 @@ function MonthColumns({
 }
 
 /** Barras horizontales con el nombre y el valor a la vista. */
-function Bars({
+export function Bars({
   items,
   empty,
 }: Readonly<{

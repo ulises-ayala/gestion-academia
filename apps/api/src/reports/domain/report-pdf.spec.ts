@@ -21,6 +21,13 @@ const report = (overrides: Partial<OperationalReportsDto> = {}): OperationalRepo
   businessDate: '2026-10-18',
   from: '2026-10-01',
   to: '2026-10-18',
+  comparison: {
+    from: '2026-09-13',
+    to: '2026-09-30',
+    collectedAmount: '0.00',
+    confirmedPayments: 0,
+    newStudents: 0,
+  },
   summary: {
     activeStudents: 120,
     inactiveStudents: 14,

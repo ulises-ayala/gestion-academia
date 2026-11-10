@@ -9,6 +9,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { bornOverdueSql } from '../../billing/infrastructure/late-fee-sql';
+import { previousPeriod } from '../domain/closing';
 import { toCsv } from '../domain/csv';
 import { CONCEPT_LABELS, PDF_DEBTOR_LIMIT, renderOperationalReportPdf } from '../domain/report-pdf';
 
@@ -320,6 +321,20 @@ export class ReportsService {
       where: { createdAt: { gte: input.from, lt: input.toExclusive } },
       _sum: { amount: true },
     });
+    // El período anterior de igual largo, para comparar lo cobrado y las altas.
+    const previous = previousPeriod(input.fromDate, input.toDate);
+    const previousRange = {
+      gte: businessDayAt(new Date(`${previous.fromDate}T15:00:00.000Z`), timezone).start,
+      lt: input.from,
+    };
+    const [previousPayments, previousNewStudents] = await Promise.all([
+      this.prisma.payment.aggregate({
+        where: { status: 'CONFIRMED', paidAt: previousRange },
+        _count: { id: true },
+        _sum: { amount: true },
+      }),
+      this.prisma.student.count({ where: { createdAt: previousRange } }),
+    ]);
     const cash = this.cashReport(shifts);
     const debt = debtRows[0]!;
     const attendanceTotals = attendance.reduce(
@@ -351,6 +366,13 @@ export class ReportsService {
         cashDifference: cash.byMethod
           .reduce((sum, item) => sum.plus(item.correctedDifference), zero())
           .toFixed(2),
+      },
+      comparison: {
+        from: previous.fromDate,
+        to: previous.toDate,
+        collectedAmount: (previousPayments._sum.amount ?? zero()).toFixed(2),
+        confirmedPayments: previousPayments._count.id,
+        newStudents: previousNewStudents,
       },
       students: {
         items: students.map((item) => ({

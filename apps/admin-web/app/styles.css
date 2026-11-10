@@ -3494,3 +3494,97 @@ dialog.generate-charge-dialog.cash-detail-dialog {
     grid-template-columns: 1fr;
   }
 }
+/* Reportes: grupos del resumen, barras de a pares, cobros por día y asistencia con barra. */
+.reports-group {
+  display: grid;
+  gap: var(--space-3);
+}
+.reports-group h2 {
+  margin: 0;
+  font-size: var(--font-size-heading);
+}
+.reports-group h2 small {
+  margin-left: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+}
+.reports-panel h3 {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
+.reports-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+.reports-spaced {
+  margin-top: var(--space-5);
+}
+.reports-spaced-bottom,
+.reports-panel .reports-details {
+  margin-bottom: var(--space-4);
+}
+.reports-panel .reports-details {
+  margin-top: var(--space-4);
+}
+.reports-daily {
+  display: flex;
+  gap: 2px;
+  height: 12rem;
+}
+.reports-daily > div {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-rows: 1rem minmax(0, 1fr) 1rem;
+  gap: var(--space-1);
+  min-width: 0;
+  align-items: end;
+  justify-items: center;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+}
+.reports-daily i {
+  width: min(2rem, 70%);
+  min-width: 3px;
+  border-radius: 4px 4px 0 0;
+  background: var(--board-bar);
+  opacity: 0.45;
+}
+.reports-daily .is-best i {
+  opacity: 1;
+}
+.reports-daily .is-best {
+  color: var(--text);
+  font-weight: var(--font-weight-semibold);
+}
+.reports-daily small {
+  font-size: inherit;
+}
+.reports-rate {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(4rem, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 13rem;
+}
+.reports-rate span {
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+.reports-rate small {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-normal);
+}
+@media (max-width: 48rem) {
+  .reports-split {
+    grid-template-columns: 1fr;
+  }
+  .reports-rate {
+    grid-template-columns: 1fr;
+    min-width: 0;
+  }
+}

@@ -1,15 +1,18 @@
 /* Tablero mensual. Dos series (altas/bajas) con colores validados para daltonismo; el resto de
    las barras usa el acento y lleva nombre y valor a la vista. */
-.board-page {
+.board-page,
+.reports-page {
   --board-in: #2a78d6;
   --board-out: #eb6834;
   --board-bar: var(--accent-fill);
   --board-track: var(--surface-sunken);
-  display: grid;
-  gap: var(--space-4);
   font-variant-numeric: tabular-nums;
 }
-:root[data-theme='dark'] .board-page {
+.board-page {
+  display: grid;
+  gap: var(--space-4);
+}
+:root[data-theme='dark'] :is(.board-page, .reports-page) {
   --board-in: #3987e5;
   --board-out: #d95926;
   --board-bar: #c9607a;

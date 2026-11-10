@@ -310,6 +310,14 @@ export type OperationalReportsDto = Readonly<{
   from: string;
   to: string;
   summary: ReportsSummaryDto;
+  /** Lo del período anterior de igual largo (los días justo antes de `from`), para comparar. */
+  comparison: Readonly<{
+    from: string;
+    to: string;
+    collectedAmount: string;
+    confirmedPayments: number;
+    newStudents: number;
+  }>;
   students: PageDto<ReportStudentDto>;
   collections: Readonly<{
     total: string;

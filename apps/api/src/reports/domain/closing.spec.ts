@@ -1,6 +1,12 @@
 import type { ClosingFiguresDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
-import { closingChanges, closingPeriod, monthRange, nextClosingPeriod } from './closing';
+import {
+  closingChanges,
+  closingPeriod,
+  monthRange,
+  nextClosingPeriod,
+  previousPeriod,
+} from './closing';
 
 const methods = (cash: string, card = '0.00') => [
   { method: 'CASH' as const, amount: cash },
@@ -87,5 +93,16 @@ describe('cierres de la recaudación', () => {
         difference: '5000.00',
       },
     ]);
+  });
+
+  it('calcula el período anterior de igual largo', () => {
+    expect(previousPeriod('2026-11-01', '2026-11-10')).toEqual({
+      fromDate: '2026-10-22',
+      toDate: '2026-10-31',
+    });
+    expect(previousPeriod('2026-11-10', '2026-11-10')).toEqual({
+      fromDate: '2026-11-09',
+      toDate: '2026-11-09',
+    });
   });
 });
