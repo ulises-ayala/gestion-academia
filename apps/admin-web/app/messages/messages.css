@@ -199,8 +199,18 @@
   background: transparent;
   color: var(--success);
 }
+/* Centrado y con fondo oscurecido, como los demás popups de la app. */
 dialog.msg-editor-dialog {
   width: min(60rem, calc(100% - 2rem));
+  margin: auto;
+  border-top: 3px solid var(--brand);
+  color: var(--text);
+}
+dialog.msg-editor-dialog:not([open]) {
+  display: none;
+}
+dialog.msg-editor-dialog::backdrop {
+  background: var(--overlay);
 }
 .msg-editor {
   display: grid;
