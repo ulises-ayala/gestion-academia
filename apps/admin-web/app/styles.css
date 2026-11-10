@@ -3592,3 +3592,56 @@ dialog.generate-charge-dialog.cash-detail-dialog {
     min-width: 0;
   }
 }
+/* Resumen de Reportes: un vistazo de cada pestaña. */
+.reports-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.reports-span-4 {
+  grid-column: span 4;
+}
+.reports-span-5 {
+  grid-column: span 5;
+}
+.reports-span-7 {
+  grid-column: span 7;
+}
+.reports-glance .reports-panel-heading {
+  margin-bottom: var(--space-3);
+}
+.reports-glance h2 {
+  font-size: var(--font-size-heading);
+}
+.reports-glance .board-hero strong {
+  font-size: var(--font-size-metric);
+}
+.reports-short {
+  color: var(--destructive);
+}
+.reports-over {
+  color: var(--warning);
+}
+.reports-facts {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.reports-facts li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.reports-facts strong {
+  color: var(--text);
+}
+@media (max-width: 64rem) {
+  .reports-summary-grid > * {
+    grid-column: 1 / -1;
+  }
+}

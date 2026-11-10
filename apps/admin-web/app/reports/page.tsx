@@ -170,7 +170,14 @@ export default function ReportsPage() {
           <button onClick={() => void load()}>Reintentar</button>
         </div>
       )}
-      {!loading && data && tab === 'summary' && <Summary data={data} />}
+      {!loading && data && tab === 'summary' && (
+        <Summary
+          data={data}
+          tabHref={(key) =>
+            `${pathname}?${new URLSearchParams({ ...Object.fromEntries(search), tab: key, page: '1' })}`
+          }
+        />
+      )}
       {!loading && data && tab === 'students' && (
         <Students data={data} exportHref={exportHref('students')} search={search} query={query} />
       )}

@@ -250,6 +250,21 @@ describe('secciones de Reportes', () => {
     expect(html).toContain('16 cuotas vencidas');
   });
 
+  it('el resumen da un vistazo de cobros, asistencia, deudas y caja con su enlace', () => {
+    const html = renderToStaticMarkup(
+      <Summary data={data} tabHref={(tab) => `/reports?tab=${tab}`} />,
+    );
+    expect(html.match(/reports-glance/g)).toHaveLength(5);
+    expect(html.match(/title="\d\d\/11\/2026:/g)).toHaveLength(10);
+    expect(html).toMatch(/Por medio de pago[\s\S]*Mercado Pago[\s\S]*42 %/);
+    // La clase con menos presentes va primera.
+    expect(html).toMatch(/80 %[\s\S]*Kizomba inicial[\s\S]*58 %[\s\S]*Bachata intermedio/);
+    expect(html).toMatch(/Mayores deudas[\s\S]*Ana Pérez/);
+    expect(html).toMatch(/reports-short[\s\S]*3\.000,00[\s\S]*faltan/);
+    for (const tab of ['collections', 'attendance', 'debtors', 'cash'])
+      expect(html).toContain(`href="/reports?tab=${tab}"`);
+  });
+
   it('cobros muestra medios y conceptos ordenados, los días y el detalle', () => {
     const html = renderToStaticMarkup(<Collections data={data} exportHref="/csv" />);
     expect(html).toMatch(/Mercado Pago[\s\S]*Efectivo[\s\S]*Transferencia[\s\S]*Tarjeta/);

@@ -104,11 +104,14 @@ function MonthColumns({
 export function Bars({
   items,
   empty,
+  maximum: fixedMaximum,
 }: Readonly<{
   items: readonly Readonly<{ key: string; label: string; value: number; text: string }>[];
   empty: string;
+  /** Tope de la escala (100 para porcentajes); sin él, el mayor valor llena la barra. */
+  maximum?: number;
 }>) {
-  const maximum = Math.max(...items.map((item) => item.value), 0);
+  const maximum = fixedMaximum ?? Math.max(...items.map((item) => item.value), 0);
   if (maximum === 0) return <p className="board-empty">{empty}</p>;
   return (
     <ul className="board-bars">

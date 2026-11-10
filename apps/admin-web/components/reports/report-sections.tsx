@@ -2,7 +2,7 @@ import type { OperationalReportsDto } from '@academy/contracts';
 import Link from 'next/link';
 import React from 'react';
 import { amountDelta, barWidth, countDelta, shareOf } from '../../lib/board';
-import { dailySeries, dayLabelStep } from '../../lib/reports';
+import { type ReportTab, dailySeries, dayLabelStep } from '../../lib/reports';
 import { Bars, Kpi } from '../board/monthly-board';
 import { compactMoney } from '../confirmed-payments-chart';
 
@@ -42,8 +42,42 @@ function Heading({
   );
 }
 
-export function Summary({ data }: Readonly<{ data: Data }>) {
-  const { summary, comparison } = data;
+/** Tarjeta del resumen: un vistazo de una pestaña, con el enlace para ver el detalle. */
+function Glance({
+  title,
+  href,
+  className,
+  children,
+}: Readonly<{ title: string; href: string; className: string; children: React.ReactNode }>) {
+  return (
+    <section className={`card reports-panel reports-glance ${className}`}>
+      <div className="reports-panel-heading">
+        <h2>{title}</h2>
+        <Link className="text-link" href={href}>
+          Ver detalle
+        </Link>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+export function Summary({
+  data,
+  tabHref = (tab) => `?tab=${tab}`,
+}: Readonly<{ data: Data; tabHref?: (tab: ReportTab) => string }>) {
+  const { summary, comparison, collections, attendance, cash } = data;
+  const collected = Number(collections.total);
+  const attendanceRate = shareOf(attendance.present, attendance.records);
+  // Las tres clases con menos presentes: donde conviene mirar primero.
+  const lowestAttendance = [...attendance.byClass]
+    .filter((item) => item.records > 0)
+    .sort(
+      (left, right) =>
+        (shareOf(left.present, left.records) ?? 0) - (shareOf(right.present, right.records) ?? 0),
+    )
+    .slice(0, 3);
+  const cashDifference = Number(summary.cashDifference);
   const against = `vs. ${shortDate(comparison.from)} al ${shortDate(comparison.to)}`;
   return (
     <>
@@ -99,6 +133,103 @@ export function Summary({ data }: Readonly<{ data: Data }>) {
           />
         </div>
       </section>
+      <div className="reports-summary-grid">
+        <Glance className="reports-span-7" href={tabHref('collections')} title="Cobros por día">
+          {collections.count === 0 ? (
+            <p className="empty-state">No hubo cobros en este período.</p>
+          ) : (
+            <DailyChart data={data} heading={false} />
+          )}
+        </Glance>
+        <Glance className="reports-span-5" href={tabHref('collections')} title="Por medio de pago">
+          <Bars
+            empty="No hubo cobros en este período."
+            items={[...collections.byMethod]
+              .sort((left, right) => Number(right.amount) - Number(left.amount))
+              .map((item) => ({
+                key: item.method,
+                label: methods[item.method],
+                value: Number(item.amount),
+                text: `${compactMoney(Number(item.amount))} · ${shareOf(Number(item.amount), collected) ?? 0} %`,
+              }))}
+          />
+        </Glance>
+        <Glance className="reports-span-4" href={tabHref('attendance')} title="Asistencia">
+          {attendanceRate === null ? (
+            <p className="empty-state">No hay asistencias tomadas en este período.</p>
+          ) : (
+            <>
+              <p className="board-hero">
+                <strong>{attendanceRate} %</strong>
+                <span>de presentes</span>
+              </p>
+              <Bars
+                empty=""
+                items={lowestAttendance.map((item) => ({
+                  key: item.classId,
+                  label: item.className,
+                  value: shareOf(item.present, item.records) ?? 0,
+                  text: `${shareOf(item.present, item.records) ?? 0} %`,
+                }))}
+                maximum={100}
+              />
+              <p className="board-note">Las clases con menos presentes.</p>
+            </>
+          )}
+        </Glance>
+        <Glance className="reports-span-4" href={tabHref('debtors')} title="Mayores deudas">
+          {data.debtors.items.length === 0 ? (
+            <p className="empty-state">No hay cuotas pendientes.</p>
+          ) : (
+            <Bars
+              empty=""
+              items={[...data.debtors.items]
+                .sort((left, right) => Number(right.totalDebt) - Number(left.totalDebt))
+                .slice(0, 5)
+                .map((item) => ({
+                  key: item.studentId,
+                  label: `${item.firstName} ${item.lastName}`,
+                  value: Number(item.totalDebt),
+                  text: amount(item.totalDebt),
+                }))}
+            />
+          )}
+        </Glance>
+        <Glance className="reports-span-4" href={tabHref('cash')} title="Caja">
+          {cash.closedShifts === 0 ? (
+            <p className="empty-state">No hay cierres de caja en este período.</p>
+          ) : (
+            <>
+              <p className="board-hero">
+                <strong
+                  className={
+                    cashDifference < 0 ? 'reports-short' : cashDifference > 0 ? 'reports-over' : ''
+                  }
+                >
+                  {cashDifference === 0
+                    ? 'Sin diferencia'
+                    : amount(Math.abs(cashDifference).toFixed(2))}
+                </strong>
+                {cashDifference !== 0 && <span>{cashDifference < 0 ? 'faltan' : 'sobran'}</span>}
+              </p>
+              <ul className="reports-facts">
+                <li>
+                  <span>Turnos cerrados</span>
+                  <strong>{cash.closedShifts}</strong>
+                </li>
+                <li>
+                  <span>Cierres con diferencia</span>
+                  <strong>{cash.differences.length}</strong>
+                </li>
+                <li>
+                  <span>Turnos abiertos ahora</span>
+                  <strong>{cash.openShifts}</strong>
+                </li>
+              </ul>
+            </>
+          )}
+        </Glance>
+      </div>
     </>
   );
 }
@@ -183,7 +314,7 @@ export function Students({
 }
 
 /** Cobros por día: una columna por día, con el importe arriba si entran pocos días. */
-function DailyChart({ data }: Readonly<{ data: Data }>) {
+function DailyChart({ data, heading = true }: Readonly<{ data: Data; heading?: boolean }>) {
   const series = dailySeries(data.from, data.to, data.collections.byDay);
   const maximum = Math.max(...series.map((item) => item.amount), 0);
   const step = dayLabelStep(series.length);
@@ -193,7 +324,7 @@ function DailyChart({ data }: Readonly<{ data: Data }>) {
   const best = series.reduce((top, item) => (item.amount > top.amount ? item : top), series[0]!);
   return (
     <>
-      <h3>Cobros por día</h3>
+      {heading && <h3>Cobros por día</h3>}
       <div
         aria-label={`Cobros por día; el mejor fue el ${shortDate(best.date)} con ${compactMoney(best.amount)}`}
         className="reports-daily"
