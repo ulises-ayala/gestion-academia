@@ -121,6 +121,19 @@ Al registrar la primera prueba, el potencial pasa a la etapa **Clase de prueba**
 
 ![Clases de prueba](capturas/potencial-clase-de-prueba.png)
 
+## Mensajes de WhatsApp
+
+En **Mensajes** hay mensajes ya escritos para cada situación y la lista de personas a las que les corresponde.
+
+1. Elegí la situación a la izquierda: cuota por vencer, cuota vencida, faltó varias veces, dejó hace poco, bienvenida, cumpleaños, o potenciales que consultaron o probaron y no se inscribieron. El número indica cuántas personas hay hoy.
+2. Arriba se ve el mensaje tal como va a llegar, con el nombre y los datos de la persona ya completados. Si la situación tiene más de un mensaje (por ejemplo "Recordatorio amable" y "Segundo aviso"), elegí cuál usar.
+3. En la lista, tocá **Enviar por WhatsApp**: se abre el chat con el texto escrito. Revisalo, retocalo si hace falta y envialo desde WhatsApp.
+4. La persona pasa a **Avisados**, con la fecha y quién le escribió, para no repetir. Desde ahí se puede **Volver a enviar**.
+
+Si alguien no tiene teléfono, **Cargar teléfono** lleva a su ficha. El sistema no envía nada solo: siempre lo manda quien está usando el panel, desde su WhatsApp.
+
+Administración y Dirección pueden cambiar los textos con **Editar mensaje** o sumar otros con **Nuevo mensaje**. Los botones "+ nombre", "+ saldo vencido", etc. insertan el dato que se completa solo; los emojis se escriben como en cualquier chat.
+
 ## Caja: mi turno
 
 Cada cobro entra solo en el turno de quien cobra, separado por medio de pago.

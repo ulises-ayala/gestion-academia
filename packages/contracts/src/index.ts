@@ -1450,3 +1450,70 @@ export type MonthlyBoardDto = Readonly<{
     byConcept: readonly Readonly<{ key: string; label: string; amount: string }>[];
   }>;
 }>;
+
+export type MessageSituationDto =
+  | 'CHARGE_DUE_SOON'
+  | 'CHARGE_OVERDUE'
+  | 'ABSENCES'
+  | 'DROPPED'
+  | 'WELCOME'
+  | 'BIRTHDAY'
+  | 'LEAD_NO_TRIAL'
+  | 'LEAD_TRIAL_NOT_ENROLLED';
+
+/** Dato que un mensaje puede llevar entre llaves, por ejemplo `{nombre}`. */
+export type MessageVariableDto = Readonly<{ key: string; label: string }>;
+
+export type MessageSituationSummaryDto = Readonly<{
+  situation: MessageSituationDto;
+  group: string;
+  label: string;
+  description: string;
+  variables: readonly MessageVariableDto[];
+  /** Personas que hoy están en esa situación. */
+  count: number;
+}>;
+
+export type MessageTemplateDto = Readonly<{
+  id: string;
+  situation: MessageSituationDto;
+  name: string;
+  body: string;
+  status: RecordStatusDto;
+}>;
+
+export type SaveMessageTemplateDto = Readonly<{
+  situation?: MessageSituationDto;
+  name?: string;
+  body?: string;
+  status?: RecordStatusDto;
+}>;
+
+export type MessageRecipientDto = Readonly<{
+  kind: 'STUDENT' | 'LEAD';
+  id: string;
+  name: string;
+  phone: string | null;
+  /** Por qué está en la lista, en una línea. */
+  detail: string;
+  /** Valores para completar el mensaje, ya con formato. */
+  variables: Readonly<Record<string, string>>;
+  /** Último mensaje de esta situación en los últimos 30 días. */
+  lastSend: Readonly<{ sentAt: string; sentBy: string; templateName: string | null }> | null;
+}>;
+
+export type MessageRecipientsDto = Readonly<{
+  situation: MessageSituationDto;
+  businessDate: string;
+  recipients: readonly MessageRecipientDto[];
+  templates: readonly MessageTemplateDto[];
+}>;
+
+export type RegisterMessageSendDto = Readonly<{
+  situation: MessageSituationDto;
+  templateId?: string | null;
+  studentId?: string | null;
+  leadId?: string | null;
+  /** El texto con el que se abrió WhatsApp. */
+  body: string;
+}>;

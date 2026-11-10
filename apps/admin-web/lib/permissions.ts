@@ -31,7 +31,9 @@ export type UiPermission =
   | 'reports:all'
   | 'settlements:manage'
   | 'settlements:approve'
-  | 'audit:read';
+  | 'audit:read'
+  /** Crear y editar los mensajes predeterminados de WhatsApp. */
+  | 'messages:manage';
 
 const admissionPermissions: readonly UiPermission[] = [
   'students:manage',
@@ -62,6 +64,7 @@ const administrationPermissions: readonly UiPermission[] = [
   'reports:operational',
   'settlements:manage',
   'audit:read',
+  'messages:manage',
 ];
 
 const byRole: Readonly<Record<AdminRoleDto, readonly UiPermission[]>> = {

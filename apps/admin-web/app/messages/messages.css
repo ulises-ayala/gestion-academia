@@ -1,0 +1,251 @@
+/* Mensajes de WhatsApp: situaciones a la izquierda, mensaje y destinatarios a la derecha. */
+.msg-page {
+  display: grid;
+  gap: var(--space-4);
+}
+.msg-head h1 {
+  margin: 0;
+  font-size: var(--font-size-title);
+}
+.msg-head p {
+  margin: 0;
+  color: var(--text-muted);
+}
+.msg-layout {
+  display: grid;
+  grid-template-columns: 17rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-4);
+}
+.msg-layout > [aria-busy='true'] {
+  opacity: 0.6;
+}
+.msg-situations {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.msg-situations h2 {
+  margin: var(--space-3) var(--space-3) var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.msg-situations h2:first-child {
+  margin-top: var(--space-2);
+}
+.msg-situations .msg-situation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text);
+  font-weight: var(--font-weight-normal);
+  text-align: left;
+}
+.msg-situations .msg-situation:hover {
+  background: var(--surface-hover);
+}
+.msg-situations .msg-situation[aria-current='true'] {
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-weight: var(--font-weight-semibold);
+}
+.msg-count {
+  min-width: 1.75rem;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5rem;
+  text-align: center;
+}
+.msg-main {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.msg-card {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.msg-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.msg-card h2,
+.msg-editor h2 {
+  margin: 0;
+  font-size: var(--font-size-heading);
+}
+.msg-card-head p {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.msg-template {
+  display: grid;
+  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-5);
+}
+.msg-bubble {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--success-border);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 2px;
+  background: var(--success-soft);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.msg-bubble mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  color: inherit;
+  font-weight: var(--font-weight-medium);
+}
+.msg-side {
+  display: grid;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+.msg-side p {
+  margin: 0;
+}
+.msg-note,
+.msg-side .msg-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.msg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.msg-chips .msg-chip {
+  min-height: var(--control-height-sm);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  box-shadow: none;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+}
+.msg-chips .msg-chip[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-weight: var(--font-weight-semibold);
+}
+.msg-table {
+  font-variant-numeric: tabular-nums;
+}
+.msg-table small {
+  display: block;
+  color: var(--text-muted);
+}
+.msg-table .msg-action {
+  text-align: right;
+  white-space: nowrap;
+}
+.msg-table .msg-sent {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.msg-table .msg-nophone {
+  color: var(--warning);
+}
+.msg-send {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-height-sm);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--success);
+  border-radius: var(--radius-md);
+  background: var(--success);
+  color: var(--surface);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+.msg-send.is-again {
+  background: transparent;
+  color: var(--success);
+}
+dialog.msg-editor-dialog {
+  width: min(60rem, calc(100% - 2rem));
+}
+.msg-editor {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+.msg-editor-fields {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+}
+.msg-editor label {
+  display: grid;
+  gap: var(--space-1);
+}
+.msg-editor textarea {
+  width: 100%;
+  line-height: 1.5;
+  resize: vertical;
+}
+.msg-editor .msg-note {
+  margin-bottom: var(--space-2);
+}
+.msg-editor-wide {
+  grid-column: 1 / -1;
+}
+@media (max-width: 60rem) {
+  .msg-layout,
+  .msg-template,
+  .msg-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .msg-situations {
+    display: flex;
+    overflow-x: auto;
+  }
+  .msg-situations h2 {
+    display: none;
+  }
+  .msg-situations .msg-situation {
+    flex: none;
+    width: auto;
+  }
+  /* La tabla usa las tarjetas por fila de todas las tablas de la app. */
+  .msg-table .msg-action {
+    text-align: left;
+  }
+}

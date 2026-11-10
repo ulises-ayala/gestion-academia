@@ -13,6 +13,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   Menu,
+  MessageCircle,
   Moon,
   Music,
   ReceiptText,
@@ -67,6 +68,12 @@ const navigation: readonly NavigationGroup[] = [
         icon: CalendarCheck,
       },
       { href: '/leads', label: 'Potenciales', permission: 'leads:manage', icon: UserPlus },
+      {
+        href: '/messages',
+        label: 'Mensajes',
+        permission: 'students:manage',
+        icon: MessageCircle,
+      },
       { href: '/classes', label: 'Clases', permission: 'offering:read', icon: CalendarDays },
       {
         href: '/classes/agenda',

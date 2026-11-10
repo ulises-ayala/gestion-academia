@@ -150,6 +150,7 @@ model Lead {
   createdAt           DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt           DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
   trialClasses        LeadTrialClass[]
+  messageSends        MessageSend[]
 
   @@index([name])
   @@index([status, updatedAt(sort: Desc)])
@@ -195,6 +196,7 @@ model Student {
   enrollments    Enrollment[]
   monthlyCharges MonthlyCharge[]
   payments       Payment[]
+  messageSends   MessageSend[]
 
   @@index([lastName, firstName])
   @@map("students")
@@ -852,6 +854,7 @@ model AdminUser {
   paymentRefundsCreated       PaymentRefund[]                @relation("PaymentRefundCreatedBy")
   paymentCreditUsesCreated    PaymentCreditUse[]             @relation("PaymentCreditUseCreatedBy")
   collectionClosingsCreated   CollectionClosing[]            @relation("CollectionClosingCreatedBy")
+  messageSends                MessageSend[]                  @relation("MessageSendSentBy")
 
   @@map("admin_users")
 }
@@ -887,4 +890,53 @@ model AdminSession {
   @@index([userId])
   @@index([expiresAt])
   @@map("admin_sessions")
+}
+
+/// Situación del alumno o del potencial alumno para la que hay mensajes de WhatsApp.
+enum MessageSituation {
+  CHARGE_DUE_SOON
+  CHARGE_OVERDUE
+  ABSENCES
+  DROPPED
+  WELCOME
+  BIRTHDAY
+  LEAD_NO_TRIAL
+  LEAD_TRIAL_NOT_ENROLLED
+}
+
+/// Mensaje de WhatsApp predeterminado; lo que va entre llaves se completa por destinatario.
+model MessageTemplate {
+  id        String           @id @default(uuid()) @db.Uuid
+  situation MessageSituation
+  name      String           @db.VarChar(80)
+  body      String
+  status    RecordStatus     @default(ACTIVE)
+  sortOrder Int              @default(100) @map("sort_order")
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sends     MessageSend[]
+
+  @@index([situation, status])
+  @@map("message_templates")
+}
+
+/// Registro de un mensaje enviado (se abrió WhatsApp con ese texto). Alumno o potencial, no ambos.
+model MessageSend {
+  id           String           @id @default(uuid()) @db.Uuid
+  situation    MessageSituation
+  templateId   String?          @map("template_id") @db.Uuid
+  studentId    String?          @map("student_id") @db.Uuid
+  leadId       String?          @map("lead_id") @db.Uuid
+  body         String
+  sentByUserId String           @map("sent_by_user_id") @db.Uuid
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  template     MessageTemplate? @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  student      Student?         @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  lead         Lead?            @relation(fields: [leadId], references: [id], onDelete: Restrict)
+  sentBy       AdminUser        @relation("MessageSendSentBy", fields: [sentByUserId], references: [id], onDelete: Restrict)
+
+  @@index([situation, createdAt(sort: Desc)])
+  @@index([studentId])
+  @@index([leadId])
+  @@map("message_sends")
 }
