@@ -1376,3 +1376,69 @@ export type SettlementDto = Readonly<{
 }>;
 export type CloseSettlementDto = Readonly<{ note?: string }>;
 export type ReopenSettlementDto = Readonly<{ reason: string }>;
+
+/**
+ * Tablero mensual: alumnos, clases y potenciales del mes contra el anterior. Los importes
+ * (`collected`, `overdue` y `money`) solo viajan con `reports:operational`.
+ */
+export type MonthlyBoardDto = Readonly<{
+  generatedAt: string;
+  businessDate: string;
+  /** Mes consultado (AAAA-MM) y si todavía no terminó. */
+  month: string;
+  label: string;
+  inProgress: boolean;
+  /** Seis meses hasta el consultado, del más viejo al más nuevo. */
+  history: readonly Readonly<{
+    month: string;
+    label: string;
+    shortLabel: string;
+    /** Alumnos con una inscripción vigente el último día del mes (o hoy, si no terminó). */
+    activeStudents: number;
+    /** Alumnos cuya primera inscripción empieza en el mes. */
+    newStudents: number;
+    /** Alumnos cuya última inscripción terminó en el mes. */
+    dropped: number;
+    collected?: string;
+  }>[];
+  dropReasons: readonly Readonly<{ reason: string; label: string; count: number }>[];
+  /** Alumnos con cuotas vencidas hoy. */
+  overdueStudents: number;
+  classes: readonly Readonly<{
+    id: string;
+    name: string;
+    teacher: string;
+    capacity: number;
+    enrolled: number;
+    started: number;
+    ended: number;
+    /** Presentes sobre asistencias tomadas en el mes; null si no se tomó ninguna. */
+    attendancePercent: number | null;
+    collected?: string;
+    overdue?: string;
+  }>[];
+  /** Potenciales alumnos cargados en el mes y hasta dónde llegaron. */
+  leads: Readonly<{
+    inquiries: number;
+    trials: number;
+    enrolled: number;
+    previousInquiries: number;
+    previousEnrolled: number;
+  }>;
+  money?: Readonly<{
+    /** Deuda vencida hoy (todas las cuotas, no solo las del mes). */
+    overdueDebt: string;
+    /** Cuotas mensuales del mes: cobrado, pendiente sin vencer y vencido. */
+    charges: Readonly<{
+      total: string;
+      paidAmount: string;
+      paidCount: number;
+      openAmount: string;
+      openCount: number;
+      overdueAmount: string;
+      overdueCount: number;
+    }>;
+    byMethod: readonly Readonly<{ method: PaymentMethodDto; label: string; amount: string }>[];
+    byConcept: readonly Readonly<{ key: string; label: string; amount: string }>[];
+  }>;
+}>;

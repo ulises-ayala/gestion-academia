@@ -37,6 +37,17 @@ Al entrar se ve el día: clases, alumnos que deben, seguimientos y accesos rápi
 
 ![Inicio](capturas/inicio.png)
 
+## Tablero
+
+En **Tablero** se ve cómo viene la academia mes a mes. Con las flechas de arriba a la derecha se cambia de mes; todo se compara con el mes anterior.
+
+- **Alumnos activos, altas y bajas**, con los últimos 6 meses y el motivo de las bajas.
+- **Clases:** cuántos inscriptos tiene cada una sobre su cupo (marca las de ocupación **Baja** y las **Completas**), sus altas y bajas y la asistencia del mes.
+- **Potenciales alumnos:** de las consultas cargadas en el mes, cuántas hicieron la clase de prueba y cuántas se inscribieron.
+- **Para hacer:** accesos a los alumnos con cuotas vencidas, a los potenciales sin inscribir y a las clases con lugar.
+
+Administración y Dirección ven además los importes: lo recaudado, la cobranza de las cuotas del mes (cobrado, pendiente y vencido), la deuda vencida, y la recaudación por medio de pago, por concepto y por clase.
+
 ## Registrar un pago
 
 1. Tocá **Registrar pago** y buscá al alumno por nombre, apellido o DNI. Con las flechas y Enter se elige sin mouse.

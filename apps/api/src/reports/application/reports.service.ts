@@ -27,7 +27,8 @@ const reportCashInclude = {
 } satisfies Prisma.CashShiftInclude;
 type ReportCashShift = Prisma.CashShiftGetPayload<{ include: typeof reportCashInclude }>;
 const zero = () => new Prisma.Decimal(0);
-const debtCtes = (businessDate: string) => Prisma.sql`
+/** Cuotas no anuladas con lo pagado y el saldo (con el recargo por vencimiento proyectado). */
+export const debtCtes = (businessDate: string) => Prisma.sql`
   WITH confirmed AS (
     SELECT pa.monthly_charge_id, SUM(pa.amount) AS paid
     FROM payment_allocations pa
@@ -38,7 +39,8 @@ const debtCtes = (businessDate: string) => Prisma.sql`
            BOOL_OR(type = 'LATE_FEE') AS has_late_fee
     FROM monthly_charge_adjustments GROUP BY monthly_charge_id
   ), open_charges AS (
-    SELECT mc.student_id, mc.due_date,
+    SELECT mc.student_id, mc.enrollment_id, mc.period, mc.kind, mc.due_date,
+      COALESCE(c.paid, 0) AS paid,
       GREATEST(
         GREATEST(mc.base_amount + COALESCE(a.delta, 0), 0)
         + CASE WHEN mc.due_date < ${businessDate}::date AND NOT COALESCE(a.has_late_fee, false)

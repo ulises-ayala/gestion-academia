@@ -19,6 +19,7 @@ import {
   Tags,
   ShieldCheck,
   Sun,
+  TrendingUp,
   UserCog,
   UserPlus,
   Users,
@@ -55,6 +56,7 @@ const navigation: readonly NavigationGroup[] = [
     placement: 'primary',
     links: [
       { href: '/', label: 'Inicio', permission: 'students:manage', icon: LayoutDashboard },
+      { href: '/board', label: 'Tablero', permission: 'students:manage', icon: TrendingUp },
       { href: '/students', label: 'Alumnos', permission: 'students:manage', icon: Users },
       { href: '/payments', label: 'Pagos', permission: 'payments:read', icon: CreditCard },
       { href: '/cash', label: 'Caja', permission: 'cash:manage', icon: Wallet },
