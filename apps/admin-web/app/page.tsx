@@ -207,7 +207,7 @@ function Dashboard() {
           focus={focus}
         />
 
-        <ManagementSection data={data} showChart={can('reports:operational')} />
+        <ManagementSection data={data} />
 
         <section aria-label="Hoy" className="today-stack">
           {data.classes && (

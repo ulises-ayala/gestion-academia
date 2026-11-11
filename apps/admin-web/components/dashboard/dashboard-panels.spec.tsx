@@ -87,9 +87,14 @@ describe('Inicio: agenda', () => {
 
 describe('Inicio: gestión', () => {
   it('opens today collections in the payment history for the business day', () => {
-    const html = renderToStaticMarkup(<ManagementSection data={data} showChart={false} />);
+    const html = renderToStaticMarkup(<ManagementSection data={data} />);
     expect(html).toContain('href="/payments?tab=history&amp;from=2026-10-16&amp;to=2026-10-16"');
     expect(html).toContain('Deuda pendiente');
     expect(html).toContain('5 vencidas · 4 alumnos');
+    // Inicio muestra lo del día; el mes y los últimos 6 meses están en el Tablero.
+    expect(html).toContain('Cobrado hoy');
+    expect(html).not.toContain('Cobros del mes');
+    expect(html).not.toContain('Evolución de cobros');
+    expect(html).toContain('href="/board"');
   });
 });

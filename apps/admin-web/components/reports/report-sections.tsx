@@ -66,17 +66,7 @@ export function Summary({
   data,
   tabHref = (tab) => `?tab=${tab}`,
 }: Readonly<{ data: Data; tabHref?: (tab: ReportTab) => string }>) {
-  const { summary, comparison, collections, attendance, cash } = data;
-  const collected = Number(collections.total);
-  const attendanceRate = shareOf(attendance.present, attendance.records);
-  // Las tres clases con menos presentes: donde conviene mirar primero.
-  const lowestAttendance = [...attendance.byClass]
-    .filter((item) => item.records > 0)
-    .sort(
-      (left, right) =>
-        (shareOf(left.present, left.records) ?? 0) - (shareOf(right.present, right.records) ?? 0),
-    )
-    .slice(0, 3);
+  const { summary, comparison, collections, cash } = data;
   const cashDifference = Number(summary.cashDifference);
   const against = `vs. ${shortDate(comparison.from)} al ${shortDate(comparison.to)}`;
   return (
@@ -111,73 +101,15 @@ export function Summary({
           />
         </div>
       </section>
-      <section className="reports-group">
-        <h2>
-          Hoy <small>no depende del período elegido</small>
-        </h2>
-        <div className="board-kpis">
-          <Kpi
-            label="Alumnos activos"
-            note={`${summary.inactiveStudents} inactivos`}
-            value={summary.activeStudents}
-          />
-          <Kpi
-            label="Deuda pendiente"
-            note="todas las cuotas abiertas"
-            value={compactMoney(Number(summary.pendingDebt))}
-          />
-          <Kpi
-            label="Deuda vencida"
-            note={`${summary.overdueCharges} cuotas vencidas`}
-            value={compactMoney(Number(summary.overdueDebt))}
-          />
-        </div>
-      </section>
       <div className="reports-summary-grid">
-        <Glance className="reports-span-7" href={tabHref('collections')} title="Cobros por día">
+        <Glance className="reports-span-12" href={tabHref('collections')} title="Cobros por día">
           {collections.count === 0 ? (
             <p className="empty-state">No hubo cobros en este período.</p>
           ) : (
             <DailyChart data={data} heading={false} />
           )}
         </Glance>
-        <Glance className="reports-span-5" href={tabHref('collections')} title="Por medio de pago">
-          <Bars
-            empty="No hubo cobros en este período."
-            items={[...collections.byMethod]
-              .sort((left, right) => Number(right.amount) - Number(left.amount))
-              .map((item) => ({
-                key: item.method,
-                label: methods[item.method],
-                value: Number(item.amount),
-                text: `${compactMoney(Number(item.amount))} · ${shareOf(Number(item.amount), collected) ?? 0} %`,
-              }))}
-          />
-        </Glance>
-        <Glance className="reports-span-4" href={tabHref('attendance')} title="Asistencia">
-          {attendanceRate === null ? (
-            <p className="empty-state">No hay asistencias tomadas en este período.</p>
-          ) : (
-            <>
-              <p className="board-hero">
-                <strong>{attendanceRate} %</strong>
-                <span>de presentes</span>
-              </p>
-              <Bars
-                empty=""
-                items={lowestAttendance.map((item) => ({
-                  key: item.classId,
-                  label: item.className,
-                  value: shareOf(item.present, item.records) ?? 0,
-                  text: `${shareOf(item.present, item.records) ?? 0} %`,
-                }))}
-                maximum={100}
-              />
-              <p className="board-note">Las clases con menos presentes.</p>
-            </>
-          )}
-        </Glance>
-        <Glance className="reports-span-4" href={tabHref('debtors')} title="Mayores deudas">
+        <Glance className="reports-span-6" href={tabHref('debtors')} title="Mayores deudas">
           {data.debtors.items.length === 0 ? (
             <p className="empty-state">No hay cuotas pendientes.</p>
           ) : (
@@ -195,7 +127,7 @@ export function Summary({
             />
           )}
         </Glance>
-        <Glance className="reports-span-4" href={tabHref('cash')} title="Caja">
+        <Glance className="reports-span-6" href={tabHref('cash')} title="Caja">
           {cash.closedShifts === 0 ? (
             <p className="empty-state">No hay cierres de caja en este período.</p>
           ) : (

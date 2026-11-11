@@ -246,22 +246,23 @@ describe('secciones de Reportes', () => {
     expect(html).toContain('▲ 7');
     expect(html).toContain('▲ 3');
     expect(html).toContain('vs. 22/10 al 31/10');
-    expect(html).toContain('no depende del período elegido');
-    expect(html).toContain('16 cuotas vencidas');
+    // Lo que no depende del período (alumnos activos, deuda) se mira en el Tablero y en Deudores.
+    expect(html).not.toContain('Alumnos activos');
+    expect(html).not.toContain('Deuda pendiente');
   });
 
-  it('el resumen da un vistazo de cobros, asistencia, deudas y caja con su enlace', () => {
+  it('el resumen da un vistazo de cobros por día, deudas y caja con su enlace', () => {
     const html = renderToStaticMarkup(
       <Summary data={data} tabHref={(tab) => `/reports?tab=${tab}`} />,
     );
-    expect(html.match(/reports-glance/g)).toHaveLength(5);
+    expect(html.match(/reports-glance/g)).toHaveLength(3);
     expect(html.match(/title="\d\d\/11\/2026:/g)).toHaveLength(10);
-    expect(html).toMatch(/Por medio de pago[\s\S]*Mercado Pago[\s\S]*42 %/);
-    // La clase con menos presentes va primera.
-    expect(html).toMatch(/80 %[\s\S]*Kizomba inicial[\s\S]*58 %[\s\S]*Bachata intermedio/);
+    // Medio de pago y asistencia ya están en el Tablero y en sus pestañas.
+    expect(html).not.toContain('Por medio de pago');
+    expect(html).not.toContain('Asistencia');
     expect(html).toMatch(/Mayores deudas[\s\S]*Ana Pérez/);
     expect(html).toMatch(/reports-short[\s\S]*3\.000,00[\s\S]*faltan/);
-    for (const tab of ['collections', 'attendance', 'debtors', 'cash'])
+    for (const tab of ['collections', 'debtors', 'cash'])
       expect(html).toContain(`href="/reports?tab=${tab}"`);
   });
 
