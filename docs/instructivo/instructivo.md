@@ -33,13 +33,13 @@ Guía práctica del sistema de gestión de la academia, organizada por perfil: *
 
 ## Inicio
 
-Al entrar se ve el día: clases, alumnos que deben, seguimientos y accesos rápidos. **Registrar pago** abre el cobro desde cualquier lugar.
+Al entrar se ve el día (pestaña **Hoy**): lo primero que hay que hacer, los demás pendientes, la deuda pendiente y lo cobrado hoy, las clases y los seguimientos. **Registrar pago** abre el cobro desde cualquier lugar. La pestaña **Este mes** muestra el tablero.
 
 ![Inicio](capturas/inicio.png)
 
-## Tablero
+## Inicio → Este mes (tablero)
 
-En **Tablero** se ve cómo viene la academia mes a mes. Con las flechas de arriba a la derecha se cambia de mes; todo se compara con el mes anterior.
+En **Inicio → Este mes** se ve cómo viene la academia mes a mes. Con las flechas de arriba a la derecha se cambia de mes; todo se compara con el mes anterior.
 
 - **Alumnos activos, altas y bajas**, con los últimos 6 meses y el motivo de las bajas.
 - **Clases:** cuántos inscriptos tiene cada una sobre su cupo (marca las de ocupación **Baja** y las **Completas**), sus altas y bajas y la asistencia del mes.

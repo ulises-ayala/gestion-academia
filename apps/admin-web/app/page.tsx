@@ -12,8 +12,10 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { AdminShell } from '../components/admin-shell';
+import { BoardView } from '../components/board/board-view';
 import { CollectPaymentDialog } from '../components/collect-payment-dialog';
 import { useAuth } from '../components/auth-provider';
 import { FollowUpPanel } from '../components/dashboard/follow-up-panel';
@@ -73,6 +75,8 @@ type LoadState = Readonly<{
 
 function Dashboard() {
   const { user, can } = useAuth();
+  // "Este mes" muestra el tablero; queda en la dirección para que el botón atrás funcione.
+  const monthly = useSearchParams().get('vista') === 'mes';
   const now = useMinuteClock();
   const [state, setState] = useState<LoadState>({ data: null, error: '', refreshing: true });
   const [collecting, setCollecting] = useState(false);
@@ -131,103 +135,120 @@ function Dashboard() {
               <time dateTime={data.businessDate}>{longBusinessDate(data.businessDate)}</time>
             </p>
           </div>
-          <div className="dashboard-refresh">
-            <span aria-live="polite" role="status">
-              {refreshing ? 'Actualizando…' : `Actualizado a las ${updatedAt}`}
-            </span>
-            <button
-              aria-label="Actualizar inicio"
-              className="secondary shell-icon-button dashboard-refresh-button"
-              disabled={refreshing}
-              onClick={() => void load()}
-              title="Actualizar"
-              type="button"
-            >
-              <RotateCw aria-hidden="true" size={16} strokeWidth={1.75} />
-            </button>
+          <div className="dashboard-header-tools">
+            {!monthly && (
+              <div className="dashboard-refresh">
+                <span aria-live="polite" role="status">
+                  {refreshing ? 'Actualizando…' : `Actualizado a las ${updatedAt}`}
+                </span>
+                <button
+                  aria-label="Actualizar inicio"
+                  className="secondary shell-icon-button dashboard-refresh-button"
+                  disabled={refreshing}
+                  onClick={() => void load()}
+                  title="Actualizar"
+                  type="button"
+                >
+                  <RotateCw aria-hidden="true" size={16} strokeWidth={1.75} />
+                </button>
+              </div>
+            )}
+            <nav aria-label="Vista de inicio" className="dashboard-tabs" role="tablist">
+              <Link aria-selected={!monthly} href="/" role="tab">
+                Hoy
+              </Link>
+              <Link aria-selected={monthly} href="/?vista=mes" role="tab">
+                Este mes
+              </Link>
+            </nav>
           </div>
         </header>
 
-        {error && (
-          <div className="dashboard-stale" role="alert">
-            <span>
-              No pudimos actualizar el inicio ({error}). Mostramos los datos de las {updatedAt}.
-            </span>
-            <button className="secondary" onClick={() => void load()} type="button">
-              Reintentar
-            </button>
-          </div>
-        )}
+        {monthly ? (
+          <BoardView />
+        ) : (
+          <>
+            {error && (
+              <div className="dashboard-stale" role="alert">
+                <span>
+                  No pudimos actualizar el inicio ({error}). Mostramos los datos de las {updatedAt}.
+                </span>
+                <button className="secondary" onClick={() => void load()} type="button">
+                  Reintentar
+                </button>
+              </div>
+            )}
 
-        {quickActions.length > 0 && (
-          <section aria-labelledby="quick-actions-title" className="frequent-actions">
-            <h2 className="sr-only" id="quick-actions-title">
-              Acciones frecuentes
-            </h2>
-            <div className="frequent-actions-list">
-              {quickActions.map(([label, href]) => {
-                const Icon = quickActionIcons[label];
-                // Registrar pago abre el popup de cobro en el inicio, sin ir a Pagos.
-                if (label === 'Registrar pago')
-                  return (
-                    <button
-                      className="secondary frequent-action"
-                      key={label}
-                      type="button"
-                      onClick={() => setCollecting(true)}
-                    >
-                      {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.6} />}
-                      {label}
-                    </button>
-                  );
-                return (
-                  <Link className="button secondary frequent-action" href={href} key={label}>
-                    {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.6} />}
-                    {label}
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        )}
+            {quickActions.length > 0 && (
+              <section aria-labelledby="quick-actions-title" className="frequent-actions">
+                <h2 className="sr-only" id="quick-actions-title">
+                  Acciones frecuentes
+                </h2>
+                <div className="frequent-actions-list">
+                  {quickActions.map(([label, href]) => {
+                    const Icon = quickActionIcons[label];
+                    // Registrar pago abre el popup de cobro en el inicio, sin ir a Pagos.
+                    if (label === 'Registrar pago')
+                      return (
+                        <button
+                          className="frequent-action"
+                          key={label}
+                          type="button"
+                          onClick={() => setCollecting(true)}
+                        >
+                          {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.6} />}
+                          {label}
+                        </button>
+                      );
+                    return (
+                      <Link className="button secondary frequent-action" href={href} key={label}>
+                        {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.6} />}
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
 
-        {collecting && (
-          <CollectPaymentDialog
-            onClose={(changed) => {
-              setCollecting(false);
-              if (changed) void load();
-            }}
-          />
-        )}
+            {collecting && (
+              <CollectPaymentDialog
+                onClose={(changed) => {
+                  setCollecting(false);
+                  if (changed) void load();
+                }}
+              />
+            )}
 
-        <NowPanel
-          alerts={alerts}
-          attendanceHref={attendanceHref}
-          canTakeAttendance={canTakeAttendance}
-          focus={focus}
-        />
-
-        <ManagementSection data={data} />
-
-        <section aria-label="Hoy" className="today-stack">
-          {data.classes && (
-            <TodayAgenda
+            <NowPanel
+              alerts={alerts}
+              aside={<ManagementSection data={data} />}
               attendanceHref={attendanceHref}
               canTakeAttendance={canTakeAttendance}
-              classes={classes}
-              dateLabel={longBusinessDate(data.businessDate)}
-              focusId={focus.kind === 'class' ? focus.item.id : null}
+              focus={focus}
             />
-          )}
-          {(data.leads || can('students:manage')) && (
-            <FollowUpPanel
-              businessDate={data.businessDate}
-              canSeeStudents={can('students:manage')}
-              leads={data.leads}
-              refreshKey={data.generatedAt}
-            />
-          )}
-        </section>
+
+            <section aria-label="Hoy" className="today-stack">
+              {data.classes && (
+                <TodayAgenda
+                  attendanceHref={attendanceHref}
+                  canTakeAttendance={canTakeAttendance}
+                  classes={classes}
+                  dateLabel={longBusinessDate(data.businessDate)}
+                  focusId={focus.kind === 'class' ? focus.item.id : null}
+                />
+              )}
+              {(data.leads || can('students:manage')) && (
+                <FollowUpPanel
+                  businessDate={data.businessDate}
+                  canSeeStudents={can('students:manage')}
+                  leads={data.leads}
+                  refreshKey={data.generatedAt}
+                />
+              )}
+            </section>
+          </>
+        )}
       </div>
     </PageContainer>
   );
@@ -236,7 +257,9 @@ function Dashboard() {
 export default function HomePage() {
   return (
     <AdminShell>
-      <Dashboard />
+      <Suspense fallback={null}>
+        <Dashboard />
+      </Suspense>
     </AdminShell>
   );
 }

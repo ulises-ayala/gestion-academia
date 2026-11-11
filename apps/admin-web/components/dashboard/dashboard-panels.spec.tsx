@@ -60,6 +60,41 @@ describe('Inicio: Ahora', () => {
     expect(html).toContain('Requiere atención');
     expect(html.match(/3 alumnos con 3 o más ausencias/g)).toHaveLength(1);
   });
+
+  it('una clase terminada sin asistencia figura como pendiente, no como "Ahora"', () => {
+    const alerts = dashboardAlerts(data, () => true);
+    const panel = (clock: string) =>
+      renderToStaticMarkup(
+        <NowPanel
+          alerts={alerts}
+          attendanceHref="/attendances"
+          canTakeAttendance
+          focus={nowFocus([lesson({})], alerts, clock)}
+        />,
+      );
+    expect(panel('23:00')).toContain('<h2 id="now-title">Quedó pendiente</h2>');
+    expect(panel('23:00')).toContain('Asistencia sin registrar');
+    expect(panel('09:30')).toContain('<h2 id="now-title">Ahora</h2>');
+  });
+
+  it('pone los demás pendientes y los números del día en la columna de al lado', () => {
+    const html = renderToStaticMarkup(
+      <NowPanel
+        alerts={[]}
+        aside={<ManagementSection data={data} />}
+        attendanceHref="/attendances"
+        canTakeAttendance
+        focus={{ kind: 'clear' }}
+      />,
+    );
+    expect(html).toContain('class="now-panel has-side"');
+    expect(html).toMatch(/now-side[\s\S]*Deuda pendiente[\s\S]*Cobrado hoy/);
+    const alone = renderToStaticMarkup(
+      <NowPanel alerts={[]} attendanceHref="/a" canTakeAttendance focus={{ kind: 'clear' }} />,
+    );
+    expect(alone).toContain('class="now-panel"');
+    expect(alone).not.toContain('now-side');
+  });
 });
 
 describe('Inicio: agenda', () => {
@@ -91,10 +126,10 @@ describe('Inicio: gestión', () => {
     expect(html).toContain('href="/payments?tab=history&amp;from=2026-10-16&amp;to=2026-10-16"');
     expect(html).toContain('Deuda pendiente');
     expect(html).toContain('5 vencidas · 4 alumnos');
-    // Inicio muestra lo del día; el mes y los últimos 6 meses están en el Tablero.
+    // Inicio muestra lo del día; el mes y los últimos 6 meses están en la pestaña "Este mes".
     expect(html).toContain('Cobrado hoy');
+    expect(html).toContain('3 pagos registrados');
     expect(html).not.toContain('Cobros del mes');
     expect(html).not.toContain('Evolución de cobros');
-    expect(html).toContain('href="/board"');
   });
 });

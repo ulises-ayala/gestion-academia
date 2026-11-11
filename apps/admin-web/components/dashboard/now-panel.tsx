@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import {
   AlertTriangle,
   CalendarCheck,
   ChevronRight,
   CircleCheck,
-  Clock3,
   CreditCard,
   UserRoundSearch,
   Users,
@@ -34,61 +33,68 @@ const phaseLabel = {
 const plural = (count: number, singular: string, pluralForm: string) =>
   `${count} ${count === 1 ? singular : pluralForm}`;
 
+/**
+ * Lo primero que hay que hacer (una sola prioridad, con su acción al lado) y, en la columna de al
+ * lado, los demás pendientes y lo que se pase en `aside` (los números del día).
+ */
 export function NowPanel({
   focus,
   alerts,
   attendanceHref,
   canTakeAttendance,
+  aside,
 }: Readonly<{
   focus: NowFocus;
   alerts: readonly DashboardAlert[];
   attendanceHref: string;
   canTakeAttendance: boolean;
+  aside?: ReactNode;
 }>) {
   const secondary = alerts.filter(
     (alert) => focus.kind !== 'alert' || alert.key !== focus.alert.key,
   );
+  // Una clase que ya terminó sin asistencia no es "ahora": quedó pendiente.
+  const title = focus.kind === 'class' && focus.phase === 'missed' ? 'Quedó pendiente' : 'Ahora';
+  const hasSide = secondary.length > 0 || Boolean(aside);
   return (
-    <section aria-labelledby="now-title" className="now-panel">
-      <div className="now-heading">
-        <span className="now-heading-icon" aria-hidden="true">
-          <Clock3 size={22} strokeWidth={1.6} />
-        </span>
-        <div>
-          <h2 id="now-title">Ahora</h2>
-          <p>Tu próxima tarea en recepción</p>
-        </div>
-      </div>
+    <section aria-labelledby="now-title" className={`now-panel${hasSide ? ' has-side' : ''}`}>
       <div className="now-primary">
+        <h2 id="now-title">{title}</h2>
         <FocusContent
           attendanceHref={attendanceHref}
           canTakeAttendance={canTakeAttendance}
           focus={focus}
         />
       </div>
-      {secondary.length > 0 && (
-        <ul aria-label="Otras alertas" className="now-alerts">
-          {secondary.map((alert) => {
-            const Icon = alertIcons[alert.key];
-            return (
-              <li key={alert.key}>
-                <Link className={`now-alert now-alert--${alert.key}`} href={alert.href}>
-                  <span className="now-alert-icon" aria-hidden="true">
-                    <Icon size={18} strokeWidth={1.6} />
-                  </span>
-                  <span className="now-alert-copy">
-                    <strong>{alert.title}</strong>
-                    <small>{alert.description}</small>
-                  </span>
-                  <span className="now-alert-action">
-                    {alert.action}
-                    <ChevronRight aria-hidden="true" size={16} strokeWidth={1.75} />
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      {hasSide && (
+        <div className="now-side">
+          {secondary.length > 0 && (
+            <ul aria-label="Otros pendientes" className="now-alerts">
+              {secondary.map((alert) => {
+                const Icon = alertIcons[alert.key];
+                return (
+                  <li key={alert.key}>
+                    <Link
+                      aria-label={`${alert.title}. ${alert.action}`}
+                      className={`now-alert now-alert--${alert.key}`}
+                      href={alert.href}
+                    >
+                      <span className="now-alert-icon" aria-hidden="true">
+                        <Icon size={16} strokeWidth={1.6} />
+                      </span>
+                      <span className="now-alert-copy">
+                        <strong>{alert.title}</strong>
+                        <small>{alert.description}</small>
+                      </span>
+                      <ChevronRight aria-hidden="true" size={16} strokeWidth={1.75} />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          {aside}
+        </div>
       )}
     </section>
   );
