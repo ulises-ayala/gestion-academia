@@ -22,7 +22,8 @@ Es un monorepo TypeScript con una API NestJS, un panel Next.js y PostgreSQL. Lo 
 
 **Cuotas y cobros**
 
-- Cuotas mensuales con becas, descuentos y recargo por vencimiento.
+- Cuotas mensuales con recargo por vencimiento.
+- **Becas y descuentos** recurrentes por inscripción, con vigencia, renovación y reversa; cada cuota guarda una foto de los que se le aplicaron.
 - Cobro con uno o varios medios (efectivo, Mercado Pago, transferencia, tarjeta), pagos parciales y recargo por tarjeta según débito o crédito.
 - El sistema imputa a la deuda más antigua; Administración puede elegir las cuotas o reimputar un pago ya registrado.
 - Saldo a favor, devoluciones, corrección y anulación de pagos, siempre dejando historia.
@@ -37,22 +38,15 @@ Es un monorepo TypeScript con una API NestJS, un panel Next.js y PostgreSQL. Lo 
 **Gestión**
 
 - Liquidación de profesores por criterio de caja, con repartos por clase y vigencia mensual.
-- Inicio con la prioridad del momento y un tablero mensual: altas, bajas, ocupación por clase, cobranza y recaudación.
+- **Dashboard** de inicio con dos vistas: "Hoy" (la prioridad del momento, pendientes, deuda y cobrado del día) y "Este mes" (altas, bajas, ocupación por clase, cobranza y recaudación).
 - Reportes por período con comparación contra el período anterior, exportación a CSV y PDF.
 - Mensajes de WhatsApp predeterminados por situación (cuota vencida, ausencias, bienvenida, cumpleaños…), con registro de a quién se le escribió.
-- Auditoría de las acciones sensibles y tres niveles de acceso: Admisión, Administración y Dirección.
+- **Registro de auditoría** (audit log) consultable: quién hizo qué y cuándo, con el antes y el después de cada cambio sensible.
+- Tres niveles de acceso: Admisión, Administración y Dirección.
 
-## Capturas
+**Migración de datos históricos**
 
-Tomadas del [instructivo](docs/instructivo/instructivo.md), con los datos ficticios del seed de desarrollo.
-
-| Cobro de cuotas                                                | Ficha del alumno                                                |
-| -------------------------------------------------------------- | --------------------------------------------------------------- |
-| ![Cobro de cuotas](docs/instructivo/capturas/cobro-cuotas.png) | ![Ficha del alumno](docs/instructivo/capturas/ficha-alumno.png) |
-
-| Estado de cuenta                                                    | Liquidación de profesores                                 |
-| ------------------------------------------------------------------- | --------------------------------------------------------- |
-| ![Estado de cuenta](docs/instructivo/capturas/estado-de-cuenta.png) | ![Liquidación](docs/instructivo/capturas/liquidacion.png) |
+- Los alumnos, inscripciones, tarifas y cobros del sistema anterior (ControlFit) se migraron con scripts propios: análisis previo, simulación con reporte e importación idempotente. Las reglas de cada caso dudoso quedaron como decisiones numeradas.
 
 ## Arquitectura
 
@@ -94,7 +88,7 @@ Cada módulo de la API (`students`, `enrollments`, `billing`, `cash`, `attendanc
 - **API:** NestJS 11, Prisma 6, PostgreSQL 16, PDFKit para los PDF.
 - **Panel:** Next.js 15 (App Router), React 19, CSS con tokens propios, íconos Lucide.
 - **Tests:** Vitest 3.
-- **Infraestructura:** GitHub Actions (CI y respaldo cifrado de la base cada 3 días), Render y Neon; Docker Compose para PostgreSQL local y para un despliegue en VPS.
+- **Infraestructura:** Render (API y panel), Neon (PostgreSQL), GitHub Actions (CI y respaldo cifrado de la base cada 3 días) y Docker Compose.
 
 ## Puesta en marcha
 
@@ -146,6 +140,12 @@ npx prisma migrate deploy --schema packages/database/prisma/schema.prisma
 npm test
 Remove-Item Env:DATABASE_URL
 ```
+
+## Despliegue
+
+- **Render:** la API y el panel se definen en [`render.yaml`](render.yaml) y se despliegan solos desde `main` cuando pasa la integración continua. Al arrancar, la API aplica las migraciones pendientes (`prisma migrate deploy`, incremental y sin reset). Ver [docs/staging-render.md](docs/staging-render.md).
+- **Neon:** la base de datos de la academia es PostgreSQL en Neon. Un workflow de GitHub Actions la respalda cifrada cada 3 días. Ver [docs/backups.md](docs/backups.md).
+- **VPS:** también está documentado el despliegue con Docker Compose en un servidor propio. Ver [docs/deploy-vps.md](docs/deploy-vps.md).
 
 ## Roles y permisos
 
