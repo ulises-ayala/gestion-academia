@@ -683,7 +683,9 @@ async function main() {
       console.log('');
       console.log('ℹ️ Para aplicar:');
 
-      console.log('node --env-file=.env ./scripts/import-historical-students.mjs --apply');
+      console.log(
+        'node --env-file=.env ./scripts/migracion-controlfit/import-historical-students.mjs --apply',
+      );
     }
   } catch (error) {
     console.error('');

@@ -19,8 +19,8 @@ import { PrismaClient } from '@academy/database';
  *   start-before-payment  inicio de inscripción adelantado al período pagado anterior
  *   (ambas sobre el análisis actualizado; después volver a analizar e importar)
  *
- * Simulación:  node scripts/sync-controlfit-october-2026.mjs --phase=students
- * Aplicar:     CONTROLFIT_IMPORT_CONFIRM=<base> node scripts/sync-controlfit-october-2026.mjs --phase=students --apply
+ * Simulación:  node scripts/migracion-controlfit/sync-controlfit-october-2026.mjs --phase=students
+ * Aplicar:     CONTROLFIT_IMPORT_CONFIRM=<base> node scripts/migracion-controlfit/sync-controlfit-october-2026.mjs --phase=students --apply
  *
  * Escribe mediante la API (API_BASE_URL) con CONTROLFIT_IMPORT_USERNAME/CONTROLFIT_IMPORT_PASSWORD,
  * salvo la corrección de fechas de inicio, que la API no expone y se audita directamente.
@@ -38,7 +38,7 @@ const PHASE = args.find((arg) => arg.startsWith('--phase='))?.split('=')[1];
 const API = process.env.API_BASE_URL ?? 'http://localhost:3001/api/v1';
 const DATA_DIR = path.resolve('./scripts/data');
 const ANALYSIS_FILE = path.resolve('./exports/june-oct-2026-payments-analysis.json');
-const MAPPING_FILE = path.resolve('./scripts/controlfit-class-mapping.json');
+const MAPPING_FILE = path.resolve('./scripts/migracion-controlfit/controlfit-class-mapping.json');
 const TODAY = '2026-10-24';
 const PLACEHOLDER_START = '2026-08-28';
 const DEFAULT_START = '2026-10-01';

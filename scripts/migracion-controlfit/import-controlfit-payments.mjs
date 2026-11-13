@@ -8,8 +8,8 @@ import { centsToDecimal, planImport } from './lib/controlfit-payment-import.mjs'
 /*
  * Importación histórica de cobros de cuota de ControlFit.
  *
- * Entrada: el JSON generado por scripts/analyze-june-2026-payments.mjs
- * (volver a ejecutarlo después de cambiar scripts/controlfit-class-mapping.json).
+ * Entrada: el JSON generado por scripts/migracion-controlfit/analyze-june-2026-payments.mjs
+ * (volver a ejecutarlo después de cambiar scripts/migracion-controlfit/controlfit-class-mapping.json).
  *
  * Por cada movimiento importable crea, en una transacción:
  * - la cuota mensual de la inscripción, PAID, con el costo de ControlFit como base;
@@ -19,10 +19,10 @@ import { centsToDecimal, planImport } from './lib/controlfit-payment-import.mjs'
  * No crea movimientos de caja ni turnos. Es idempotente por legacyReference.
  *
  * Simulación (no escribe):
- *   node scripts/import-controlfit-payments.mjs
+ *   node scripts/migracion-controlfit/import-controlfit-payments.mjs
  *
  * Aplicar:
- *   CONTROLFIT_IMPORT_CONFIRM=<nombre de la base> node scripts/import-controlfit-payments.mjs --apply
+ *   CONTROLFIT_IMPORT_CONFIRM=<nombre de la base> node scripts/migracion-controlfit/import-controlfit-payments.mjs --apply
  *
  * Requiere CONTROLFIT_IMPORT_USERNAME: usuario administrativo responsable de los pagos.
  */

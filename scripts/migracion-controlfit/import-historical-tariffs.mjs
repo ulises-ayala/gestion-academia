@@ -23,10 +23,10 @@ const REPORT_FILE = path.join(OUTPUT_DIR, 'import-historical-tariffs-report.json
 /*
  * Por seguridad:
  *
- * node scripts/import-historical-tariffs.mjs
+ * node scripts/migracion-controlfit/import-historical-tariffs.mjs
  *   => DRY RUN
  *
- * node scripts/import-historical-tariffs.mjs --apply
+ * node scripts/migracion-controlfit/import-historical-tariffs.mjs --apply
  *   => escribe en la BDD
  */
 const APPLY = process.argv.includes('--apply');
@@ -675,7 +675,7 @@ async function main() {
     console.log('');
     console.log('Para aplicar:');
 
-    console.log('node scripts/import-historical-tariffs.mjs --apply');
+    console.log('node scripts/migracion-controlfit/import-historical-tariffs.mjs --apply');
   }
 
   console.log('');

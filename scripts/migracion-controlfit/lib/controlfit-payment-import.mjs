@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 /*
  * Reglas puras de la importación histórica de cobros de ControlFit.
  * Trabajan sobre los movimientos producidos por
- * scripts/analyze-june-2026-payments.mjs y no acceden a la base.
+ * scripts/migracion-controlfit/analyze-june-2026-payments.mjs y no acceden a la base.
  *
  * Los importes se manejan en centavos enteros para no operar con float.
  */

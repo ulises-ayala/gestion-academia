@@ -13,13 +13,13 @@ import { PrismaClient } from '@academy/database';
  *
  * Ejecución desde la raíz del monorepo:
  *
- * node scripts/analyze-june-2026-payments.mjs
+ * node scripts/migracion-controlfit/analyze-june-2026-payments.mjs
  *
  * Con una ruta de Excel diferente:
- * node scripts/analyze-june-2026-payments.mjs "./ruta/al/reporte.xlsx"
+ * node scripts/migracion-controlfit/analyze-june-2026-payments.mjs "./ruta/al/reporte.xlsx"
  *
  * Solo analizar el Excel, sin consultar la base de datos:
- * node scripts/analyze-june-2026-payments.mjs --report-only
+ * node scripts/migracion-controlfit/analyze-june-2026-payments.mjs --report-only
  */
 
 try {
@@ -163,12 +163,14 @@ const CLASS_ALIASES = new Map([
 
 /*
  * Equivalencias confirmadas por la academia en
- * scripts/controlfit-class-mapping.json. Reemplazan a las
+ * scripts/migracion-controlfit/controlfit-class-mapping.json. Reemplazan a las
  * equivalencias internas con la misma actividad; una lista
  * vacía deja la actividad pendiente.
  */
 
-const CLASS_MAPPING_FILE = path.resolve('./scripts/controlfit-class-mapping.json');
+const CLASS_MAPPING_FILE = path.resolve(
+  './scripts/migracion-controlfit/controlfit-class-mapping.json',
+);
 
 try {
   const mapping = JSON.parse(await fs.readFile(CLASS_MAPPING_FILE, 'utf8'));

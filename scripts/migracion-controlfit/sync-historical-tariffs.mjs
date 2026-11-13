@@ -715,7 +715,7 @@ async function main() {
     console.log('Para aplicar estos cambios:');
 
     console.log('');
-    console.log('node scripts/sync-historical-tariffs.mjs --apply');
+    console.log('node scripts/migracion-controlfit/sync-historical-tariffs.mjs --apply');
 
     console.log('');
 
@@ -835,7 +835,7 @@ async function main() {
   console.log('Siguiente verificación recomendada:');
 
   console.log('');
-  console.log('node scripts/compare-historical-tariffs-with-db.mjs');
+  console.log('node scripts/migracion-controlfit/compare-historical-tariffs-with-db.mjs');
 
   console.log('');
 }

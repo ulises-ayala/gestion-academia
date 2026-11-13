@@ -1307,7 +1307,7 @@ async function main() {
       console.log('');
       console.log('ℹ️ Para aplicar los cambios:');
 
-      console.log('node scripts/migrate-controlfit-history.mjs --apply');
+      console.log('node scripts/migracion-controlfit/migrate-controlfit-history.mjs --apply');
     }
 
     if (!REPLACE_ANY_START_DATE) {

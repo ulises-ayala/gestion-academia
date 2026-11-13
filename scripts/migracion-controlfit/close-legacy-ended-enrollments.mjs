@@ -9,8 +9,8 @@ import { PrismaClient } from '@academy/database';
  * Quedan para revisión, sin cambios, las que no tienen cuotas cobradas o cuyo cierre se superpone
  * con otra inscripción a la misma clase.
  *
- * Simulación:  node scripts/close-legacy-ended-enrollments.mjs
- * Aplicar:     CONTROLFIT_IMPORT_CONFIRM=<base> node scripts/close-legacy-ended-enrollments.mjs --apply
+ * Simulación:  node scripts/migracion-controlfit/close-legacy-ended-enrollments.mjs
+ * Aplicar:     CONTROLFIT_IMPORT_CONFIRM=<base> node scripts/migracion-controlfit/close-legacy-ended-enrollments.mjs --apply
  *
  * La auditoría se registra a nombre de CONTROLFIT_IMPORT_USERNAME.
  */
