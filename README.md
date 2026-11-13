@@ -46,7 +46,7 @@ Es un monorepo TypeScript con una API NestJS, un panel Next.js y PostgreSQL. Lo 
 
 **Migración de datos históricos**
 
-- Los alumnos, inscripciones, tarifas y cobros del sistema anterior (ControlFit) se migraron con scripts propios: análisis previo, simulación con reporte e importación idempotente. Las reglas de cada caso dudoso quedaron como decisiones numeradas.
+- Los alumnos, inscripciones, tarifas y cobros del sistema anterior (ControlFit) se migraron con [scripts propios](scripts/migracion-controlfit/README.md): análisis previo, simulación con reporte e importación idempotente. Las reglas de cada caso dudoso quedaron como decisiones numeradas.
 
 ## Arquitectura
 
