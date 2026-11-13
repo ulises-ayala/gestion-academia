@@ -5,21 +5,13 @@ import { amountDelta, barWidth, countDelta, shareOf } from '../../lib/board';
 import { type ReportTab, dailySeries, dayLabelStep } from '../../lib/reports';
 import { Bars, Kpi } from '../board/monthly-board';
 import { compactMoney } from '../../lib/money';
+import { money } from '../../lib/money';
+import { dayMonth, dayMonthYear } from '../../lib/dates';
+import { paymentMethodLabels } from '../../lib/payments';
 
 type Data = OperationalReportsDto;
 export type ReportQuery = (changes: Record<string, string | null>) => void;
 type Search = Readonly<{ get(name: string): string | null }>;
-
-const methods = {
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
-} as const;
-const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
-const amount = (value: string) => money.format(Number(value));
-const date = (value: string) => value.split('T')[0]!.split('-').reverse().join('/');
-const shortDate = (value: string) => date(value).slice(0, 5);
 
 function Heading({
   eyebrow,
@@ -68,12 +60,12 @@ export function Summary({
 }: Readonly<{ data: Data; tabHref?: (tab: ReportTab) => string }>) {
   const { summary, comparison, collections, cash } = data;
   const cashDifference = Number(summary.cashDifference);
-  const against = `vs. ${shortDate(comparison.from)} al ${shortDate(comparison.to)}`;
+  const against = `vs. ${dayMonth(comparison.from)} al ${dayMonth(comparison.to)}`;
   return (
     <>
       <section className="reports-group">
         <h2>
-          Del período <small>{`${date(data.from)} al ${date(data.to)}`}</small>
+          Del período <small>{`${dayMonthYear(data.from)} al ${dayMonthYear(data.to)}`}</small>
         </h2>
         <div className="board-kpis">
           <Kpi
@@ -96,7 +88,7 @@ export function Summary({
           />
           <Kpi
             label="Cierres de caja"
-            note={`Diferencia corregida ${amount(summary.cashDifference)}`}
+            note={`Diferencia corregida ${money(summary.cashDifference)}`}
             value={summary.closedCashShifts}
           />
         </div>
@@ -122,7 +114,7 @@ export function Summary({
                   key: item.studentId,
                   label: `${item.firstName} ${item.lastName}`,
                   value: Number(item.totalDebt),
-                  text: amount(item.totalDebt),
+                  text: money(item.totalDebt),
                 }))}
             />
           )}
@@ -140,7 +132,7 @@ export function Summary({
                 >
                   {cashDifference === 0
                     ? 'Sin diferencia'
-                    : amount(Math.abs(cashDifference).toFixed(2))}
+                    : money(Math.abs(cashDifference).toFixed(2))}
                 </strong>
                 {cashDifference !== 0 && <span>{cashDifference < 0 ? 'faltan' : 'sobran'}</span>}
               </p>
@@ -226,9 +218,9 @@ export function Students({
                   </td>
                   <td data-label="DNI">{item.dni}</td>
                   <td data-label="Estado">{item.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}</td>
-                  <td data-label="Fecha de alta">{date(item.joinedAt)}</td>
+                  <td data-label="Fecha de alta">{dayMonthYear(item.joinedAt)}</td>
                   <td data-label="Clases activas">{item.activeEnrollments}</td>
-                  <td data-label="Deuda actual">{amount(item.currentDebt)}</td>
+                  <td data-label="Deuda actual">{money(item.currentDebt)}</td>
                 </tr>
               ))}
             </tbody>
@@ -252,13 +244,13 @@ function DailyChart({ data, heading = true }: Readonly<{ data: Data; heading?: b
   const step = dayLabelStep(series.length);
   // Dentro de un mismo mes alcanza con el día: las fechas completas se pisan en el celular.
   const sameMonth = data.from.slice(0, 7) === data.to.slice(0, 7);
-  const dayLabel = (value: string) => (sameMonth ? value.slice(8, 10) : shortDate(value));
+  const dayLabel = (value: string) => (sameMonth ? value.slice(8, 10) : dayMonth(value));
   const best = series.reduce((top, item) => (item.amount > top.amount ? item : top), series[0]!);
   return (
     <>
       {heading && <h3>Cobros por día</h3>}
       <div
-        aria-label={`Cobros por día; el mejor fue el ${shortDate(best.date)} con ${compactMoney(best.amount)}`}
+        aria-label={`Cobros por día; el mejor fue el ${dayMonth(best.date)} con ${compactMoney(best.amount)}`}
         className="reports-daily"
         role="img"
       >
@@ -266,7 +258,7 @@ function DailyChart({ data, heading = true }: Readonly<{ data: Data; heading?: b
           <div
             className={item === best ? 'is-best' : ''}
             key={item.date}
-            title={`${date(item.date)}: ${money.format(item.amount)}`}
+            title={`${dayMonthYear(item.date)}: ${money(item.amount)}`}
           >
             <span>{series.length <= 14 && item.amount > 0 ? compactMoney(item.amount) : ''}</span>
             <i style={{ height: `${barWidth(item.amount, maximum)}%` }} />
@@ -275,7 +267,7 @@ function DailyChart({ data, heading = true }: Readonly<{ data: Data; heading?: b
         ))}
       </div>
       <p className="board-note">
-        Mejor día: {shortDate(best.date)}, con {money.format(best.amount)}.
+        Mejor día: {dayMonth(best.date)}, con {money(best.amount)}.
       </p>
     </>
   );
@@ -299,7 +291,7 @@ export function Collections({ data, exportHref }: Readonly<{ data: Data; exportH
       ) : (
         <>
           <p className="board-hero">
-            <strong>{amount(collections.total)}</strong>
+            <strong>{money(collections.total)}</strong>
             <span>
               en {collections.count} {collections.count === 1 ? 'pago' : 'pagos'}
             </span>
@@ -313,7 +305,7 @@ export function Collections({ data, exportHref }: Readonly<{ data: Data; exportH
                   .sort((left, right) => Number(right.amount) - Number(left.amount))
                   .map((item) => ({
                     key: item.method,
-                    label: methods[item.method],
+                    label: paymentMethodLabels[item.method],
                     value: Number(item.amount),
                     text: withShare(item.amount),
                   }))}
@@ -344,7 +336,7 @@ export function Collections({ data, exportHref }: Readonly<{ data: Data; exportH
                   <tr>
                     <th>Concepto</th>
                     {collections.byMethod.map((item) => (
-                      <th key={item.method}>{methods[item.method]}</th>
+                      <th key={item.method}>{paymentMethodLabels[item.method]}</th>
                     ))}
                     <th>Total</th>
                   </tr>
@@ -354,12 +346,12 @@ export function Collections({ data, exportHref }: Readonly<{ data: Data; exportH
                     <tr key={row.concept}>
                       <td data-label="Concepto">{row.label}</td>
                       {row.byMethod.map((item) => (
-                        <td data-label={methods[item.method]} key={item.method}>
-                          {amount(item.amount)}
+                        <td data-label={paymentMethodLabels[item.method]} key={item.method}>
+                          {money(item.amount)}
                         </td>
                       ))}
                       <td data-label="Total">
-                        <strong>{amount(row.total)}</strong>
+                        <strong>{money(row.total)}</strong>
                       </td>
                     </tr>
                   ))}
@@ -368,24 +360,24 @@ export function Collections({ data, exportHref }: Readonly<{ data: Data; exportH
                   <tr>
                     <th scope="row">Total</th>
                     {collections.byMethod.map((item) => (
-                      <td data-label={methods[item.method]} key={item.method}>
-                        {amount(item.amount)}
+                      <td data-label={paymentMethodLabels[item.method]} key={item.method}>
+                        {money(item.amount)}
                       </td>
                     ))}
                     <td data-label="Total">
-                      <strong>{amount(collections.total)}</strong>
+                      <strong>{money(collections.total)}</strong>
                     </td>
                   </tr>
                   {Number(collections.refunds.total) > 0 && (
                     <tr>
                       <th scope="row">Devoluciones de saldo a favor</th>
                       {collections.refunds.byMethod.map((item) => (
-                        <td data-label={methods[item.method]} key={item.method}>
-                          -{amount(item.amount)}
+                        <td data-label={paymentMethodLabels[item.method]} key={item.method}>
+                          -{money(item.amount)}
                         </td>
                       ))}
                       <td data-label="Total">
-                        <strong>-{amount(collections.refunds.total)}</strong>
+                        <strong>-{money(collections.refunds.total)}</strong>
                       </td>
                     </tr>
                   )}
@@ -422,7 +414,7 @@ export function Teachers({ data, exportHref }: Readonly<{ data: Data; exportHref
                 key: item.teacherId,
                 label: item.teacherName,
                 value: Number(item.total),
-                text: amount(item.total),
+                text: money(item.total),
               }))}
           />
           <div className="table-wrap reports-concepts reports-spaced">
@@ -442,10 +434,10 @@ export function Teachers({ data, exportHref }: Readonly<{ data: Data; exportHref
                     <td data-label="Profesor">
                       <Link href={`/teachers/${item.teacherId}`}>{item.teacherName}</Link>
                     </td>
-                    <td data-label="Cuotas">{amount(item.charges)}</td>
-                    <td data-label="Deuda anterior">{amount(item.historicalDebt)}</td>
+                    <td data-label="Cuotas">{money(item.charges)}</td>
+                    <td data-label="Deuda anterior">{money(item.historicalDebt)}</td>
                     <td data-label="Clases sueltas">
-                      {amount(item.singleClass)}
+                      {money(item.singleClass)}
                       {item.singleClassCount > 0 && (
                         <small className="table-subline">
                           {item.singleClassCount === 1
@@ -455,7 +447,7 @@ export function Teachers({ data, exportHref }: Readonly<{ data: Data; exportHref
                       )}
                     </td>
                     <td data-label="Total">
-                      <strong>{amount(item.total)}</strong>
+                      <strong>{money(item.total)}</strong>
                     </td>
                   </tr>
                 ))}
@@ -483,7 +475,7 @@ export function Teachers({ data, exportHref }: Readonly<{ data: Data; exportHref
                     <td data-label="Profesor">{item.teacherName}</td>
                     <td data-label="Clase">{item.className}</td>
                     <td data-label="Clases">{item.count}</td>
-                    <td data-label="Monto">{amount(item.amount)}</td>
+                    <td data-label="Monto">{money(item.amount)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -566,9 +558,9 @@ export function Debtors({
                   </td>
                   <td data-label="Cuotas abiertas">{item.openCharges}</td>
                   <td data-label="Vencidas">{item.overdueCharges}</td>
-                  <td data-label="Deuda">{amount(item.totalDebt)}</td>
-                  <td data-label="Deuda vencida">{amount(item.overdueDebt)}</td>
-                  <td data-label="Más antigua">{date(item.oldestDueDate)}</td>
+                  <td data-label="Deuda">{money(item.totalDebt)}</td>
+                  <td data-label="Deuda vencida">{money(item.overdueDebt)}</td>
+                  <td data-label="Más antigua">{dayMonthYear(item.oldestDueDate)}</td>
                 </tr>
               ))}
             </tbody>
@@ -704,19 +696,19 @@ export function Cash({ data, exportHref }: Readonly<{ data: Data; exportHref: st
               return (
                 <article className="cash-closing-card" data-method={item.method} key={item.method}>
                   <header>
-                    <span className="cash-method">{methods[item.method]}</span>
+                    <span className="cash-method">{paymentMethodLabels[item.method]}</span>
                     {corrected && <span className="cash-closing-tag">Corregido</span>}
                   </header>
                   <dl>
                     <div>
                       <dt>Sistema</dt>
-                      <dd>{amount(item.expected)}</dd>
+                      <dd>{money(item.expected)}</dd>
                     </div>
                     <div>
                       <dt>Declarado</dt>
                       <dd>
-                        {amount(item.correctedDeclared)}
-                        {corrected && <small>antes {amount(item.declared)}</small>}
+                        {money(item.correctedDeclared)}
+                        {corrected && <small>antes {money(item.declared)}</small>}
                       </dd>
                     </div>
                   </dl>
@@ -726,7 +718,7 @@ export function Cash({ data, exportHref }: Readonly<{ data: Data; exportHref: st
                     <span>
                       {difference < 0 ? 'Faltan' : difference > 0 ? 'Sobran' : 'Sin diferencia'}
                     </span>
-                    {difference !== 0 && <strong>{amount(Math.abs(difference).toFixed(2))}</strong>}
+                    {difference !== 0 && <strong>{money(Math.abs(difference).toFixed(2))}</strong>}
                   </p>
                 </article>
               );
@@ -753,15 +745,15 @@ export function Cash({ data, exportHref }: Readonly<{ data: Data; exportHref: st
                   <tr key={item.userId}>
                     <td data-label="Operador">{item.username}</td>
                     <td data-label="Turnos">{item.shifts}</td>
-                    <td data-label="Sistema">{amount(item.expected)}</td>
-                    <td data-label="Declarado">{amount(item.declared)}</td>
+                    <td data-label="Sistema">{money(item.expected)}</td>
+                    <td data-label="Declarado">{money(item.declared)}</td>
                     <td
                       className={
                         Number(item.correctedDifference) < 0 ? 'cash-amount is-negative' : ''
                       }
                       data-label="Diferencia corregida"
                     >
-                      {amount(item.correctedDifference)}
+                      {money(item.correctedDifference)}
                     </td>
                   </tr>
                 ))}
@@ -779,10 +771,10 @@ export function Cash({ data, exportHref }: Readonly<{ data: Data; exportHref: st
             <Link className="reports-difference" href="/cash" key={item.shiftId}>
               <span>
                 <strong>{item.username}</strong>
-                <small>{date(item.closedAt)}</small>
+                <small>{dayMonthYear(item.closedAt)}</small>
               </span>
               <span>
-                Original {amount(item.difference)} · Corregida {amount(item.correctedDifference)}
+                Original {money(item.difference)} · Corregida {money(item.correctedDifference)}
               </span>
             </Link>
           ))

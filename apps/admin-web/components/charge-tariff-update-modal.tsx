@@ -7,9 +7,10 @@ import type {
 } from '@academy/contracts';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
-import { chargeLabel, money } from '../lib/collect-payment';
+import { chargeLabel } from '../lib/collect-payment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/form-controls';
+import { money } from '../lib/money';
 
 /**
  * Actualiza una cuota sin pagos al importe de la modalidad que hoy tiene la inscripción (por

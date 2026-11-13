@@ -2,12 +2,11 @@ import type { OperationalReportsDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import {
   PDF_DEBTOR_LIMIT,
-  formatDate,
   formatDateInZone,
-  formatMoney,
   renderOperationalReportPdf,
   reportPdfFileName,
 } from './report-pdf';
+import { formatDate, formatMoney } from '../../shared/domain/format';
 
 const options = {
   timezone: 'America/Buenos_Aires',

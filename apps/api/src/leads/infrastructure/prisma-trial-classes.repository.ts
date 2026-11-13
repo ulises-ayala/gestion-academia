@@ -5,6 +5,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { TrialClassesRepository } from '../application/trial-classes.repository';
 import { statusAfterTrial } from '../domain/trial-class';
+import { formatDate } from '../../shared/domain/format';
 
 const include = {
   academicClass: { select: { id: true, name: true } },
@@ -20,11 +21,10 @@ const toDto = (item: IncludedTrial): LeadTrialClassDto => ({
   createdBy: item.createdBy,
   createdAt: item.createdAt.toISOString(),
 });
-const formatDay = (date: string) => date.split('-').reverse().join('/');
 const alreadyTaken = (className: string, trialDate: string) =>
   new DomainError(
     'TRIAL_CLASS_CONFLICT',
-    `Ya tomó la clase de prueba de ${className} el ${formatDay(trialDate)}: es una sola vez por clase.`,
+    `Ya tomó la clase de prueba de ${className} el ${formatDate(trialDate)}: es una sola vez por clase.`,
     { field: 'classId' },
   );
 

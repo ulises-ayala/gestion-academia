@@ -18,10 +18,9 @@ import {
   closingPreviewQuery,
 } from '../../lib/closings';
 import { paymentMethodLabels } from '../../lib/payments';
+import { money } from '../../lib/money';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const dateTime = (value: string) =>
   new Intl.DateTimeFormat('es-AR', {
     dateStyle: 'short',

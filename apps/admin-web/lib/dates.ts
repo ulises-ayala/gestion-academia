@@ -25,3 +25,9 @@ export function businessToday(now = new Date()): string {
     parts.find((part) => part.type === type)?.value ?? '';
   return `${value('year')}-${value('month')}-${value('day')}`;
 }
+
+/** "2026-10-05" (o un instante ISO, del que se toma el día) → "05/10/2026". */
+export const dayMonthYear = (value: string) => value.slice(0, 10).split('-').reverse().join('/');
+
+/** "2026-10-05" → "05/10". */
+export const dayMonth = (value: string) => dayMonthYear(value).slice(0, 5);

@@ -1,4 +1,5 @@
 import type { BillingAdjustmentTypeDto, TariffDto } from '@academy/contracts';
+import { dayMonthYear } from './dates';
 
 /** Igual que en la API: hasta dos meses por adelantado. */
 export const GENERATION_MONTHS_AHEAD = 2;
@@ -120,10 +121,9 @@ export const overlappingTariff = (
 export const formatTariffRange = (
   tariff: Readonly<{ validFrom: string; validTo: string | null }>,
 ) => {
-  const date = (value: string) => `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
   return tariff.validTo
-    ? `del ${date(tariff.validFrom)} al ${date(tariff.validTo)}`
-    : `desde el ${date(tariff.validFrom)}`;
+    ? `del ${dayMonthYear(tariff.validFrom)} al ${dayMonthYear(tariff.validTo)}`
+    : `desde el ${dayMonthYear(tariff.validFrom)}`;
 };
 
 /** Tarifas desactivadas que la API ofrece reactivar cuando no hay una vigente para el mes. */
@@ -141,9 +141,6 @@ export const inactiveTariffsFrom = (
       typeof (item as InactiveTariff).amount === 'string',
   );
 };
-
-export const shortDate = (value: string) =>
-  `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
 
 export const periodLabel = (period: string) => {
   const label = new Intl.DateTimeFormat('es-AR', {

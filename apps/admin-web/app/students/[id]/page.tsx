@@ -38,9 +38,8 @@ import {
   sortAccountCharges,
   studentAccountSummary,
 } from '../../../lib/student-account';
+import { money } from '../../../lib/money';
 
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const attendanceStatus = {
   PRESENT: 'Presente',
   ABSENT: 'Ausente',

@@ -5,9 +5,8 @@ import { chargeLabel } from '../lib/collect-payment';
 import { describeOtherPayment } from '../lib/other-payment';
 import { paymentMethodLabels } from '../lib/payments';
 import { whatsappReceiptUrl } from '../lib/whatsapp-receipt';
+import { money } from '../lib/money';
 
-const money = (value: string | number) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const dateTime = (value: string) =>
   new Intl.DateTimeFormat('es-AR', {
     dateStyle: 'short',

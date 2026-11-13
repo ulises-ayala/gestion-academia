@@ -4,9 +4,8 @@ import { describeOtherPayment } from '../lib/other-payment';
 import { payerDni, payerName, paymentMethodLabels } from '../lib/payments';
 import { chargeLabel } from '../lib/collect-payment';
 import { PaymentActions, paymentStatusLabel } from './payment-actions';
+import { money } from '../lib/money';
 
-const money = (value: string | number) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const dateTime = (value: string) =>
   new Intl.DateTimeFormat('es-AR', {
     dateStyle: 'short',

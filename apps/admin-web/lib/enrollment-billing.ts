@@ -1,7 +1,5 @@
 import type { EnrollmentDto, TariffDto } from '@academy/contracts';
-
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
+import { money } from './money';
 
 /** Modalidades que se pueden elegir: tarifas activas de la clase que siguen vigentes hoy. */
 export const modalityOptions = (tariffs: readonly TariffDto[], classId: string, today: string) =>

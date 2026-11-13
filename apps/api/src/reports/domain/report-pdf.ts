@@ -1,15 +1,10 @@
-import type { OperationalReportsDto, PaymentMethodDto } from '@academy/contracts';
+import type { OperationalReportsDto } from '@academy/contracts';
 import PDFDocument from 'pdfkit';
+import { PAYMENT_METHOD_LABELS, formatDate, formatMoney } from '../../shared/domain/format';
 
 /** Cantidad de deudores que entran en el PDF; la lista completa sale por CSV. */
 export const PDF_DEBTOR_LIMIT = 20;
 
-const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
-};
 /** Nombres de los conceptos que no vienen del catálogo (`payment_concepts`). */
 export const CONCEPT_LABELS: Readonly<Record<string, string>> = {
   CHARGES: 'Cuotas',
@@ -27,9 +22,6 @@ const COLORS = {
 } as const;
 const FONT = { regular: 'Helvetica', bold: 'Helvetica-Bold', italic: 'Helvetica-Oblique' } as const;
 
-const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
-export const formatMoney = (value: string) => money.format(Number(value));
-export const formatDate = (value: string) => value.slice(0, 10).split('-').reverse().join('/');
 const formatDateTime = (value: string, timezone: string) =>
   new Intl.DateTimeFormat('es-AR', {
     timeZone: timezone,
@@ -258,7 +250,7 @@ export function renderOperationalReportPdf(
     ['Total cobrado', formatMoney(collections.total)],
     ['Pagos confirmados', collections.count],
     ...collections.byMethod.map(
-      (item) => [METHOD_LABELS[item.method], formatMoney(item.amount)] as const,
+      (item) => [PAYMENT_METHOD_LABELS[item.method], formatMoney(item.amount)] as const,
     ),
   ]);
   metrics([
@@ -273,7 +265,7 @@ export function renderOperationalReportPdf(
       [
         { header: 'Concepto', width: 0.25 },
         ...methods.map((method) => ({
-          header: METHOD_LABELS[method],
+          header: PAYMENT_METHOD_LABELS[method],
           width: 0.6 / methods.length,
           align: 'right' as const,
         })),
@@ -300,7 +292,10 @@ export function renderOperationalReportPdf(
         .filter((item) => Number(item.amount) > 0)
         .map(
           (item) =>
-            [`Devuelto en ${METHOD_LABELS[item.method]}`, formatMoney(item.amount)] as const,
+            [
+              `Devuelto en ${PAYMENT_METHOD_LABELS[item.method]}`,
+              formatMoney(item.amount),
+            ] as const,
         ),
     ]);
   if (collections.byTeacher.length > 0) {
@@ -445,7 +440,7 @@ export function renderOperationalReportPdf(
         { header: 'Diferencia corregida', width: 0.205, align: 'right' },
       ],
       cash.byMethod.map((item) => [
-        METHOD_LABELS[item.method],
+        PAYMENT_METHOD_LABELS[item.method],
         formatMoney(item.expected),
         formatMoney(item.declared),
         formatMoney(item.difference),

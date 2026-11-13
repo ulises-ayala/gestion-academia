@@ -1,5 +1,7 @@
 import type { AuditLogDto } from '@academy/contracts';
 import { enrollmentEndLabels } from './enrollment-end';
+import { money } from './money';
+import { paymentMethodLabels } from './payments';
 
 export const auditEntityOptions = [
   ['', 'Todas'],
@@ -87,10 +89,7 @@ const valueLabels: Record<string, string> = {
   ABSENT: 'Ausente',
   JUSTIFIED: 'Justificada',
   ENDED: 'Finalizada',
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
+  ...paymentMethodLabels,
   INQUIRY: 'Consulta',
   INTERESTED: 'Interesado/a',
   TRIAL: 'Clase de prueba',
@@ -132,9 +131,7 @@ export function formatAuditValue(field: string, value: unknown): string {
           typeof item.method === 'string' ? (valueLabels[item.method] ?? item.method) : '';
         const amount =
           typeof item.amount === 'string' || typeof item.amount === 'number'
-            ? new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(
-                Number(item.amount),
-              )
+            ? money(item.amount)
             : '';
         return [method, amount].filter(Boolean).join(': ');
       })
@@ -142,9 +139,7 @@ export function formatAuditValue(field: string, value: unknown): string {
       .join(' + ');
   if (typeof value === 'string' && valueLabels[value]) return valueLabels[value];
   if (moneyFields.has(field) && (typeof value === 'string' || typeof value === 'number'))
-    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(
-      Number(value),
-    );
+    return money(value);
   if (dateFields.has(field) && typeof value === 'string') {
     const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
     return new Intl.DateTimeFormat('es-AR', {

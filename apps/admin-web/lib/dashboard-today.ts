@@ -1,5 +1,6 @@
 import type { OperationalDashboardDto } from '@academy/contracts';
 import { dashboardContextLinks } from './contextual-filters';
+import { dayMonth } from './dates';
 
 export const BUSINESS_TIME_ZONE = 'America/Buenos_Aires';
 /** Una clase que empieza dentro de esta ventana pasa a ser la tarea de "Ahora". */
@@ -161,7 +162,7 @@ export const followUpWhen = (nextFollowUpAt: string, overdue: boolean, businessD
   const day = businessDay(nextFollowUpAt);
   if (day === businessDate) return 'Hoy';
   if (day === addDays(businessDate, 1)) return 'Mañana';
-  return day.split('-').reverse().slice(0, 2).join('/');
+  return dayMonth(day);
 };
 
 export const personInitials = (name: string) =>

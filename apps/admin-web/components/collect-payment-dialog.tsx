@@ -39,7 +39,6 @@ import {
   historicalDebtPayload,
   historicalDebtProblem,
   isOpenCharge,
-  money,
   tariffUpdatable,
   normalizeAmount,
   paymentSummary,
@@ -75,6 +74,7 @@ import { ChargeDueDateModal } from './charge-due-date-modal';
 import { ChargeTariffUpdateModal } from './charge-tariff-update-modal';
 import { ChargeVoidModal } from './charge-void-modal';
 import { GenerateChargeDialog } from './generate-charge-dialog';
+import { money } from '../lib/money';
 
 const freshPick = (amount = ''): TenderPick => ({ mode: 'CASH', amount, split: emptyTenders });
 const shortDate = (value: string) =>

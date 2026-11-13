@@ -6,7 +6,6 @@ import {
   chargesLabel,
   daysUntilBirthday,
   parseSituation,
-  shortDate,
   templateVariables,
   validateTemplate,
 } from './message-template';
@@ -52,7 +51,6 @@ describe('mensajes de WhatsApp: plantillas', () => {
   it('formatea cuotas y fechas', () => {
     expect(chargesLabel(1)).toBe('1 cuota');
     expect(chargesLabel(3)).toBe('3 cuotas');
-    expect(shortDate('2026-10-05')).toBe('05/10');
     expect(addDays('2026-11-28', 5)).toBe('2026-12-03');
     expect(addDays('2026-11-10', -60)).toBe('2026-09-11');
   });

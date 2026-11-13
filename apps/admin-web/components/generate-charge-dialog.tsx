@@ -24,18 +24,11 @@ import {
   type InactiveTariff,
   addMonths,
   periodRange,
-  shortDate,
   suggestedPeriod,
 } from '../lib/charge-generation';
-
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
-const methodLabels: Readonly<Record<PaymentMethodDto, string>> = {
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
-};
+import { money } from '../lib/money';
+import { paymentMethodLabels } from '../lib/payments';
+import { dayMonthYear } from '../lib/dates';
 
 export type GenerateChargeResult = Readonly<{ title: string; detail: string; warning?: string }>;
 
@@ -242,7 +235,7 @@ export function GenerateChargeDialog({
       });
       onDone({
         title: preview.newCount === 1 ? 'Cuota generada y cobrada' : 'Cuotas generadas y cobradas',
-        detail: `${label}. Cobro de ${money(collectAmount)} en ${methodLabels[method]}.`,
+        detail: `${label}. Cobro de ${money(collectAmount)} en ${paymentMethodLabels[method]}.`,
       });
     } catch (caught) {
       onDone({
@@ -490,7 +483,7 @@ export function GenerateChargeDialog({
                           <small>
                             {month.alreadyExists
                               ? 'Ya tiene cuota: se saltea'
-                              : `${month.tariff.name} · vence ${shortDate(month.dueDate)}${
+                              : `${month.tariff.name} · vence ${dayMonthYear(month.dueDate)}${
                                   month.adjustments.length
                                     ? ` · ${month.adjustments.map((type) => adjustmentLabels[type]).join(', ')}`
                                     : ''
@@ -515,9 +508,9 @@ export function GenerateChargeDialog({
                 ) : null}
                 {preview?.enrollmentStartChange && (
                   <p className="generate-charge-note" role="status">
-                    La inscripción empieza el {shortDate(preview.enrollmentStartChange.from)}. Para
-                    cargar esta deuda, su inicio se adelanta al{' '}
-                    {shortDate(preview.enrollmentStartChange.to)} (queda registrado).
+                    La inscripción empieza el {dayMonthYear(preview.enrollmentStartChange.from)}.
+                    Para cargar esta deuda, su inicio se adelanta al{' '}
+                    {dayMonthYear(preview.enrollmentStartChange.to)} (queda registrado).
                   </p>
                 )}
               </div>
@@ -550,7 +543,7 @@ export function GenerateChargeDialog({
                         value={method}
                         onChange={(event) => setMethod(event.target.value as PaymentMethodDto)}
                       >
-                        {Object.entries(methodLabels).map(([value, label]) => (
+                        {Object.entries(paymentMethodLabels).map(([value, label]) => (
                           <option key={value} value={value}>
                             {label}
                           </option>
@@ -570,7 +563,8 @@ export function GenerateChargeDialog({
                     <p className="modal-copy">{collectBlocked}</p>
                   ) : collectNow && preview ? (
                     <p className="generate-charge-collect">
-                      Se cobra <strong>{money(collectAmount)}</strong> en {methodLabels[method]}.
+                      Se cobra <strong>{money(collectAmount)}</strong> en{' '}
+                      {paymentMethodLabels[method]}.
                     </p>
                   ) : null}
                 </fieldset>

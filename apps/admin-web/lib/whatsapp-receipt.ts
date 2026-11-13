@@ -1,7 +1,9 @@
 import type { PaymentDto, ReceivableDebtorDto } from '@academy/contracts';
-import { chargeLabel, money } from './collect-payment';
+import { chargeLabel } from './collect-payment';
 import { describeOtherPayment } from './other-payment';
 import { payerDni, payerName, paymentMethodLabels } from './payments';
+import { money } from './money';
+import { dayMonthYear } from './dates';
 
 /** Teléfono de la academia que figura al pie del recibo. */
 export const ACADEMY_CONTACT_PHONE = '370 508-4498';
@@ -89,8 +91,6 @@ export const whatsappReceiptUrl = (
   return `https://wa.me/${number ?? ''}?text=${encodeURIComponent(receiptText(payment, remainingDebt))}`;
 };
 
-const shortDate = (value: string) => value.slice(0, 10).split('-').reverse().join('/');
-
 /**
  * Aviso de deuda por WhatsApp (decisión 259): las cuotas vencidas y su saldo; si además debe
  * cuotas que todavía no vencieron, el total. No lo manda solo: se abre el chat para enviarlo.
@@ -102,7 +102,7 @@ export const debtReminderText = (debtor: ReceivableDebtorDto): string => {
     `Hola ${debtor.student.firstName}, te escribimos de *Carmesí*.`,
     '',
     overdue > 0
-      ? `Te recordamos que tenés ${overdue === 1 ? '1 cuota vencida' : `${overdue} cuotas vencidas`} por *${money(debtor.overdueAmount)}* (la más antigua venció el ${shortDate(debtor.oldestDueDate)}).`
+      ? `Te recordamos que tenés ${overdue === 1 ? '1 cuota vencida' : `${overdue} cuotas vencidas`} por *${money(debtor.overdueAmount)}* (la más antigua venció el ${dayMonthYear(debtor.oldestDueDate)}).`
       : `Te recordamos que tenés un saldo pendiente de *${money(debtor.outstandingAmount)}*.`,
     ...(overdue > 0 && owesMore
       ? [`Saldo total de tu cuenta: ${money(debtor.outstandingAmount)}.`]

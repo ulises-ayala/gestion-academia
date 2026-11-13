@@ -1,13 +1,7 @@
-import type { CollectionClosingDto, PaymentMethodDto } from '@academy/contracts';
+import type { CollectionClosingDto } from '@academy/contracts';
 import PDFDocument from 'pdfkit';
-import { formatDate, formatMoney } from './report-pdf';
+import { PAYMENT_METHOD_LABELS, formatDate, formatMoney } from '../../shared/domain/format';
 
-const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
-};
 const COLORS = { accent: '#7d1d35', text: '#1f1b18', muted: '#6f6a64', border: '#ddd9d4' };
 
 /** PDF de un cierre semanal o mensual: la foto guardada y, aparte, lo que cambió después. */
@@ -82,7 +76,7 @@ export function renderClosingPdf(closing: CollectionClosingDto, timezone: string
   const methods = snapshot.collections.byMethod.map((item) => item.method);
   heading('Recaudación por concepto y medio');
   table(
-    ['Concepto', ...methods.map((method) => METHOD_LABELS[method]), 'Total'],
+    ['Concepto', ...methods.map((method) => PAYMENT_METHOD_LABELS[method]), 'Total'],
     [
       ...snapshot.collections.byConceptAndMethod.map((row) => [
         row.label,
@@ -103,7 +97,7 @@ export function renderClosingPdf(closing: CollectionClosingDto, timezone: string
       ['Medio', 'Devuelto'],
       snapshot.refunds.byMethod
         .filter((item) => Number(item.amount) > 0)
-        .map((item) => [METHOD_LABELS[item.method], formatMoney(item.amount)]),
+        .map((item) => [PAYMENT_METHOD_LABELS[item.method], formatMoney(item.amount)]),
       0.5,
     );
   }
@@ -136,7 +130,7 @@ export function renderClosingPdf(closing: CollectionClosingDto, timezone: string
       ['Concepto', 'Medio', 'En el cierre', 'Hoy', 'Diferencia'],
       closing.changes.map((change) => [
         change.label,
-        METHOD_LABELS[change.method],
+        PAYMENT_METHOD_LABELS[change.method],
         formatMoney(change.original),
         formatMoney(change.current),
         formatMoney(change.difference),

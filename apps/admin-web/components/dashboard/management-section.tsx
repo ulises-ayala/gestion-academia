@@ -4,12 +4,8 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { dashboardContextLinks } from '../../lib/contextual-filters';
 import { InfoHint } from './info-hint';
+import { moneyRounded } from '../../lib/money';
 
-const money = new Intl.NumberFormat('es-AR', {
-  style: 'currency',
-  currency: 'ARS',
-  maximumFractionDigits: 0,
-});
 const plural = (count: number, singular: string, pluralForm: string) =>
   `${count} ${count === 1 ? singular : pluralForm}`;
 
@@ -32,7 +28,7 @@ export function ManagementSection({ data }: Readonly<{ data: OperationalDashboar
               text="Saldo de todas las cuotas no anuladas que todavía tienen importe por cobrar. Una cuota está vencida si tiene saldo y su vencimiento es anterior al día operativo; en ese caso incluye el recargo por mora si aún no se aplicó."
             />
           </h3>
-          <strong>{money.format(Number(billing.pendingDebt))}</strong>
+          <strong>{moneyRounded(billing.pendingDebt)}</strong>
           <p>
             {plural(billing.pendingCharges, 'cuota pendiente', 'cuotas pendientes')} ·{' '}
             {plural(billing.overdueCharges, 'vencida', 'vencidas')}
@@ -48,7 +44,7 @@ export function ManagementSection({ data }: Readonly<{ data: OperationalDashboar
       {payments && (
         <article className="day-figure">
           <h3>Cobrado hoy</h3>
-          <strong>{money.format(Number(payments.confirmedAmountToday))}</strong>
+          <strong>{moneyRounded(payments.confirmedAmountToday)}</strong>
           <p>{plural(payments.confirmedToday, 'pago registrado', 'pagos registrados')}</p>
           <Link className="text-link" href={todayHref}>
             Ver detalle

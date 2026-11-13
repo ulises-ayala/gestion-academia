@@ -1,5 +1,6 @@
 import { DomainError } from '../../shared/domain/domain-error';
 import type { EnrollmentEndReasonDto } from '@academy/contracts';
+import { formatDate } from '../../shared/domain/format';
 
 const endReasons: readonly EnrollmentEndReasonDto[] = [
   'NO_LONGER_ATTENDING',
@@ -80,7 +81,7 @@ export function classChangeEndDate(
   return new Date(target.startDate.getTime() - dayInMs);
 }
 
-const formatDay = (date: Date) => date.toISOString().slice(0, 10).split('-').reverse().join('/');
+const formatDay = (date: Date) => formatDate(date.toISOString());
 
 /**
  * Dos períodos de la misma clase no se superponen (una cuota por inscripción y mes). Explica con

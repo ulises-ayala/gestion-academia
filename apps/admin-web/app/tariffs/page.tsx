@@ -5,10 +5,9 @@ import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { formatDate } from '../../lib/dates';
 import { PermissionGate } from '../../components/permission-gate';
+import { money } from '../../lib/money';
 
 const emptyForm = { classId: '', name: '', amount: '40000.00', validFrom: '', validTo: '' };
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 
 export default function TariffsPage() {
   const [items, setItems] = useState<readonly TariffDto[]>([]);

@@ -1,5 +1,6 @@
 import type { TariffDto } from '@academy/contracts';
 import { DomainError } from '../../shared/domain/domain-error';
+import { formatDate } from '../../shared/domain/format';
 
 /** Meses hacia adelante que se pueden generar para cobrar por adelantado. */
 export const GENERATION_MONTHS_AHEAD = 2;
@@ -96,12 +97,10 @@ export const assertPeriodAllowed = (input: {
     );
 };
 
-const shortDate = (value: string) =>
-  `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)}`;
 const tariffRange = (tariff: TariffDto) =>
   tariff.validTo
-    ? `del ${shortDate(tariff.validFrom)} al ${shortDate(tariff.validTo)}`
-    : `desde el ${shortDate(tariff.validFrom)}`;
+    ? `del ${formatDate(tariff.validFrom)} al ${formatDate(tariff.validTo)}`
+    : `desde el ${formatDate(tariff.validFrom)}`;
 
 const coversPeriod = (tariff: TariffDto, period: string) =>
   tariff.validFrom.slice(0, 7) <= period &&

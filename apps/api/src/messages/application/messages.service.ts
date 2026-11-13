@@ -22,9 +22,9 @@ import {
   chargesLabel,
   daysUntilBirthday,
   parseSituation,
-  shortDate,
   validateTemplate,
 } from '../domain/message-template';
+import { formatDayMonth, formatMoney } from '../../shared/domain/format';
 
 /** Lo que cada situación sabe de una persona antes de sumarle el último envío. */
 type Recipient = Omit<MessageRecipientDto, 'lastSend'>;
@@ -48,8 +48,7 @@ const BIRTHDAY_DAYS = 7;
 const RECENT_SEND_DAYS = 30;
 
 const timeZone = () => process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
-const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
-const amount = (value: Prisma.Decimal) => money.format(Number(value.toFixed(2)));
+const amount = (value: Prisma.Decimal) => formatMoney(value.toFixed(2));
 const isoDate = (value: Date) => value.toISOString().slice(0, 10);
 const mapTemplate = (item: TemplateRow): MessageTemplateDto => ({
   id: item.id,
@@ -181,18 +180,18 @@ export class MessagesService {
       .map(({ row, due }) =>
         student(
           row,
-          `${chargesLabel(row.charges)} · ${amount(row.amount)} · ${overdue ? 'venció' : 'vence'} el ${shortDate(due)}`,
+          `${chargesLabel(row.charges)} · ${amount(row.amount)} · ${overdue ? 'venció' : 'vence'} el ${formatDayMonth(due)}`,
           overdue
             ? {
                 cuotas: chargesLabel(row.charges),
                 saldo_vencido: amount(row.amount),
-                vencimiento: shortDate(due),
+                vencimiento: formatDayMonth(due),
                 saldo_total: amount(row.total),
               }
             : {
                 cuotas: chargesLabel(row.charges),
                 saldo: amount(row.amount),
-                vencimiento: shortDate(due),
+                vencimiento: formatDayMonth(due),
               },
         ),
       );
@@ -231,7 +230,7 @@ export class MessagesService {
       WHERE le.end_date >= ${addDays(today, -DROPPED_DAYS)}::date AND le.end_date < ${today}::date
       ORDER BY le.end_date DESC, s.last_name, s.first_name`);
     return rows.map((row) =>
-      student(row, `Dejó ${row.className} el ${shortDate(isoDate(row.date))}`, {
+      student(row, `Dejó ${row.className} el ${formatDayMonth(isoDate(row.date))}`, {
         clase: row.className,
       }),
     );
@@ -254,7 +253,7 @@ export class MessagesService {
         )
       ORDER BY fe.start_date DESC, s.last_name, s.first_name`);
     return rows.map((row) =>
-      student(row, `Empezó ${row.className} el ${shortDate(isoDate(row.date))}`, {
+      student(row, `Empezó ${row.className} el ${formatDayMonth(isoDate(row.date))}`, {
         clase: row.className,
       }),
     );
@@ -275,7 +274,7 @@ export class MessagesService {
       .map(({ item, days }) =>
         student(
           item,
-          days === 0 ? 'Cumple hoy' : `Cumple el ${shortDate(addDays(today, days))}`,
+          days === 0 ? 'Cumple hoy' : `Cumple el ${formatDayMonth(addDays(today, days))}`,
           {},
         ),
       );
@@ -309,8 +308,8 @@ export class MessagesService {
         name: lead.name,
         phone: lead.phone,
         detail: trial
-          ? `Probó ${trial.academicClass.name} el ${shortDate(isoDate(trial.trialDate))}`
-          : `Consultó el ${shortDate(businessDayAt(lead.createdAt, timeZone()).date)}`,
+          ? `Probó ${trial.academicClass.name} el ${formatDayMonth(isoDate(trial.trialDate))}`
+          : `Consultó el ${formatDayMonth(businessDayAt(lead.createdAt, timeZone()).date)}`,
         variables: {
           nombre: lead.name.trim().split(/\s+/)[0] ?? lead.name,
           ...(trial && { clase: trial.academicClass.name }),

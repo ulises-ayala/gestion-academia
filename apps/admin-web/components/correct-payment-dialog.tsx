@@ -28,9 +28,7 @@ import {
   paymentMethodLabels,
   type TenderAmounts,
 } from '../lib/payments';
-
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
+import { money } from '../lib/money';
 
 type CorrectionMode = 'tenders' | 'charges' | 'refund';
 

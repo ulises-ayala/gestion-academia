@@ -8,13 +8,8 @@ import { debtCtes } from '../../reports/application/reports.service';
 import { CONCEPT_LABELS } from '../../reports/domain/report-pdf';
 import { END_REASON_LABELS, boardMonth, boardMonths, percentOf } from '../domain/monthly-board';
 import { businessDayAt } from './business-day';
+import { PAYMENT_METHOD_LABELS } from '../../shared/domain/format';
 
-const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
-};
 const timeZone = () => process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
 const zero = () => new Prisma.Decimal(0);
 
@@ -338,7 +333,7 @@ export class MonthlyBoardService {
       byMethod: sorted(
         tenders.map((row) => ({
           method: row.method as PaymentMethodDto,
-          label: METHOD_LABELS[row.method as PaymentMethodDto],
+          label: PAYMENT_METHOD_LABELS[row.method as PaymentMethodDto],
           amount: row._sum.amount ?? zero(),
         })),
       ).map((row) => ({ ...row, amount: row.amount.toFixed(2) })),

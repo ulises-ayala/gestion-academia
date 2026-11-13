@@ -33,9 +33,8 @@ import {
   paymentSearch,
 } from '../../lib/payment-center';
 import { hasWaivableLateFee, openCharges, outstandingTotal } from '../../lib/payments';
+import { money } from '../../lib/money';
 
-const money = (value: string | number) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const scopeLabels: Readonly<Record<ReceivablesScopeDto, string>> = {
   pending: 'Todas con saldo',
   overdue: 'Vencidas',

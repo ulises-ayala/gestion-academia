@@ -12,10 +12,8 @@ import {
 import { amountInputValue } from '../lib/collect-payment';
 import { businessToday } from '../lib/dates';
 import { decimalToCents } from '../lib/payments';
-
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
-const shortDate = (value: string) => `${value.slice(8, 10)}/${value.slice(5, 7)}`;
+import { money } from '../lib/money';
+import { dayMonth } from '../lib/dates';
 
 /**
  * Popup para entregar el efectivo recaudado a Dirección (Administración y Dirección). No es un
@@ -215,8 +213,7 @@ export function CashHandoverDialog({ onClose }: Readonly<{ onClose(): void }>) {
         {collected !== null && (
           <p className="generate-charge-total cash-handover-collected">
             <span>
-              Efectivo que entró a la caja del {shortDate(form.fromDate)} al{' '}
-              {shortDate(form.toDate)}
+              Efectivo que entró a la caja del {dayMonth(form.fromDate)} al {dayMonth(form.toDate)}
             </span>
             <strong>{money(collected)}</strong>
           </p>
@@ -254,7 +251,7 @@ export function CashHandoverDialog({ onClose }: Readonly<{ onClose(): void }>) {
               <li key={item.id} className={item.voidedAt ? 'is-void' : ''}>
                 <span>
                   <strong>
-                    {shortDate(item.fromDate)} al {shortDate(item.toDate)} · {money(item.amount)}
+                    {dayMonth(item.fromDate)} al {dayMonth(item.toDate)} · {money(item.amount)}
                   </strong>
                   <small>
                     {item.voidedAt
@@ -281,8 +278,8 @@ export function CashHandoverDialog({ onClose }: Readonly<{ onClose(): void }>) {
           {voidTarget && (
             <div className="cash-handover-void">
               <label>
-                Motivo para anular la del {shortDate(voidTarget.fromDate)} al{' '}
-                {shortDate(voidTarget.toDate)}
+                Motivo para anular la del {dayMonth(voidTarget.fromDate)} al{' '}
+                {dayMonth(voidTarget.toDate)}
                 <input
                   maxLength={500}
                   value={voidReason}

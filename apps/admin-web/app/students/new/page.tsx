@@ -20,6 +20,7 @@ import {
   selectedClassConflict,
 } from '../../../lib/student-onboarding';
 import { notifySuccess, notifyError } from '../../../lib/notify';
+import { money } from '../../../lib/money';
 
 type FormState = Record<keyof CreateStudentDto, string>;
 const emptyForm: FormState = {
@@ -31,8 +32,6 @@ const emptyForm: FormState = {
   email: '',
   address: '',
 };
-const money = (value: string | number) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const currentPeriod = () =>
   new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/Buenos_Aires',

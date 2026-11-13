@@ -1,34 +1,18 @@
 import type { ClosingKindDto, CreateClosingDto } from '@academy/contracts';
+import { dayMonthYear } from './dates';
+import { periodLabel } from './charge-generation';
 
 export const closingKindLabels: Readonly<Record<ClosingKindDto, string>> = {
   WEEKLY: 'Semanal',
   MONTHLY: 'Mensual',
 };
 
-const shortDate = (value: string) => value.slice(0, 10).split('-').reverse().join('/');
-const monthNames = [
-  'enero',
-  'febrero',
-  'marzo',
-  'abril',
-  'mayo',
-  'junio',
-  'julio',
-  'agosto',
-  'septiembre',
-  'octubre',
-  'noviembre',
-  'diciembre',
-];
-
 /** "Del 02/11/2026 al 08/11/2026" o "Octubre de 2026". */
 export const closingPeriodLabel = (kind: ClosingKindDto, fromDate: string, toDate: string) => {
   if (kind === 'MONTHLY') {
-    const [year, month] = fromDate.split('-');
-    const name = monthNames[Number(month) - 1] ?? '';
-    return `${name.charAt(0).toUpperCase()}${name.slice(1)} de ${year}`;
+    return periodLabel(fromDate.slice(0, 7));
   }
-  return `Del ${shortDate(fromDate)} al ${shortDate(toDate)}`;
+  return `Del ${dayMonthYear(fromDate)} al ${dayMonthYear(toDate)}`;
 };
 
 /** Período elegido en la pantalla, como lo pide la API. */

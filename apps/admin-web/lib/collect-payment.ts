@@ -13,6 +13,7 @@ import {
   paymentMethodLabels,
   type TenderAmounts,
 } from './payments';
+import { money } from './money';
 
 export type CollectTab = 'charges' | 'other' | 'debt';
 export type TenderMode = PaymentMethodDto | 'MIXED';
@@ -143,9 +144,6 @@ export const historicalDebtPayload = (
   amount: centsToDecimal(decimalToCents(normalizeAmount(form.amount)) ?? 0n),
   description: form.description.trim(),
 });
-
-export const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 
 /** Resumen del cobro hecho, para el comprobante del popup. */
 export const paymentSummary = (payment: PaymentDto) => {

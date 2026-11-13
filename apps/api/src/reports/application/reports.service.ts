@@ -12,14 +12,9 @@ import { bornOverdueSql } from '../../billing/infrastructure/late-fee-sql';
 import { previousPeriod } from '../domain/closing';
 import { toCsv } from '../domain/csv';
 import { CONCEPT_LABELS, PDF_DEBTOR_LIMIT, renderOperationalReportPdf } from '../domain/report-pdf';
+import { PAYMENT_METHOD_LABELS } from '../../shared/domain/format';
 
 const METHODS: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'TRANSFER', 'CARD'];
-const METHOD_LABELS: Readonly<Record<PaymentMethodDto, string>> = {
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
-};
 const reportCashInclude = {
   user: { select: { id: true, username: true } },
   closingLines: true,
@@ -567,7 +562,7 @@ export class ReportsService {
           'Hasta',
         ],
         report.cash.byMethod.map((item) => [
-          METHOD_LABELS[item.method],
+          PAYMENT_METHOD_LABELS[item.method],
           item.expected,
           item.declared,
           item.difference,

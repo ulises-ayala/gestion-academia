@@ -12,7 +12,7 @@ import { useAuth } from '../../components/auth-provider';
 import { SettlementPlanModal } from '../../components/settlement-plan-modal';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { periodLabel } from '../../lib/charge-generation';
-import { money } from '../../lib/collect-payment';
+
 import { businessToday } from '../../lib/dates';
 import { notifySuccess } from '../../lib/notify';
 import {
@@ -22,6 +22,7 @@ import {
   settlementConceptLabel,
   shiftPeriod,
 } from '../../lib/settlements';
+import { money } from '../../lib/money';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 const shortDate = (value: string) =>

@@ -14,16 +14,10 @@ import { CashHandoverDialog } from '../../components/cash-handovers';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { safePaymentReturnTo } from '../../lib/contextual-filters';
+import { money } from '../../lib/money';
+import { paymentMethodLabels } from '../../lib/payments';
 
 const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'TRANSFER', 'CARD'];
-const labels: Record<PaymentMethodDto, string> = {
-  CASH: 'Efectivo',
-  MERCADO_PAGO: 'Mercado Pago',
-  TRANSFER: 'Transferencia',
-  CARD: 'Tarjeta',
-};
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
 const today = () =>
   new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Buenos_Aires' }).format(new Date());
 const businessDate = (value: string) =>
@@ -259,7 +253,7 @@ export default function CashPage() {
           <div className="cash-totals">
             {methods.map((method) => (
               <article key={method} data-method={method}>
-                <span>{labels[method]}</span>
+                <span>{paymentMethodLabels[method]}</span>
                 <strong>{money(current.expectedByMethod[method])}</strong>
                 <small>Esperado según cobros</small>
               </article>
@@ -300,7 +294,7 @@ export default function CashPage() {
                 Number(declared[method] || 0) - Number(current.expectedByMethod[method]);
               return (
                 <label key={method} data-method={method}>
-                  <span>{labels[method]}</span>
+                  <span>{paymentMethodLabels[method]}</span>
                   <small>Esperado {money(current.expectedByMethod[method])}</small>
                   <input
                     inputMode="decimal"
@@ -553,7 +547,7 @@ export default function CashPage() {
                       >
                         {methods.map((method) => (
                           <option key={method} value={method}>
-                            {labels[method]}
+                            {paymentMethodLabels[method]}
                           </option>
                         ))}
                       </select>
@@ -614,7 +608,7 @@ export default function CashPage() {
               <div className="cash-totals">
                 {consolidated.byMethod.map((line) => (
                   <article key={line.method} data-method={line.method}>
-                    <strong>{labels[line.method]}</strong>
+                    <strong>{paymentMethodLabels[line.method]}</strong>
                     <span>Sistema al cierre: {money(line.systemAtClose)}</span>
                     <span>Declarado: {money(line.declaredAtClose)}</span>
                     <span>Ajustes posteriores: {money(line.postCloseMovements)}</span>
@@ -722,7 +716,7 @@ function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
                         ? `${item.student.firstName} ${item.student.lastName}`
                         : `${item.walkInName ?? ''} (eventual)`}
                     </td>
-                    <td data-label="Medio">{labels[item.method]}</td>
+                    <td data-label="Medio">{paymentMethodLabels[item.method]}</td>
                     <td data-label="Importe" className={moneyClass(signed)}>
                       {item.type === 'COLLECTION' ? '+' : '−'}
                       {money(item.amount)}
@@ -784,7 +778,7 @@ function ClosingLines({
         return (
           <article key={line.method} className="cash-closing-card" data-method={line.method}>
             <header>
-              <span className="cash-method">{labels[line.method]}</span>
+              <span className="cash-method">{paymentMethodLabels[line.method]}</span>
               {corrected && <span className="cash-closing-tag">Corregido</span>}
             </header>
             <dl>

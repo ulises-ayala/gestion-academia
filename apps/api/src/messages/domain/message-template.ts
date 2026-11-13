@@ -149,6 +149,3 @@ export const daysUntilBirthday = (birthDate: string, today: string) => {
 
 /** "1 cuota" / "3 cuotas". */
 export const chargesLabel = (count: number) => (count === 1 ? '1 cuota' : `${count} cuotas`);
-
-/** AAAA-MM-DD → DD/MM. */
-export const shortDate = (date: string) => `${date.slice(8, 10)}/${date.slice(5, 7)}`;

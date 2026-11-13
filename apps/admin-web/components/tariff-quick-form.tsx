@@ -10,9 +10,7 @@ import {
   tariffDraft,
   type TariffDraft,
 } from '../lib/charge-generation';
-
-const money = (value: string) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
+import { money } from '../lib/money';
 
 /** Alta rápida de una tarifa para la clase, desde la ventana de Generar cuota. */
 export function TariffQuickForm({
