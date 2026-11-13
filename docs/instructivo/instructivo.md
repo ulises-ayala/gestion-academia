@@ -119,6 +119,8 @@ La primera clase de cada disciplina es gratis y **se prueba una sola vez por cla
 
 Al registrar la primera prueba, el potencial pasa a la etapa **Clase de prueba**. Una prueba cargada por error se quita con **Quitar** (pide motivo).
 
+Cuando decide inscribirse, tocá **Inscribir como alumno** en su ficha. Se abre el alta de alumno con el nombre, el teléfono, el correo y la clase que probó ya cargados: revisá nombre y apellido, completá el DNI y seguí como en cualquier alta. Al crear el alumno, el potencial pasa a **Inscripto/a** y su ficha muestra **Ver ficha de alumno**.
+
 ![Clases de prueba](capturas/potencial-clase-de-prueba.png)
 
 ## Mensajes de WhatsApp

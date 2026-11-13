@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { validateLeadInput } from './lead';
+import { validateLeadInput, assertLeadConvertible } from './lead';
 
 describe('lead domain', () => {
+  it('un potencial se convierte en alumno una sola vez', () => {
+    expect(() => assertLeadConvertible({ studentId: null })).not.toThrow();
+    expect(() => assertLeadConvertible({ studentId: 'student-1' })).toThrow(
+      expect.objectContaining({ code: 'LEAD_CONVERSION_CONFLICT' }),
+    );
+  });
+
   it('crea una consulta mínima con estado por defecto y contacto opcional', () => {
     expect(validateLeadInput({ name: ' Ana ', source: 'WHATSAPP' })).toMatchObject({
       name: 'Ana',

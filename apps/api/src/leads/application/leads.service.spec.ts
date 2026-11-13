@@ -6,6 +6,7 @@ import type { LeadData, ValidatedLeadInput } from '../domain/lead';
 const stored = (input: ValidatedLeadInput): LeadData => ({
   id: crypto.randomUUID(),
   ...input,
+  studentId: null,
   createdAt: new Date(),
   updatedAt: new Date(),
 });

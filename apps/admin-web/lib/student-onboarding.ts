@@ -2,6 +2,8 @@ import type {
   ClassDto,
   CreateStudentDto,
   CreateStudentOnboardingDto,
+  LeadDto,
+  LeadTrialClassDto,
   PaymentMethodDto,
   TariffDto,
 } from '@academy/contracts';
@@ -21,8 +23,10 @@ export const buildOnboardingPayload = (
   dueDate: string,
   collect: boolean,
   paymentMethod: PaymentMethodDto,
+  leadId: string | null = null,
 ): CreateStudentOnboardingDto => ({
   student,
+  ...(leadId ? { leadId } : {}),
   enrollments: selections,
   ...(selections.length ? { period, dueDate } : {}),
   payment: selections.length && collect ? { paymentMethod } : null,
@@ -46,5 +50,53 @@ export const selectedClassConflict = (
         )
       )
         return [selected[left]!, selected[right]!] as const;
+  return null;
+};
+
+/** Tarifas de una clase que rigen en el mes (AAAA-MM). */
+export const classTariffsFor = (tariffs: readonly TariffDto[], classId: string, period: string) =>
+  tariffs.filter(
+    (tariff) =>
+      tariff.classId === classId &&
+      tariff.validFrom.slice(0, 7) <= period &&
+      (!tariff.validTo || tariff.validTo.slice(0, 7) >= period),
+  );
+
+/**
+ * Nombre y apellido a partir del nombre cargado en el potencial alumno: la última palabra es el
+ * apellido ("María Laura Gómez" → "María Laura" / "Gómez"). Se revisa en el alta.
+ */
+export const splitLeadName = (name: string) => {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length < 2) return { firstName: words[0] ?? '', lastName: '' };
+  return { firstName: words.slice(0, -1).join(' '), lastName: words.at(-1)! };
+};
+
+/** Datos del alta que salen del potencial alumno. El DNI siempre se completa a mano. */
+export const studentDraftFromLead = (lead: Pick<LeadDto, 'name' | 'phone' | 'email'>) => ({
+  ...splitLeadName(lead.name),
+  phone: lead.phone ?? '',
+  email: lead.email ?? '',
+});
+
+/**
+ * Inscripción sugerida: la clase de prueba más reciente que sigue activa y tiene tarifa para el
+ * mes, con la primera de sus tarifas. Null si ninguna sirve.
+ */
+export const selectionFromTrials = (
+  trials: readonly LeadTrialClassDto[],
+  classes: readonly ClassDto[],
+  tariffs: readonly TariffDto[],
+  period: string,
+): OnboardingSelection | null => {
+  const latestFirst = [...trials].sort((left, right) =>
+    right.trialDate.localeCompare(left.trialDate),
+  );
+  for (const trial of latestFirst) {
+    const classId = trial.academicClass.id;
+    if (!classes.some(({ id }) => id === classId)) continue;
+    const tariff = classTariffsFor(tariffs, classId, period)[0];
+    if (tariff) return { classId, tariffId: tariff.id };
+  }
   return null;
 };

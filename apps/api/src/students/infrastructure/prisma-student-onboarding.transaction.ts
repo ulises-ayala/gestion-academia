@@ -7,6 +7,7 @@ import { PrismaPaymentsRepository } from '../../billing/infrastructure/prisma-pa
 import { PrismaService } from '../../database/prisma.service';
 import { withSerializableRetry } from '../../database/serializable-retry';
 import { EnrollmentsService } from '../../enrollments/application/enrollments.service';
+import { PrismaLeadConversion } from '../../leads/infrastructure/prisma-lead-conversion';
 import { PrismaEnrollmentRepository } from '../../enrollments/infrastructure/prisma-enrollment.repository';
 import { DomainError } from '../../shared/domain/domain-error';
 import type {
@@ -52,6 +53,7 @@ export class PrismaStudentOnboardingTransaction implements StudentOnboardingTran
       enrollments: new EnrollmentsService(new PrismaEnrollmentRepository(scoped)),
       billing: new BillingService(new PrismaBillingRepository(scoped)),
       payments: new PaymentsService(new PrismaPaymentsRepository(scoped)),
+      leads: new PrismaLeadConversion(scoped),
     };
   }
 }

@@ -3333,3 +3333,15 @@ dialog.generate-charge-dialog.cash-detail-dialog {
     grid-column: 1 / -1;
   }
 }
+/* Alta desde un potencial alumno: de quién son los datos precargados. */
+.onboarding-lead {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: var(--radius-md);
+  background: var(--accent-muted);
+  color: var(--text);
+}
+.onboarding-lead p {
+  margin: 0;
+}

@@ -5,19 +5,25 @@ import type {
   ClassListDto,
   CashShiftDto,
   CreateStudentDto,
+  LeadDto,
+  LeadTrialClassDto,
   PaymentMethodDto,
   StudentOnboardingResultDto,
   TariffDto,
 } from '@academy/contracts';
 import Link from 'next/link';
-import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { FormEvent, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import {
   buildOnboardingPayload,
+  classTariffsFor,
   onboardingTotal,
   OnboardingSelection,
   selectedClassConflict,
+  selectionFromTrials,
+  studentDraftFromLead,
 } from '../../../lib/student-onboarding';
 import { notifySuccess, notifyError } from '../../../lib/notify';
 import { money } from '../../../lib/money';
@@ -49,7 +55,13 @@ const periodLabel = (period: string) => {
   }).format(new Date(Date.UTC(year!, month! - 1, 1)));
 };
 
-export default function NewStudentPage() {
+function NewStudent() {
+  // Alta desde la ficha de un potencial alumno (Potenciales → Inscribir como alumno).
+  const leadId = useSearchParams().get('leadId');
+  const [lead, setLead] = useState<LeadDto | null>(null);
+  const [leadTrials, setLeadTrials] = useState<readonly LeadTrialClassDto[]>([]);
+  const [leadError, setLeadError] = useState('');
+  const trialApplied = useRef(false);
   const [form, setForm] = useState(emptyForm);
   const [classes, setClasses] = useState<readonly ClassDto[]>([]);
   const [tariffs, setTariffs] = useState<readonly TariffDto[]>([]);
@@ -88,6 +100,36 @@ export default function NewStudentPage() {
   }, []);
 
   useEffect(() => {
+    if (!leadId) return;
+    Promise.all([
+      apiRequest<LeadDto>(`/leads/${leadId}`),
+      apiRequest<LeadTrialClassDto[]>(`/leads/${leadId}/trial-classes`),
+    ])
+      .then(([loaded, trials]) => {
+        setLead(loaded);
+        setLeadTrials(trials);
+        if (!loaded.studentId)
+          setForm((current) => ({ ...current, ...studentDraftFromLead(loaded) }));
+      })
+      .catch((error) =>
+        setLeadError(
+          error instanceof ApiClientError
+            ? error.message
+            : 'No se pudo cargar el potencial alumno.',
+        ),
+      );
+  }, [leadId]);
+
+  // La clase que probó queda elegida, con su tarifa, en cuanto están las clases y las tarifas.
+  useEffect(() => {
+    if (trialApplied.current || !lead || lead.studentId || loadingOptions || !classes.length)
+      return;
+    trialApplied.current = true;
+    const selection = selectionFromTrials(leadTrials, classes, tariffs, period);
+    if (selection) setSelections((current) => (current.length ? current : [selection]));
+  }, [lead, leadTrials, classes, tariffs, period, loadingOptions]);
+
+  useEffect(() => {
     void loadOptions();
     apiRequest<CashShiftDto | null>('/cash-shifts/current')
       .then((cashShift) => setCashShiftOpen(Boolean(cashShift)))
@@ -96,13 +138,13 @@ export default function NewStudentPage() {
 
   const conflict = useMemo(() => selectedClassConflict(selections, classes), [selections, classes]);
   const total = onboardingTotal(selections, tariffs);
+  // Clases que todavía no se eligieron y tienen alguna tarifa para el mes.
   const availableClasses = classes.filter(
-    ({ id }) => !selections.some(({ classId }) => classId === id),
+    ({ id }) =>
+      !selections.some(({ classId }) => classId === id) &&
+      classTariffsFor(tariffs, id, period).length > 0,
   );
-  const validTariffs = tariffs.filter(
-    ({ validFrom, validTo }) =>
-      validFrom.slice(0, 7) <= period && (!validTo || validTo.slice(0, 7) >= period),
-  );
+  const convertsLead = Boolean(lead && !lead.studentId);
 
   const setField = (field: keyof FormState, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -114,7 +156,7 @@ export default function NewStudentPage() {
   };
   const addClass = () => {
     const academicClass = availableClasses[0];
-    const tariff = validTariffs[0];
+    const tariff = academicClass && classTariffsFor(tariffs, academicClass.id, period)[0];
     if (academicClass && tariff)
       setSelections((current) => [...current, { classId: academicClass.id, tariffId: tariff.id }]);
   };
@@ -137,6 +179,7 @@ export default function NewStudentPage() {
         dueDate,
         collect,
         paymentMethod,
+        convertsLead ? lead!.id : null,
       );
       const res = await apiRequest<StudentOnboardingResultDto>('/students/onboarding', {
         method: 'POST',
@@ -176,6 +219,7 @@ export default function NewStudentPage() {
         <p>
           {result.student.firstName} {result.student.lastName} · DNI {result.student.dni}
         </p>
+        {convertsLead && <p>✓ {lead!.name} quedó como inscripto/a en Potenciales</p>}
         {result.enrollments.length > 0 && (
           <p>✓ {result.enrollments.length} inscripciones creadas</p>
         )}
@@ -220,6 +264,33 @@ export default function NewStudentPage() {
           </p>
         </div>
       </div>
+      {leadError && (
+        <p className="message" role="alert">
+          {leadError}
+        </p>
+      )}
+      {lead && (
+        <section className="onboarding-lead" aria-label="Potencial alumno">
+          {lead.studentId ? (
+            <p>
+              <strong>{lead.name}</strong> ya se inscribió como alumno.{' '}
+              <Link className="text-link" href={`/students/${lead.studentId}`}>
+                Ver su ficha
+              </Link>
+            </p>
+          ) : (
+            <p>
+              Datos de <strong>{lead.name}</strong>, potencial alumno. Revisá el nombre y el
+              apellido, completá el DNI
+              {leadTrials.length > 0 ? ' y confirmá la clase que probó' : ''}. Al crear el alumno,
+              queda como inscripto/a en Potenciales.{' '}
+              <Link className="text-link" href={`/leads/${lead.id}`}>
+                Ver potencial
+              </Link>
+            </p>
+          )}
+        </section>
+      )}
       <form className="onboarding-form" onSubmit={submit} noValidate>
         <section className="card">
           <h2>Datos personales</h2>
@@ -277,7 +348,7 @@ export default function NewStudentPage() {
             <button
               type="button"
               className="secondary"
-              disabled={loadingOptions || !availableClasses.length || !validTariffs.length}
+              disabled={loadingOptions || !availableClasses.length}
               onClick={addClass}
             >
               + Agregar clase
@@ -308,7 +379,12 @@ export default function NewStudentPage() {
                       <select
                         value={selection.classId}
                         onChange={(event) =>
-                          updateSelection(index, { classId: event.target.value })
+                          updateSelection(index, {
+                            classId: event.target.value,
+                            // La tarifa tiene que ser de la clase elegida.
+                            tariffId:
+                              classTariffsFor(tariffs, event.target.value, period)[0]?.id ?? '',
+                          })
                         }
                       >
                         {classes
@@ -332,7 +408,10 @@ export default function NewStudentPage() {
                           updateSelection(index, { tariffId: event.target.value })
                         }
                       >
-                        {validTariffs.map((tariff) => (
+                        {classTariffsFor(tariffs, selection.classId, period).length === 0 && (
+                          <option value="">Sin tarifa para este mes</option>
+                        )}
+                        {classTariffsFor(tariffs, selection.classId, period).map((tariff) => (
                           <option key={tariff.id} value={tariff.id}>
                             {tariff.name} · {money(tariff.amount)}
                           </option>
@@ -483,5 +562,13 @@ export default function NewStudentPage() {
         </div>
       </form>
     </>
+  );
+}
+
+export default function NewStudentPage() {
+  return (
+    <Suspense fallback={null}>
+      <NewStudent />
+    </Suspense>
   );
 }

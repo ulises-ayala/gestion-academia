@@ -25,6 +25,7 @@ export type LeadData = Readonly<{
   notes: string | null;
   nextFollowUpAt: Date | null;
   lastContactAt: Date | null;
+  studentId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }>;
@@ -39,7 +40,16 @@ export type LeadInput = Readonly<{
   nextFollowUpAt?: unknown;
   lastContactAt?: unknown;
 }>;
-export type ValidatedLeadInput = Omit<LeadData, 'id' | 'createdAt' | 'updatedAt'>;
+export type ValidatedLeadInput = Omit<LeadData, 'id' | 'createdAt' | 'updatedAt' | 'studentId'>;
+
+/** Un potencial se convierte en alumno una sola vez. */
+export const assertLeadConvertible = (lead: Readonly<{ studentId: string | null }>) => {
+  if (lead.studentId)
+    throw new DomainError(
+      'LEAD_CONVERSION_CONFLICT',
+      'Este potencial alumno ya se inscribió como alumno. Abrí su ficha de alumno.',
+    );
+};
 
 const optionalText = (value: unknown, field: string, maximum: number) => {
   if (value === undefined || value === null || value === '') return null;

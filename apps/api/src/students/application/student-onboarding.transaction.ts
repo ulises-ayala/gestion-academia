@@ -9,6 +9,9 @@ export type StudentOnboardingOperations = Readonly<{
   enrollments: EnrollmentsService;
   billing: BillingService;
   payments: PaymentsService;
+  leads: Readonly<{
+    markEnrolled(leadId: string, studentId: string, actorId: string): Promise<void>;
+  }>;
 }>;
 export interface StudentOnboardingTransaction {
   execute<T>(work: (operations: StudentOnboardingOperations) => Promise<T>): Promise<T>;

@@ -4,6 +4,7 @@ import type { LeadDto } from '@academy/contracts';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../../../components/auth-provider';
 import { LeadForm } from '../../../components/lead-form';
 import { LeadTrialClasses } from '../../../components/lead-trial-classes';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
@@ -23,6 +24,7 @@ const dateTime = (value: string) =>
 
 export default function LeadDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const { can } = useAuth();
   const [lead, setLead] = useState<LeadDto | null>(null);
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState('');
@@ -56,9 +58,22 @@ export default function LeadDetailPage() {
             {leadStatusLabels[lead.status]}
           </span>
         </div>
-        <button className="secondary" onClick={() => setEditing((value) => !value)}>
-          Editar
-        </button>
+        <div className="page-heading-actions">
+          {lead.studentId ? (
+            <Link className="button secondary" href={`/students/${lead.studentId}`}>
+              Ver ficha de alumno
+            </Link>
+          ) : (
+            can('students:manage') && (
+              <Link className="button" href={`/students/new?leadId=${lead.id}`}>
+                Inscribir como alumno
+              </Link>
+            )
+          )}
+          <button className="secondary" onClick={() => setEditing((value) => !value)}>
+            Editar
+          </button>
+        </div>
       </div>
       {editing && (
         <section className="card">

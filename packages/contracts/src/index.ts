@@ -57,6 +57,8 @@ export type LeadDto = Readonly<{
   notes: string | null;
   nextFollowUpAt: string | null;
   lastContactAt: string | null;
+  /** Alumno que se creó desde su ficha; null si todavía no se inscribió por el sistema. */
+  studentId: string | null;
   createdAt: string;
   updatedAt: string;
 }>;
@@ -1079,6 +1081,8 @@ export type AuditLogListDto = PageDto<AuditLogDto>;
 
 export type CreateStudentOnboardingDto = Readonly<{
   student: CreateStudentDto;
+  /** Potencial alumno del que viene: queda inscripto y vinculado al alumno nuevo. */
+  leadId?: string | null;
   enrollments: readonly Readonly<{ classId: string; tariffId: string }>[];
   period?: string;
   dueDate?: string;

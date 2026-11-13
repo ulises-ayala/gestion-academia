@@ -28,6 +28,7 @@ const toDto = (lead: LeadData): LeadDto => ({
   notes: lead.notes,
   nextFollowUpAt: lead.nextFollowUpAt?.toISOString() ?? null,
   lastContactAt: lead.lastContactAt?.toISOString() ?? null,
+  studentId: lead.studentId,
   createdAt: lead.createdAt.toISOString(),
   updatedAt: lead.updatedAt.toISOString(),
 });

@@ -151,6 +151,9 @@ model Lead {
   updatedAt           DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
   trialClasses        LeadTrialClass[]
   messageSends        MessageSend[]
+  /// Alumno que se creó desde la ficha del potencial (se convierte una sola vez).
+  studentId           String?          @unique @map("student_id") @db.Uuid
+  student             Student?         @relation(fields: [studentId], references: [id], onDelete: Restrict)
 
   @@index([name])
   @@index([status, updatedAt(sort: Desc)])
@@ -197,6 +200,7 @@ model Student {
   monthlyCharges MonthlyCharge[]
   payments       Payment[]
   messageSends   MessageSend[]
+  lead           Lead?
 
   @@index([lastName, firstName])
   @@map("students")

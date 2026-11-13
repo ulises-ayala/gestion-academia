@@ -45,8 +45,10 @@ export class StudentOnboardingService {
         'El período y vencimiento son obligatorios al inscribir clases',
       );
 
-    return this.transaction.execute(async ({ students, enrollments, billing, payments }) => {
+    return this.transaction.execute(async ({ students, enrollments, billing, payments, leads }) => {
       const createdStudent = await students.create(input.student);
+      // Viene de un potencial alumno: queda inscripto y vinculado, en la misma transacción.
+      if (input.leadId) await leads.markEnrolled(input.leadId, createdStudent.id, actorId);
       const createdEnrollments = [];
       const charges = [];
       for (const selection of [...selections].sort((a, b) => a.classId.localeCompare(b.classId))) {

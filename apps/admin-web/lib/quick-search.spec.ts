@@ -36,6 +36,7 @@ const lead: LeadDto = {
   notes: null,
   nextFollowUpAt: null,
   lastContactAt: null,
+  studentId: null,
   createdAt: '2026-08-28T00:00:00Z',
   updatedAt: '2026-08-28T00:00:00Z',
 };

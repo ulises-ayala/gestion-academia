@@ -75,11 +75,13 @@ export class StudentsController {
     const selections = Array.isArray(input.enrollments) ? input.enrollments : [];
     const required: Permission[] = selections.length ? ['enrollments:manage'] : [];
     if (input.payment) required.push('payments:collect');
+    if (input.leadId) required.push('leads:manage');
     if (!hasPermissions(user, required))
       throw new DomainError('FORBIDDEN', 'No tenés permisos para completar esta alta');
     return this.onboarding.create(
       {
         ...input,
+        leadId: input.leadId ? parseUuid(input.leadId, 'leadId') : null,
         enrollments: selections.map((item) => ({
           classId: parseUuid(item.classId, 'classId'),
           tariffId: parseUuid(item.tariffId, 'tariffId'),

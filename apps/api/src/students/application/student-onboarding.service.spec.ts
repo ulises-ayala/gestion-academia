@@ -69,9 +69,39 @@ describe('StudentOnboardingService', () => {
           }),
         ),
       },
+      leads: { markEnrolled: vi.fn().mockResolvedValue(undefined) },
     } as unknown as StudentOnboardingOperations;
     transaction = { execute: vi.fn((work) => work(operations)) };
     service = new StudentOnboardingService(transaction);
+  });
+
+  it('si viene de un potencial alumno, lo deja inscripto y vinculado al alumno nuevo', async () => {
+    await service.create({ ...base, leadId: 'lead-1' }, 'actor-1');
+    expect(operations.leads.markEnrolled).toHaveBeenCalledWith('lead-1', student.id, 'actor-1');
+  });
+
+  it('sin potencial alumno no toca ninguno', async () => {
+    await service.create(base, 'actor-1');
+    expect(operations.leads.markEnrolled).not.toHaveBeenCalled();
+  });
+
+  it('si el potencial ya era alumno, el alta entera se revierte', async () => {
+    vi.mocked(operations.leads.markEnrolled).mockRejectedValueOnce(
+      Object.assign(new Error('ya es alumno'), { code: 'LEAD_CONVERSION_CONFLICT' }),
+    );
+    await expect(
+      service.create(
+        {
+          ...base,
+          leadId: 'lead-1',
+          enrollments: [{ classId: 'class-a', tariffId: 'tariff-1' }],
+          period: '2026-08',
+          dueDate: '2026-08-10',
+        },
+        'actor-1',
+      ),
+    ).rejects.toThrow('ya es alumno');
+    expect(operations.enrollments.create).not.toHaveBeenCalled();
   });
 
   it('preserva el alta simple sin inscripciones, cuotas ni pago', async () => {
