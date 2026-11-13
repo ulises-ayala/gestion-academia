@@ -66,13 +66,6 @@ export const tenderTotal = (tenders: TenderAmounts) =>
     0n,
   );
 
-export const paymentSubmissionDisabled = (
-  total: bigint,
-  outstanding: bigint,
-  invalidTender: boolean,
-  submitting: boolean,
-) => total <= 0n || total > outstanding || invalidTender || submitting;
-
 export const previewAllocations = (
   charges: readonly MonthlyChargeDto[],
   total: bigint,

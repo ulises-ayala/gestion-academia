@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  enrollmentPeriodsOverlap,
   findEnrollmentScheduleConflict,
   type EnrollmentScheduleCandidate,
 } from './enrollment-schedule-conflict';
@@ -64,20 +63,5 @@ describe('conflictos horarios de Enrollment', () => {
         [schedule('FRIDAY', '18:30', '19:30')],
       ),
     ).toBe(false);
-  });
-
-  it.each([
-    ['períodos separados', '2026-01-01', '2026-06-30', '2026-07-01', null, false],
-    ['períodos cruzados', '2026-01-01', '2026-06-30', '2026-06-15', null, true],
-    ['período abierto', '2026-01-01', null, '2026-07-01', null, true],
-    ['ENDED anterior', '2026-05-01', '2026-05-15', '2026-05-20', null, false],
-    ['ENDED coexistente', '2026-05-01', '2026-05-25', '2026-05-20', null, true],
-  ])('evalúa %s por vigencia', (_case, leftStart, leftEnd, rightStart, rightEnd, expected) => {
-    expect(
-      enrollmentPeriodsOverlap(
-        { startDate: leftStart, endDate: leftEnd },
-        { startDate: rightStart, endDate: rightEnd },
-      ),
-    ).toBe(expected);
   });
 });

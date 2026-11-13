@@ -86,13 +86,9 @@ describe('OperationalDashboardService', () => {
     const result = await service.get(user('MANAGER'), new Date('2026-08-30T15:00:00.000Z'));
 
     expect(result.audit).toEqual({ items: [] });
-    expect(result.financial?.monthlyConfirmed).toHaveLength(6);
-    expect(prisma.$queryRaw).toHaveBeenCalledTimes(3);
-    const financialQuery = prisma.$queryRaw.mock.calls
-      .map(([query]) => query as { strings: readonly string[] })
-      .find((query) => query.strings.join(' ').includes('FROM payments'))!;
-    expect(financialQuery.strings.join(' ')).toContain("status = 'CONFIRMED'");
-    expect(financialQuery.strings.join(' ')).not.toContain("status = 'VOID'");
+    // Los cobros por mes ya no se piden: están en el tablero mensual.
+    expect(result).not.toHaveProperty('financial');
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(2);
     expect(prisma.auditLog.findMany).toHaveBeenCalledWith(
       expect.objectContaining({ take: 5, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }] }),
     );
@@ -162,14 +158,5 @@ describe('OperationalDashboardService', () => {
         }),
       }),
     );
-  });
-
-  it('returns financial data to Direction', async () => {
-    const prisma = prismaMock();
-    const result = await new OperationalDashboardService(prisma as unknown as PrismaService).get(
-      user('ADMINISTRATOR'),
-      new Date('2026-08-30T15:00:00.000Z'),
-    );
-    expect(result.financial).toBeDefined();
   });
 });

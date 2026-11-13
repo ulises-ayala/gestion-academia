@@ -9,7 +9,7 @@ import {
   countDelta,
   shareOf,
 } from '../../lib/board';
-import { compactMoney } from '../confirmed-payments-chart';
+import { compactMoney } from '../../lib/money';
 
 type History = MonthlyBoardDto['history'][number];
 const amount = (value: string | undefined) => compactMoney(Number(value ?? 0));

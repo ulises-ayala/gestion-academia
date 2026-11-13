@@ -17,18 +17,6 @@ export type EnrollmentScheduleConflict = Readonly<{
   endTime: string;
 }>;
 
-export type EnrollmentPeriod = Readonly<{
-  startDate: string;
-  endDate: string | null;
-}>;
-
-export const enrollmentPeriodsOverlap = (
-  left: EnrollmentPeriod,
-  right: EnrollmentPeriod,
-): boolean =>
-  (left.endDate === null || right.startDate <= left.endDate) &&
-  (right.endDate === null || left.startDate <= right.endDate);
-
 export const findEnrollmentScheduleConflict = (
   requestedSchedules: readonly WeeklyScheduleInterval[],
   existingEnrollments: readonly EnrollmentScheduleCandidate[],

@@ -104,14 +104,3 @@ export function FollowUpEmpty({ globalTotal }: Readonly<{ globalTotal: number }>
     </div>
   );
 }
-
-export function FollowUpDashboardLink({ students }: Readonly<{ students: number }>) {
-  return (
-    <Link href="/students/follow-up">
-      <strong>{students}</strong>
-      <span>
-        Alumnos para seguimiento <small>Ver detalle →</small>
-      </span>
-    </Link>
-  );
-}

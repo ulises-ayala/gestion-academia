@@ -6,7 +6,6 @@ import {
   hasWaivableLateFee,
   outstandingTotal,
   openCharges,
-  paymentSubmissionDisabled,
   previewAllocations,
   tenderTotal,
 } from './payments';
@@ -55,14 +54,6 @@ describe('payments UI helpers', () => {
     } as MonthlyChargeDto;
     expect(openCharges([partial, charge('paid', '0.00', '2026-07-10', 'PAID')])).toEqual([partial]);
     expect(partial.overdue).toBe(true);
-  });
-
-  it('deshabilita submit para cero, excedente, valor inválido o envío en curso', () => {
-    expect(paymentSubmissionDisabled(0n, 100n, false, false)).toBe(true);
-    expect(paymentSubmissionDisabled(101n, 100n, false, false)).toBe(true);
-    expect(paymentSubmissionDisabled(50n, 100n, true, false)).toBe(true);
-    expect(paymentSubmissionDisabled(50n, 100n, false, true)).toBe(true);
-    expect(paymentSubmissionDisabled(50n, 100n, false, false)).toBe(false);
   });
 
   it('envía sólo medios con importe positivo y el alumno', () => {

@@ -2,12 +2,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import type { StudentFollowUpItemDto } from '@academy/contracts';
-import {
-  FollowUpDashboardLink,
-  FollowUpEmpty,
-  FollowUpIndicator,
-  FollowUpTable,
-} from './student-follow-up';
+import { FollowUpEmpty, FollowUpIndicator, FollowUpTable } from './student-follow-up';
 import { enrollmentEndLabel, enrollmentEndLabels } from '../lib/enrollment-end';
 
 const item: StudentFollowUpItemDto = {
@@ -73,11 +68,5 @@ describe('Student follow-up UI and Student 360', () => {
     expect(renderToStaticMarkup(<FollowUpEmpty globalTotal={2} />)).toContain(
       'No encontramos alumnos con estos filtros.',
     );
-  });
-  it('links dashboard unique count to follow-up', () => {
-    const html = renderToStaticMarkup(<FollowUpDashboardLink students={1} />);
-    expect(html).toContain('href="/students/follow-up"');
-    expect(html).toContain('<strong>1</strong>');
-    expect(html).toContain('Alumnos para seguimiento');
   });
 });

@@ -4,7 +4,7 @@ import React from 'react';
 import { amountDelta, barWidth, countDelta, shareOf } from '../../lib/board';
 import { type ReportTab, dailySeries, dayLabelStep } from '../../lib/reports';
 import { Bars, Kpi } from '../board/monthly-board';
-import { compactMoney } from '../confirmed-payments-chart';
+import { compactMoney } from '../../lib/money';
 
 type Data = OperationalReportsDto;
 export type ReportQuery = (changes: Record<string, string | null>) => void;

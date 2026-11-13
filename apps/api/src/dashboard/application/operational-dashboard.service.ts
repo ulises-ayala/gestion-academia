@@ -7,11 +7,6 @@ import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from './business-day';
 import { followUpCountQuery } from '../../students/infrastructure/student-follow-up-query';
 import { bornOverdueSql } from '../../billing/infrastructure/late-fee-sql';
-import {
-  buildFinancialSummary,
-  confirmedPaymentMonthsAt,
-  type ConfirmedPaymentMonthRow,
-} from './financial-summary';
 
 const openLeadStatuses = ['INQUIRY', 'INTERESTED', 'TRIAL'] as const;
 const time = (value: Date) => value.toISOString().slice(11, 16);
@@ -32,10 +27,6 @@ export class OperationalDashboardService {
       generatedAt: now.toISOString(),
       businessDate: day.date,
     };
-    const financialRange = confirmedPaymentMonthsAt(
-      now,
-      process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires',
-    );
 
     await Promise.all([
       hasPermissions(user, ['students:manage']) &&
@@ -178,25 +169,6 @@ export class OperationalDashboardService {
               confirmedToday: payments._count.id,
               confirmedAmountToday: payments._sum.amount?.toFixed(2) ?? '0.00',
             };
-          }),
-      hasPermissions(user, ['reports:operational']) &&
-        this.prisma
-          .$queryRaw<ConfirmedPaymentMonthRow[]>(
-            Prisma.sql`
-            SELECT
-              EXTRACT(YEAR FROM paid_at AT TIME ZONE ${process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires'})::int AS year,
-              EXTRACT(MONTH FROM paid_at AT TIME ZONE ${process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires'})::int AS month,
-              SUM(amount) AS amount
-            FROM payments
-            WHERE status = 'CONFIRMED'
-              AND paid_at >= ${financialRange.start}
-              AND paid_at < ${financialRange.end}
-            GROUP BY year, month
-            ORDER BY year, month
-          `,
-          )
-          .then((rows) => {
-            result.financial = buildFinancialSummary(financialRange.months, rows);
           }),
       hasPermissions(user, ['attendance:manage']) &&
         this.prisma.studentAttendance

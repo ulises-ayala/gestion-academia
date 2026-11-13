@@ -27,14 +27,6 @@ export const safePaymentReturnTo = (search: string) => {
     : '';
 };
 
-export const cashHrefForPayment = (paymentSearch: string) =>
-  `/cash?${new URLSearchParams({ returnTo: `/payments${paymentSearch}` })}`;
-
-export const paymentViewFromSearch = (search: string): '' | 'pending' | 'overdue' => {
-  const value = new URLSearchParams(search).get('view');
-  return value === 'pending' || value === 'overdue' ? value : '';
-};
-
 export const studentStatusFromSearch = (search: string): '' | StudentStatusDto => {
   const value = new URLSearchParams(search).get('status');
   return value === 'ACTIVE' || value === 'INACTIVE' ? value : '';

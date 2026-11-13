@@ -1,31 +1,5 @@
 import { DomainError } from '../../shared/domain/domain-error';
 
-export const AUDIT_ACTIONS = {
-  UPDATE: 'UPDATE',
-  STATUS_CHANGE: 'STATUS_CHANGE',
-  VOID: 'VOID',
-  END: 'END',
-  CORRECTION: 'CORRECTION',
-  ROLE_CHANGE: 'ROLE_CHANGE',
-  OPEN: 'OPEN',
-  CLOSE: 'CLOSE',
-} as const;
-export const AUDIT_ENTITY_TYPES = {
-  STUDENT: 'STUDENT',
-  LEAD: 'LEAD',
-  TEACHER: 'TEACHER',
-  DANCE_TYPE: 'DANCE_TYPE',
-  BRANCH: 'BRANCH',
-  ROOM: 'ROOM',
-  ACADEMY_CLASS: 'ACADEMY_CLASS',
-  TARIFF: 'TARIFF',
-  ADMIN_USER: 'ADMIN_USER',
-  PAYMENT: 'PAYMENT',
-  ATTENDANCE: 'ATTENDANCE',
-  ENROLLMENT: 'ENROLLMENT',
-  CASH_SHIFT: 'CASH_SHIFT',
-} as const;
-
 const forbidden =
   /password|passwordhash|token|tokenhash|secret|authorization|cookie|database_url|private.?key/i;
 export const sanitizeAuditSnapshot = (value: unknown): Record<string, unknown> | null => {
