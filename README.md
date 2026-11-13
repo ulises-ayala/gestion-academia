@@ -50,9 +50,7 @@ Es un monorepo TypeScript con una API NestJS, un panel Next.js y PostgreSQL. Lo 
 
 ## Arquitectura
 
-```text
-apps/admin-web (Next.js) --HTTP/JSON--> apps/api (NestJS, /api/v1) --Prisma--> PostgreSQL
-```
+![Diagrama de arquitectura: el panel Next.js consume la API NestJS, que accede con Prisma a PostgreSQL en Neon; GitHub Actions corre la integración continua y despliega en Render](docs/arquitectura.svg)
 
 Monolito modular en un monorepo de npm workspaces:
 
