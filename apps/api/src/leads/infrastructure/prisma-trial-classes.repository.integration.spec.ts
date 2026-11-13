@@ -40,17 +40,34 @@ describe.runIf(integrationDatabaseEnabled)(
           capacity: 20,
         },
       });
+      const otherClass = await prisma.academyClass.create({
+        data: {
+          name: `Salsa ${token}`,
+          danceTypeId: danceType.id,
+          teacherId: teacher.id,
+          capacity: 20,
+        },
+      });
       const lead = await prisma.lead.create({
         data: { name: `Lucía ${token}`, source: 'INSTAGRAM', status: 'INQUIRY' },
       });
-      return { user, teacher, danceType, academyClass, lead };
+      // Un teléfono que no comparte nadie más en la base.
+      const phone = `9${digits.slice(0, 11)}`;
+      return { user, teacher, danceType, academyClass, otherClass, lead, phone };
     };
     type Fixture = Awaited<ReturnType<typeof createFixture>>;
     const cleanupFixture = async (fixture: Fixture) => {
       await prisma.auditLog.deleteMany({ where: { actorUserId: fixture.user.id } });
-      await prisma.leadTrialClass.deleteMany({ where: { leadId: fixture.lead.id } });
-      await prisma.lead.deleteMany({ where: { id: fixture.lead.id } });
-      await prisma.academyClass.deleteMany({ where: { id: fixture.academyClass.id } });
+      const visitors = await prisma.lead.findMany({
+        where: { normalizedPhone: fixture.phone },
+        select: { id: true },
+      });
+      const leadIds = [fixture.lead.id, ...visitors.map(({ id }) => id)];
+      await prisma.leadTrialClass.deleteMany({ where: { leadId: { in: leadIds } } });
+      await prisma.lead.deleteMany({ where: { id: { in: leadIds } } });
+      await prisma.academyClass.deleteMany({
+        where: { id: { in: [fixture.academyClass.id, fixture.otherClass.id] } },
+      });
       await prisma.danceType.deleteMany({ where: { id: fixture.danceType.id } });
       await prisma.teacher.deleteMany({ where: { id: fixture.teacher.id } });
       await prisma.adminUser.deleteMany({ where: { id: fixture.user.id } });
@@ -109,6 +126,61 @@ describe.runIf(integrationDatabaseEnabled)(
             select: { reason: true },
           }),
         ).resolves.toEqual({ reason: 'Se cargó a otra persona' });
+      } finally {
+        await cleanupFixture(fixture);
+      }
+    });
+
+    it('carga la visita de prueba en un paso y reconoce a quien vuelve por teléfono y nombre', async () => {
+      const fixture = await createFixture();
+      try {
+        const person = (name: string) => ({
+          name,
+          phone: fixture.phone,
+          normalizedPhone: fixture.phone,
+          email: null,
+          normalizedEmail: null,
+          instagram: null,
+          normalizedInstagram: null,
+          source: 'IN_PERSON' as const,
+          status: 'TRIAL' as const,
+          notes: null,
+          nextFollowUpAt: null,
+          lastContactAt: null,
+        });
+        const trial = (classId: string) => ({ classId, trialDate: '2026-11-10', notes: null });
+
+        const first = await repository.registerVisit(
+          person('Flor Gómez'),
+          trial(fixture.academyClass.id),
+          fixture.user.id,
+        );
+        expect(first).toMatchObject({ existingLead: false, lead: { status: 'TRIAL' } });
+
+        // Vuelve a probar otra clase: es el mismo potencial.
+        const second = await repository.registerVisit(
+          person('flor'),
+          trial(fixture.otherClass.id),
+          fixture.user.id,
+        );
+        expect(second).toMatchObject({ existingLead: true, lead: { id: first.lead.id } });
+
+        // La misma clase otra vez: tiene que inscribirse y pagar.
+        await expect(
+          repository.registerVisit(person('Flor'), trial(fixture.academyClass.id), fixture.user.id),
+        ).rejects.toMatchObject({
+          code: 'TRIAL_CLASS_CONFLICT',
+          message: expect.stringContaining('inscribirse y pagar'),
+        });
+
+        // Su hermano deja el mismo teléfono: es otra persona.
+        const sibling = await repository.registerVisit(
+          person('Tomás Gómez'),
+          trial(fixture.academyClass.id),
+          fixture.user.id,
+        );
+        expect(sibling.existingLead).toBe(false);
+        expect(sibling.lead.id).not.toBe(first.lead.id);
       } finally {
         await cleanupFixture(fixture);
       }

@@ -113,13 +113,16 @@ Desde **Alumnos** se abre la ficha: clases actuales, cuotas, asistencia y pagos 
 
 La primera clase de cada disciplina es gratis y **se prueba una sola vez por clase**. Se registra en el potencial alumno, no en asistencias: no genera deuda ni inscripción.
 
-1. En **Potenciales**, abrí (o creá) al potencial alumno.
-2. En **Clases de prueba**, elegí la clase y la fecha, y tocá **Registrar clase de prueba**.
-3. Si ya probó esa clase, el sistema no deja cargarla de nuevo y lo muestra en el selector como "ya la probó".
+1. En **Nuevo alumno**, elegí arriba **Clase de prueba**.
+2. Cargá nombre, teléfono (obligatorio: con él se lo reconoce si vuelve), la clase y el día, y tocá **Registrar clase de prueba**.
+3. Queda en **Potenciales**, en la etapa **Clase de prueba**. No se le crea ficha de alumno ni cuota.
+4. Si ya probó esa clase, el sistema no deja cargarla de nuevo: para volver, tiene que inscribirse y pagar. Si ya estaba cargado con el mismo teléfono y nombre, se le suma la prueba.
+
+También se puede cargar desde la ficha de un potencial que ya existe, en **Clases de prueba**.
 
 Al registrar la primera prueba, el potencial pasa a la etapa **Clase de prueba**. Una prueba cargada por error se quita con **Quitar** (pide motivo).
 
-Cuando decide inscribirse, tocá **Inscribir como alumno** en su ficha. Se abre el alta de alumno con el nombre, el teléfono, el correo y la clase que probó ya cargados: revisá nombre y apellido, completá el DNI y seguí como en cualquier alta. Al crear el alumno, el potencial pasa a **Inscripto/a** y su ficha muestra **Ver ficha de alumno**.
+Cuando vuelve y se inscribe, en **Nuevo alumno → Se inscribe** buscalo en "¿Ya vino a una clase de prueba?" por nombre o teléfono (o tocá **Inscribir como alumno** en su ficha). Se abre el alta de alumno con el nombre, el teléfono, el correo y la clase que probó ya cargados: revisá nombre y apellido, completá el DNI y seguí como en cualquier alta. Al crear el alumno, el potencial pasa a **Inscripto/a** y su ficha muestra **Ver ficha de alumno**.
 
 ![Clases de prueba](capturas/potencial-clase-de-prueba.png)
 

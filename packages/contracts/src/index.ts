@@ -99,6 +99,29 @@ export type CreateLeadTrialClassDto = Readonly<{
   notes?: string | null;
 }>;
 
+/**
+ * Alguien que viene a una clase de prueba, cargado desde Nuevo alumno: queda como potencial
+ * alumno con esa prueba. Si ya hay un potencial con el mismo teléfono y nombre, se le suma.
+ */
+export type RegisterTrialVisitDto = Readonly<{
+  firstName: string;
+  lastName?: string | null;
+  phone: string;
+  email?: string | null;
+  /** Por dónde llegó; por defecto, presencial. */
+  source?: LeadSourceDto;
+  classId: string;
+  /** AAAA-MM-DD; si falta, hoy. No puede ser futura. */
+  trialDate?: string | null;
+  notes?: string | null;
+}>;
+export type TrialVisitResultDto = Readonly<{
+  lead: LeadDto;
+  trialClass: LeadTrialClassDto;
+  /** Ya estaba cargado como potencial alumno: se le sumó la prueba. */
+  existingLead: boolean;
+}>;
+
 /** Quitar una clase de prueba cargada por error (queda en la auditoría). */
 export type RemoveLeadTrialClassDto = Readonly<{ reason: string }>;
 

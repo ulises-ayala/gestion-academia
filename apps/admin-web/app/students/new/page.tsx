@@ -12,8 +12,11 @@ import type {
   TariffDto,
 } from '@academy/contracts';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useAuth } from '../../../components/auth-provider';
+import { LeadPicker } from '../../../components/lead-picker';
+import { TrialVisitForm } from '../../../components/trial-visit-form';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import { classTeachersLabel, dayLabels } from '../../../lib/offering';
 import {
@@ -57,7 +60,14 @@ const periodLabel = (period: string) => {
 
 function NewStudent() {
   // Alta desde la ficha de un potencial alumno (Potenciales → Inscribir como alumno).
-  const leadId = useSearchParams().get('leadId');
+  const search = useSearchParams();
+  const router = useRouter();
+  const { can } = useAuth();
+  const leadId = search.get('leadId');
+  // Se inscribe (alta con cuota) o viene a una clase de prueba gratis (queda como potencial).
+  const [mode, setMode] = useState<'enroll' | 'trial'>(
+    search.get('modo') === 'prueba' && !leadId ? 'trial' : 'enroll',
+  );
   const [lead, setLead] = useState<LeadDto | null>(null);
   const [leadTrials, setLeadTrials] = useState<readonly LeadTrialClassDto[]>([]);
   const [leadError, setLeadError] = useState('');
@@ -251,6 +261,7 @@ function NewStudent() {
       </section>
     );
 
+  const trial = mode === 'trial';
   return (
     <>
       <div className="page-heading">
@@ -258,309 +269,344 @@ function NewStudent() {
           <Link className="back-link" href="/students">
             ← Volver al listado
           </Link>
-          <h1>Nuevo alumno</h1>
+          <h1>{trial ? 'Clase de prueba' : 'Nuevo alumno'}</h1>
           <p className="subtitle">
-            Creá el alumno y, opcionalmente, su inscripción y pago inicial.
+            {trial
+              ? 'Registrá a quien viene a probar una clase gratis. Queda como potencial alumno.'
+              : 'Creá el alumno y, opcionalmente, su inscripción y pago inicial.'}
           </p>
         </div>
       </div>
-      {leadError && (
-        <p className="message" role="alert">
-          {leadError}
-        </p>
+      {!leadId && can('leads:manage') && (
+        <div aria-label="Cómo viene" className="onboarding-mode" role="group">
+          <button
+            aria-pressed={!trial}
+            className="secondary"
+            onClick={() => setMode('enroll')}
+            type="button"
+          >
+            Se inscribe
+          </button>
+          <button
+            aria-pressed={trial}
+            className="secondary"
+            onClick={() => setMode('trial')}
+            type="button"
+          >
+            Clase de prueba
+          </button>
+        </div>
       )}
-      {lead && (
-        <section className="onboarding-lead" aria-label="Potencial alumno">
-          {lead.studentId ? (
-            <p>
-              <strong>{lead.name}</strong> ya se inscribió como alumno.{' '}
-              <Link className="text-link" href={`/students/${lead.studentId}`}>
-                Ver su ficha
-              </Link>
-            </p>
-          ) : (
-            <p>
-              Datos de <strong>{lead.name}</strong>, potencial alumno. Revisá el nombre y el
-              apellido, completá el DNI
-              {leadTrials.length > 0 ? ' y confirmá la clase que probó' : ''}. Al crear el alumno,
-              queda como inscripto/a en Potenciales.{' '}
-              <Link className="text-link" href={`/leads/${lead.id}`}>
-                Ver potencial
-              </Link>
+      {trial ? (
+        <TrialVisitForm classes={classes} loadingClasses={loadingOptions} />
+      ) : (
+        <>
+          {!leadId && can('leads:manage') && (
+            <LeadPicker onPick={(picked) => router.replace(`/students/new?leadId=${picked.id}`)} />
+          )}
+          {leadError && (
+            <p className="message" role="alert">
+              {leadError}
             </p>
           )}
-        </section>
-      )}
-      <form className="onboarding-form" onSubmit={submit} noValidate>
-        <section className="card">
-          <h2>Datos personales</h2>
-          <div className="student-form">
-            {(['dni', 'firstName', 'lastName'] as const).map((field) => (
-              <label key={field}>
-                {field === 'dni' ? 'DNI' : field === 'firstName' ? 'Nombre' : 'Apellido'}
-                <input
-                  required
-                  aria-invalid={Boolean(fieldErrors[field])}
-                  value={form[field]}
-                  onChange={(event) => setField(field, event.target.value)}
-                />
-                {fieldErrors[field] && <span className="field-error">{fieldErrors[field]}</span>}
-              </label>
-            ))}
-            <label>
-              Fecha de nacimiento <span className="optional">Opcional</span>
-              <input
-                type="date"
-                value={form.birthDate}
-                onChange={(event) => setField('birthDate', event.target.value)}
-              />
-            </label>
-            <label>
-              Teléfono <span className="optional">Opcional</span>
-              <input
-                value={form.phone}
-                onChange={(event) => setField('phone', event.target.value)}
-              />
-            </label>
-            <label>
-              Correo <span className="optional">Opcional</span>
-              <input
-                type="email"
-                value={form.email}
-                onChange={(event) => setField('email', event.target.value)}
-              />
-            </label>
-            <label className="wide">
-              Domicilio <span className="optional">Opcional</span>
-              <input
-                value={form.address}
-                onChange={(event) => setField('address', event.target.value)}
-              />
-            </label>
-          </div>
-        </section>
-        <section className="card">
-          <div className="onboarding-heading">
-            <div>
-              <h2>Inscripción inicial</h2>
-              <p className="subtitle">Podés crear el alumno sin inscribirlo todavía.</p>
-            </div>
-            <button
-              type="button"
-              className="secondary"
-              disabled={loadingOptions || !availableClasses.length}
-              onClick={addClass}
-            >
-              + Agregar clase
-            </button>
-          </div>
-          <div className="onboarding-classes">
-            {selections.map((selection, index) => {
-              const academicClass = classes.find(({ id }) => id === selection.classId);
-              return (
-                <article className="enrollment-card" key={`${selection.classId}-${index}`}>
-                  <div className="onboarding-heading">
-                    <h3>Clase {index + 1}</h3>
-                    <button
-                      type="button"
-                      className="secondary"
-                      onClick={() =>
-                        setSelections((current) =>
-                          current.filter((_, position) => position !== index),
-                        )
-                      }
-                    >
-                      Quitar
-                    </button>
-                  </div>
-                  <div className="onboarding-fields">
-                    <label>
-                      Clase
-                      <select
-                        value={selection.classId}
-                        onChange={(event) =>
-                          updateSelection(index, {
-                            classId: event.target.value,
-                            // La tarifa tiene que ser de la clase elegida.
-                            tariffId:
-                              classTariffsFor(tariffs, event.target.value, period)[0]?.id ?? '',
-                          })
-                        }
-                      >
-                        {classes
-                          .filter(
-                            ({ id }) =>
-                              id === selection.classId ||
-                              !selections.some(({ classId }) => classId === id),
-                          )
-                          .map((item) => (
-                            <option key={item.id} value={item.id}>
-                              {item.name} · {item.danceType.name}
-                            </option>
-                          ))}
-                      </select>
-                    </label>
-                    <label>
-                      Tarifa
-                      <select
-                        value={selection.tariffId}
-                        onChange={(event) =>
-                          updateSelection(index, { tariffId: event.target.value })
-                        }
-                      >
-                        {classTariffsFor(tariffs, selection.classId, period).length === 0 && (
-                          <option value="">Sin tarifa para este mes</option>
-                        )}
-                        {classTariffsFor(tariffs, selection.classId, period).map((tariff) => (
-                          <option key={tariff.id} value={tariff.id}>
-                            {tariff.name} · {money(tariff.amount)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                  {academicClass && (
-                    <p className="class-summary">
-                      {classTeachersLabel(academicClass)} ·{' '}
-                      {academicClass.schedules
-                        .map(
-                          (schedule) =>
-                            `${dayLabels[schedule.dayOfWeek]} ${schedule.startTime}–${schedule.endTime} · ${schedule.room.branch.name}/${schedule.room.name}`,
-                        )
-                        .join(' · ')}{' '}
-                      · Cupo {academicClass.activeEnrollmentCount ?? 0}/{academicClass.capacity}
+          {lead && (
+            <section className="onboarding-lead" aria-label="Potencial alumno">
+              {lead.studentId ? (
+                <p>
+                  <strong>{lead.name}</strong> ya se inscribió como alumno.{' '}
+                  <Link className="text-link" href={`/students/${lead.studentId}`}>
+                    Ver su ficha
+                  </Link>
+                </p>
+              ) : (
+                <p>
+                  Datos de <strong>{lead.name}</strong>, potencial alumno. Revisá el nombre y el
+                  apellido, completá el DNI
+                  {leadTrials.length > 0 ? ' y confirmá la clase que probó' : ''}. Al crear el
+                  alumno, queda como inscripto/a en Potenciales.{' '}
+                  <Link className="text-link" href={`/leads/${lead.id}`}>
+                    Ver potencial
+                  </Link>
+                </p>
+              )}
+            </section>
+          )}
+          <form className="onboarding-form" onSubmit={submit} noValidate>
+            <section className="card">
+              <h2>Datos personales</h2>
+              <div className="student-form">
+                {(['dni', 'firstName', 'lastName'] as const).map((field) => (
+                  <label key={field}>
+                    {field === 'dni' ? 'DNI' : field === 'firstName' ? 'Nombre' : 'Apellido'}
+                    <input
+                      required
+                      aria-invalid={Boolean(fieldErrors[field])}
+                      value={form[field]}
+                      onChange={(event) => setField(field, event.target.value)}
+                    />
+                    {fieldErrors[field] && (
+                      <span className="field-error">{fieldErrors[field]}</span>
+                    )}
+                  </label>
+                ))}
+                <label>
+                  Fecha de nacimiento <span className="optional">Opcional</span>
+                  <input
+                    type="date"
+                    value={form.birthDate}
+                    onChange={(event) => setField('birthDate', event.target.value)}
+                  />
+                </label>
+                <label>
+                  Teléfono <span className="optional">Opcional</span>
+                  <input
+                    value={form.phone}
+                    onChange={(event) => setField('phone', event.target.value)}
+                  />
+                </label>
+                <label>
+                  Correo <span className="optional">Opcional</span>
+                  <input
+                    type="email"
+                    value={form.email}
+                    onChange={(event) => setField('email', event.target.value)}
+                  />
+                </label>
+                <label className="wide">
+                  Domicilio <span className="optional">Opcional</span>
+                  <input
+                    value={form.address}
+                    onChange={(event) => setField('address', event.target.value)}
+                  />
+                </label>
+              </div>
+            </section>
+            <section className="card">
+              <div className="onboarding-heading">
+                <div>
+                  <h2>Inscripción inicial</h2>
+                  <p className="subtitle">Podés crear el alumno sin inscribirlo todavía.</p>
+                </div>
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={loadingOptions || !availableClasses.length}
+                  onClick={addClass}
+                >
+                  + Agregar clase
+                </button>
+              </div>
+              <div className="onboarding-classes">
+                {selections.map((selection, index) => {
+                  const academicClass = classes.find(({ id }) => id === selection.classId);
+                  return (
+                    <article className="enrollment-card" key={`${selection.classId}-${index}`}>
+                      <div className="onboarding-heading">
+                        <h3>Clase {index + 1}</h3>
+                        <button
+                          type="button"
+                          className="secondary"
+                          onClick={() =>
+                            setSelections((current) =>
+                              current.filter((_, position) => position !== index),
+                            )
+                          }
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                      <div className="onboarding-fields">
+                        <label>
+                          Clase
+                          <select
+                            value={selection.classId}
+                            onChange={(event) =>
+                              updateSelection(index, {
+                                classId: event.target.value,
+                                // La tarifa tiene que ser de la clase elegida.
+                                tariffId:
+                                  classTariffsFor(tariffs, event.target.value, period)[0]?.id ?? '',
+                              })
+                            }
+                          >
+                            {classes
+                              .filter(
+                                ({ id }) =>
+                                  id === selection.classId ||
+                                  !selections.some(({ classId }) => classId === id),
+                              )
+                              .map((item) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.name} · {item.danceType.name}
+                                </option>
+                              ))}
+                          </select>
+                        </label>
+                        <label>
+                          Tarifa
+                          <select
+                            value={selection.tariffId}
+                            onChange={(event) =>
+                              updateSelection(index, { tariffId: event.target.value })
+                            }
+                          >
+                            {classTariffsFor(tariffs, selection.classId, period).length === 0 && (
+                              <option value="">Sin tarifa para este mes</option>
+                            )}
+                            {classTariffsFor(tariffs, selection.classId, period).map((tariff) => (
+                              <option key={tariff.id} value={tariff.id}>
+                                {tariff.name} · {money(tariff.amount)}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+                      {academicClass && (
+                        <p className="class-summary">
+                          {classTeachersLabel(academicClass)} ·{' '}
+                          {academicClass.schedules
+                            .map(
+                              (schedule) =>
+                                `${dayLabels[schedule.dayOfWeek]} ${schedule.startTime}–${schedule.endTime} · ${schedule.room.branch.name}/${schedule.room.name}`,
+                            )
+                            .join(' · ')}{' '}
+                          · Cupo {academicClass.activeEnrollmentCount ?? 0}/{academicClass.capacity}
+                        </p>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+              {loadingOptions && <p className="subtitle">Cargando clases y tarifas…</p>}
+              {optionsError && (
+                <div className="module-state" role="alert">
+                  <p>{optionsError}</p>
+                  <button className="secondary" type="button" onClick={() => void loadOptions()}>
+                    Reintentar
+                  </button>
+                </div>
+              )}
+              {conflict && (
+                <p className="message" role="alert">
+                  Estas clases se superponen: {conflict[0].name} y {conflict[1].name}.
+                </p>
+              )}
+            </section>
+            {selections.length > 0 && (
+              <section className="card">
+                <h2>Cuotas iniciales</h2>
+                <div className="onboarding-period">
+                  <label>
+                    Período
+                    <input
+                      type="month"
+                      required
+                      value={period}
+                      onChange={(event) => {
+                        setPeriod(event.target.value);
+                        setDueDate(`${event.target.value}-10`);
+                      }}
+                    />
+                  </label>
+                  <label>
+                    Vencimiento
+                    <input
+                      type="date"
+                      required
+                      value={dueDate}
+                      onChange={(event) => setDueDate(event.target.value)}
+                    />
+                    <small>El día de este vencimiento queda como día de pago del alumno.</small>
+                  </label>
+                </div>
+                <div className="charge-summary">
+                  {selections.map((selection) => (
+                    <p key={selection.classId}>
+                      <span>
+                        {classes.find(({ id }) => id === selection.classId)?.name} ·{' '}
+                        {periodLabel(period)}
+                      </span>
+                      <strong>
+                        {money(tariffs.find(({ id }) => id === selection.tariffId)?.amount ?? 0)}
+                      </strong>
+                    </p>
+                  ))}
+                  <p className="charge-total">
+                    <span>
+                      {selections.length} cuota{selections.length === 1 ? '' : 's'} · Total estimado
+                    </span>
+                    <strong>{money(total)}</strong>
+                  </p>
+                  <small>El total es informativo; el backend calcula el importe definitivo.</small>
+                </div>
+                <h2 className="section-title">Pago inicial</h2>
+                <div className="payment-options">
+                  <label>
+                    <input
+                      type="radio"
+                      name="collect"
+                      checked={!collect}
+                      onChange={() => setCollect(false)}
+                    />{' '}
+                    Dejar cuotas pendientes
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="collect"
+                      checked={collect}
+                      disabled={!cashShiftOpen}
+                      onChange={() => setCollect(true)}
+                    />{' '}
+                    Cobrar ahora
+                  </label>
+                  {!cashShiftOpen && (
+                    <p>
+                      Para cobrar ahora necesitás <Link href="/cash">abrir tu turno de caja</Link>.
+                      Podés continuar el alta dejando las cuotas pendientes.
                     </p>
                   )}
-                </article>
-              );
-            })}
-          </div>
-          {loadingOptions && <p className="subtitle">Cargando clases y tarifas…</p>}
-          {optionsError && (
-            <div className="module-state" role="alert">
-              <p>{optionsError}</p>
-              <button className="secondary" type="button" onClick={() => void loadOptions()}>
-                Reintentar
-              </button>
-            </div>
-          )}
-          {conflict && (
-            <p className="message" role="alert">
-              Estas clases se superponen: {conflict[0].name} y {conflict[1].name}.
-            </p>
-          )}
-        </section>
-        {selections.length > 0 && (
-          <section className="card">
-            <h2>Cuotas iniciales</h2>
-            <div className="onboarding-period">
-              <label>
-                Período
-                <input
-                  type="month"
-                  required
-                  value={period}
-                  onChange={(event) => {
-                    setPeriod(event.target.value);
-                    setDueDate(`${event.target.value}-10`);
-                  }}
-                />
-              </label>
-              <label>
-                Vencimiento
-                <input
-                  type="date"
-                  required
-                  value={dueDate}
-                  onChange={(event) => setDueDate(event.target.value)}
-                />
-                <small>El día de este vencimiento queda como día de pago del alumno.</small>
-              </label>
-            </div>
-            <div className="charge-summary">
-              {selections.map((selection) => (
-                <p key={selection.classId}>
-                  <span>
-                    {classes.find(({ id }) => id === selection.classId)?.name} ·{' '}
-                    {periodLabel(period)}
-                  </span>
-                  <strong>
-                    {money(tariffs.find(({ id }) => id === selection.tariffId)?.amount ?? 0)}
-                  </strong>
-                </p>
-              ))}
-              <p className="charge-total">
-                <span>
-                  {selections.length} cuota{selections.length === 1 ? '' : 's'} · Total estimado
-                </span>
-                <strong>{money(total)}</strong>
+                  {collect && (
+                    <label>
+                      Medio de pago
+                      <select
+                        value={paymentMethod}
+                        onChange={(event) =>
+                          setPaymentMethod(event.target.value as PaymentMethodDto)
+                        }
+                      >
+                        <option value="CASH">Efectivo</option>
+                        <option value="MERCADO_PAGO">Mercado Pago</option>
+                        <option value="TRANSFER">Transferencia</option>
+                        <option value="CARD">Tarjeta</option>
+                      </select>
+                    </label>
+                  )}
+                </div>
+              </section>
+            )}
+            {message && (
+              <p className="message" role="alert">
+                {message}
               </p>
-              <small>El total es informativo; el backend calcula el importe definitivo.</small>
+            )}
+            <div className="actions">
+              <button disabled={submitting || Boolean(conflict)} type="submit">
+                {submitting
+                  ? 'Creando alumno…'
+                  : selections.length === 0
+                    ? 'Crear alumno'
+                    : collect
+                      ? 'Crear alumno y registrar pago'
+                      : 'Crear alumno e inscribir'}
+              </button>
+              <Link className="button secondary" href="/students">
+                Cancelar
+              </Link>
             </div>
-            <h2 className="section-title">Pago inicial</h2>
-            <div className="payment-options">
-              <label>
-                <input
-                  type="radio"
-                  name="collect"
-                  checked={!collect}
-                  onChange={() => setCollect(false)}
-                />{' '}
-                Dejar cuotas pendientes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="collect"
-                  checked={collect}
-                  disabled={!cashShiftOpen}
-                  onChange={() => setCollect(true)}
-                />{' '}
-                Cobrar ahora
-              </label>
-              {!cashShiftOpen && (
-                <p>
-                  Para cobrar ahora necesitás <Link href="/cash">abrir tu turno de caja</Link>.
-                  Podés continuar el alta dejando las cuotas pendientes.
-                </p>
-              )}
-              {collect && (
-                <label>
-                  Medio de pago
-                  <select
-                    value={paymentMethod}
-                    onChange={(event) => setPaymentMethod(event.target.value as PaymentMethodDto)}
-                  >
-                    <option value="CASH">Efectivo</option>
-                    <option value="MERCADO_PAGO">Mercado Pago</option>
-                    <option value="TRANSFER">Transferencia</option>
-                    <option value="CARD">Tarjeta</option>
-                  </select>
-                </label>
-              )}
-            </div>
-          </section>
-        )}
-        {message && (
-          <p className="message" role="alert">
-            {message}
-          </p>
-        )}
-        <div className="actions">
-          <button disabled={submitting || Boolean(conflict)} type="submit">
-            {submitting
-              ? 'Creando alumno…'
-              : selections.length === 0
-                ? 'Crear alumno'
-                : collect
-                  ? 'Crear alumno y registrar pago'
-                  : 'Crear alumno e inscribir'}
-          </button>
-          <Link className="button secondary" href="/students">
-            Cancelar
-          </Link>
-        </div>
-      </form>
+          </form>
+        </>
+      )}
     </>
   );
 }

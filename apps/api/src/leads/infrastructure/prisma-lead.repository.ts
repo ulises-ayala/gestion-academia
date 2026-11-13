@@ -93,7 +93,8 @@ export class PrismaLeadRepository implements LeadRepository {
 
   private buildWhere(query: LeadListQuery): Prisma.LeadWhereInput {
     const filters: Prisma.LeadWhereInput[] = [];
-    if (query.status) filters.push({ status: query.status });
+    if (query.status === 'OPEN') filters.push({ status: { in: [...openLeadStatuses] } });
+    else if (query.status) filters.push({ status: query.status });
     if (query.source) filters.push({ source: query.source });
     if (query.followUp) {
       filters.push({

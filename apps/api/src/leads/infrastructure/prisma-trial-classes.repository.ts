@@ -3,8 +3,9 @@ import { Prisma } from '@academy/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { DomainError } from '../../shared/domain/domain-error';
-import type { TrialClassesRepository } from '../application/trial-classes.repository';
-import { statusAfterTrial } from '../domain/trial-class';
+import type { TrialClassesRepository, TrialInput } from '../application/trial-classes.repository';
+import type { ValidatedLeadInput } from '../domain/lead';
+import { sameFirstName, statusAfterTrial, statusAfterVisit } from '../domain/trial-class';
 import { formatDate } from '../../shared/domain/format';
 
 const include = {
@@ -24,7 +25,7 @@ const toDto = (item: IncludedTrial): LeadTrialClassDto => ({
 const alreadyTaken = (className: string, trialDate: string) =>
   new DomainError(
     'TRIAL_CLASS_CONFLICT',
-    `Ya tomó la clase de prueba de ${className} el ${formatDate(trialDate)}: es una sola vez por clase.`,
+    `Ya tomó la clase de prueba de ${className} el ${formatDate(trialDate)}: es una sola vez por clase. Para volver, tiene que inscribirse y pagar.`,
     { field: 'classId' },
   );
 
@@ -41,54 +42,14 @@ export class PrismaTrialClassesRepository implements TrialClassesRepository {
     return items.map(toDto);
   }
 
-  async create(
-    leadId: string,
-    input: Readonly<{ classId: string; trialDate: string; notes: string | null }>,
-    actorId: string,
-  ) {
+  async create(leadId: string, input: TrialInput, actorId: string) {
     try {
       return await this.prisma.$transaction(async (tx) => {
         // Dos cargas a la vez de la misma prueba: la segunda espera y ve la primera.
         await tx.$queryRaw`SELECT id FROM leads WHERE id = ${leadId}::uuid FOR UPDATE`;
         const lead = await tx.lead.findUnique({ where: { id: leadId } });
         if (!lead) throw new DomainError('LEAD_NOT_FOUND', 'Potencial alumno no encontrado');
-        const academicClass = await tx.academyClass.findUnique({
-          where: { id: input.classId },
-          select: { name: true, status: true },
-        });
-        if (!academicClass) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
-        if (academicClass.status !== 'ACTIVE')
-          throw new DomainError('CLASS_INACTIVE', 'La clase elegida está desactivada', {
-            field: 'classId',
-          });
-        const previous = await tx.leadTrialClass.findUnique({
-          where: { leadId_classId: { leadId, classId: input.classId } },
-        });
-        if (previous) throw alreadyTaken(academicClass.name, isoDate(previous.trialDate));
-        const trial = await tx.leadTrialClass.create({
-          data: {
-            leadId,
-            classId: input.classId,
-            trialDate: new Date(`${input.trialDate}T00:00:00.000Z`),
-            notes: input.notes,
-            createdByUserId: actorId,
-          },
-          include,
-        });
-        const status = statusAfterTrial(lead.status);
-        if (status !== lead.status)
-          await tx.lead.update({ where: { id: leadId }, data: { status } });
-        await tx.auditLog.create({
-          data: {
-            actorUserId: actorId,
-            action: 'CREATE',
-            entityType: 'LEAD_TRIAL_CLASS',
-            entityId: trial.id,
-            after: { classId: input.classId, trialDate: input.trialDate, notes: input.notes },
-            metadata: { leadId, leadStatusBefore: lead.status, leadStatusAfter: status },
-          },
-        });
-        return toDto(trial);
+        return this.addTrial(tx, lead, input, actorId, statusAfterTrial(lead.status));
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
@@ -100,6 +61,80 @@ export class PrismaTrialClassesRepository implements TrialClassesRepository {
       }
       throw error;
     }
+  }
+
+  async registerVisit(person: ValidatedLeadInput, input: TrialInput, actorId: string) {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        // La misma persona: mismo teléfono y mismo nombre de pila. La más reciente si hubiera dos.
+        const candidates = person.normalizedPhone
+          ? await tx.lead.findMany({
+              where: { normalizedPhone: person.normalizedPhone },
+              orderBy: { updatedAt: 'desc' },
+            })
+          : [];
+        const match = candidates.find((lead) => sameFirstName(lead.name, person.name));
+        if (match) await tx.$queryRaw`SELECT id FROM leads WHERE id = ${match.id}::uuid FOR UPDATE`;
+        const lead = match ?? (await tx.lead.create({ data: { ...person, status: 'TRIAL' } }));
+        const trialClass = await this.addTrial(tx, lead, input, actorId, statusAfterVisit(lead));
+        const updated = await tx.lead.findUniqueOrThrow({ where: { id: lead.id } });
+        return { lead: updated, trialClass, existingLead: Boolean(match) };
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
+        throw new DomainError(
+          'TRIAL_CLASS_CONFLICT',
+          'Ya tomó la clase de prueba de esa clase: es una sola vez por clase. Para volver, tiene que inscribirse y pagar.',
+          { field: 'classId' },
+        );
+      throw error;
+    }
+  }
+
+  /** Registra la prueba de un potencial ya bloqueado en la transacción y deja su nueva etapa. */
+  private async addTrial(
+    tx: Prisma.TransactionClient,
+    lead: Readonly<{ id: string; status: Prisma.LeadGetPayload<object>['status'] }>,
+    input: TrialInput,
+    actorId: string,
+    status: Prisma.LeadGetPayload<object>['status'],
+  ) {
+    const leadId = lead.id;
+    const academicClass = await tx.academyClass.findUnique({
+      where: { id: input.classId },
+      select: { name: true, status: true },
+    });
+    if (!academicClass) throw new DomainError('CLASS_NOT_FOUND', 'Clase no encontrada');
+    if (academicClass.status !== 'ACTIVE')
+      throw new DomainError('CLASS_INACTIVE', 'La clase elegida está desactivada', {
+        field: 'classId',
+      });
+    const previous = await tx.leadTrialClass.findUnique({
+      where: { leadId_classId: { leadId, classId: input.classId } },
+    });
+    if (previous) throw alreadyTaken(academicClass.name, isoDate(previous.trialDate));
+    const trial = await tx.leadTrialClass.create({
+      data: {
+        leadId,
+        classId: input.classId,
+        trialDate: new Date(`${input.trialDate}T00:00:00.000Z`),
+        notes: input.notes,
+        createdByUserId: actorId,
+      },
+      include,
+    });
+    if (status !== lead.status) await tx.lead.update({ where: { id: leadId }, data: { status } });
+    await tx.auditLog.create({
+      data: {
+        actorUserId: actorId,
+        action: 'CREATE',
+        entityType: 'LEAD_TRIAL_CLASS',
+        entityId: trial.id,
+        after: { classId: input.classId, trialDate: input.trialDate, notes: input.notes },
+        metadata: { leadId, leadStatusBefore: lead.status, leadStatusAfter: status },
+      },
+    });
+    return toDto(trial);
   }
 
   async remove(leadId: string, id: string, reason: string, actorId: string) {

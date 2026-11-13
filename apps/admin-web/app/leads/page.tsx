@@ -29,7 +29,10 @@ export default function LeadsPage() {
     typeof window === 'undefined'
       ? { status: '' as const, followUp: '' as const }
       : leadFiltersFromSearch(window.location.search);
-  const [status, setStatus] = useState<'' | LeadStatusDto>(initialContext.status);
+  // Por defecto, los abiertos: quien se inscribió o no concretó se ve eligiendo el estado.
+  const [status, setStatus] = useState<'' | 'OPEN' | LeadStatusDto>(
+    initialContext.status || (initialContext.followUp ? '' : 'OPEN'),
+  );
   const [source, setSource] = useState<'' | LeadSourceDto>('');
   const [followUp, setFollowUp] = useState<'' | 'PENDING' | 'OVERDUE'>(initialContext.followUp);
   const [page, setPage] = useState(1);
@@ -53,7 +56,8 @@ export default function LeadsPage() {
     }
   }, [followUp, page, query, source, status]);
   useEffect(() => void load(), [load]);
-  const filtered = Boolean(query || status || source || followUp);
+  const statusFilter = status === 'OPEN' ? '' : status;
+  const filtered = Boolean(query || statusFilter || source || followUp);
   const pageCount = Math.max(1, Math.ceil(result.total / result.pageSize));
   function search(event: FormEvent) {
     event.preventDefault();
@@ -74,22 +78,22 @@ export default function LeadsPage() {
         </Link>
       </div>
       <section className="card">
-        {(status || followUp) && (
+        {(statusFilter || followUp) && (
           <div className="context-filter">
             <span>
               Filtro activo:{' '}
               <strong>
                 {followUp === 'OVERDUE'
                   ? 'Seguimientos vencidos'
-                  : status
-                    ? leadStatusLabels[status]
+                  : statusFilter
+                    ? leadStatusLabels[statusFilter]
                     : 'Seguimientos pendientes'}
               </strong>
             </span>
             <button
               className="secondary"
               onClick={() => {
-                setStatus('');
+                setStatus('OPEN');
                 setFollowUp('');
               }}
             >
@@ -111,10 +115,11 @@ export default function LeadsPage() {
             <select
               value={status}
               onChange={(event) => {
-                setStatus(event.target.value as '' | LeadStatusDto);
+                setStatus(event.target.value as '' | 'OPEN' | LeadStatusDto);
                 setPage(1);
               }}
             >
+              <option value="OPEN">Abiertos</option>
               <option value="">Todos</option>
               {Object.entries(leadStatusLabels).map(([value, label]) => (
                 <option key={value} value={value}>

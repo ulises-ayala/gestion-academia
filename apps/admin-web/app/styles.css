@@ -3345,3 +3345,60 @@ dialog.generate-charge-dialog.cash-detail-dialog {
 .onboarding-lead p {
   margin: 0;
 }
+/* Nuevo alumno: se inscribe o viene a una clase de prueba. */
+.onboarding-mode {
+  display: inline-flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
+}
+.onboarding-mode button.secondary {
+  min-height: var(--control-height-sm);
+  padding: 0 var(--space-4);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+}
+.onboarding-mode button.secondary[aria-pressed='true'] {
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--accent);
+  font-weight: var(--font-weight-semibold);
+}
+/* Buscar entre los potenciales a quien vuelve después de la prueba. */
+.lead-picker {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.lead-picker h2,
+.lead-picker .subtitle {
+  margin: 0;
+}
+.lead-picker label {
+  display: grid;
+  gap: var(--space-1);
+  max-width: 28rem;
+}
+.lead-picker ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lead-picker li button {
+  width: 100%;
+  justify-content: space-between;
+  gap: var(--space-3);
+  text-align: left;
+}
+.lead-picker li button span {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+}

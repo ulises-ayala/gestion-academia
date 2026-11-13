@@ -5,6 +5,8 @@ import type {
   LeadListDto,
   LeadSourceDto,
   LeadStatusDto,
+  RegisterTrialVisitDto,
+  TrialVisitResultDto,
   UpdateLeadDto,
 } from '@academy/contracts';
 import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
@@ -16,6 +18,7 @@ import { parsePage, parseUuid } from '../../shared/presentation/request-validati
 import type { LeadData } from '../domain/lead';
 import { leadSources, leadStatuses } from '../domain/lead';
 import { LeadsService } from '../application/leads.service';
+import { TrialClassesService } from '../application/trial-classes.service';
 
 const toDto = (lead: LeadData): LeadDto => ({
   id: lead.id,
@@ -36,7 +39,10 @@ const toDto = (lead: LeadData): LeadDto => ({
 @Controller('leads')
 @Permissions('leads:manage')
 export class LeadsController {
-  constructor(private readonly service: LeadsService) {}
+  constructor(
+    private readonly service: LeadsService,
+    private readonly trials: TrialClassesService,
+  ) {}
 
   @Get()
   async list(
@@ -51,7 +57,8 @@ export class LeadsController {
       throw new DomainError('VALIDATION_ERROR', 'La búsqueda no puede superar 100 caracteres', {
         field: 'q',
       });
-    if (status && !leadStatuses.includes(status as LeadStatusDto))
+    // OPEN: los que siguen abiertos (Consulta, Interesado/a y Clase de prueba).
+    if (status && status !== 'OPEN' && !leadStatuses.includes(status as LeadStatusDto))
       throw new DomainError('VALIDATION_ERROR', 'El estado no es válido', { field: 'status' });
     if (source && !leadSources.includes(source as LeadSourceDto))
       throw new DomainError('VALIDATION_ERROR', 'El origen no es válido', { field: 'source' });
@@ -61,7 +68,7 @@ export class LeadsController {
       });
     const result = await this.service.list({
       ...(q?.trim() ? { q: q.trim() } : {}),
-      ...(status ? { status: status as LeadStatusDto } : {}),
+      ...(status ? { status: status as LeadStatusDto | 'OPEN' } : {}),
       ...(source ? { source: source as LeadSourceDto } : {}),
       ...(followUp ? { followUp: followUp as 'PENDING' | 'OVERDUE' } : {}),
       now: new Date(),
@@ -90,6 +97,21 @@ export class LeadsController {
   @Get(':id')
   async get(@Param('id') id: string): Promise<LeadDto> {
     return toDto(await this.service.get(parseUuid(id)));
+  }
+
+  /** Clase de prueba cargada desde Nuevo alumno: crea el potencial o le suma la prueba. */
+  @Post('trial-visits')
+  async registerTrialVisit(
+    @Body() input: RegisterTrialVisitDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ): Promise<TrialVisitResultDto> {
+    const result = await this.trials.registerVisit(
+      input && typeof input.classId === 'string'
+        ? { ...input, classId: parseUuid(input.classId, 'classId') }
+        : input,
+      user.id,
+    );
+    return { ...result, lead: toDto(result.lead) };
   }
 
   @Post()

@@ -5,7 +5,8 @@ export const LEAD_REPOSITORY = Symbol('LEAD_REPOSITORY');
 export type LeadFollowUpFilter = 'PENDING' | 'OVERDUE';
 export type LeadListQuery = Readonly<{
   q?: string;
-  status?: LeadStatusDto;
+  /** OPEN: Consulta, Interesado/a y Clase de prueba. */
+  status?: LeadStatusDto | 'OPEN';
   source?: LeadSourceDto;
   followUp?: LeadFollowUpFilter;
   now: Date;
