@@ -33,7 +33,7 @@ describe('Pilot readiness critical screens', () => {
   // El Inicio se verifica renderizando sus paneles: components/dashboard/dashboard-panels.spec.tsx.
 
   it('no bloquea clases y tarifas si falla la consulta de caja durante el alta', () => {
-    const onboarding = read('./students/new/page.tsx');
+    const onboarding = read('../components/student-onboarding.tsx');
     expect(onboarding).toContain('const [classList, activeTariffs] = await Promise.all');
     const requiredOptionsLoad = onboarding.slice(
       onboarding.indexOf('const loadOptions'),

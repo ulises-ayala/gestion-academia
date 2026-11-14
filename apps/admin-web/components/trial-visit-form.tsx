@@ -7,7 +7,7 @@ import type {
   TrialVisitResultDto,
 } from '@academy/contracts';
 import Link from 'next/link';
-import React, { type FormEvent, useState } from 'react';
+import React, { type FormEvent, type ReactNode, useState } from 'react';
 import { ApiClientError, apiRequest } from '../lib/api-client';
 import { businessToday, dayMonthYear } from '../lib/dates';
 import { leadSourceLabels } from '../lib/leads';
@@ -22,6 +22,14 @@ const emptyForm = () => ({
   trialDate: businessToday(),
   notes: '',
 });
+type Field = keyof ReturnType<typeof emptyForm>;
+
+const Label = ({ children, optional }: Readonly<{ children: ReactNode; optional?: boolean }>) => (
+  <span className="field-label">
+    {children}
+    {optional && <span className="optional">Opcional</span>}
+  </span>
+);
 
 /**
  * Alguien viene a probar una clase gratis: queda como potencial alumno con esa prueba, sin ficha
@@ -30,14 +38,22 @@ const emptyForm = () => ({
 export function TrialVisitForm({
   classes,
   loadingClasses,
-}: Readonly<{ classes: readonly ClassDto[]; loadingClasses: boolean }>) {
+  onChanged,
+  onClose,
+}: Readonly<{
+  classes: readonly ClassDto[];
+  loadingClasses: boolean;
+  onChanged?: (() => void) | undefined;
+  /** En el popup: cierra en lugar de volver a Alumnos. */
+  onClose?: (() => void) | undefined;
+}>) {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [result, setResult] = useState<TrialVisitResultDto | null>(null);
 
-  const setField = (field: keyof ReturnType<typeof emptyForm>, value: string) => {
+  const setField = (field: Field, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
     setFieldErrors((current) => {
       const next = { ...current };
@@ -69,6 +85,7 @@ export function TrialVisitForm({
           body: JSON.stringify(body),
         }),
       );
+      onChanged?.();
     } catch (error) {
       if (error instanceof ApiClientError && error.field)
         setFieldErrors({ [error.field]: error.message });
@@ -81,11 +98,22 @@ export function TrialVisitForm({
     }
   }
 
+  const closeOrCancel = (label: string) =>
+    onClose ? (
+      <button className="secondary" type="button" onClick={onClose}>
+        {label}
+      </button>
+    ) : (
+      <Link className="button secondary" href="/students">
+        {label}
+      </Link>
+    );
+
   if (result)
     return (
       <section className="card onboarding-success">
         <p className="eyebrow">Clase de prueba registrada</p>
-        <h1>{result.lead.name} quedó como potencial alumno</h1>
+        <h2>{result.lead.name} quedó como potencial alumno</h2>
         <p>
           Probó {result.trialClass.academicClass.name} el{' '}
           {dayMonthYear(result.trialClass.trialDate)}. No se le genera cuota ni deuda.
@@ -108,6 +136,7 @@ export function TrialVisitForm({
           >
             Registrar otra prueba
           </button>
+          {onClose && closeOrCancel('Cerrar')}
         </div>
       </section>
     );
@@ -117,10 +146,10 @@ export function TrialVisitForm({
   return (
     <form className="onboarding-form" onSubmit={submit} noValidate>
       <section className="card">
-        <h2>Quién viene</h2>
-        <div className="student-form">
+        <h2 className="onboarding-section-title">Quién viene</h2>
+        <div className="trial-fields">
           <label>
-            Nombre
+            <Label>Nombre</Label>
             <input
               required
               aria-invalid={Boolean(fieldErrors.firstName)}
@@ -130,14 +159,14 @@ export function TrialVisitForm({
             {error('firstName')}
           </label>
           <label>
-            Apellido <span className="optional">Opcional</span>
+            <Label optional>Apellido</Label>
             <input
               value={form.lastName}
               onChange={(event) => setField('lastName', event.target.value)}
             />
           </label>
           <label>
-            Teléfono
+            <Label>Teléfono</Label>
             <input
               required
               inputMode="tel"
@@ -148,7 +177,7 @@ export function TrialVisitForm({
             {error('phone')}
           </label>
           <label>
-            Correo <span className="optional">Opcional</span>
+            <Label optional>Correo</Label>
             <input
               type="email"
               value={form.email}
@@ -156,7 +185,7 @@ export function TrialVisitForm({
             />
           </label>
           <label>
-            Cómo llegó
+            <Label>Cómo llegó</Label>
             <select
               value={form.source}
               onChange={(event) => setField('source', event.target.value)}
@@ -171,14 +200,16 @@ export function TrialVisitForm({
         </div>
       </section>
       <section className="card">
-        <h2>Clase de prueba</h2>
-        <p className="subtitle">
-          Es gratis y una sola vez por clase. Si quiere volver a la misma clase, tiene que
-          inscribirse y pagar.
-        </p>
-        <div className="student-form">
+        <div className="onboarding-section-head">
+          <h2>Clase de prueba</h2>
+          <p className="subtitle">
+            Es gratis y una sola vez por clase. Si quiere volver a la misma clase, tiene que
+            inscribirse y pagar.
+          </p>
+        </div>
+        <div className="trial-fields">
           <label>
-            Clase
+            <Label>Clase</Label>
             <select
               required
               aria-invalid={Boolean(fieldErrors.classId)}
@@ -196,7 +227,7 @@ export function TrialVisitForm({
             {error('classId')}
           </label>
           <label>
-            Día
+            <Label>Día</Label>
             <input
               type="date"
               max={businessToday()}
@@ -207,9 +238,10 @@ export function TrialVisitForm({
             {error('trialDate')}
           </label>
           <label className="wide">
-            Nota <span className="optional">Opcional</span>
+            <Label optional>Nota</Label>
             <input
               maxLength={500}
+              placeholder="Ej.: vino con una amiga, le interesa el turno noche"
               value={form.notes}
               onChange={(event) => setField('notes', event.target.value)}
             />
@@ -221,13 +253,11 @@ export function TrialVisitForm({
           {message}
         </p>
       )}
-      <div className="actions">
+      <div className="actions onboarding-actions">
         <button disabled={saving} type="submit">
           {saving ? 'Registrando…' : 'Registrar clase de prueba'}
         </button>
-        <Link className="button secondary" href="/leads">
-          Cancelar
-        </Link>
+        {closeOrCancel('Cancelar')}
       </div>
     </form>
   );

@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../../components/auth-provider';
 import { LeadForm } from '../../../components/lead-form';
+import { NewStudentDialog } from '../../../components/new-student-dialog';
 import { LeadTrialClasses } from '../../../components/lead-trial-classes';
 import { ApiClientError, apiRequest } from '../../../lib/api-client';
 import {
@@ -27,6 +28,7 @@ export default function LeadDetailPage() {
   const { can } = useAuth();
   const [lead, setLead] = useState<LeadDto | null>(null);
   const [editing, setEditing] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
   const [message, setMessage] = useState('');
   const load = useCallback(async () => {
     try {
@@ -65,9 +67,9 @@ export default function LeadDetailPage() {
             </Link>
           ) : (
             can('students:manage') && (
-              <Link className="button" href={`/students/new?leadId=${lead.id}`}>
+              <button onClick={() => setEnrolling(true)} type="button">
                 Inscribir como alumno
-              </Link>
+              </button>
             )
           )}
           <button className="secondary" onClick={() => setEditing((value) => !value)}>
@@ -75,6 +77,15 @@ export default function LeadDetailPage() {
           </button>
         </div>
       </div>
+      {enrolling && (
+        <NewStudentDialog
+          leadId={lead.id}
+          onClose={(changed) => {
+            setEnrolling(false);
+            if (changed) void load();
+          }}
+        />
+      )}
       {editing && (
         <section className="card">
           <LeadForm

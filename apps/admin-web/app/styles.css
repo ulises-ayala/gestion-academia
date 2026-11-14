@@ -3402,3 +3402,102 @@ dialog.generate-charge-dialog.cash-detail-dialog {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-normal);
 }
+/* Etiqueta de un campo con "Opcional" en la misma línea: los campos de una fila quedan parejos. */
+.field-label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.field-label .optional {
+  font-weight: var(--font-weight-normal);
+}
+.onboarding-section-title {
+  margin: 0 0 var(--space-4);
+}
+.onboarding-section-head {
+  display: grid;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+.onboarding-section-head h2,
+.onboarding-section-head p {
+  margin: 0;
+}
+/* Clase de prueba: dos columnas parejas. */
+.trial-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+@media (max-width: 40rem) {
+  .trial-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Popup de alta: el mismo formulario, sin tarjetas dentro de la tarjeta. */
+dialog.student-dialog {
+  width: min(56rem, calc(100% - 2rem));
+  margin: auto;
+  border-top: 3px solid var(--brand);
+  color: var(--text);
+  align-content: start;
+}
+dialog.student-dialog:not([open]) {
+  display: none;
+}
+dialog.student-dialog::backdrop {
+  background: var(--overlay);
+}
+.student-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.student-dialog-header h2 {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-title);
+}
+.student-dialog-header > button {
+  flex: none;
+}
+.student-dialog label {
+  display: grid;
+  gap: var(--space-1);
+  color: var(--text-secondary);
+}
+.student-dialog .onboarding-mode {
+  justify-self: start;
+  margin-bottom: 0;
+}
+.student-dialog :is(.onboarding-form > .card, .lead-picker, .onboarding-success) {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.student-dialog .onboarding-form > .card + .card {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+.student-dialog .lead-picker {
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+.student-dialog .onboarding-lead {
+  margin-bottom: 0;
+}
+.student-dialog .onboarding-success {
+  display: grid;
+  gap: var(--space-3);
+}
+.student-dialog .onboarding-actions {
+  justify-content: flex-end;
+}
+@media (max-width: 40rem) {
+  .student-dialog .student-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

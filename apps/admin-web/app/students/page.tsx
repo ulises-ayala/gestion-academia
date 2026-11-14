@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { type FormEvent, useCallback, useEffect, useState } from 'react';
+import { NewStudentDialog } from '../../components/new-student-dialog';
 import { StudentsNavigation } from '../../components/students-navigation';
 import { FilterToolbar, Pagination, Table, Tabs } from '../../components/ui/data-display';
 import { Badge, EmptyState, Skeleton } from '../../components/ui/feedback';
@@ -34,6 +35,7 @@ export default function StudentsPage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [adding, setAdding] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -69,11 +71,19 @@ export default function StudentsPage() {
         title="Alumnos"
         description={resultDescription}
         actions={
-          <Link className="button" href="/students/new">
+          <button onClick={() => setAdding(true)} type="button">
             Nuevo alumno
-          </Link>
+          </button>
         }
       />
+      {adding && (
+        <NewStudentDialog
+          onClose={(changed) => {
+            setAdding(false);
+            if (changed) void load();
+          }}
+        />
+      )}
       <Tabs aria-label="Secciones de alumnos">
         <StudentsNavigation active="all" />
       </Tabs>

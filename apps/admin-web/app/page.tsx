@@ -17,6 +17,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react';
 import { AdminShell } from '../components/admin-shell';
 import { BoardView } from '../components/board/board-view';
 import { CollectPaymentDialog } from '../components/collect-payment-dialog';
+import { NewStudentDialog } from '../components/new-student-dialog';
 import { useAuth } from '../components/auth-provider';
 import { FollowUpPanel } from '../components/dashboard/follow-up-panel';
 import { ManagementSection } from '../components/dashboard/management-section';
@@ -80,6 +81,7 @@ function Dashboard() {
   const now = useMinuteClock();
   const [state, setState] = useState<LoadState>({ data: null, error: '', refreshing: true });
   const [collecting, setCollecting] = useState(false);
+  const [addingStudent, setAddingStudent] = useState(false);
 
   const load = useCallback(async () => {
     setState((current) => ({ ...current, error: '', refreshing: true }));
@@ -187,7 +189,19 @@ function Dashboard() {
                 <div className="frequent-actions-list">
                   {quickActions.map(([label, href]) => {
                     const Icon = quickActionIcons[label];
-                    // Registrar pago abre el popup de cobro en el inicio, sin ir a Pagos.
+                    // Nuevo alumno y Registrar pago abren su popup en el inicio.
+                    if (label === 'Nuevo alumno')
+                      return (
+                        <button
+                          className="secondary frequent-action"
+                          key={label}
+                          type="button"
+                          onClick={() => setAddingStudent(true)}
+                        >
+                          {Icon && <Icon aria-hidden="true" size={16} strokeWidth={1.6} />}
+                          {label}
+                        </button>
+                      );
                     if (label === 'Registrar pago')
                       return (
                         <button
@@ -211,6 +225,14 @@ function Dashboard() {
               </section>
             )}
 
+            {addingStudent && (
+              <NewStudentDialog
+                onClose={(changed) => {
+                  setAddingStudent(false);
+                  if (changed) void load();
+                }}
+              />
+            )}
             {collecting && (
               <CollectPaymentDialog
                 onClose={(changed) => {
