@@ -3467,6 +3467,12 @@ dialog.student-dialog::backdrop {
   gap: var(--space-1);
   color: var(--text-secondary);
 }
+/* Los radios del pago inicial van en línea con su texto, como en la página. */
+.student-dialog .payment-options label {
+  display: flex;
+  gap: var(--space-2);
+  color: var(--text);
+}
 .student-dialog .onboarding-mode {
   justify-self: start;
   margin-bottom: 0;
