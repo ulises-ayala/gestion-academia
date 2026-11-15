@@ -3507,3 +3507,15 @@ dialog.student-dialog::backdrop {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+/* Inscripción inicial en el popup: aire entre el título, cada clase y sus datos. */
+.student-dialog .onboarding-classes {
+  margin-top: var(--space-4);
+}
+.student-dialog .enrollment-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+.student-dialog .enrollment-card .class-summary {
+  margin-top: calc(var(--space-2) * -1);
+}
