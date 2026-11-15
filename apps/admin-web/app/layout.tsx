@@ -16,6 +16,7 @@ import './payments.css';
 import './settlements.css';
 import './board/board.css';
 import './messages/messages.css';
+import './glass.css';
 import { AuthProvider } from '../components/auth-provider';
 import { Toaster } from 'sonner';
 import { GlobalLoadingIndicator } from '../components/global-loading-indicator';

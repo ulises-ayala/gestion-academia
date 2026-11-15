@@ -1,0 +1,110 @@
+/* Capa de aspecto: fondo con un resplandor del color de la marca, superficies translúcidas,
+   bordes finos y esquinas más amplias. Solo redefine tokens y el fondo de los contenedores;
+   no cambia tamaños, estructura ni comportamiento. Se importa última en layout.tsx. */
+:root {
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --border: rgb(28 25 23 / 9%);
+  --shadow-sm: 0 1px 2px rgb(28 25 23 / 4%), 0 12px 28px -18px rgb(28 25 23 / 18%);
+  --shadow-popover: 0 2px 6px rgb(28 25 23 / 6%), 0 18px 40px -12px rgb(28 25 23 / 18%);
+  --shadow-dialog: 0 4px 12px rgb(28 25 23 / 8%), 0 32px 64px -16px rgb(28 25 23 / 28%);
+  --glass: color-mix(in srgb, var(--surface) 58%, transparent);
+  --glass-strong: color-mix(in srgb, var(--surface) 86%, transparent);
+  --glass-edge: inset 0 1px 0 rgb(255 255 255 / 70%);
+  --glass-blur: blur(18px) saturate(1.5);
+  --page-glow:
+    radial-gradient(
+      60rem 36rem at 100% -8%,
+      color-mix(in srgb, var(--accent) 24%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      48rem 34rem at -6% 104%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 70%
+    );
+}
+:root[data-theme='dark'] {
+  --shadow-sm: none;
+  --glass: rgb(255 255 255 / 4.5%);
+  --glass-strong: color-mix(in srgb, var(--surface) 82%, transparent);
+  --glass-edge: inset 0 1px 0 rgb(255 255 255 / 6%);
+  --page-glow:
+    radial-gradient(
+      60rem 36rem at 100% -8%,
+      color-mix(in srgb, var(--accent-fill) 42%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      48rem 34rem at -6% 104%,
+      color-mix(in srgb, var(--accent-fill) 22%, transparent),
+      transparent 70%
+    );
+}
+
+/* El resplandor queda fijo: el contenido se desliza por encima. */
+body {
+  background: var(--page-glow), var(--bg);
+  background-attachment: fixed;
+}
+
+/* Contenedores de contenido: translúcidos, sin desenfoque (hay muchos por pantalla). */
+:is(
+  .card,
+  .attendance-filters,
+  .attendance-panel,
+  .attendance-empty,
+  .attendance-day-card,
+  .board-kpi,
+  .board-card,
+  .now-primary,
+  .now-alerts,
+  .day-figure,
+  .agenda-day,
+  .ui-table-wrap,
+  .cash-page .panel,
+  .settlement-totals article,
+  .billing-condition-card,
+  .msg-card,
+  .msg-situations
+):not(dialog, .modal, .modal *) {
+  background: var(--glass);
+  box-shadow: var(--glass-edge), var(--shadow-sm);
+}
+
+/* Barra lateral y barra superior: vidrio esmerilado, el fondo se adivina por detrás. */
+.sidebar,
+:root[data-theme='dark'] .sidebar {
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+.sidebar .sidebar-header,
+:root[data-theme='dark'] .sidebar .sidebar-header {
+  background: transparent;
+}
+.topbar,
+:root[data-theme='dark'] .topbar {
+  background: color-mix(in srgb, var(--background) 62%, transparent);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* Ventanas: el fondo se desenfoca y la ventana queda casi opaca para leer cómodo. */
+dialog::backdrop,
+.modal-backdrop {
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+dialog.modal,
+.modal-backdrop .modal {
+  border-color: var(--border);
+}
+
+/* En pantallas chicas la barra lateral tapa el contenido: más opaca. */
+@media (max-width: 63.999rem) {
+  .sidebar,
+  :root[data-theme='dark'] .sidebar {
+    background: var(--glass-strong);
+  }
+}
