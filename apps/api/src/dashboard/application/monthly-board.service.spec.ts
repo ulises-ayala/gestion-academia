@@ -30,6 +30,14 @@ const prismaMock = () => {
         return Promise.resolve([{ reason: 'NON_PAYMENT', count: 5n }]);
       if (text.includes('student_attendances'))
         return Promise.resolve([{ classId: 'c1', records: 10n, present: 8n }]);
+      if (text.includes('EXTRACT(DAY'))
+        return Promise.resolve([
+          { month: '2026-10', day: 3, amount: decimal('200') },
+          { month: '2026-10', day: 20, amount: decimal('300') },
+          { month: '2026-11', day: 2, amount: decimal('150') },
+          { month: '2026-11', day: 2, amount: decimal('50') },
+          { month: '2026-11', day: 9, amount: decimal('100') },
+        ]);
       if (text.includes('to_char'))
         return Promise.resolve([
           { month: '2026-10', amount: decimal('6700000') },
@@ -117,7 +125,7 @@ describe('MonthlyBoardService', () => {
     const board = await service(prisma).get(user('RECEPTION'), undefined, now);
     expect(board.month).toBe('2026-11');
     expect(board.inProgress).toBe(true);
-    expect(board.history).toHaveLength(6);
+    expect(board.history).toHaveLength(13);
     expect(board.history.at(-1)).toEqual({
       month: '2026-11',
       label: 'Noviembre 2026',
@@ -153,8 +161,26 @@ describe('MonthlyBoardService', () => {
       expect(board.history.at(-1)!.collected).toBe('7240000.00');
       expect(board.history[0]!.collected).toBe('0.00');
       expect(board.classes[0]).toMatchObject({ collected: '450.00', overdue: '90.00' });
+      // Acumulado hasta hoy (día 10) y el mes anterior completo.
+      expect(board.money!.pace.current).toEqual([
+        '0.00',
+        '200.00',
+        '200.00',
+        '200.00',
+        '200.00',
+        '200.00',
+        '200.00',
+        '200.00',
+        '300.00',
+        '300.00',
+      ]);
+      expect(board.money!.pace.previous).toHaveLength(31);
+      expect(board.money!.pace.previous[2]).toBe('200.00');
+      expect(board.money!.pace.previous.at(-1)).toBe('500.00');
+      expect(board.history[0]!.month).toBe('2025-11');
       expect(board.money).toEqual({
         overdueDebt: '640000.00',
+        pace: board.money!.pace,
         charges: {
           total: '1000.00',
           paidAmount: '780.00',
@@ -165,8 +191,13 @@ describe('MonthlyBoardService', () => {
           overdueCount: 1,
         },
         byMethod: [
-          { method: 'MERCADO_PAGO', label: 'Mercado Pago', amount: '300.00' },
-          { method: 'CASH', label: 'Efectivo', amount: '100.00' },
+          {
+            method: 'MERCADO_PAGO',
+            label: 'Mercado Pago',
+            amount: '300.00',
+            previousAmount: '300.00',
+          },
+          { method: 'CASH', label: 'Efectivo', amount: '100.00', previousAmount: '100.00' },
         ],
         byConcept: [
           { key: 'CHARGES', label: 'Cuotas', amount: '300.00' },

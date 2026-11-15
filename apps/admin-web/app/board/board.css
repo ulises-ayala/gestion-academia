@@ -1,9 +1,13 @@
-/* Tablero mensual. Dos series (altas/bajas) con colores validados para daltonismo; el resto de
-   las barras usa el acento y lleva nombre y valor a la vista. */
+/* Tablero mensual. Altas/bajas y medios de pago usan colores validados para daltonismo; las
+   líneas, el acento contra una referencia gris; las barras llevan nombre y valor a la vista. */
 .board-page,
 .reports-page {
   --board-in: #2a78d6;
   --board-out: #eb6834;
+  --board-third: #1baf7a;
+  --board-fourth: #eda100;
+  --board-line: var(--accent);
+  --board-line-muted: var(--border-strong);
   --board-bar: var(--accent-fill);
   --board-track: var(--surface-sunken);
   font-variant-numeric: tabular-nums;
@@ -15,6 +19,8 @@
 :root[data-theme='dark'] :is(.board-page, .reports-page) {
   --board-in: #3987e5;
   --board-out: #d95926;
+  --board-third: #199e70;
+  --board-fourth: #c98500;
   --board-bar: #c9607a;
 }
 .board-head {
@@ -203,44 +209,273 @@
   white-space: nowrap;
 }
 
-/* Columnas por mes */
-.board-columns {
+/* Gráficos de línea: el trazo en SVG; puntos, cruz y detalle en HTML para que no se deformen. */
+.board-chart {
   display: grid;
-  grid-auto-columns: minmax(0, 1fr);
-  grid-auto-flow: column;
-  gap: var(--space-3);
-  height: 11rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
 }
-.board-column {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: var(--space-1);
+.board-chart-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 11rem;
   color: var(--text-muted);
   font-size: var(--font-size-xs);
-  text-align: center;
+  line-height: 1;
+  text-align: right;
   white-space: nowrap;
 }
-.board-column.is-current {
+.board-chart-axis span:first-child {
+  transform: translateY(-50%);
+}
+.board-chart-axis span:nth-child(2) {
+  transform: none;
+}
+.board-chart-axis span:last-child {
+  transform: translateY(50%);
+}
+.board-chart-plot {
+  position: relative;
+  height: 11rem;
+  border-radius: var(--radius-sm);
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+.board-chart-plot:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 6px;
+}
+.board-chart-plot svg,
+.board-spark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.board-chart-grid,
+.board-chart-reference,
+.board-chart-line {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+.board-chart-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.board-chart-reference {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.board-chart-line {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.board-chart-line.is-main {
+  stroke: var(--board-line);
+}
+.board-chart-line.is-muted {
+  stroke: var(--board-line-muted);
+}
+.board-chart-area {
+  fill: color-mix(in srgb, var(--board-line) 10%, transparent);
+}
+.board-chart-reference-label {
+  position: absolute;
+  left: 0;
+  padding: 0 var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.2;
+  transform: translateY(calc(-100% - 3px));
+  white-space: nowrap;
+}
+.board-chart-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.board-chart-dot.is-main,
+.board-chart-tip i.is-main {
+  background: var(--board-line);
+}
+.board-chart-dot.is-muted,
+.board-chart-tip i.is-muted {
+  background: var(--board-line-muted);
+}
+.board-chart-cross {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-strong);
+  pointer-events: none;
+}
+.board-chart-tip {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  margin-left: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-popover);
+  font-size: var(--font-size-sm);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.board-chart-tip[hidden] {
+  display: none;
+}
+.board-chart-tip.is-left {
+  margin-left: calc(var(--space-3) * -1);
+  transform: translateX(-100%);
+}
+.board-chart-tip b {
+  font-weight: var(--font-weight-semibold);
+}
+.board-chart-tip span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+}
+.board-chart-tip i {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+.board-chart-tip strong {
+  margin-left: auto;
+  padding-left: var(--space-3);
   color: var(--text);
   font-weight: var(--font-weight-semibold);
 }
-.board-column-bars {
-  display: flex;
-  align-items: end;
-  justify-content: center;
-  gap: 2px;
-  border-bottom: 1px solid var(--border);
+.board-chart-x {
+  position: relative;
+  grid-column: 2;
+  height: 1rem;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1;
+  white-space: nowrap;
 }
-.board-column-bars i {
-  width: min(1.1rem, 40%);
+.board-chart-x span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+.board-chart-x .is-first {
+  transform: none;
+}
+.board-chart-x .is-last {
+  transform: translateX(-100%);
+}
+.board-chart .board-legend {
+  grid-column: 2;
+  margin-top: 0;
+}
+.board-legend-line {
+  width: 1rem !important;
+  height: 2px !important;
+}
+.board-legend-line.is-main {
+  background: var(--board-line);
+}
+.board-legend-line.is-muted {
+  background: var(--board-line-muted);
+}
+
+/* Mini tendencia de las tarjetas del resumen */
+.board-kpi-figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.board-spark {
+  position: relative;
+  flex: 0 1 4.5rem;
+  min-width: 2.5rem;
+  height: 1.5rem;
+  margin-right: 5px;
+}
+.board-spark .board-chart-dot {
+  left: 100%;
+  width: 8px;
+  height: 8px;
+}
+.board-pace-note {
+  margin: calc(var(--space-2) * -1) 0 var(--space-4);
+}
+.board-pace-note .board-delta {
+  display: inline;
+}
+
+/* Altas arriba y bajas abajo de la misma línea */
+.board-diverging {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+.board-diverging-column {
+  display: grid;
+  gap: 0;
+}
+.board-diverging-up,
+.board-diverging-down {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 5rem;
+  gap: 2px;
+}
+.board-diverging-up {
+  justify-content: flex-end;
+  border-bottom: 1px solid var(--border-strong);
+}
+.board-diverging i {
+  width: min(1.75rem, 60%);
+  flex: none;
+  max-height: calc(100% - 1rem);
+}
+.board-diverging-up i {
   border-radius: 4px 4px 0 0;
 }
-.board-column-bars .is-solo {
-  width: min(2rem, 60%);
-  background: var(--board-bar);
+.board-diverging-down i {
+  border-radius: 0 0 4px 4px;
 }
-.board-column:not(.is-current) .is-solo {
-  opacity: 0.45;
+.board-diverging-month {
+  margin-top: var(--space-1);
+}
+.board-diverging b {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+.board-diverging b.is-good {
+  color: var(--success);
+}
+.board-diverging b.is-bad {
+  color: var(--destructive);
+}
+.board-diverging-column.is-current .board-diverging-month {
+  color: var(--text);
+  font-weight: var(--font-weight-semibold);
 }
 .board-page .is-in {
   background: var(--board-in);
@@ -250,7 +485,8 @@
 }
 .board-legend {
   display: flex;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
   margin-top: var(--space-3);
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
@@ -259,6 +495,74 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+}
+
+/* Medios de pago: un color fijo por medio (validados para daltonismo), con nombre e importe al lado. */
+.board-page [data-method='CASH'] {
+  --board-method: var(--board-in);
+}
+.board-page [data-method='MERCADO_PAGO'] {
+  --board-method: var(--board-out);
+}
+.board-page [data-method='TRANSFER'] {
+  --board-method: var(--board-third);
+}
+.board-page [data-method='CARD'] {
+  --board-method: var(--board-fourth);
+}
+.board-segments {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.board-segments div {
+  display: flex;
+  gap: 2px;
+  height: 1rem;
+}
+.board-segments.is-thin div {
+  height: 0.375rem;
+}
+.board-segments i {
+  min-width: 3px;
+  border-radius: 3px;
+  background: var(--board-method);
+}
+.board-methods {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.board-methods li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+}
+.board-methods i {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 2px;
+  background: var(--board-method);
+}
+.board-methods b {
+  font-weight: var(--font-weight-medium);
+}
+.board-methods em {
+  color: var(--text-secondary);
+  font-style: normal;
+  white-space: nowrap;
+}
+.board-methods small {
+  grid-column: 2 / -1;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
 }
 
 /* Barras horizontales */

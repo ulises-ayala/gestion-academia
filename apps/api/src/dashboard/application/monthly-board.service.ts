@@ -6,12 +6,35 @@ import { hasPermissions } from '../../auth/domain/permissions';
 import { PrismaService } from '../../database/prisma.service';
 import { debtCtes } from '../../reports/application/reports.service';
 import { CONCEPT_LABELS } from '../../reports/domain/report-pdf';
-import { END_REASON_LABELS, boardMonth, boardMonths, percentOf } from '../domain/monthly-board';
+import {
+  type BoardMonth,
+  END_REASON_LABELS,
+  boardMonth,
+  boardMonths,
+  percentOf,
+} from '../domain/monthly-board';
 import { businessDayAt } from './business-day';
 import { PAYMENT_METHOD_LABELS } from '../../shared/domain/format';
 
 const timeZone = () => process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
 const zero = () => new Prisma.Decimal(0);
+/** Meses de historia: el consultado, los 11 anteriores y el mismo mes del año pasado. */
+const HISTORY_MONTHS = 13;
+const dayOf = (date: string) => Number(date.slice(8));
+
+/** Acumulado día por día (del 1 al `days`) de lo cobrado en un mes. */
+const cumulativeByDay = (
+  rows: readonly Readonly<{ month: string; day: number; amount: Prisma.Decimal }>[],
+  month: string,
+  days: number,
+) => {
+  let total = zero();
+  return Array.from({ length: days }, (_, index) => {
+    for (const row of rows)
+      if (row.month === month && row.day === index + 1) total = total.plus(row.amount);
+    return total.toFixed(2);
+  });
+};
 
 type MovementRow = Readonly<{
   month: string;
@@ -47,7 +70,7 @@ export class MonthlyBoardService {
 
   async get(user: PublicAuthUser, monthValue: string | undefined, now: Date) {
     const today = businessDayAt(now, timeZone()).date;
-    const months = boardMonths(boardMonth(monthValue, today), today);
+    const months = boardMonths(boardMonth(monthValue, today), today, HISTORY_MONTHS);
     const selected = months.at(-1)!;
     const previous = months.at(-2)!;
     const withMoney = hasPermissions(user, ['reports:operational']);
@@ -153,7 +176,7 @@ export class MonthlyBoardService {
     ]);
 
     const money = withMoney
-      ? await this.money(months[0]!.fromDate, selected, today, instant, paidInMonth)
+      ? await this.money(months[0]!.fromDate, selected, previous, today, instant, paidInMonth)
       : null;
     const amountFor = (rows: readonly ClassAmountRow[] | undefined, classId: string) =>
       rows?.find((row) => row.classId === classId)?.amount ?? zero();
@@ -220,6 +243,7 @@ export class MonthlyBoardService {
         money: {
           overdueDebt: (overdueRows[0]?.amount ?? zero()).toFixed(2),
           charges: money.charges,
+          pace: money.pace,
           byMethod: money.byMethod,
           byConcept: money.byConcept,
         },
@@ -230,23 +254,34 @@ export class MonthlyBoardService {
 
   private async money(
     historyFromDate: string,
-    selected: Readonly<{ fromDate: string; toDate: string; nextDate: string }>,
+    selected: BoardMonth,
+    previous: BoardMonth,
     today: string,
     instant: (date: string) => Date,
     paidInMonth: Prisma.PaymentWhereInput,
   ) {
     const monthStart = instant(selected.fromDate);
     const monthEnd = instant(selected.nextDate);
-    const [collected, chargeRows, tenders, concepts, collectedByClass, singles, overdueByClass] =
-      await Promise.all([
-        this.prisma.$queryRaw<{ month: string; amount: Prisma.Decimal }[]>(Prisma.sql`
+    const previousStart = instant(previous.fromDate);
+    const [
+      collected,
+      chargeRows,
+      tenders,
+      concepts,
+      collectedByClass,
+      singles,
+      overdueByClass,
+      daily,
+      previousTenders,
+    ] = await Promise.all([
+      this.prisma.$queryRaw<{ month: string; amount: Prisma.Decimal }[]>(Prisma.sql`
           SELECT to_char(paid_at AT TIME ZONE ${timeZone()}, 'YYYY-MM') AS month,
             SUM(amount) AS amount
           FROM payments
           WHERE status = 'CONFIRMED' AND paid_at >= ${instant(historyFromDate)}
             AND paid_at < ${monthEnd}
           GROUP BY 1`),
-        this.prisma.$queryRaw<MonthChargesRow[]>(Prisma.sql`${debtCtes(today)}
+      this.prisma.$queryRaw<MonthChargesRow[]>(Prisma.sql`${debtCtes(today)}
           SELECT COALESCE(SUM(paid), 0) AS "paidAmount",
             COUNT(*) FILTER (WHERE outstanding = 0)::bigint AS "paidCount",
             COALESCE(SUM(outstanding) FILTER (WHERE due_date >= ${today}::date), 0)
@@ -260,18 +295,18 @@ export class MonthlyBoardService {
           FROM open_charges
           WHERE kind = 'MONTHLY'
             AND period BETWEEN ${selected.fromDate}::date AND ${selected.toDate}::date`),
-        this.prisma.paymentTender.groupBy({
-          by: ['method'],
-          where: { payment: paidInMonth },
-          _sum: { amount: true },
-        }),
-        this.prisma.payment.groupBy({
-          by: ['kind', 'concept', 'conceptId'],
-          where: paidInMonth,
-          _sum: { amount: true },
-        }),
-        // Lo imputado a cuotas de cada clase por pagos del mes (criterio de caja).
-        this.prisma.$queryRaw<ClassAmountRow[]>(Prisma.sql`
+      this.prisma.paymentTender.groupBy({
+        by: ['method'],
+        where: { payment: paidInMonth },
+        _sum: { amount: true },
+      }),
+      this.prisma.payment.groupBy({
+        by: ['kind', 'concept', 'conceptId'],
+        where: paidInMonth,
+        _sum: { amount: true },
+      }),
+      // Lo imputado a cuotas de cada clase por pagos del mes (criterio de caja).
+      this.prisma.$queryRaw<ClassAmountRow[]>(Prisma.sql`
           SELECT e.class_id AS "classId", SUM(pa.amount) AS amount
           FROM payment_allocations pa
           JOIN payments p ON p.id = pa.payment_id AND p.status = 'CONFIRMED'
@@ -279,17 +314,32 @@ export class MonthlyBoardService {
           JOIN monthly_charges mc ON mc.id = pa.monthly_charge_id
           JOIN enrollments e ON e.id = mc.enrollment_id
           GROUP BY e.class_id`),
-        this.prisma.payment.groupBy({
-          by: ['classId'],
-          where: { ...paidInMonth, concept: 'SINGLE_CLASS', classId: { not: null } },
-          _sum: { amount: true },
-        }),
-        this.prisma.$queryRaw<ClassAmountRow[]>(Prisma.sql`${debtCtes(today)}
+      this.prisma.payment.groupBy({
+        by: ['classId'],
+        where: { ...paidInMonth, concept: 'SINGLE_CLASS', classId: { not: null } },
+        _sum: { amount: true },
+      }),
+      this.prisma.$queryRaw<ClassAmountRow[]>(Prisma.sql`${debtCtes(today)}
           SELECT e.class_id AS "classId", SUM(oc.outstanding) AS amount
           FROM open_charges oc JOIN enrollments e ON e.id = oc.enrollment_id
           WHERE oc.outstanding > 0 AND oc.due_date < ${today}::date
           GROUP BY e.class_id`),
-      ]);
+      // Lo cobrado cada día del mes consultado y del anterior, para comparar el ritmo.
+      this.prisma.$queryRaw<{ month: string; day: number; amount: Prisma.Decimal }[]>(Prisma.sql`
+          SELECT to_char(paid_at AT TIME ZONE ${timeZone()}, 'YYYY-MM') AS month,
+            EXTRACT(DAY FROM paid_at AT TIME ZONE ${timeZone()})::int AS day,
+            SUM(amount) AS amount
+          FROM payments
+          WHERE status = 'CONFIRMED' AND paid_at >= ${previousStart} AND paid_at < ${monthEnd}
+          GROUP BY 1, 2`),
+      this.prisma.paymentTender.groupBy({
+        by: ['method'],
+        where: {
+          payment: { status: 'CONFIRMED', paidAt: { gte: previousStart, lt: monthStart } },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
     const conceptIds = concepts.flatMap((row) => (row.conceptId ? [row.conceptId] : []));
     const catalog = conceptIds.length
       ? await this.prisma.paymentConcept.findMany({
@@ -330,13 +380,24 @@ export class MonthlyBoardService {
         overdueAmount: overdueAmount.toFixed(2),
         overdueCount: Number(charges?.overdueCount ?? 0),
       },
+      // Hasta hoy si el mes está en curso; el anterior, completo.
+      pace: {
+        current: cumulativeByDay(daily, selected.month, dayOf(selected.refDate)),
+        previous: cumulativeByDay(daily, previous.month, dayOf(previous.toDate)),
+      },
       byMethod: sorted(
         tenders.map((row) => ({
           method: row.method as PaymentMethodDto,
           label: PAYMENT_METHOD_LABELS[row.method as PaymentMethodDto],
           amount: row._sum.amount ?? zero(),
         })),
-      ).map((row) => ({ ...row, amount: row.amount.toFixed(2) })),
+      ).map((row) => ({
+        ...row,
+        amount: row.amount.toFixed(2),
+        previousAmount: (
+          previousTenders.find((item) => item.method === row.method)?._sum.amount ?? zero()
+        ).toFixed(2),
+      })),
       byConcept: sorted([...byConcept.values()]).map((row) => ({
         ...row,
         amount: row.amount.toFixed(2),

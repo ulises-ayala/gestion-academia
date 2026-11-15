@@ -7,11 +7,17 @@ import {
   barWidth,
   classOccupancy,
   countDelta,
+  paceComparison,
   shareOf,
+  shareShift,
 } from '../../lib/board';
+import { DivergingColumns, LineChart, SegmentBar, Sparkline } from './charts';
 import { compactMoney } from '../../lib/money';
 
 type History = MonthlyBoardDto['history'][number];
+const monthName = (label: string) => label.split(' ')[0]!.toLowerCase();
+/** "Nov 25": el mes corto con el año, para el eje de los gráficos. */
+const axisMonth = (item: History) => `${item.shortLabel} ${item.month.slice(2, 4)}`;
 const amount = (value: string | undefined) => compactMoney(Number(value ?? 0));
 
 export function Kpi({
@@ -19,14 +25,29 @@ export function Kpi({
   value,
   delta,
   note,
-}: Readonly<{ label: string; value: ReactNode; delta?: Delta | null; note: string }>) {
+  trend,
+  yearAgo,
+}: Readonly<{
+  label: string;
+  value: ReactNode;
+  delta?: Delta | null;
+  note: string;
+  /** Valores mes a mes hasta el consultado, para la mini tendencia. */
+  trend?: readonly number[];
+  /** El mismo mes del año anterior, ya formateado. */
+  yearAgo?: string | null | undefined;
+}>) {
   return (
     <div className="board-kpi">
       <span>{label}</span>
-      <strong>{value}</strong>
+      <div className="board-kpi-figure">
+        <strong>{value}</strong>
+        {trend && <Sparkline values={trend} />}
+      </div>
       <p className={`board-delta${delta ? ` is-${delta.tone}` : ''}`}>
         {delta && <b>{delta.text}</b>} {note}
       </p>
+      {yearAgo && <p className="board-delta">Hace un año: {yearAgo}</p>}
     </div>
   );
 }
@@ -43,60 +64,6 @@ function Card({
       <p className="board-card-copy">{description}</p>
       {children}
     </section>
-  );
-}
-
-/** Columnas por mes: una o dos series, con el valor arriba y el mes consultado resaltado. */
-function MonthColumns({
-  history,
-  series,
-  summary,
-}: Readonly<{
-  history: readonly History[];
-  series: readonly Readonly<{
-    name: string;
-    className: string;
-    value(item: History): number;
-    format(value: number): string;
-  }>[];
-  summary: string;
-}>) {
-  const maximum = Math.max(...history.flatMap((item) => series.map((one) => one.value(item))), 0);
-  if (maximum === 0) return <p className="board-empty">Todavía no hay datos en estos meses.</p>;
-  return (
-    <>
-      <div aria-label={summary} className="board-columns" role="img">
-        {history.map((item, index) => (
-          <div
-            className={`board-column${index === history.length - 1 ? ' is-current' : ''}`}
-            key={item.month}
-          >
-            <span>{series.map((one) => one.format(one.value(item))).join(' · ')}</span>
-            <div className="board-column-bars">
-              {series.map((one) => (
-                <i
-                  className={one.className}
-                  key={one.name}
-                  style={{ height: `${barWidth(one.value(item), maximum)}%` }}
-                  title={`${item.label} · ${one.name}: ${one.format(one.value(item))}`}
-                />
-              ))}
-            </div>
-            <span>{item.shortLabel}</span>
-          </div>
-        ))}
-      </div>
-      {series.length > 1 && (
-        <div className="board-legend">
-          {series.map((one) => (
-            <span key={one.name}>
-              <i className={one.className} />
-              {one.name}
-            </span>
-          ))}
-        </div>
-      )}
-    </>
   );
 }
 
@@ -129,8 +96,31 @@ export function Bars({
 export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
   const current = data.history.at(-1)!;
   const previous = data.history.at(-2)!;
-  const against = `vs. ${previous.label.split(' ')[0]!.toLowerCase()}`;
   const { money, leads } = data;
+  const against = `vs. ${monthName(previous.label)}`;
+  // Los meses sin ningún dato del principio (antes de usar el sistema) no se grafican.
+  const firstWithData = data.history.findIndex(
+    (item) => item.activeStudents > 0 || item.newStudents > 0 || Number(item.collected ?? 0) > 0,
+  );
+  const shown = data.history.slice(
+    Math.min(firstWithData < 0 ? data.history.length : firstWithData, data.history.length - 2),
+  );
+  const yearAgo = data.history.length === 13 && firstWithData === 0 ? data.history[0]! : null;
+  const monthTicks = shown.flatMap((item, index) =>
+    (shown.length - 1 - index) % (shown.length > 7 ? 3 : 1) === 0
+      ? [{ index, label: axisMonth(item) }]
+      : [],
+  );
+  // En el detalle de los gráficos, el mes que no terminó lo dice.
+  const monthLabels = shown.map((item) =>
+    item === current && data.inProgress ? `${item.label} (en curso)` : item.label,
+  );
+  const spanLabel = shown.length >= 12 ? 'último año' : `últimos ${shown.length} meses`;
+  const pace = money ? paceComparison(money.pace.current, money.pace.previous) : null;
+  const paceDays = money ? Math.max(money.pace.current.length, money.pace.previous.length) : 0;
+  const earlier = shown.slice(0, -1).map((item) => Number(item.collected ?? 0));
+  const average = earlier.length ? earlier.reduce((sum, one) => sum + one, 0) / earlier.length : 0;
+  const previousCollected = Number(previous.collected ?? 0);
   const charges = money?.charges;
   const chargesTotal = Number(charges?.total ?? 0);
   const paidShare = charges ? shareOf(Number(charges.paidAmount), chargesTotal) : null;
@@ -148,18 +138,22 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
           delta={countDelta(current.activeStudents, previous.activeStudents, true)}
           label="Alumnos activos"
           note={against}
+          trend={shown.map((item) => item.activeStudents)}
           value={current.activeStudents}
+          yearAgo={yearAgo && String(yearAgo.activeStudents)}
         />
         <Kpi
           delta={countDelta(current.newStudents, previous.newStudents, true)}
           label="Altas"
           note={against}
+          trend={shown.map((item) => item.newStudents)}
           value={current.newStudents}
         />
         <Kpi
           delta={countDelta(current.dropped, previous.dropped, false)}
           label="Bajas"
           note={against}
+          trend={shown.map((item) => item.dropped)}
           value={current.dropped}
         />
         {money ? (
@@ -168,7 +162,9 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
               delta={amountDelta(current.collected ?? '0', previous.collected ?? '0')}
               label="Recaudado"
               note={against}
+              trend={shown.map((item) => Number(item.collected ?? 0))}
               value={amount(current.collected)}
+              yearAgo={yearAgo && amount(yearAgo.collected)}
             />
             <Kpi
               label="Deuda vencida hoy"
@@ -186,11 +182,71 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
       </section>
 
       <div className="board-grid">
-        {charges && (
+        {money && pace && (
           <Card
             className="board-span-7"
+            description={`Lo cobrado acumulado día por día, contra ${monthName(previous.label)}.`}
+            title="Ritmo de cobro"
+          >
+            <p className="board-hero">
+              <strong>{compactMoney(pace.current)}</strong>
+              <span>{data.inProgress ? `cobrado al día ${pace.day}` : 'cobrado en el mes'}</span>
+            </p>
+            <p className="board-pace-note">
+              {(() => {
+                const delta = amountDelta(String(pace.current), String(pace.previousSameDay));
+                return delta ? (
+                  <span className={`board-delta is-${delta.tone}`}>
+                    <b>{delta.text}</b> vs. {monthName(previous.label)}
+                    {data.inProgress ? ' al mismo día' : ''} ({compactMoney(pace.previousSameDay)}).
+                  </span>
+                ) : (
+                  <span className="board-delta">
+                    En {monthName(previous.label)} no había cobros{' '}
+                    {data.inProgress ? 'a esta altura' : ''} para comparar.
+                  </span>
+                );
+              })()}
+              {data.inProgress && pace.previousTotal > 0 && (
+                <span className="board-delta">
+                  {' '}
+                  {previous.label.split(' ')[0]} cerró en {compactMoney(pace.previousTotal)}.
+                </span>
+              )}
+            </p>
+            <LineChart
+              format={compactMoney}
+              fromZero
+              labels={Array.from({ length: paceDays }, (_, index) => `Día ${index + 1}`)}
+              series={[
+                {
+                  name: data.label.split(' ')[0]!,
+                  tone: 'main',
+                  values: Array.from({ length: paceDays }, (_, index) =>
+                    index < money.pace.current.length ? Number(money.pace.current[index]) : null,
+                  ),
+                },
+                {
+                  name: previous.label.split(' ')[0]!,
+                  tone: 'muted',
+                  values: Array.from({ length: paceDays }, (_, index) =>
+                    index < money.pace.previous.length ? Number(money.pace.previous[index]) : null,
+                  ),
+                },
+              ]}
+              summary={`Cobrado acumulado por día: ${data.label} lleva ${compactMoney(pace.current)} al día ${pace.day}; ${previous.label} llevaba ${compactMoney(pace.previousSameDay)}.`}
+              ticks={[1, 5, 10, 15, 20, 25, 30]
+                .filter((day) => day <= paceDays)
+                .map((day) => ({ index: day - 1, label: String(day) }))}
+            />
+          </Card>
+        )}
+
+        {charges && (
+          <Card
+            className="board-span-5"
             description="Cuánto de lo que había que cobrar por las cuotas de este mes ya entró."
-            title={`Cobranza de las cuotas de ${data.label.split(' ')[0]!.toLowerCase()}`}
+            title={`Cobranza de las cuotas de ${monthName(data.label)}`}
           >
             {chargesTotal === 0 ? (
               <p className="board-empty">No hay cuotas generadas para este mes.</p>
@@ -256,54 +312,127 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
         )}
 
         {money && (
-          <Card
-            className="board-span-5"
-            description="Todo lo cobrado por mes, últimos 6 meses."
-            title="Recaudación"
-          >
-            <MonthColumns
-              history={data.history}
-              series={[
-                {
-                  name: 'Recaudado',
-                  className: 'is-solo',
-                  value: (item) => Number(item.collected ?? 0),
-                  format: compactMoney,
-                },
-              ]}
-              summary={`Recaudación de los últimos 6 meses; ${current.label}: ${amount(current.collected)}`}
-            />
-          </Card>
+          <>
+            <Card
+              className="board-span-7"
+              description={`Todo lo cobrado por mes, ${spanLabel}. La línea punteada es el promedio de los meses anteriores.`}
+              title="Recaudación por mes"
+            >
+              <LineChart
+                format={compactMoney}
+                fromZero
+                labels={monthLabels}
+                reference={
+                  average > 0
+                    ? { value: average, label: `Promedio ${compactMoney(average)}` }
+                    : undefined
+                }
+                series={[
+                  {
+                    name: 'Recaudado',
+                    tone: 'main',
+                    values: shown.map((item) => Number(item.collected ?? 0)),
+                  },
+                ]}
+                summary={`Recaudación por mes, ${spanLabel}; ${current.label}: ${amount(current.collected)}.`}
+                ticks={monthTicks}
+              />
+            </Card>
+            <Card
+              className="board-span-5"
+              description={`Cómo pagaron en el mes y cómo cambió contra ${monthName(previous.label)}.`}
+              title="Por medio de pago"
+            >
+              {money.byMethod.length === 0 ? (
+                <p className="board-empty">No hubo cobros este mes ni el anterior.</p>
+              ) : (
+                <>
+                  <SegmentBar
+                    label={current.shortLabel}
+                    segments={money.byMethod.map((item) => ({
+                      key: item.method,
+                      value: Number(item.amount),
+                    }))}
+                  />
+                  {previousCollected > 0 && (
+                    <SegmentBar
+                      label={previous.shortLabel}
+                      segments={money.byMethod.map((item) => ({
+                        key: item.method,
+                        value: Number(item.previousAmount),
+                      }))}
+                      thin
+                    />
+                  )}
+                  <ul className="board-methods">
+                    {money.byMethod.map((item) => {
+                      const share = shareOf(Number(item.amount), collectedTotal);
+                      const shift = shareShift(
+                        share,
+                        shareOf(Number(item.previousAmount), previousCollected),
+                      );
+                      return (
+                        <li key={item.method}>
+                          <i data-method={item.method} />
+                          <b>{item.label}</b>
+                          <em>
+                            {amount(item.amount)} · {share ?? 0} %
+                          </em>
+                          {shift && (
+                            <small>
+                              {shift} vs. {monthName(previous.label)}
+                            </small>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </Card>
+          </>
         )}
 
         <Card
-          className="board-span-6"
-          description="Alumnos que empezaron y que dejaron, últimos 6 meses."
-          title="Altas y bajas"
+          className="board-span-7"
+          description={`Alumnos con una inscripción vigente al cierre de cada mes, ${spanLabel}.`}
+          title="Alumnos activos"
         >
-          <MonthColumns
-            history={data.history}
+          <LineChart
+            format={String}
+            labels={monthLabels}
             series={[
               {
-                name: 'Altas',
-                className: 'is-in',
-                value: (item) => item.newStudents,
-                format: String,
-              },
-              {
-                name: 'Bajas',
-                className: 'is-out',
-                value: (item) => item.dropped,
-                format: String,
+                name: 'Alumnos activos',
+                tone: 'main',
+                values: shown.map((item) => item.activeStudents),
               },
             ]}
-            summary={`Altas y bajas de los últimos 6 meses; ${current.label}: ${current.newStudents} altas y ${current.dropped} bajas`}
+            summary={`Alumnos activos por mes, ${spanLabel}; ${current.label}: ${current.activeStudents}.`}
+            ticks={monthTicks}
           />
         </Card>
 
         <Card
-          className="board-span-6"
-          description={`Motivo de las bajas de ${data.label.split(' ')[0]!.toLowerCase()}.`}
+          className="board-span-5"
+          description="Los que empezaron, hacia arriba; los que dejaron, hacia abajo. Últimos 6 meses."
+          title="Altas y bajas"
+        >
+          <DivergingColumns
+            items={shown.slice(-6).map((item) => ({
+              key: item.month,
+              label: item.shortLabel,
+              title: item.label,
+              up: item.newStudents,
+              down: item.dropped,
+            }))}
+            summary={`Altas y bajas de los últimos meses; ${current.label}: ${current.newStudents} altas y ${current.dropped} bajas.`}
+          />
+        </Card>
+
+        <Card
+          className="board-span-4"
+          description={`Motivo de las bajas de ${monthName(data.label)}.`}
           title="Por qué se van"
         >
           <Bars
@@ -400,21 +529,6 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
           <>
             <Card
               className="board-span-4"
-              description="Cómo pagaron en el mes."
-              title="Por medio de pago"
-            >
-              <Bars
-                empty="No hubo cobros este mes."
-                items={money.byMethod.map((item) => ({
-                  key: item.method,
-                  label: item.label,
-                  value: Number(item.amount),
-                  text: `${amount(item.amount)} · ${shareOf(Number(item.amount), collectedTotal) ?? 0} %`,
-                }))}
-              />
-            </Card>
-            <Card
-              className="board-span-4"
               description="De dónde vino la plata."
               title="Por concepto"
             >
@@ -432,7 +546,7 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
         )}
 
         <Card
-          className={money ? 'board-span-4' : 'board-span-6'}
+          className="board-span-4"
           description="De las consultas cargadas en el mes, cuántas llegaron a inscribirse."
           title="Potenciales alumnos"
         >
@@ -465,7 +579,7 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
 
         {!money && (
           <Card
-            className="board-span-6"
+            className="board-span-4"
             description="Lo que este tablero deja a la vista."
             title="Para hacer"
           >

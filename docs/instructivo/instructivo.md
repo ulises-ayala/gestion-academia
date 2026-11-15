@@ -41,7 +41,7 @@ Al entrar se ve el día (pestaña **Hoy**): lo primero que hay que hacer, los de
 
 En **Inicio → Este mes** se ve cómo viene la academia mes a mes. Con las flechas de arriba a la derecha se cambia de mes; todo se compara con el mes anterior.
 
-- **Alumnos activos, altas y bajas**, con los últimos 6 meses y el motivo de las bajas.
+- **Alumnos activos, altas y bajas**, con la evolución del último año, el mismo mes del año pasado y el motivo de las bajas.
 - **Clases:** cuántos inscriptos tiene cada una sobre su cupo (marca las de ocupación **Baja** y las **Completas**), sus altas y bajas y la asistencia del mes.
 - **Potenciales alumnos:** de las consultas cargadas en el mes, cuántas hicieron la clase de prueba y cuántas se inscribieron.
 - **Para hacer:** accesos a los alumnos con cuotas vencidas, a los potenciales sin inscribir y a las clases con lugar.

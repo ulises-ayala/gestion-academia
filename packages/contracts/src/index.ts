@@ -1410,7 +1410,7 @@ export type MonthlyBoardDto = Readonly<{
   month: string;
   label: string;
   inProgress: boolean;
-  /** Seis meses hasta el consultado, del más viejo al más nuevo. */
+  /** Trece meses hasta el consultado (el primero es el mismo mes del año anterior). */
   history: readonly Readonly<{
     month: string;
     label: string;
@@ -1460,7 +1460,18 @@ export type MonthlyBoardDto = Readonly<{
       overdueAmount: string;
       overdueCount: number;
     }>;
-    byMethod: readonly Readonly<{ method: PaymentMethodDto; label: string; amount: string }>[];
+    /**
+     * Lo cobrado acumulado día por día (posición 0 = día 1): el mes consultado hasta hoy y el
+     * anterior completo.
+     */
+    pace: Readonly<{ current: readonly string[]; previous: readonly string[] }>;
+    /** `previousAmount`: lo cobrado por ese medio el mes anterior. */
+    byMethod: readonly Readonly<{
+      method: PaymentMethodDto;
+      label: string;
+      amount: string;
+      previousAmount: string;
+    }>[];
     byConcept: readonly Readonly<{ key: string; label: string; amount: string }>[];
   }>;
 }>;

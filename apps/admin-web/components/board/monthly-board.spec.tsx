@@ -66,9 +66,18 @@ const boardFixture = (withMoney: boolean): MonthlyBoardDto => ({
         overdueAmount: '640000.00',
         overdueCount: 16,
       },
+      pace: {
+        current: ['400000', '900000', '1500000', '2100000', '2600000'],
+        previous: ['300000', '700000', '1200000', '1900000', '2400000', '6700000'],
+      },
       byMethod: [
-        { method: 'MERCADO_PAGO', label: 'Mercado Pago', amount: '3100000.00' },
-        { method: 'CASH', label: 'Efectivo', amount: '2460000.00' },
+        {
+          method: 'MERCADO_PAGO',
+          label: 'Mercado Pago',
+          amount: '3100000.00',
+          previousAmount: '2680000.00',
+        },
+        { method: 'CASH', label: 'Efectivo', amount: '2460000.00', previousAmount: '4020000.00' },
       ],
       byConcept: [{ key: 'CHARGES', label: 'Cuotas', amount: '6120000.00' }],
     },
@@ -84,6 +93,13 @@ describe('MonthlyBoard', () => {
     expect(html).toContain('Cobranza de las cuotas de noviembre');
     expect(html).toContain('78 %');
     expect(html).toContain('Por medio de pago');
+    expect(html).toContain('Ritmo de cobro');
+    expect(html).toContain('cobrado al día 5');
+    expect(html).toContain('▲ 8,3 %');
+    expect(html).toContain('Octubre cerró en $6,7 M.');
+    expect(html).toContain('▲ 3 pts vs. octubre');
+    expect(html).toContain('Recaudación por mes');
+    expect(html).toContain('Promedio $5,7 M');
     expect(html).toContain('Recaudado');
     expect(html).toMatch(/Kizomba inicial[\s\S]*Baja[\s\S]*Bachata intermedio[\s\S]*Completa/);
     expect(html).toContain('Se inscribió el 34 % de las consultas. El mes anterior, 28 %.');
@@ -95,7 +111,10 @@ describe('MonthlyBoard', () => {
     expect(html).toContain('Alumnos con cuotas vencidas');
     expect(html).toContain('Para hacer');
     expect(html).toContain('Altas y bajas');
-    expect(html).not.toMatch(/Recaudado|Cobranza|Por medio de pago|Por concepto|Vencido|\$/);
+    expect(html).toContain('Alumnos activos por mes');
+    expect(html).not.toMatch(
+      /Recaudado|Cobranza|Ritmo de cobro|Por medio de pago|Por concepto|Vencido|\$/,
+    );
   });
 
   it('avisa cuando el mes no tiene datos', () => {
