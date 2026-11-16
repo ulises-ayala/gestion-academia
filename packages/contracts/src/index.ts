@@ -811,9 +811,13 @@ export type SavePaymentConceptDto = Readonly<{
 export type WalkInDto = Readonly<{ name: string; phone: string | null; dni: string | null }>;
 
 export type CreateOtherPaymentDto = Readonly<{
-  /** Alumno del cobro; falta solo en la clase suelta de un alumno eventual (\walkIn\). */
+  /** Alumno del cobro; falta cuando paga alguien que no es alumno (`walkIn`). */
   studentId?: string | null;
-  walkIn?: Readonly<{ name: string; phone?: string | null; dni?: string | null }> | null;
+  /**
+   * Quien paga sin ser alumno: el alumno eventual de una clase suelta (nombre obligatorio) o el
+   * comprador de una venta del catálogo (sin nombre queda como "Público general").
+   */
+  walkIn?: Readonly<{ name?: string | null; phone?: string | null; dni?: string | null }> | null;
   concept: OtherPaymentConceptDto;
   /** Concepto del catálogo; obligatorio con `concept = OTHER`. */
   conceptId?: string | null;

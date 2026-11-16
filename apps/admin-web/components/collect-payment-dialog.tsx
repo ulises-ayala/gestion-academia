@@ -52,7 +52,9 @@ import {
 } from '../lib/collect-payment';
 import {
   buildOtherPaymentPayload,
+  PUBLIC_BUYER_NAME,
   buildWalkInPaymentPayload,
+  walkInConceptOptions,
   conceptOptions,
   otherPaymentProblem,
   walkInProblem,
@@ -131,7 +133,8 @@ export function CollectPaymentDialog({
   const [searching, setSearching] = useState(false);
   const [highlight, setHighlight] = useState(0);
   const [student, setStudent] = useState<StudentDto | null>(initialStudent);
-  // Alumno eventual: alguien que toma una clase suelta sin ser alumno (sin ficha ni cuotas).
+  // No es alumno: toma una clase suelta (alumno eventual) o compra algo (entradas, precintos,
+  // indumentaria…). Sin ficha ni cuotas.
   const [walkIn, setWalkIn] = useState<WalkInForm | null>(null);
   const walkInMode = walkIn !== null;
   const [charges, setCharges] = useState<readonly MonthlyChargeDto[] | null>(null);
@@ -354,7 +357,10 @@ export function CollectPaymentDialog({
   const totalCents = pickTotalCents(pick);
   const preview = previewAllocations(payable, totalCents);
   const tenders: TenderAmounts = tendersFrom(pick);
-  const options = conceptOptions(catalog ?? []);
+  const allOptions = conceptOptions(catalog ?? []);
+  const options = walkInMode ? walkInConceptOptions(allOptions) : allOptions;
+  // El nombre es obligatorio para la clase suelta; en una venta puede quedar "Público general".
+  const walkInNameRequired = concept === 'SINGLE_CLASS';
   const selectedOption =
     options.find((option) => option.key === (concept === 'OTHER' ? conceptId : concept)) ?? null;
   const otherForm = {
@@ -368,8 +374,7 @@ export function CollectPaymentDialog({
   const paysByCard = (decimalToCents(tenders.CARD || '0') ?? 0n) > 0n;
   const cardCents = decimalToCents(tenders.CARD || '0') ?? 0n;
   // En el recargo cargado a mano no se calcula otro recargo.
-  const needsCardType =
-    paysByCard && !walkInMode && !(tab === 'other' && concept === 'CARD_SURCHARGE');
+  const needsCardType = paysByCard && !(tab === 'other' && concept === 'CARD_SURCHARGE');
   const surchargeCents =
     needsCardType && cardType ? cardSurchargePreviewCents(cardCents, cardType) : 0n;
   const cardTypeProblem =
@@ -388,7 +393,7 @@ export function CollectPaymentDialog({
   const excessCents = totalCents > payableCents ? totalCents - payableCents : 0n;
   const allowCredit = keepCredit && excessCents > 0n;
   const problem = walkIn
-    ? (walkInProblem(walkIn) ?? otherProblem)
+    ? (walkInProblem(walkIn, walkInNameRequired) ?? otherProblem ?? cardTypeProblem)
     : tab === 'charges'
       ? (chargesProblem(pick, payableCents, chosenOpen.length > 0, allowCredit) ?? cardTypeProblem)
       : tab === 'other'
@@ -508,10 +513,17 @@ export function CollectPaymentDialog({
       if (walkIn) {
         const payment = await apiRequest<PaymentDto>('/payments/other', {
           method: 'POST',
-          body: JSON.stringify(dated(buildWalkInPaymentPayload(walkIn, otherForm, tenders))),
+          body: JSON.stringify(
+            dated({
+              ...buildWalkInPaymentPayload(walkIn, otherForm, tenders),
+              ...(needsCardType && cardType ? { cardType } : {}),
+            }),
+          ),
         });
         markChanged();
-        setDoneSurcharge(null);
+        // El recargo que vale es el que calculó la API.
+        setDoneSurcharge(payment.cardSurcharge?.amount ?? null);
+        setCardType(null);
         setDone(payment);
         return;
       }
@@ -780,7 +792,7 @@ export function CollectPaymentDialog({
             )}
           </div>
           <button type="button" className="link-button collect-walk-in" onClick={startWalkIn}>
-            No es alumno: cobrar una clase suelta a un alumno eventual
+            No es alumno: cobrar una clase suelta o una venta (entradas, precintos, indumentaria…)
           </button>
         </div>
       ) : done ? (
@@ -849,8 +861,8 @@ export function CollectPaymentDialog({
             <>
               <div className="collect-student">
                 <div>
-                  <strong>Alumno eventual</strong>
-                  <span>Sin ficha ni cuotas: se registra solo esta clase suelta.</span>
+                  <strong>No es alumno</strong>
+                  <span>Sin ficha ni cuotas: se registra solo este cobro.</span>
                 </div>
                 <div className="collect-student-links">
                   <button
@@ -859,20 +871,30 @@ export function CollectPaymentDialog({
                     disabled={saving}
                     onClick={backToSearch}
                   >
-                    Cambiar alumno
+                    Buscar un alumno
                   </button>
                 </div>
               </div>
               <div className="collect-walk-in-fields">
                 <label className="wide">
-                  Nombre y apellido
+                  {walkInNameRequired ? 'Nombre y apellido' : 'Nombre y apellido (opcional)'}
                   <input
                     maxLength={160}
                     value={walkIn.name}
                     disabled={saving}
-                    aria-invalid={tried && walkIn.name.trim().length < 2}
+                    aria-invalid={
+                      tried &&
+                      (walkInNameRequired
+                        ? walkIn.name.trim().length < 2
+                        : walkIn.name.trim().length === 1)
+                    }
                     onChange={(event) => setWalkIn({ ...walkIn, name: event.target.value })}
                   />
+                  {!walkInNameRequired && (
+                    <small className="collect-hint">
+                      Si no lo cargás, la venta queda a nombre de {PUBLIC_BUYER_NAME}.
+                    </small>
+                  )}
                 </label>
                 <label>
                   Teléfono (opcional)
@@ -1108,29 +1130,27 @@ export function CollectPaymentDialog({
 
           {tab === 'other' && (
             <div className="collect-panel" role="tabpanel">
-              {!walkInMode && (
-                <fieldset className="collect-concepts" disabled={saving}>
-                  <legend className="sr-only">¿A qué corresponde?</legend>
-                  {options.map((option) => (
-                    <label
-                      key={option.key}
-                      className={selectedOption?.key === option.key ? 'is-selected' : ''}
-                    >
-                      <input
-                        type="radio"
-                        name="collect-concept"
-                        checked={selectedOption?.key === option.key}
-                        onChange={() => {
-                          setConcept(option.concept);
-                          setConceptId(option.conceptId);
-                        }}
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                  {catalog === null && <span className="collect-hint">Cargando conceptos…</span>}
-                </fieldset>
-              )}
+              <fieldset className="collect-concepts" disabled={saving}>
+                <legend className="sr-only">¿A qué corresponde?</legend>
+                {options.map((option) => (
+                  <label
+                    key={option.key}
+                    className={selectedOption?.key === option.key ? 'is-selected' : ''}
+                  >
+                    <input
+                      type="radio"
+                      name="collect-concept"
+                      checked={selectedOption?.key === option.key}
+                      onChange={() => {
+                        setConcept(option.concept);
+                        setConceptId(option.conceptId);
+                      }}
+                    />
+                    {option.label}
+                  </label>
+                ))}
+                {catalog === null && <span className="collect-hint">Cargando conceptos…</span>}
+              </fieldset>
               {concept === 'SINGLE_CLASS' && (
                 <label>
                   Clase

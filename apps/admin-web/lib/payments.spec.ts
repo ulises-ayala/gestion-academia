@@ -94,3 +94,16 @@ describe('payments UI helpers', () => {
     expect(hasWaivableLateFee({ adjustments: [lateFee('f1'), reversal('f1')] })).toBe(false);
   });
 });
+
+describe('quién pagó', () => {
+  it('nombra al alumno, al que no lo es y a la venta sin nombre', async () => {
+    const { payerName, walkInLabel } = await import('./payments');
+    expect(
+      payerName({ student: { firstName: 'Ana', lastName: 'Paz' }, walkIn: null } as Parameters<
+        typeof payerName
+      >[0]),
+    ).toBe('Ana Paz');
+    expect(walkInLabel('Marta Ruiz')).toBe('Marta Ruiz (eventual)');
+    expect(walkInLabel('Público general')).toBe('Público general');
+  });
+});

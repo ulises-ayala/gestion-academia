@@ -15,7 +15,7 @@ import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import { safePaymentReturnTo } from '../../lib/contextual-filters';
 import { money } from '../../lib/money';
-import { paymentMethodLabels } from '../../lib/payments';
+import { paymentMethodLabels, walkInLabel } from '../../lib/payments';
 
 const methods: readonly PaymentMethodDto[] = ['CASH', 'MERCADO_PAGO', 'TRANSFER', 'CARD'];
 const today = () =>
@@ -714,7 +714,7 @@ function MovementList({ shift }: Readonly<{ shift: CashShiftDto }>) {
                     <td data-label="Alumno">
                       {item.student
                         ? `${item.student.firstName} ${item.student.lastName}`
-                        : `${item.walkInName ?? ''} (eventual)`}
+                        : walkInLabel(item.walkInName)}
                     </td>
                     <td data-label="Medio">{paymentMethodLabels[item.method]}</td>
                     <td data-label="Importe" className={moneyClass(signed)}>

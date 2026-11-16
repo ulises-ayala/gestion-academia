@@ -308,7 +308,70 @@ describe('PaymentsService', () => {
     });
   });
 
-  it('el alumno eventual exige nombre, solo paga clases sueltas y no se combina con un alumno', async () => {
+  it('vende un concepto del catálogo a quien no es alumno, con nombre o como público general', async () => {
+    const repository = new MemoryPayments();
+    const service = new PaymentsService(repository);
+    await service.createOther(
+      {
+        walkIn: { name: ' Marta  Ruiz ', phone: null, dni: null },
+        concept: 'OTHER',
+        conceptId: 'indumentaria',
+        detail: 'Remera talle M',
+        tenders: [{ method: 'MERCADO_PAGO', amount: '15000' }],
+      },
+      actorId,
+    );
+    expect(repository.other?.data).toMatchObject({
+      studentId: null,
+      walkIn: { name: 'Marta Ruiz', phone: null, dni: null },
+      concept: 'OTHER',
+      conceptId: 'indumentaria',
+      classId: null,
+    });
+    // Sin nombre (una entrada en la puerta) queda como público general.
+    await service.createOther(
+      {
+        walkIn: {},
+        concept: 'OTHER',
+        conceptId: 'entradas',
+        tenders: [{ method: 'CASH', amount: '5000' }],
+      },
+      actorId,
+    );
+    expect(repository.other?.data.walkIn).toEqual({
+      name: 'Público general',
+      phone: null,
+      dni: null,
+    });
+  });
+
+  it('la venta con tarjeta a quien no es alumno lleva el recargo calculado, no uno aparte', async () => {
+    const repository = new MemoryPayments();
+    const service = new PaymentsService(repository);
+    await service.createOther(
+      {
+        walkIn: { name: 'Marta Ruiz' },
+        concept: 'OTHER',
+        conceptId: 'indumentaria',
+        tenders: [{ method: 'CARD', amount: '10000' }],
+        cardType: 'DEBIT',
+      },
+      actorId,
+    );
+    expect(repository.other?.data).toMatchObject({ cardSurcharge: { amount: '404.00' } });
+    await expect(
+      service.createOther(
+        {
+          walkIn: { name: 'Marta Ruiz' },
+          concept: 'CARD_SURCHARGE',
+          tenders: [{ method: 'CARD', amount: '404' }],
+        },
+        actorId,
+      ),
+    ).rejects.toMatchObject({ details: { field: 'walkIn' } });
+  });
+
+  it('el alumno eventual de una clase suelta exige nombre y no se combina con un alumno', async () => {
     const service = new PaymentsService(new MemoryPayments());
     const tenders = [{ method: 'CASH' as const, amount: '8000' }];
     const classId = crypto.randomUUID();
@@ -327,12 +390,16 @@ describe('PaymentsService', () => {
         actorId,
       ),
     ).rejects.toMatchObject({ details: { field: 'walkIn.dni' } });
+    // Sin alumno hay que decir que no lo es: no se asume una venta al público.
+    await expect(
+      service.createOther({ concept: 'OTHER', conceptId: 'indumentaria', tenders }, actorId),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'studentId' } });
     await expect(
       service.createOther(
-        { walkIn: { name: 'Lucía' }, concept: 'OTHER', conceptId: 'indumentaria', tenders },
+        { walkIn: { name: 'L' }, concept: 'OTHER', conceptId: 'indumentaria', tenders },
         actorId,
       ),
-    ).rejects.toMatchObject({ details: { field: 'walkIn' } });
+    ).rejects.toMatchObject({ details: { field: 'walkIn.name' } });
     await expect(
       service.createOther(
         { studentId, walkIn: { name: 'Lucía' }, concept: 'SINGLE_CLASS', classId, tenders },

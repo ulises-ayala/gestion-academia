@@ -8,6 +8,7 @@ import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
+import { PUBLIC_BUYER_NAME } from '../../billing/domain/other-payment';
 import { bornOverdueSql } from '../../billing/infrastructure/late-fee-sql';
 import { previousPeriod } from '../domain/closing';
 import { toCsv } from '../domain/csv';
@@ -609,7 +610,9 @@ export class ReportsService {
         payment.paidAt.toISOString(),
         payment.student
           ? `${payment.student.firstName} ${payment.student.lastName}`
-          : `${payment.walkInName ?? ''} (eventual)`,
+          : payment.walkInName === PUBLIC_BUYER_NAME
+            ? PUBLIC_BUYER_NAME
+            : `${payment.walkInName ?? ''} (eventual)`,
         payment.student?.dni ?? payment.walkInDni ?? '',
         concept(payment),
         payment.academicClass?.name ?? '',

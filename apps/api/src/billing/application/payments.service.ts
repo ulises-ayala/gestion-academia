@@ -144,7 +144,8 @@ export class PaymentsService {
           });
       }
     }
-    // Alumno o, solo en la clase suelta, alumno eventual (nombre y, si los da, teléfono y DNI).
+    // Alumno o alguien que no lo es: el eventual de una clase suelta (con nombre) o el comprador
+    // de una venta del catálogo (sin nombre queda como "Público general").
     const studentId = input.studentId ?? null;
     if (studentId && input.walkIn)
       throw new DomainError(
@@ -154,26 +155,22 @@ export class PaymentsService {
           field: 'walkIn',
         },
       );
-    const walkIn = studentId ? null : validateWalkIn(input.walkIn);
+    const walkIn = studentId
+      ? null
+      : validateWalkIn(input.walkIn, other.concept === 'SINGLE_CLASS');
     if (creditAmount && (!studentId || other.concept === 'CARD_SURCHARGE'))
       throw new DomainError(
         'VALIDATION_ERROR',
         'El saldo a favor solo se usa en cobros de un alumno, no en el recargo por tarjeta',
         { field: 'creditAmount' },
       );
-    if (walkIn && other.concept !== 'SINGLE_CLASS')
+    if (walkIn && other.concept === 'CARD_SURCHARGE')
       throw new DomainError(
         'VALIDATION_ERROR',
-        'Solo la clase suelta se puede cobrar a un alumno eventual',
+        'A quien no es alumno el recargo se le calcula al cobrar con tarjeta, no aparte',
         { field: 'walkIn' },
       );
     const cardType = parseCardType(input.cardType);
-    if (cardType && walkIn)
-      throw new DomainError(
-        'VALIDATION_ERROR',
-        'Al alumno eventual no se le calcula recargo: cobralo como Recargo por tarjeta a un alumno',
-        { field: 'cardType' },
-      );
     if (cardType && other.concept === 'CARD_SURCHARGE')
       throw new DomainError('VALIDATION_ERROR', 'El recargo no lleva otro recargo', {
         field: 'cardType',

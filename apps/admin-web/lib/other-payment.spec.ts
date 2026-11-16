@@ -6,6 +6,7 @@ import {
   describeOtherPayment,
   otherPaymentProblem,
   walkInProblem,
+  walkInConceptOptions,
 } from './other-payment';
 
 const none = { CASH: '', MERCADO_PAGO: '', TRANSFER: '', CARD: '' };
@@ -122,6 +123,57 @@ describe('otros cobros', () => {
         { method: 'MERCADO_PAGO', amount: '2500.50' },
       ],
     });
+  });
+});
+
+describe('venta a quien no es alumno', () => {
+  it('no pide el nombre, pero no acepta uno de una letra', () => {
+    expect(walkInProblem({ name: '', phone: '', dni: '' }, false)).toBeNull();
+    expect(walkInProblem({ name: ' M ', phone: '', dni: '' }, false)).toBe(
+      'El nombre es demasiado corto.',
+    );
+    expect(walkInProblem({ name: '', phone: '', dni: '12' }, false)).toBe(
+      'El DNI debe tener entre 6 y 9 dígitos.',
+    );
+  });
+
+  it('arma la venta de un concepto del catálogo sin alumno ni clase', () => {
+    expect(
+      buildWalkInPaymentPayload(
+        { name: ' ', phone: '', dni: '' },
+        {
+          concept: 'OTHER',
+          conceptId: 'entradas',
+          classId: 'class-1',
+          teacherId: 't1',
+          detail: ' Gala ',
+        },
+        { ...none, MERCADO_PAGO: '5000' },
+      ),
+    ).toEqual({
+      walkIn: { name: null, phone: null, dni: null },
+      tenders: [{ method: 'MERCADO_PAGO', amount: '5000.00' }],
+      concept: 'OTHER',
+      conceptId: 'entradas',
+      classId: null,
+      teacherId: null,
+      detail: 'Gala',
+    });
+  });
+
+  it('ofrece la clase suelta y el catálogo, no el recargo suelto', () => {
+    const options = conceptOptions([
+      { id: 'entradas', name: 'Entradas', status: 'ACTIVE', requiresDetail: false, sortOrder: 1 },
+    ]);
+    expect(options.map((option) => option.key)).toEqual([
+      'SINGLE_CLASS',
+      'entradas',
+      'CARD_SURCHARGE',
+    ]);
+    expect(walkInConceptOptions(options).map((option) => option.key)).toEqual([
+      'SINGLE_CLASS',
+      'entradas',
+    ]);
   });
 });
 

@@ -113,11 +113,23 @@ export const buildOtherPaymentPayload = (
   detail: form.detail.trim() || null,
 });
 
-/** Alumno eventual de una clase suelta: nombre obligatorio, teléfono y DNI opcionales. */
+/** Nombre con que queda una venta a quien no es alumno cuando no se carga el comprador. */
+export const PUBLIC_BUYER_NAME = 'Público general';
+
+/**
+ * Quien paga sin ser alumno: el alumno eventual de una clase suelta (nombre obligatorio) o el
+ * comprador de una venta (nombre opcional). Teléfono y DNI siempre opcionales.
+ */
 export type WalkInForm = Readonly<{ name: string; phone: string; dni: string }>;
 
-export const walkInProblem = (form: WalkInForm) => {
-  if (form.name.trim().length < 2) return 'Escribí el nombre del alumno eventual.';
+/** A quien no es alumno se le cobra una clase suelta o un concepto del catálogo, no un recargo. */
+export const walkInConceptOptions = (options: readonly ConceptOption[]) =>
+  options.filter((option) => option.concept !== 'CARD_SURCHARGE');
+
+export const walkInProblem = (form: WalkInForm, nameRequired = true) => {
+  const name = form.name.trim();
+  if (nameRequired && name.length < 2) return 'Escribí el nombre del alumno eventual.';
+  if (name.length === 1) return 'El nombre es demasiado corto.';
   const dni = form.dni.replace(/\D/g, '');
   if (
     form.dni.trim() &&
@@ -127,20 +139,24 @@ export const walkInProblem = (form: WalkInForm) => {
   return null;
 };
 
-/** Clase suelta cobrada a un alumno eventual: sin alumno, con su nombre y datos opcionales. */
+/**
+ * Cobro a quien no es alumno: una clase suelta (alumno eventual) o una venta del catálogo. Sin
+ * alumno, con sus datos; una venta sin nombre queda como "Público general".
+ */
 export const buildWalkInPaymentPayload = (
   walkIn: WalkInForm,
   form: OtherPaymentForm,
   tenders: TenderAmounts,
 ): CreateOtherPaymentDto => ({
   walkIn: {
-    name: walkIn.name.trim(),
+    name: walkIn.name.trim() || null,
     phone: walkIn.phone.trim() || null,
     dni: walkIn.dni.trim() || null,
   },
   tenders: createPaymentPayload('', tenders).tenders,
-  concept: 'SINGLE_CLASS',
-  classId: form.classId,
-  teacherId: form.teacherId || null,
+  concept: form.concept,
+  ...(form.concept === 'OTHER' && form.conceptId ? { conceptId: form.conceptId } : {}),
+  classId: form.concept === 'SINGLE_CLASS' ? form.classId : null,
+  teacherId: form.concept === 'SINGLE_CLASS' && form.teacherId ? form.teacherId : null,
   detail: form.detail.trim() || null,
 });

@@ -107,21 +107,28 @@ const optionalText = (value: unknown, field: string, max: number, label: string)
   return text || null;
 };
 
+/** Nombre con que queda una venta a alguien que no es alumno cuando no se carga el comprador. */
+export const PUBLIC_BUYER_NAME = 'Público general';
+
 /**
- * Alumno eventual: quien toma una clase suelta sin ser alumno regular. Nombre obligatorio;
- * teléfono y DNI opcionales (el DNI se guarda solo con dígitos).
+ * Quien paga sin ser alumno: el alumno eventual de una clase suelta (nombre obligatorio) o el
+ * comprador de una venta (`nameRequired = false`: sin nombre queda como "Público general").
+ * Teléfono y DNI opcionales (el DNI se guarda solo con dígitos).
  */
-export const validateWalkIn = (input: unknown) => {
+export const validateWalkIn = (input: unknown, nameRequired = true) => {
   if (!input || typeof input !== 'object')
     throw new DomainError('VALIDATION_ERROR', 'Indicá el alumno o el alumno eventual', {
       field: 'studentId',
     });
   const walkIn = input as { name?: unknown; phone?: unknown; dni?: unknown };
-  const name = optionalText(walkIn.name, 'walkIn.name', 160, 'El nombre');
-  if (!name || name.length < 2)
-    throw new DomainError('VALIDATION_ERROR', 'Escribí el nombre del alumno eventual', {
-      field: 'walkIn.name',
-    });
+  const typed = optionalText(walkIn.name, 'walkIn.name', 160, 'El nombre');
+  if (nameRequired ? !typed || typed.length < 2 : typed !== null && typed.length < 2)
+    throw new DomainError(
+      'VALIDATION_ERROR',
+      nameRequired ? 'Escribí el nombre del alumno eventual' : 'El nombre es demasiado corto',
+      { field: 'walkIn.name' },
+    );
+  const name = typed ?? PUBLIC_BUYER_NAME;
   const phone = optionalText(walkIn.phone, 'walkIn.phone', 80, 'El teléfono');
   const rawDni = optionalText(walkIn.dni, 'walkIn.dni', 32, 'El DNI');
   const dni = rawDni ? rawDni.replace(/\D/g, '') : null;

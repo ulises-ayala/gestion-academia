@@ -222,13 +222,12 @@ describe.runIf(enabled)(
           'Era Mercado Pago',
         );
         expect(corrected).toMatchObject({ student: null, walkIn, correctionOfId: payment.id });
-        // La base no admite un pago sin alumno que no sea una clase suelta de un eventual.
+        // La base no admite un cobro de cuotas sin alumno (decisión 273: otros cobros, sí).
         await expect(
           prisma.payment.create({
             data: {
               amount: '1000.00',
-              kind: 'OTHER',
-              concept: 'CARD_SURCHARGE',
+              kind: 'CHARGES',
               walkInName: 'Sin ficha',
               createdByUserId: fixture.actor.id,
             },

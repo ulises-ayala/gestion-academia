@@ -66,7 +66,7 @@ export const receiptText = (payment: PaymentDto, remainingDebt?: string | null):
   return [
     '*Carmesí* · Comprobante de pago',
     '',
-    `Alumno/a: ${payerName(payment)}${payerDni(payment) ? ` (DNI ${payerDni(payment)})` : ''}`,
+    `${payment.student ? 'Alumno/a' : 'A nombre de'}: ${payerName(payment)}${payerDni(payment) ? ` (DNI ${payerDni(payment)})` : ''}`,
     `Fecha: ${dateTime(payment.paidAt)}`,
     '',
     ...items,

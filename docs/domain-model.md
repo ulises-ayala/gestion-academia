@@ -91,7 +91,7 @@ erDiagram
 ## Pagos v2 core
 
 - `Payment` pertenece a un alumno y conserva importe, instante y usuario responsable. Uno o más `PaymentTender` desglosan efectivo, Mercado Pago y tarjeta; un medio no se repite dentro del pago.
-- La clase suelta de un **alumno eventual** no tiene alumno: el pago guarda su nombre y, si los dio, teléfono y DNI (`walkInName`, `walkInPhone`, `walkInDni`). No es una ficha ni un potencial alumno, no genera cuotas y no cuenta como alumno (decisión 243).
+- La clase suelta de un **alumno eventual** no tiene alumno: el pago guarda su nombre y, si los dio, teléfono y DNI (`walkInName`, `walkInPhone`, `walkInDni`). No es una ficha ni un potencial alumno, no genera cuotas y no cuenta como alumno (decisión 243). Lo mismo vale para una **venta a quien no es alumno** (entradas, precintos, indumentaria u otro concepto del catálogo): sin nombre queda a nombre de "Público general" (decisión 273).
 - `PaymentAllocation` registra cuánto del pago se aplicó a cada cuota. La suma de tenders, el importe del pago y la suma de imputaciones son iguales y se calculan con decimales exactos.
 - El backend recibe alumno y medios, calcula la deuda vigente y distribuye oldest-first por vencimiento con desempate estable por creación e ID. Se admiten pagos parciales y derrame entre cuotas; el sobrepago solo con confirmación explícita, y el excedente queda como saldo a favor (decisión 246).
 - Administración y Dirección pueden elegir las cuotas que paga el alumno (decisión 232). Reimputar un pago agrega filas de imputación (negativas y positivas) ligadas a una `PaymentReallocation` con motivo, sin modificar las originales ni la caja (decisión 233); la imputación vigente de un pago es la suma de sus filas por cuota.

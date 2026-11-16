@@ -9,7 +9,7 @@ Guía práctica del sistema de gestión de la academia, organizada por perfil: *
 | Acción                                                                  | Admisión | Administración | Dirección |
 | ----------------------------------------------------------------------- | -------- | -------------- | --------- |
 | Registrar cobros (cuotas, clase suelta, otros, deuda anterior)          | Sí       | Sí             | Sí        |
-| Cobrar a un alumno eventual                                             | Sí       | Sí             | Sí        |
+| Cobrar a quien no es alumno (clase suelta o venta)                      | Sí       | Sí             | Sí        |
 | Dejar como saldo a favor lo que se cobra de más                         | Sí       | Sí             | Sí        |
 | Usar el saldo a favor en cuotas u otros cobros                          | Sí       | Sí             | Sí        |
 | Cambiar el vencimiento de una cuota                                     | Sí       | Sí             | Sí        |
@@ -81,15 +81,16 @@ Si el importe supera lo que debe, el popup lo avisa: **Paga $X de más: dejarlo 
 
 En **Clase suelta u otro** se elige el concepto: **Clase suelta** (con la clase y el profesor que la dictó), uno de los **conceptos de cobro** (Formaciones docentes, Inscripciones, Workshops y talleres, Indumentaria, Entradas o precintos de la Gala, Otros —este con detalle obligatorio— y los que agregue Administración) o **Recargo por tarjeta** (solo para un caso excepcional cargado a mano).
 
-### Alumno eventual (no es alumno de la academia)
+### Cobrar a quien no es alumno (clase suelta o venta)
 
-Para alguien que viene a una clase suelta y no es alumno regular:
+Para alguien que viene a una clase suelta sin ser alumno regular, o que compra una entrada, un precinto, indumentaria u otro concepto:
 
-1. En el buscador de **Registrar pago**, tocá **No es alumno: cobrar una clase suelta a un alumno eventual**.
-2. Escribí el nombre y apellido. Teléfono y DNI son opcionales, pero el teléfono sirve para mandarle el recibo.
-3. Elegí la clase, el profesor que la dictó, el importe y el medio, y cobrá.
+1. En el buscador de **Registrar pago**, tocá **No es alumno: cobrar una clase suelta o una venta (entradas, precintos, indumentaria…)**.
+2. Elegí el concepto: **Clase suelta** (con la clase y el profesor que la dictó) o el concepto de la venta.
+3. Nombre y apellido: obligatorio en la clase suelta; en una venta es opcional y, si no se carga, queda a nombre de **Público general**. Teléfono y DNI son opcionales, pero el teléfono sirve para mandarle el recibo.
+4. Cargá el importe y el medio, y cobrá. Si paga con tarjeta, elegí débito o crédito: el recargo se calcula solo.
 
-No se le crea ficha ni cuotas y no cuenta como alumno, pero el cobro suma a la recaudación y a la liquidación del profesor. En el historial y en la caja aparece como "Nombre (eventual)".
+No se le crea ficha ni cuotas y no cuenta como alumno, pero el cobro suma a la recaudación (y la clase suelta, a la liquidación del profesor). En el historial y en la caja aparece como "Nombre (eventual)" o "Público general".
 
 ![Alumno eventual](capturas/cobro-eventual.png)
 

@@ -95,11 +95,15 @@ export const createPaymentPayload = (
     .map(({ method, cents }) => ({ method, amount: centsToDecimal(cents) })),
 });
 
-/** Quién pagó: el alumno o, en una clase suelta, el alumno eventual (sin ficha). */
+/** Quien pagó sin ser alumno: con su nombre, "(eventual)"; una venta sin nombre, tal cual. */
+export const walkInLabel = (name: string | null | undefined) =>
+  name === 'Público general' ? name : `${name ?? ''} (eventual)`;
+
+/** Quién pagó: el alumno o alguien que no lo es (alumno eventual o comprador, sin ficha). */
 export const payerName = (payment: Pick<PaymentDto, 'student' | 'walkIn'>) =>
   payment.student
     ? `${payment.student.firstName} ${payment.student.lastName}`
-    : `${payment.walkIn?.name ?? ''} (eventual)`;
+    : walkInLabel(payment.walkIn?.name);
 
 /** DNI de quien pagó, si se conoce (el alumno eventual puede no darlo). */
 export const payerDni = (payment: Pick<PaymentDto, 'student' | 'walkIn'>) =>

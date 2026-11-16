@@ -137,6 +137,8 @@ const createCardSurcharge = async (
   tx: Prisma.TransactionClient,
   input: Readonly<{
     studentId: string | null;
+    /** Quien pagó sin ser alumno: el recargo queda a su nombre, como el cobro. */
+    walkIn?: Readonly<{ name: string; phone: string | null; dni: string | null }> | null;
     ofPaymentId: string;
     surcharge: Readonly<{ amount: string; detail: string | null }>;
     paidAt: Date | undefined;
@@ -147,6 +149,9 @@ const createCardSurcharge = async (
   const surcharge = await tx.payment.create({
     data: {
       studentId: input.studentId,
+      walkInName: input.walkIn?.name ?? null,
+      walkInPhone: input.walkIn?.phone ?? null,
+      walkInDni: input.walkIn?.dni ?? null,
       amount: input.surcharge.amount,
       kind: 'OTHER',
       concept: 'CARD_SURCHARGE',
@@ -487,6 +492,7 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
         if (data.cardSurcharge)
           await createCardSurcharge(tx, {
             studentId: data.studentId,
+            walkIn: data.walkIn,
             ofPaymentId: payment.id,
             surcharge: data.cardSurcharge,
             paidAt,
@@ -858,6 +864,8 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
                 origin: original.origin,
                 kind: original.kind,
                 concept: original.concept,
+                // Sin esto un cobro del catálogo corregido quedaba como "Otro".
+                conceptId: original.conceptId,
                 conceptDetail: original.conceptDetail,
                 classId: original.classId,
                 teacherId: original.teacherId,
