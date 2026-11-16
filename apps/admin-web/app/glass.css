@@ -5,11 +5,12 @@
   --radius-md: 0.625rem;
   --radius-lg: 1rem;
   --border: rgb(28 25 23 / 9%);
-  --shadow-sm: 0 1px 2px rgb(28 25 23 / 4%), 0 12px 28px -18px rgb(28 25 23 / 18%);
+  --shadow-sm: 0 10px 30px -22px rgb(28 25 23 / 22%);
   --shadow-popover: 0 2px 6px rgb(28 25 23 / 6%), 0 18px 40px -12px rgb(28 25 23 / 18%);
   --shadow-dialog: 0 4px 12px rgb(28 25 23 / 8%), 0 32px 64px -16px rgb(28 25 23 / 28%);
   --glass: color-mix(in srgb, var(--surface) 58%, transparent);
   --glass-strong: color-mix(in srgb, var(--surface) 86%, transparent);
+  --glass-border: rgb(255 255 255 / 55%);
   --glass-edge: inset 0 1px 0 rgb(255 255 255 / 70%);
   --glass-blur: blur(18px) saturate(1.5);
   --page-glow:
@@ -28,6 +29,7 @@
   --shadow-sm: none;
   --glass: rgb(255 255 255 / 4.5%);
   --glass-strong: color-mix(in srgb, var(--surface) 82%, transparent);
+  --glass-border: rgb(255 255 255 / 6%);
   --glass-edge: inset 0 1px 0 rgb(255 255 255 / 6%);
   --page-glow:
     radial-gradient(
@@ -44,7 +46,9 @@
 
 /* El resplandor queda fijo: el contenido se desliza por encima. */
 body {
-  background: var(--page-glow), var(--bg);
+  background:
+    var(--page-glow),
+    linear-gradient(160deg, color-mix(in srgb, var(--accent) 5%, var(--bg)), var(--bg) 60%);
   background-attachment: fixed;
 }
 
@@ -68,6 +72,7 @@ body {
   .msg-card,
   .msg-situations
 ):not(dialog, .modal, .modal *) {
+  border-color: var(--glass-border);
   background: var(--glass);
   box-shadow: var(--glass-edge), var(--shadow-sm);
 }
@@ -107,4 +112,62 @@ dialog.modal,
   :root[data-theme='dark'] .sidebar {
     background: var(--glass-strong);
   }
+}
+
+/* Tipografía más liviana: los títulos y las cifras pesan menos y respiran más. */
+h1,
+h2,
+h3 {
+  font-weight: var(--font-weight-medium);
+}
+h1 {
+  letter-spacing: -0.025em;
+}
+:is(.card, .board-card, .now-primary, .now-alerts) > h2,
+.board-card h2 {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  letter-spacing: 0;
+}
+:is(
+  .board-kpi strong,
+  .board-hero strong,
+  .board-meter-legend dd,
+  .day-figure strong,
+  .settlement-totals strong,
+  .collect-done-amount
+) {
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.02em;
+}
+.board-kpi > span {
+  color: var(--text-secondary);
+}
+
+/* Tablero: tarjetas más juntas y con más aire adentro, como un solo plano de vidrio. */
+.board-kpis,
+.board-grid,
+.board-body,
+.board-page {
+  gap: var(--space-3);
+}
+.board-kpi,
+.board-card {
+  padding: var(--space-5);
+}
+.board-card-copy {
+  margin-bottom: var(--space-5);
+}
+/* Barras y pistas: tintes suaves en lugar de bloques macizos. */
+.board-track {
+  height: 0.375rem;
+  background: color-mix(in srgb, var(--board-bar) 12%, transparent);
+}
+.board-meter {
+  height: 0.75rem;
+}
+.board-meter i,
+.board-track,
+.board-track i {
+  border-radius: var(--radius-full);
 }
