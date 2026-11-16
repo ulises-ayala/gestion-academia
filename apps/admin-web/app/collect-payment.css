@@ -20,6 +20,29 @@ dialog.collect-dialog::backdrop {
   gap: var(--space-4);
   border-top: 3px solid var(--brand);
 }
+/* Queda debajo de la barra superior fija cuando la grilla de cuotas trae hasta acá. */
+.collect-inline {
+  scroll-margin-top: 5.5rem;
+}
+.collect-inline.is-attention {
+  animation: collect-attention 1.4s var(--motion-easing);
+}
+@keyframes collect-attention {
+  0%,
+  45% {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  100% {
+    outline: 2px solid transparent;
+    outline-offset: 3px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .collect-inline.is-attention {
+    animation-duration: 1ms;
+  }
+}
 .collect-inline h2,
 .collect-inline p {
   margin: 0;

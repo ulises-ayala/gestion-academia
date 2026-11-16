@@ -122,6 +122,9 @@ export function CollectPaymentDialog({
   const dialog = useRef<HTMLDialogElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
   const amountInput = useRef<HTMLInputElement>(null);
+  const inlineRoot = useRef<HTMLElement>(null);
+  // Destello del cobro cuando la grilla de cuotas le pasa lo marcado.
+  const [attention, setAttention] = useState(false);
   const [changed, setChanged] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<readonly StudentDto[] | null>(null);
@@ -333,10 +336,11 @@ export function CollectPaymentDialog({
     setTab('charges');
     setChosen(chargeSelection.ids);
     setAmountTouched(false);
-    requestAnimationFrame(() => {
-      amountInput.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      amountInput.current?.focus({ preventScroll: true });
-    });
+    setAttention(true);
+    // Salto directo al cobro: un desplazamiento suave se corta al enfocar el importe y la
+    // página quedaba arriba, como si no hubiera pasado nada.
+    inlineRoot.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    amountInput.current?.focus({ preventScroll: true });
   }, [chargeSelection]);
 
   const lastRefresh = useRef(refreshKey);
@@ -1386,7 +1390,13 @@ export function CollectPaymentDialog({
   );
 
   return inline ? (
-    <section id="registrar-cobro" className="card collect-inline" aria-labelledby="collect-title">
+    <section
+      aria-labelledby="collect-title"
+      className={`card collect-inline${attention ? ' is-attention' : ''}`}
+      id="registrar-cobro"
+      onAnimationEnd={(event) => event.target === event.currentTarget && setAttention(false)}
+      ref={inlineRoot}
+    >
       {content}
     </section>
   ) : (
