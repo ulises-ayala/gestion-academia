@@ -72,12 +72,18 @@
   color: inherit;
 }
 
+/* Barra de acciones: lo de todos los días a la izquierda; desactivar, apartado a la derecha. */
 .student-profile-header .student-primary-actions {
+  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
   gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.student-profile-header .student-primary-actions .danger-link {
+  margin-left: auto;
 }
 
 /* Resumen */
@@ -312,10 +318,6 @@
 @media (max-width: 60rem) {
   .student-profile-header {
     grid-template-columns: auto minmax(0, 1fr);
-  }
-  .student-profile-header .student-primary-actions {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
   }
   .student-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));

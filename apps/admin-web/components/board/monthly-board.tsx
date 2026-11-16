@@ -446,85 +446,6 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
           />
         </Card>
 
-        <Card
-          className="board-span-12"
-          description={`Ocupación y asistencia de cada clase activa${money ? ', con lo cobrado en el mes y lo vencido hoy' : ''}. De menor a mayor ocupación.`}
-          title="Clases"
-        >
-          {data.classes.length === 0 ? (
-            <p className="board-empty">No hay clases activas.</p>
-          ) : (
-            <div className="board-table-wrap">
-              <table className="board-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Clase</th>
-                    <th scope="col">Ocupación</th>
-                    <th className="is-number" scope="col">
-                      Altas / bajas
-                    </th>
-                    <th className="is-number" scope="col">
-                      Asistencia
-                    </th>
-                    {money && (
-                      <>
-                        <th className="is-number" scope="col">
-                          Recaudado
-                        </th>
-                        <th className="is-number" scope="col">
-                          Vencido
-                        </th>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.classes.map((item) => {
-                    const occupancy = classOccupancy(item.enrolled, item.capacity);
-                    return (
-                      <tr key={item.id}>
-                        <td>
-                          <Link className="text-link" href={`/classes/${item.id}`}>
-                            {item.name}
-                          </Link>
-                          <small>{item.teacher}</small>
-                        </td>
-                        <td>
-                          <div className="board-occupancy">
-                            <span>
-                              {item.enrolled} de {item.capacity}
-                              {occupancy.level && (
-                                <span className={`board-flag is-${occupancy.level}`}>
-                                  {occupancy.level === 'low' ? 'Baja' : 'Completa'}
-                                </span>
-                              )}
-                            </span>
-                            <div className="board-track">
-                              <i style={{ width: `${occupancy.width}%` }} />
-                            </div>
-                          </div>
-                        </td>
-                        <td className="is-number">
-                          +{item.started} / −{item.ended}
-                        </td>
-                        <td className="is-number">
-                          {item.attendancePercent === null ? '—' : `${item.attendancePercent} %`}
-                        </td>
-                        {money && (
-                          <>
-                            <td className="is-number">{amount(item.collected)}</td>
-                            <td className="is-number">{amount(item.overdue)}</td>
-                          </>
-                        )}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
-
         {money && (
           <>
             <Card
@@ -605,6 +526,85 @@ export function MonthlyBoard({ data }: Readonly<{ data: MonthlyBoardDto }>) {
             </ul>
           </Card>
         )}
+
+        <Card
+          className="board-span-12"
+          description={`Ocupación y asistencia de cada clase activa${money ? ', con lo cobrado en el mes y lo vencido hoy' : ''}. De menor a mayor ocupación.`}
+          title="Clases"
+        >
+          {data.classes.length === 0 ? (
+            <p className="board-empty">No hay clases activas.</p>
+          ) : (
+            <div className="board-table-wrap">
+              <table className="board-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Clase</th>
+                    <th scope="col">Ocupación</th>
+                    <th className="is-number" scope="col">
+                      Altas / bajas
+                    </th>
+                    <th className="is-number" scope="col">
+                      Asistencia
+                    </th>
+                    {money && (
+                      <>
+                        <th className="is-number" scope="col">
+                          Recaudado
+                        </th>
+                        <th className="is-number" scope="col">
+                          Vencido
+                        </th>
+                      </>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.classes.map((item) => {
+                    const occupancy = classOccupancy(item.enrolled, item.capacity);
+                    return (
+                      <tr key={item.id}>
+                        <td>
+                          <Link className="text-link" href={`/classes/${item.id}`}>
+                            {item.name}
+                          </Link>
+                          <small>{item.teacher}</small>
+                        </td>
+                        <td>
+                          <div className="board-occupancy">
+                            <span>
+                              {item.enrolled} de {item.capacity}
+                              {occupancy.level && (
+                                <span className={`board-flag is-${occupancy.level}`}>
+                                  {occupancy.level === 'low' ? 'Baja' : 'Completa'}
+                                </span>
+                              )}
+                            </span>
+                            <div className="board-track">
+                              <i style={{ width: `${occupancy.width}%` }} />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="is-number">
+                          +{item.started} / −{item.ended}
+                        </td>
+                        <td className="is-number">
+                          {item.attendancePercent === null ? '—' : `${item.attendancePercent} %`}
+                        </td>
+                        {money && (
+                          <>
+                            <td className="is-number">{amount(item.collected)}</td>
+                            <td className="is-number">{amount(item.overdue)}</td>
+                          </>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
       </div>
     </>
   );

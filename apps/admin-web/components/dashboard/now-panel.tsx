@@ -55,10 +55,17 @@ export function NowPanel({
   );
   // Una clase que ya terminó sin asistencia no es "ahora": quedó pendiente.
   const title = focus.kind === 'class' && focus.phase === 'missed' ? 'Quedó pendiente' : 'Ahora';
+  // Color del bloque: lo que quedó pendiente o pide atención, ámbar; la clase de ahora, bordó.
+  const tone =
+    focus.kind === 'clear'
+      ? 'clear'
+      : focus.kind === 'alert' || focus.phase === 'missed'
+        ? 'pending'
+        : 'now';
   const hasSide = secondary.length > 0 || Boolean(aside);
   return (
     <section aria-labelledby="now-title" className={`now-panel${hasSide ? ' has-side' : ''}`}>
-      <div className="now-primary">
+      <div className={`now-primary is-${tone}`}>
         <h2 id="now-title">{title}</h2>
         <FocusContent
           attendanceHref={attendanceHref}

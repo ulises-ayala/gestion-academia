@@ -1,4 +1,4 @@
-/* Mensajes de WhatsApp: situaciones a la izquierda, mensaje y destinatarios a la derecha. */
+/* Mensajes de WhatsApp: arriba, las situaciones y el mensaje; abajo, a lo ancho, a quién va. */
 .msg-page {
   display: grid;
   gap: var(--space-4);
@@ -14,11 +14,29 @@
 .msg-layout {
   display: grid;
   grid-template-columns: 17rem minmax(0, 1fr);
-  align-items: start;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
-.msg-layout > [aria-busy='true'] {
+/* El panel no arma su propia columna: sus dos tarjetas se ubican en la grilla de la página. */
+.msg-layout > div,
+.msg-main {
+  display: contents;
+}
+.msg-layout > [aria-busy='true'] .msg-card {
   opacity: 0.6;
+}
+.msg-situations {
+  grid-column: 1;
+  grid-row: 1;
+  align-content: start;
+}
+.msg-main > .msg-card:first-child {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+}
+.msg-main > .msg-card:last-child {
+  grid-column: 1 / -1;
 }
 .msg-situations {
   display: grid;
@@ -75,14 +93,9 @@
   line-height: 1.5rem;
   text-align: center;
 }
-.msg-main {
-  display: grid;
-  gap: var(--space-4);
-  min-width: 0;
-}
 .msg-card {
   min-width: 0;
-  padding: var(--space-4);
+  padding: var(--space-5);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -93,7 +106,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 .msg-card h2,
 .msg-editor h2 {
@@ -105,19 +118,22 @@
   color: var(--text-muted);
   font-size: var(--font-size-sm);
 }
+/* El mensaje es lo principal de la tarjeta: ocupa el alto disponible, como una charla. */
 .msg-template {
+  flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
-  align-items: start;
+  grid-template-columns: minmax(0, 1.6fr) minmax(14rem, 1fr);
   gap: var(--space-5);
 }
 .msg-bubble {
+  align-self: start;
   margin: 0;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-4) var(--space-5);
   border: 1px solid var(--success-border);
-  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 2px;
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm);
   background: var(--success-soft);
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
@@ -130,7 +146,10 @@
 }
 .msg-side {
   display: grid;
+  align-content: start;
   gap: var(--space-3);
+  padding-left: var(--space-5);
+  border-left: 1px solid var(--border);
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
 }
@@ -188,16 +207,21 @@
   align-items: center;
   min-height: var(--control-height-sm);
   padding: 0 var(--space-3);
-  border: 1px solid var(--success);
+  border: 1px solid var(--success-border);
   border-radius: var(--radius-md);
-  background: var(--success);
-  color: var(--surface);
-  font-weight: var(--font-weight-semibold);
+  background: var(--success-soft);
+  color: var(--success);
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
+  transition: border-color var(--motion-duration) var(--motion-easing);
+}
+.msg-send:hover {
+  border-color: var(--success);
 }
 .msg-send.is-again {
+  border-color: var(--border);
   background: transparent;
-  color: var(--success);
+  color: var(--text-secondary);
 }
 /* Centrado y con fondo oscurecido, como los demás popups de la app. */
 dialog.msg-editor-dialog {
@@ -242,6 +266,14 @@ dialog.msg-editor-dialog::backdrop {
   .msg-template,
   .msg-editor {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .msg-main > .msg-card:first-child {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .msg-side {
+    padding-left: 0;
+    border-left: 0;
   }
   .msg-situations {
     display: flex;

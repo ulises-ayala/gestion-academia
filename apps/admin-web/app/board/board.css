@@ -1,11 +1,12 @@
-/* Tablero mensual. Altas/bajas y medios de pago usan colores validados para daltonismo; las
+/* Tablero mensual. Altas/bajas y medios de pago usan una paleta afín al bordó (verde azulado,
+   bordó, dorado y ciruela), validada para daltonismo en claro y oscuro; las
    líneas, el acento contra una referencia gris; las barras llevan nombre y valor a la vista. */
 .board-page,
 .reports-page {
-  --board-in: #2a78d6;
-  --board-out: #eb6834;
-  --board-third: #1baf7a;
-  --board-fourth: #eda100;
+  --board-in: #1f9a8f;
+  --board-out: #a3294a;
+  --board-third: #d9902a;
+  --board-fourth: #7656b8;
   --board-line: var(--accent);
   --board-line-muted: var(--border-strong);
   --board-bar: var(--accent-fill);
@@ -17,10 +18,10 @@
   gap: var(--space-4);
 }
 :root[data-theme='dark'] :is(.board-page, .reports-page) {
-  --board-in: #3987e5;
-  --board-out: #d95926;
-  --board-third: #199e70;
-  --board-fourth: #c98500;
+  --board-in: #2aa89c;
+  --board-out: #b83a57;
+  --board-third: #b8842a;
+  --board-fourth: #8a76d6;
   --board-bar: #c9607a;
 }
 .board-head {
@@ -502,13 +503,13 @@
   --board-method: var(--board-in);
 }
 .board-page [data-method='MERCADO_PAGO'] {
-  --board-method: var(--board-out);
+  --board-method: var(--board-fourth);
 }
 .board-page [data-method='TRANSFER'] {
   --board-method: var(--board-third);
 }
 .board-page [data-method='CARD'] {
-  --board-method: var(--board-fourth);
+  --board-method: var(--board-out);
 }
 .board-segments {
   display: grid;
@@ -622,9 +623,16 @@
 }
 .board-funnel i {
   display: block;
-  height: 1.5rem;
-  border-radius: 4px;
-  background: var(--board-in);
+  height: 1.25rem;
+  border-radius: var(--radius-full);
+  background: var(--board-bar);
+}
+/* Cada etapa, un poco más tenue: es el mismo grupo que se va achicando. */
+.board-funnel div:nth-child(2) i {
+  opacity: 0.7;
+}
+.board-funnel div:nth-child(3) i {
+  opacity: 0.45;
 }
 .board-funnel em {
   font-style: normal;
