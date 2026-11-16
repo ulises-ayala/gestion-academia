@@ -1,6 +1,7 @@
 import type {
   CreateHistoricalDebtDto,
   CreateMonthlyChargeDto,
+  GenerateChargeBatchDto,
   GenerateMonthlyChargeDto,
 } from '@academy/contracts';
 import type { PublicAuthUser } from '../../auth/application/auth.repository';
@@ -53,6 +54,28 @@ export class MonthlyChargesController {
       },
       this.actor(user),
     );
+  }
+  /** Varias clases y meses de un alumno de una vez (la grilla de cuotas). */
+  @Post('batch-preview') @Permissions('charges:generate') batchPreview(
+    @Body() input: GenerateChargeBatchDto | null,
+  ) {
+    return this.generation.previewBatch(this.batch(input));
+  }
+  @Post('generate-batch') @Permissions('charges:generate') generateBatch(
+    @Body() input: GenerateChargeBatchDto | null,
+    @CurrentUser() user: PublicAuthUser,
+  ) {
+    return this.generation.generateBatch(this.batch(input), user.id);
+  }
+  private batch(input: GenerateChargeBatchDto | null): GenerateChargeBatchDto {
+    const items = Array.isArray(input?.items) ? input.items : [];
+    return {
+      studentId: parseUuid(input?.studentId ?? '', 'studentId'),
+      items: items.map((item) => ({
+        enrollmentId: parseUuid(item?.enrollmentId ?? '', 'items'),
+        period: item?.period ?? '',
+      })),
+    };
   }
   @Post('historical-debt') @Permissions('charges:generate') historicalDebt(
     @Body() input: CreateHistoricalDebtDto | null,

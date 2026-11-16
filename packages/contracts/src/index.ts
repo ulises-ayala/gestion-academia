@@ -736,6 +736,22 @@ export type MonthlyChargePreviewDto = Readonly<{
   /** Si la deuda es anterior al inicio, la inscripción se adelanta a esa fecha. */
   enrollmentStartChange: Readonly<{ from: string; to: string }> | null;
 }>;
+/** Varias clases y meses de un alumno de una vez (la grilla de cuotas por clase y mes). */
+export type GenerateChargeBatchDto = Readonly<{
+  studentId: string;
+  items: readonly Readonly<{ enrollmentId: string; period: string }>[];
+}>;
+export type ChargeBatchPreviewDto = Readonly<{
+  items: readonly (MonthlyChargePreviewMonthDto &
+    Readonly<{ enrollmentId: string; className: string }>)[];
+  newCount: number;
+  newTotal: string;
+}>;
+export type GeneratedChargeBatchDto = Readonly<{
+  created: readonly MonthlyChargeDto[];
+  /** Las que ya existían: no se duplican. */
+  skipped: readonly Readonly<{ enrollmentId: string; period: string }>[];
+}>;
 export type GeneratedMonthlyChargesDto = Readonly<{
   created: readonly MonthlyChargeDto[];
   skippedPeriods: readonly string[];

@@ -22,8 +22,8 @@ export const addMonths = (period: string, months: number) => {
 export const GENERATION_MONTHS_BACK = 12;
 
 /**
- * Meses que se pueden elegir. Admisión: desde el mes actual (o el inicio de la inscripción).
- * Administración: también deuda anterior, aunque sea previa al inicio (la inscripción se adelanta).
+ * Meses que se pueden elegir, hasta 12 atrás. Admisión: desde el inicio de la inscripción
+ * (decisión 268). Administración: también antes del inicio (la inscripción se adelanta).
  */
 export const periodRange = (input: {
   currentPeriod: string;
@@ -32,11 +32,8 @@ export const periodRange = (input: {
 }) => {
   const start = input.enrollmentStart.slice(0, 7);
   const max = addMonths(input.currentPeriod, GENERATION_MONTHS_AHEAD);
-  const min = input.canBackfill
-    ? addMonths(input.currentPeriod, -GENERATION_MONTHS_BACK)
-    : start > input.currentPeriod
-      ? start
-      : input.currentPeriod;
+  const oldest = addMonths(input.currentPeriod, -GENERATION_MONTHS_BACK);
+  const min = input.canBackfill || start < oldest ? oldest : start;
   return { min, max };
 };
 

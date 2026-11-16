@@ -1,6 +1,9 @@
 import type {
+  ChargeBatchPreviewDto,
   CreateHistoricalDebtDto,
+  GenerateChargeBatchDto,
   GenerateMonthlyChargeDto,
+  GeneratedChargeBatchDto,
   GeneratedMonthlyChargesDto,
   MonthlyChargeDto,
   MonthlyChargePreviewDto,
@@ -13,6 +16,7 @@ import { validateChargeDates } from '../domain/billing';
 import { adjustedAmounts, conditionDeltas } from '../domain/billing-adjustments';
 import { historicalDebtDates, validateHistoricalDebt } from '../domain/historical-debt';
 import {
+  MAX_BATCH_CHARGES,
   assertGenerationPeriod,
   assertPeriodAllowed,
   dueDateFor,
@@ -22,6 +26,7 @@ import {
 import {
   CHARGE_GENERATION_REPOSITORY,
   type ChargeGenerationRepository,
+  type EnrollmentForGeneration,
 } from './charge-generation.repository';
 
 export type GenerationActor = Readonly<{ id: string; canBackfill: boolean }>;
@@ -36,12 +41,30 @@ export class ChargeGenerationService {
     return businessDayAt(now, process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires').date;
   }
 
-  private async resolve(input: GenerateMonthlyChargeDto, actor: GenerationActor, now: Date) {
+  private resolve(input: GenerateMonthlyChargeDto, actor: GenerationActor, now: Date) {
     const first = assertGenerationPeriod(input.period);
     const until = input.untilPeriod ? assertGenerationPeriod(input.untilPeriod) : first;
     const periods = periodsBetween(first, until);
-    const single = periods.length === 1;
-    const enrollment = await this.repository.findEnrollment(input.enrollmentId);
+    return this.resolvePeriods(
+      input.enrollmentId,
+      periods,
+      {
+        allowBeforeStart: actor.canBackfill,
+        ...(periods.length === 1 && input.dueDate ? { dueDate: input.dueDate } : {}),
+      },
+      now,
+    );
+  }
+
+  /** Valida inscripción, meses y tarifas de una inscripción; `periods` va ordenado. */
+  private async resolvePeriods(
+    enrollmentId: string,
+    periods: readonly string[],
+    options: Readonly<{ allowBeforeStart: boolean; dueDate?: string }>,
+    now: Date,
+  ) {
+    const first = periods[0]!;
+    const enrollment = await this.repository.findEnrollment(enrollmentId);
     if (!enrollment) throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada');
     if (enrollment.status !== 'ACTIVE')
       throw new DomainError(
@@ -54,10 +77,9 @@ export class ChargeGenerationService {
       assertPeriodAllowed({
         period,
         currentPeriod,
-        canBackfill: actor.canBackfill,
         enrollmentStart: enrollment.startDate,
         enrollmentEnd: enrollment.endDate,
-        allowBeforeStart: actor.canBackfill,
+        allowBeforeStart: options.allowBeforeStart,
       });
     const enrollmentStartChange =
       first < enrollment.startDate.slice(0, 7)
@@ -77,7 +99,7 @@ export class ChargeGenerationService {
     for (const period of periods) {
       const { dueDate } = validateChargeDates(
         period,
-        single && input.dueDate ? input.dueDate : dueDateFor(period, enrollment.paymentDueDay),
+        options.dueDate ?? dueDateFor(period, enrollment.paymentDueDay),
       );
       months.push({
         period,
@@ -95,6 +117,25 @@ export class ChargeGenerationService {
     now = new Date(),
   ): Promise<MonthlyChargePreviewDto> {
     const { enrollment, months, enrollmentStartChange } = await this.resolve(input, actor, now);
+    const detailed = await this.detail(enrollment, months);
+    const pending = detailed.filter((month) => !month.alreadyExists);
+    return {
+      enrollmentId: enrollment.id,
+      className: enrollment.className,
+      months: detailed,
+      newCount: pending.length,
+      newTotal: pending
+        .reduce((sum, month) => sum.plus(month.studentDueAmount), new Prisma.Decimal(0))
+        .toFixed(2),
+      enrollmentStartChange: pending.length ? enrollmentStartChange : null,
+    };
+  }
+
+  /** Importe de cada mes con las becas y descuentos vigentes en ese mes. */
+  private async detail(
+    enrollment: EnrollmentForGeneration,
+    months: Awaited<ReturnType<ChargeGenerationService['resolvePeriods']>>['months'],
+  ) {
     const detailed = [];
     for (const month of months) {
       const conditions = await this.repository.conditionsFor(enrollment.id, month.period);
@@ -117,16 +158,99 @@ export class ChargeGenerationService {
         alreadyExists: month.alreadyExists,
       });
     }
-    const pending = detailed.filter((month) => !month.alreadyExists);
+    return detailed;
+  }
+
+  /**
+   * Varias clases y meses de un alumno (la grilla de cuotas). Agrupa por inscripción y valida
+   * todo antes de crear nada; nunca adelanta el inicio de una inscripción.
+   */
+  private async resolveBatch(input: GenerateChargeBatchDto, now: Date) {
+    const items = input.items;
+    if (!Array.isArray(items) || items.length === 0)
+      throw new DomainError('VALIDATION_ERROR', 'Elegí al menos una cuota para generar', {
+        field: 'items',
+      });
+    if (items.length > MAX_BATCH_CHARGES)
+      throw new DomainError(
+        'VALIDATION_ERROR',
+        `Se pueden generar hasta ${MAX_BATCH_CHARGES} cuotas de una vez`,
+        { field: 'items' },
+      );
+    const byEnrollment = new Map<string, string[]>();
+    for (const item of items) {
+      const period = assertGenerationPeriod(item?.period);
+      const periods = byEnrollment.get(item.enrollmentId) ?? [];
+      if (periods.includes(period))
+        throw new DomainError('VALIDATION_ERROR', 'Una cuota está repetida', { field: 'items' });
+      byEnrollment.set(item.enrollmentId, [...periods, period]);
+    }
+    const groups = [];
+    for (const [enrollmentId, periods] of byEnrollment) {
+      const group = await this.resolvePeriods(
+        enrollmentId,
+        [...periods].sort(),
+        { allowBeforeStart: false },
+        now,
+      );
+      if (group.enrollment.studentId !== input.studentId)
+        throw new DomainError('ENROLLMENT_NOT_FOUND', 'Inscripción no encontrada');
+      groups.push(group);
+    }
+    return groups;
+  }
+
+  async previewBatch(
+    input: GenerateChargeBatchDto,
+    now = new Date(),
+  ): Promise<ChargeBatchPreviewDto> {
+    const groups = await this.resolveBatch(input, now);
+    const itemsOut = [];
+    for (const { enrollment, months } of groups)
+      for (const month of await this.detail(enrollment, months))
+        itemsOut.push({ enrollmentId: enrollment.id, className: enrollment.className, ...month });
+    const pending = itemsOut.filter((item) => !item.alreadyExists);
     return {
-      enrollmentId: enrollment.id,
-      className: enrollment.className,
-      months: detailed,
+      items: itemsOut,
       newCount: pending.length,
       newTotal: pending
-        .reduce((sum, month) => sum.plus(month.studentDueAmount), new Prisma.Decimal(0))
+        .reduce((sum, item) => sum.plus(item.studentDueAmount), new Prisma.Decimal(0))
         .toFixed(2),
-      enrollmentStartChange: pending.length ? enrollmentStartChange : null,
+    };
+  }
+
+  async generateBatch(
+    input: GenerateChargeBatchDto,
+    actorId: string,
+    now = new Date(),
+  ): Promise<GeneratedChargeBatchDto> {
+    const groups = await this.resolveBatch(input, now);
+    const all = groups.flatMap(({ enrollment, months }) =>
+      months.map((month) => ({ enrollment, month })),
+    );
+    const pending = all.filter(({ month }) => !month.alreadyExists);
+    if (pending.length === 0)
+      throw new DomainError('MONTHLY_CHARGE_ALREADY_EXISTS', 'Esas cuotas ya estaban generadas');
+    const created: MonthlyChargeDto[] = [];
+    for (const { enrollment, month } of pending)
+      created.push(
+        await this.repository.create(
+          {
+            studentId: enrollment.studentId,
+            enrollmentId: enrollment.id,
+            tariffId: month.tariff.id,
+            period: month.period,
+            baseAmount: month.tariff.amount,
+            dueDate: month.dueDate,
+          },
+          actorId,
+        ),
+      );
+    return {
+      created,
+      skipped: all
+        .filter(({ month }) => month.alreadyExists)
+        .map(({ enrollment, month }) => ({ enrollmentId: enrollment.id, period: month.period })),
     };
   }
 

@@ -1,0 +1,227 @@
+/* Cuotas por clase y mes: una fila por clase, una columna por mes. En pantallas chicas la
+   grilla se desliza de costado y la clase queda fija. */
+.charge-grid-card {
+  display: grid;
+  gap: var(--space-4);
+}
+.charge-grid-card .section-heading {
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+.charge-grid-card .section-heading .button {
+  flex: none;
+}
+.charge-grid-scroll {
+  overflow-x: auto;
+  margin-inline: calc(var(--space-2) * -1);
+  padding-inline: var(--space-2);
+}
+.charge-grid {
+  display: grid;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+.charge-grid-row {
+  display: grid;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+.charge-grid-row > [role='cell'] {
+  display: grid;
+}
+.charge-grid-row.is-head,
+.charge-grid-row.is-foot {
+  align-items: center;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.charge-grid-row.is-head > span {
+  padding: 0 var(--space-3);
+}
+.charge-grid-row.is-head .is-current {
+  color: var(--text);
+  font-weight: var(--font-weight-semibold);
+}
+.charge-grid-row.is-foot {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-size: var(--font-size-sm);
+}
+.charge-grid-row.is-foot > span {
+  padding: 0 var(--space-3);
+}
+.charge-grid .is-number {
+  text-align: right;
+}
+.charge-grid-class,
+.charge-grid-row.is-head > :first-child,
+.charge-grid-row.is-foot > :first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.charge-grid-class {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  min-width: 0;
+  padding-right: var(--space-2);
+}
+.charge-grid-class b {
+  font-weight: var(--font-weight-medium);
+  overflow-wrap: anywhere;
+}
+.charge-grid-class small {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.charge-grid-total {
+  display: grid;
+  align-content: center;
+  padding: 0 var(--space-3);
+  color: var(--text);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+/* Celdas: el estado se lee en el texto; el color acompaña. */
+.charge-cell,
+button.charge-cell {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 2px;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  box-shadow: none;
+  color: var(--text);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.25;
+  text-align: left;
+}
+.charge-cell b {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+.charge-cell small {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+}
+.charge-cell.is-outside {
+  justify-items: center;
+  background: transparent;
+  color: var(--text-muted);
+}
+.charge-cell.is-paid {
+  background: var(--success-soft);
+}
+.charge-cell.is-paid b {
+  color: var(--success);
+}
+.charge-cell.is-overdue {
+  border-color: var(--destructive-border);
+  background: var(--destructive-soft);
+}
+.charge-cell.is-overdue small {
+  color: var(--destructive);
+}
+.charge-cell.is-partial {
+  border-color: var(--warning-border);
+  background: var(--warning-soft);
+}
+.charge-cell.is-partial small {
+  color: var(--warning);
+}
+.charge-cell.is-pending {
+  border-color: var(--border);
+}
+.charge-cell.is-missing {
+  border: 1px dashed color-mix(in srgb, var(--text) 28%, transparent);
+  background: transparent;
+  color: var(--text-secondary);
+}
+button.charge-cell {
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration) var(--motion-easing),
+    box-shadow var(--motion-duration) var(--motion-easing);
+}
+button.charge-cell:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+button.charge-cell.is-overdue:hover:not(:disabled) {
+  background: var(--destructive-soft);
+}
+button.charge-cell.is-partial:hover:not(:disabled) {
+  background: var(--warning-soft);
+}
+button.charge-cell[aria-pressed='true'],
+button.charge-cell[aria-pressed='true']:hover:not(:disabled) {
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+button.charge-cell.is-missing[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+button.charge-cell.is-missing[aria-pressed='true'] small {
+  color: var(--accent);
+}
+
+.charge-grid-note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+/* Qué va a pasar con lo marcado, con su acción al lado. */
+.charge-grid-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+}
+.charge-grid-bar.is-generate,
+.charge-grid-bar.is-collect {
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.charge-grid-bar p {
+  margin: 0;
+}
+.charge-grid-bar .actions {
+  margin: 0;
+}
+.charge-grid-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  list-style: none;
+}
+@media (max-width: 40rem) {
+  .charge-grid-bar .actions,
+  .charge-grid-bar > button {
+    width: 100%;
+  }
+  .charge-grid-bar .actions > * {
+    flex: 1;
+  }
+}

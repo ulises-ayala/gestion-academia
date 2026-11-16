@@ -22,16 +22,16 @@ const tariff = (over: Partial<TariffDto>): TariffDto => ({
 });
 const allowed = (
   period: string,
-  canBackfill = false,
+  allowBeforeStart = false,
   start = '2026-03-01',
   end: string | null = null,
 ) =>
   assertPeriodAllowed({
     period,
     currentPeriod: '2026-10',
-    canBackfill,
     enrollmentStart: start,
     enrollmentEnd: end,
+    allowBeforeStart,
   });
 
 describe('generación de cuotas', () => {
@@ -50,7 +50,6 @@ describe('generación de cuotas', () => {
       assertPeriodAllowed({
         period: '2026-08',
         currentPeriod: '2026-10',
-        canBackfill: true,
         enrollmentStart: '2026-10-01',
         enrollmentEnd: null,
         allowBeforeStart: true,
@@ -67,13 +66,16 @@ describe('generación de cuotas', () => {
     expect(() => allowed('2026-12')).not.toThrow();
     expect(() => allowed('2027-01')).toThrow(/2 meses por adelantado/);
   });
-  it('los meses anteriores solo los genera quien gestiona cuotas', () => {
-    expect(() => allowed('2026-09')).toThrow('Administración');
-    expect(() => allowed('2026-09', true)).not.toThrow();
+  it('los meses anteriores de la inscripción los genera cualquiera que genere cuotas', () => {
+    expect(() => allowed('2026-09')).not.toThrow();
+    expect(() => allowed('2026-03')).not.toThrow();
   });
   it('no genera fuera de las fechas de la inscripción', () => {
-    expect(() => allowed('2026-08', true, '2026-09-15')).toThrow(/empieza en septiembre de 2026/);
-    expect(() => allowed('2026-09', true, '2026-09-15')).not.toThrow();
+    expect(() => allowed('2026-08', false, '2026-09-15')).toThrow(
+      /empieza en septiembre de 2026. Los meses anteriores los carga Administración/,
+    );
+    expect(() => allowed('2026-08', true, '2026-09-15')).not.toThrow();
+    expect(() => allowed('2026-09', false, '2026-09-15')).not.toThrow();
     expect(() => allowed('2026-11', false, '2026-03-01', '2026-10-31')).toThrow(/terminó/);
   });
   it('usa la tarifa activa que cubre el mes', () => {

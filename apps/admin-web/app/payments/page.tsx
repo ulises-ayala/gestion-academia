@@ -19,6 +19,7 @@ import { useSearchParams } from 'next/navigation';
 import { useAuth } from '../../components/auth-provider';
 import { notifySuccess } from '../../lib/notify';
 import { CollectPaymentDialog } from '../../components/collect-payment-dialog';
+import { StudentChargeGrid } from '../../components/student-charge-grid';
 import { CorrectPaymentDialog } from '../../components/correct-payment-dialog';
 import { StudentPaymentList } from '../../components/payment-actions';
 import { PaymentHistory } from '../../components/payment-history';
@@ -1034,6 +1035,10 @@ function StudentAccount({
   onWaiveLateFee(charge: MonthlyChargeDto): void;
 }>) {
   const pending = useMemo(() => openCharges(charges), [charges]);
+  const { can } = useAuth();
+  const [chargeSelection, setChargeSelection] = useState<
+    Readonly<{ ids: readonly string[]; request: number }> | undefined
+  >(undefined);
   const back = (
     <a className="button secondary" href={backHref}>
       ← {backLabel}
@@ -1116,12 +1121,23 @@ function StudentAccount({
           {message}
         </p>
       )}
+      <StudentChargeGrid
+        canGenerate={can('charges:generate')}
+        charges={charges}
+        onChanged={onChanged}
+        onCollect={(ids) =>
+          setChargeSelection((current) => ({ ids, request: (current?.request ?? 0) + 1 }))
+        }
+        refreshKey={refreshKey}
+        student={student}
+      />
       <div className="account-layout">
         <CollectPaymentDialog
           variant="inline"
           initialStudent={student}
           refreshKey={refreshKey}
           focusAmount={focusAmount}
+          chargeSelection={chargeSelection}
           chargeActions={
             canWaiveLateFee
               ? (charge) =>

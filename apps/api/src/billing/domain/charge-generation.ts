@@ -55,20 +55,22 @@ export const periodsBetween = (from: string, until: string) => {
   return Array.from({ length: count }, (_, index) => addMonths(from, index));
 };
 
+/** Cuotas que se generan de una vez desde la grilla del alumno (varias clases y meses). */
+export const MAX_BATCH_CHARGES = 36;
+
 /**
- * Qué meses se pueden generar. Todos pueden el mes actual y hasta dos adelantados;
- * los meses anteriores (deuda vieja) quedan para quien gestiona cuotas.
+ * Qué meses se pueden generar: los de la inscripción, hasta dos adelantados (decisión 268).
+ * Antes del inicio de la inscripción solo genera quien gestiona cuotas (`allowBeforeStart`).
  */
 export const assertPeriodAllowed = (input: {
   period: string;
   currentPeriod: string;
-  canBackfill: boolean;
   enrollmentStart: string;
   enrollmentEnd: string | null;
   /** Administración puede generar deuda anterior al inicio: la inscripción se adelanta. */
   allowBeforeStart?: boolean;
 }) => {
-  const { period, currentPeriod, canBackfill } = input;
+  const { period, currentPeriod } = input;
   const latest = addMonths(currentPeriod, GENERATION_MONTHS_AHEAD);
   if (period > latest)
     throw new DomainError(
@@ -76,17 +78,11 @@ export const assertPeriodAllowed = (input: {
       `Se puede generar hasta ${GENERATION_MONTHS_AHEAD} meses por adelantado (hasta ${monthLabel(latest)})`,
       { field: 'period' },
     );
-  if (period < currentPeriod && !canBackfill)
-    throw new DomainError(
-      'CHARGE_PERIOD_REQUIRES_MANAGER',
-      'Las cuotas de meses anteriores las genera Administración',
-      { field: 'period' },
-    );
   const startPeriod = input.enrollmentStart.slice(0, 7);
   if (period < startPeriod && !input.allowBeforeStart)
     throw new DomainError(
       'CHARGE_PERIOD_BEFORE_ENROLLMENT',
-      `La inscripción empieza en ${monthLabel(startPeriod)}`,
+      `La inscripción empieza en ${monthLabel(startPeriod)}. Los meses anteriores los carga Administración.`,
       { field: 'period' },
     );
   if (input.enrollmentEnd && period > input.enrollmentEnd.slice(0, 7))

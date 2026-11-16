@@ -22,12 +22,15 @@ describe('generar cuota', () => {
   it('suma meses cruzando el año', () => {
     expect(addMonths('2026-12', 1)).toBe('2027-01');
   });
-  it('Admisión elige desde el mes actual; Administración hasta 12 meses atrás', () => {
+  it('Admisión elige desde el inicio de la inscripción; Administración hasta 12 meses atrás', () => {
     const base = { currentPeriod: '2026-10', enrollmentStart: '2026-03-02' };
     expect(periodRange({ ...base, canBackfill: false })).toEqual({
-      min: '2026-10',
+      min: '2026-03',
       max: '2026-12',
     });
+    expect(
+      periodRange({ currentPeriod: '2026-10', enrollmentStart: '2024-01-10', canBackfill: false }),
+    ).toEqual({ min: '2025-10', max: '2026-12' });
     expect(periodRange({ ...base, canBackfill: true })).toEqual({ min: '2025-10', max: '2026-12' });
     expect(
       periodRange({ currentPeriod: '2026-10', enrollmentStart: '2026-11-01', canBackfill: false }),

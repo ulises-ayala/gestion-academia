@@ -99,6 +99,7 @@ export function CollectPaymentDialog({
   refreshKey = 0,
   focusAmount = variant === 'dialog',
   chargeActions,
+  chargeSelection,
   onChanged,
   onClose,
 }: Readonly<{
@@ -111,6 +112,8 @@ export function CollectPaymentDialog({
   focusAmount?: boolean;
   /** Acciones extra por cuota (p. ej. quitar recargo en el estado de cuenta). */
   chargeActions?: ((charge: MonthlyChargeDto) => ReactNode) | undefined;
+  /** Cuotas marcadas en la grilla del alumno; cada pedido nuevo cambia `request`. */
+  chargeSelection?: Readonly<{ ids: readonly string[]; request: number }> | undefined;
   onChanged?(): void;
   onClose(changed: boolean): void;
 }>) {
@@ -297,9 +300,9 @@ export function CollectPaymentDialog({
     list.reduce((sum, charge) => sum + (decimalToCents(charge.outstandingAmount) ?? 0n), 0n);
   const debtCents = outstandingCents(pending);
   const debt = centsToDecimal(debtCents);
-  // Administración y Dirección pueden elegir qué cuotas paga; si no eligen, desde la más vieja.
+  // Quien cobra puede elegir qué cuotas paga (decisión 269); si no elige, desde la más vieja.
   // Con una sola cuota no hay qué elegir (y no queda una selección oculta).
-  const canChoose = can('payments:void') && pending.length > 1;
+  const canChoose = pending.length > 1;
   const chosenOpen = canChoose ? pending.filter((charge) => chosen.includes(charge.id)) : [];
   const payable = chosenOpen.length > 0 ? chosenOpen : pending;
   const payableCents = outstandingCents(payable);
@@ -320,6 +323,21 @@ export function CollectPaymentDialog({
     if (focusAmount && student && charges && tab === 'charges' && !done)
       amountInput.current?.focus();
   }, [charges, done, focusAmount, student, tab]);
+
+  // La grilla de cuotas pide cobrar las que se marcaron ahí.
+  const lastSelection = useRef(chargeSelection?.request);
+  useEffect(() => {
+    if (!chargeSelection || chargeSelection.request === lastSelection.current) return;
+    lastSelection.current = chargeSelection.request;
+    setDone(null);
+    setTab('charges');
+    setChosen(chargeSelection.ids);
+    setAmountTouched(false);
+    requestAnimationFrame(() => {
+      amountInput.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      amountInput.current?.focus({ preventScroll: true });
+    });
+  }, [chargeSelection]);
 
   const lastRefresh = useRef(refreshKey);
   useEffect(() => {

@@ -596,16 +596,14 @@ describe('PaymentsService', () => {
       expect(repository.lastChargeIds).toBeUndefined();
     });
 
-    it('Admisión no puede elegir', async () => {
+    it('Admisión también elige la cuota (decisión 269)', async () => {
       const repository = new MemoryPayments();
-      await expect(
-        new PaymentsService(repository).create(
-          { studentId, tenders, monthlyChargeIds: [october] },
-          actorId,
-          false,
-        ),
-      ).rejects.toMatchObject({ code: 'FORBIDDEN' });
-      expect(repository.last).toBeNull();
+      await new PaymentsService(repository).create(
+        { studentId, tenders, monthlyChargeIds: [october] },
+        actorId,
+        false,
+      );
+      expect(repository.lastChargeIds).toEqual([october]);
     });
 
     it('rechaza cuotas repetidas', async () => {

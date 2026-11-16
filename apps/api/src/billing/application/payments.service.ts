@@ -44,11 +44,6 @@ export class PaymentsService {
     const chargeIds = this.chargeIds(input.monthlyChargeIds);
     const cardType = parseCardType(input.cardType);
     const cardSurcharge = cardType ? cardSurchargeFor(tenders, cardType) : null;
-    if (chargeIds && !isAdministration)
-      throw new DomainError(
-        'FORBIDDEN',
-        'Solo Administración o Dirección pueden elegir las cuotas que se pagan',
-      );
     return this.repository.create(
       input.studentId,
       tenders,

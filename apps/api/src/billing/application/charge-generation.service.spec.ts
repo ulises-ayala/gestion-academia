@@ -89,6 +89,71 @@ const setup = () => {
 const reception = { id: actorId, canBackfill: false };
 const manager = { id: actorId, canBackfill: true };
 
+describe('ChargeGenerationService: varias clases y meses de una vez', () => {
+  const batch = (periods: readonly string[], studentId = 's1') => ({
+    studentId,
+    items: periods.map((period) => ({ enrollmentId, period })),
+  });
+
+  it('previsualiza las cuotas que faltan con su total y marca las que ya existen', async () => {
+    const { repository, service } = setup();
+    repository.existing.add('2026-10');
+    const preview = await service.previewBatch(batch(['2026-11', '2026-09', '2026-10']), now);
+    expect(preview.items.map((item) => [item.period, item.alreadyExists])).toEqual([
+      ['2026-09', false],
+      ['2026-10', true],
+      ['2026-11', false],
+    ]);
+    expect(preview.items[0]).toMatchObject({ enrollmentId, className: 'Zumba' });
+    expect(preview.newCount).toBe(2);
+    expect(preview.newTotal).toBe('80000.00');
+  });
+
+  it('genera solo las que faltan, sin adelantar la inscripción', async () => {
+    const { repository, service } = setup();
+    repository.existing.add('2026-10');
+    const result = await service.generateBatch(
+      batch(['2026-09', '2026-10', '2026-11']),
+      actorId,
+      now,
+    );
+    expect(result.created.map((charge) => charge.period)).toEqual(['2026-09', '2026-11']);
+    expect(result.skipped).toEqual([{ enrollmentId, period: '2026-10' }]);
+    expect(repository.created.map((item) => item.data.dueDate)).toEqual([
+      '2026-09-10',
+      '2026-11-10',
+    ]);
+    expect(repository.moved).toBeNull();
+  });
+
+  it('si un mes no se puede, no crea ninguna', async () => {
+    const { repository, service } = setup();
+    // Febrero es anterior al inicio de la inscripción (marzo).
+    await expect(
+      service.generateBatch(batch(['2026-10', '2026-02']), actorId, now),
+    ).rejects.toMatchObject({ code: 'CHARGE_PERIOD_BEFORE_ENROLLMENT' });
+    expect(repository.created).toHaveLength(0);
+  });
+
+  it('rechaza inscripciones de otro alumno, lotes vacíos, repetidos y ya generadas', async () => {
+    const { repository, service } = setup();
+    await expect(
+      service.generateBatch(batch(['2026-10'], 'otro'), actorId, now),
+    ).rejects.toMatchObject({ code: 'ENROLLMENT_NOT_FOUND' });
+    await expect(service.generateBatch(batch([]), actorId, now)).rejects.toMatchObject({
+      code: 'VALIDATION_ERROR',
+    });
+    await expect(
+      service.generateBatch(batch(['2026-10', '2026-10']), actorId, now),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+    repository.existing.add('2026-10');
+    await expect(service.generateBatch(batch(['2026-10']), actorId, now)).rejects.toMatchObject({
+      code: 'MONTHLY_CHARGE_ALREADY_EXISTS',
+    });
+    expect(repository.created).toHaveLength(0);
+  });
+});
+
 describe('ChargeGenerationService', () => {
   it('previsualiza un mes con la tarifa de la clase y vencimiento el 10', async () => {
     const { service } = setup();
@@ -194,11 +259,12 @@ describe('ChargeGenerationService', () => {
     expect(repository.created).toHaveLength(0);
   });
 
-  it('Admisión no carga meses anteriores ni antes del inicio', async () => {
+  it('Admisión carga meses anteriores de la inscripción, pero no antes del inicio', async () => {
     const { repository, service } = setup();
     await expect(
       service.generate({ enrollmentId, period: '2026-09' }, reception, now),
-    ).rejects.toMatchObject({ code: 'CHARGE_PERIOD_REQUIRES_MANAGER' });
+    ).resolves.toMatchObject({ created: [{ period: '2026-09' }] });
+    expect(repository.moved).toBeNull();
     repository.enrollment = { ...repository.enrollment, startDate: '2026-11-01' };
     await expect(
       service.generate({ enrollmentId, period: '2026-10' }, reception, now),
