@@ -16,7 +16,7 @@ import type {
   StudentListDto,
   TeacherListDto,
 } from '@academy/contracts';
-import { Check, Search } from 'lucide-react';
+import { Check, Search, Ticket, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import React, {
   useCallback,
@@ -717,6 +717,38 @@ export function CollectPaymentDialog({
         ? 'Cobrando…'
         : `Cobrar ${money(centsToDecimal(totalCents))}`;
 
+  // A quién se le cobra: dos botones grandes, siempre a la vista hasta elegir un alumno.
+  const payerSwitch = (
+    <div className="collect-payer" role="group" aria-label="A quién le cobrás">
+      <button
+        type="button"
+        aria-pressed={!walkInMode}
+        className={walkInMode ? '' : 'is-selected'}
+        disabled={saving}
+        onClick={() => walkInMode && backToSearch()}
+      >
+        <UserRound aria-hidden="true" size={22} />
+        <span>
+          <strong>Es alumno</strong>
+          <small>Con ficha: cuotas y otros cobros</small>
+        </span>
+      </button>
+      <button
+        type="button"
+        aria-pressed={walkInMode}
+        className={walkInMode ? 'is-selected' : ''}
+        disabled={saving}
+        onClick={() => !walkInMode && startWalkIn()}
+      >
+        <Ticket aria-hidden="true" size={22} />
+        <span>
+          <strong>No es alumno</strong>
+          <small>Sin ficha: clase suelta o una venta</small>
+        </span>
+      </button>
+    </div>
+  );
+
   const content = (
     <>
       <header className="collect-header">
@@ -730,6 +762,7 @@ export function CollectPaymentDialog({
 
       {!student && !walkIn ? (
         <div className="collect-search">
+          {payerSwitch}
           <label className="collect-search-field">
             <span className="sr-only">Buscar alumno</span>
             <Search aria-hidden="true" size={18} />
@@ -791,9 +824,6 @@ export function CollectPaymentDialog({
               ))
             )}
           </div>
-          <button type="button" className="link-button collect-walk-in" onClick={startWalkIn}>
-            No es alumno: cobrar una clase suelta o una venta (entradas, precintos, indumentaria…)
-          </button>
         </div>
       ) : done ? (
         <div className="collect-done" role="status">
@@ -859,22 +889,7 @@ export function CollectPaymentDialog({
         <form className="collect-form" onSubmit={(event) => void submit(event)} noValidate>
           {walkIn && (
             <>
-              <div className="collect-student">
-                <div>
-                  <strong>No es alumno</strong>
-                  <span>Sin ficha ni cuotas: se registra solo este cobro.</span>
-                </div>
-                <div className="collect-student-links">
-                  <button
-                    type="button"
-                    className="link-button"
-                    disabled={saving}
-                    onClick={backToSearch}
-                  >
-                    Buscar un alumno
-                  </button>
-                </div>
-              </div>
+              {payerSwitch}
               <div className="collect-walk-in-fields">
                 <label className="wide">
                   {walkInNameRequired ? 'Nombre y apellido' : 'Nombre y apellido (opcional)'}

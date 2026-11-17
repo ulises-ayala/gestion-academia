@@ -85,7 +85,7 @@ En **Clase suelta u otro** se elige el concepto: **Clase suelta** (con la clase 
 
 Para alguien que viene a una clase suelta sin ser alumno regular, o que compra una entrada, un precinto, indumentaria u otro concepto:
 
-1. En el buscador de **Registrar pago**, tocá **No es alumno: cobrar una clase suelta o una venta (entradas, precintos, indumentaria…)**.
+1. En **Registrar pago** hay dos botones arriba: **Es alumno** (el buscador de siempre) y **No es alumno**. Tocá **No es alumno**.
 2. Elegí el concepto: **Clase suelta** (con la clase y el profesor que la dictó) o el concepto de la venta.
 3. Nombre y apellido: obligatorio en la clase suelta; en una venta es opcional y, si no se carga, queda a nombre de **Público general**. Teléfono y DNI son opcionales, pero el teléfono sirve para mandarle el recibo.
 4. Cargá el importe y el medio, y cobrá. Si paga con tarjeta, elegí débito o crédito: el recargo se calcula solo.

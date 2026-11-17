@@ -457,10 +457,77 @@ dialog.collect-dialog::backdrop {
   max-width: 20rem;
 }
 
-/* Alumno eventual: acceso desde el buscador y sus datos (nombre, teléfono y DNI). */
-.collect-walk-in {
-  justify-self: start;
+/* A quién se le cobra: dos botones grandes, alumno o no alumno; el elegido, con el color de marca. */
+.collect-payer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
 }
+.collect-payer button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 4.5rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: none;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-normal);
+  text-align: left;
+}
+.collect-payer button > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.collect-payer strong {
+  color: var(--text);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-medium);
+}
+.collect-payer small {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.3;
+}
+.collect-payer svg {
+  flex: none;
+}
+.collect-payer button:hover:not(:disabled):not(.is-selected) {
+  border-color: var(--brand);
+  background: var(--surface-hover);
+  color: var(--text-secondary);
+}
+.collect-payer button.is-selected,
+.collect-payer button.is-selected:hover:not(:disabled) {
+  border-color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 10%, var(--surface));
+  box-shadow: inset 0 0 0 1px var(--brand);
+  color: var(--brand);
+}
+.collect-payer button.is-selected strong {
+  color: var(--brand);
+  font-weight: var(--font-weight-semibold);
+}
+@media (max-width: 36rem) {
+  .collect-payer {
+    gap: var(--space-2);
+  }
+  .collect-payer button {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+  .collect-payer strong {
+    font-size: 1rem;
+  }
+}
+
+/* Quien no es alumno: sus datos (nombre, teléfono y DNI). */
 .collect-walk-in-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
