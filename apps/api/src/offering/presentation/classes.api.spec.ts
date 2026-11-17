@@ -22,6 +22,7 @@ describe('Classes HTTP permissions', () => {
   const update = vi.fn(async () => ({ id: classId }));
   const create = vi.fn(async () => ({ id: classId }));
   const deactivate = vi.fn(async () => ({ id: classId }));
+  const get = vi.fn(async () => ({ id: classId, isTraining: false }));
   const send = (path: string, method: string, body?: unknown) =>
     fetch(`${url}${path}`, {
       method,
@@ -32,7 +33,7 @@ describe('Classes HTTP permissions', () => {
     const module = await Test.createTestingModule({
       controllers: [ClassesController],
       providers: [
-        { provide: ClassesService, useValue: { update, create, deactivate } },
+        { provide: ClassesService, useValue: { update, create, deactivate, get } },
         {
           provide: AuthService,
           useValue: {
@@ -69,6 +70,17 @@ describe('Classes HTTP permissions', () => {
     expect(update).not.toHaveBeenCalled();
     expect(create).not.toHaveBeenCalled();
     expect(deactivate).not.toHaveBeenCalled();
+  });
+  it('solo Administración y Dirección marcan una clase como formación', async () => {
+    expect((await send(`/classes/${classId}`, 'PATCH', { isTraining: true })).status).toBe(403);
+    expect(update).not.toHaveBeenCalled();
+    // El formulario manda la marca como está: Admisión sigue editando el resto.
+    expect(
+      (await send(`/classes/${classId}`, 'PATCH', { capacity: 20, isTraining: false })).status,
+    ).toBe(200);
+    role = 'MANAGER';
+    expect((await send(`/classes/${classId}`, 'PATCH', { isTraining: true })).status).toBe(200);
+    expect(update).toHaveBeenLastCalledWith(classId, { isTraining: true }, actorId);
   });
   it('Administración conserva el cambio de estado desde la edición', async () => {
     role = 'MANAGER';

@@ -55,7 +55,7 @@ erDiagram
 - `Teacher` mantiene identidad y ciclo de vida separados de `Student`.
 - `DanceType` categoriza clases concretas.
 - `Branch` contiene uno o más `Room`; cada horario deriva su sucursal desde el salón.
-- `AcademyClass` representa la oferta concreta y tiene un profesor responsable, tipo de danza, nivel opcional y cupo positivo.
+- `AcademyClass` representa la oferta concreta y tiene un profesor responsable, tipo de danza, nivel opcional y cupo positivo. Puede marcarse como **formación** (`isTraining`): lo cobrado de la clase se informa en "Formaciones", aparte de "Cuotas" (decisión 277).
 - `ClassSchedule` normaliza día, hora local de inicio/fin y salón. Una clase puede tener varios horarios.
 - No se permiten superposiciones de salón ni profesor para clases activas. Los intervalos contiguos son válidos.
 - No existe relación alumno–clase hasta implementar `Enrollment` en Inscripciones v1.

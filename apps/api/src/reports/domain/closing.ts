@@ -1,6 +1,8 @@
 import type {
+  CashHandoverDto,
   ClosingChangeDto,
   ClosingFiguresDto,
+  ClosingHandoversDto,
   ClosingKindDto,
   CreateClosingDto,
 } from '@academy/contracts';
@@ -102,6 +104,26 @@ export const nextClosingPeriod = (
     toDate: closable ? toDate : fromDate,
     closable,
     reason: closable ? null : 'Ya está cerrado hasta ayer.',
+  };
+};
+
+/**
+ * Entregas de efectivo a Dirección del período contra el efectivo del cierre: lo cobrado en
+ * efectivo menos lo devuelto en efectivo (las devoluciones salen del cajón).
+ */
+export const closingHandovers = (
+  figures: ClosingFiguresDto,
+  items: readonly CashHandoverDto[],
+): ClosingHandoversDto => {
+  const of = (list: ClosingFiguresDto['refunds']['byMethod']) =>
+    new Prisma.Decimal(list.find((item) => item.method === 'CASH')?.amount ?? 0);
+  const cash = of(figures.collections.byMethod).minus(of(figures.refunds.byMethod));
+  const delivered = items.reduce((sum, item) => sum.plus(item.amount), new Prisma.Decimal(0));
+  return {
+    items,
+    delivered: delivered.toFixed(2),
+    cash: cash.toFixed(2),
+    difference: delivered.minus(cash).toFixed(2),
   };
 };
 

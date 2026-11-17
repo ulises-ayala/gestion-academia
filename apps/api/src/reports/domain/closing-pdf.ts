@@ -59,7 +59,10 @@ export function renderClosingPdf(closing: CollectionClosingDto, timezone: string
     doc.x = left;
   };
 
-  const kind = closing.kind === 'WEEKLY' ? 'Cierre semanal' : 'Cierre mensual';
+  const kind =
+    closing.kind === 'WEEKLY'
+      ? `Cierre semanal${closing.sequence ? ` · ${closing.sequence}.º corte del mes` : ''}`
+      : 'Cierre mensual';
   doc.font('Helvetica-Bold').fontSize(18).fillColor(COLORS.accent).text(`${kind} · Carmesí`);
   doc
     .font('Helvetica')
@@ -101,6 +104,34 @@ export function renderClosingPdf(closing: CollectionClosingDto, timezone: string
       0.5,
     );
   }
+  const { handovers } = closing;
+  heading('Efectivo entregado a Dirección');
+  if (handovers.items.length === 0)
+    doc
+      .font('Helvetica')
+      .fontSize(9.5)
+      .fillColor(COLORS.muted)
+      .text(
+        `No hay entregas registradas para este período. Efectivo cobrado: ${formatMoney(handovers.cash)}.`,
+        left,
+        doc.y,
+        { width },
+      );
+  else
+    table(
+      ['Entrega', 'Recibió', 'Importe'],
+      [
+        ...handovers.items.map((item) => [
+          `Del ${formatDate(item.fromDate)} al ${formatDate(item.toDate)}${item.note ? ` · ${item.note}` : ''}`,
+          item.receivedBy,
+          formatMoney(item.amount),
+        ]),
+        ['Total entregado', '', formatMoney(handovers.delivered)],
+        ['Efectivo cobrado en el período', '', formatMoney(handovers.cash)],
+        ['Diferencia (entregado menos cobrado)', '', formatMoney(handovers.difference)],
+      ],
+      0.5,
+    );
   if (snapshot.students) {
     const s = snapshot.students;
     heading('Alumnos y deuda al cierre');

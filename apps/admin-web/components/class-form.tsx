@@ -14,6 +14,7 @@ import { ApiClientError, apiRequest } from '../lib/api-client';
 import { dayLabels } from '../lib/offering';
 import { additionalTeacherOptions, withCurrentOption } from '../lib/class-form-options';
 import { notifyError } from '../lib/notify';
+import { useAuth } from './auth-provider';
 
 type UiSchedule = ClassScheduleInputDto & { branchId: string };
 const days = Object.keys(dayLabels) as DayOfWeekDto[];
@@ -22,6 +23,7 @@ export function ClassForm({
   onSaved,
   onCancel,
 }: Readonly<{ academicClass?: ClassDto; onSaved(value: ClassDto): void; onCancel?(): void }>) {
+  const { can } = useAuth();
   const [danceTypes, setDanceTypes] = useState<readonly DanceTypeDto[]>([]);
   const [teachers, setTeachers] = useState<TeacherListDto['items']>([]);
   const [branches, setBranches] = useState<readonly BranchDto[]>([]);
@@ -32,6 +34,7 @@ export function ClassForm({
     teacherId: academicClass?.teacher.id ?? '',
     level: academicClass?.level ?? '',
     capacity: academicClass?.capacity ?? 1,
+    isTraining: academicClass?.isTraining ?? false,
   });
   const [additionalTeacherIds, setAdditionalTeacherIds] = useState<readonly string[]>(
     academicClass?.additionalTeachers.map(({ id }) => id) ?? [],
@@ -192,6 +195,25 @@ export function ClassForm({
           />
         </label>
       </div>
+      {can('offering:manage') && (
+        <fieldset>
+          <legend>Recaudación</legend>
+          <div className="teacher-checklist">
+            <label>
+              <input
+                type="checkbox"
+                checked={form.isTraining}
+                onChange={(e) => setForm({ ...form, isTraining: e.target.checked })}
+              />
+              Es una formación
+            </label>
+          </div>
+          <p className="subtitle">
+            Lo cobrado de esta clase sale en “Formaciones”, aparte de “Cuotas”, en Reportes y en los
+            cierres.
+          </p>
+        </fieldset>
+      )}
       <fieldset>
         <legend>Otros profesores</legend>
         <p className="subtitle">

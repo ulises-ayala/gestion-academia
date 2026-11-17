@@ -16,6 +16,7 @@ const room = (id: string, name: string, branchId = 'b1', branchName = 'Centro') 
 const lesson = (overrides: Partial<ClassDto> & Pick<ClassDto, 'id' | 'name'>): ClassDto => ({
   level: null,
   capacity: 20,
+  isTraining: false,
   status: 'ACTIVE',
   danceType: { id: 'd1', name: 'Zumba' },
   teacher: { id: 't1', firstName: 'Jose Luis', lastName: 'Barrios' },

@@ -9,14 +9,21 @@ import type {
   PaymentMethodDto,
 } from '@academy/contracts';
 import { FileDown } from 'lucide-react';
+import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { CashHandoverDialog } from '../../components/cash-handovers';
+import { ClosingCash } from '../../components/closing-cash';
 import { ApiClientError, apiRequest } from '../../lib/api-client';
 import {
+  closingCutLabel,
   closingKindLabels,
   closingPayload,
   closingPeriodLabel,
   closingPreviewQuery,
+  closingSummaryText,
+  closingSummaryUrl,
 } from '../../lib/closings';
+import { businessToday } from '../../lib/dates';
 import { paymentMethodLabels } from '../../lib/payments';
 import { money } from '../../lib/money';
 
@@ -94,6 +101,27 @@ function FiguresTable({
   );
 }
 
+/** Lo que entró a la cuenta de Mercado Pago en el período, con el detalle de esos cobros. */
+function MercadoPagoNote({
+  figures,
+  fromDate,
+  toDate,
+}: Readonly<{ figures: ClosingFiguresDto; fromDate: string; toDate: string }>) {
+  const amount = figures.collections.byMethod.find((item) => item.method === 'MERCADO_PAGO');
+  if (!amount || Number(amount.amount) <= 0) return null;
+  return (
+    <p className="closing-note">
+      Ingresó a la cuenta de Mercado Pago: <strong>{money(amount.amount)}</strong> ·{' '}
+      <Link
+        className="text-link"
+        href={`/payments?tab=history&paymentStatus=CONFIRMED&method=MERCADO_PAGO&from=${fromDate}&to=${toDate}`}
+      >
+        Ver esos cobros
+      </Link>
+    </p>
+  );
+}
+
 /** Alumnos y deuda al cierre (solo el mensual). */
 function StudentFigures({ figures }: Readonly<{ figures: ClosingFiguresDto }>) {
   const students = figures.students;
@@ -118,6 +146,16 @@ function StudentFigures({ figures }: Readonly<{ figures: ClosingFiguresDto }>) {
   );
 }
 
+/** El resumen sale de la foto guardada, con las entregas de hoy. */
+const summaryOf = (closing: CollectionClosingDto) => ({
+  kind: closing.kind,
+  fromDate: closing.fromDate,
+  toDate: closing.toDate,
+  sequence: closing.sequence,
+  figures: closing.snapshot,
+  handovers: closing.handovers,
+});
+
 /**
  * Cierres semanales y mensuales de la recaudación: se revisan, se guardan como una foto y después
  * se consultan, se descargan o se imprimen; las correcciones posteriores se ven aparte.
@@ -131,6 +169,10 @@ export default function ClosingsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  // Entrega de efectivo que se registra desde un cierre, con su período.
+  const [handingOver, setHandingOver] = useState<{ fromDate: string; toDate: string } | null>(null);
+  const [reload, setReload] = useState(0);
+  const [copied, setCopied] = useState(false);
   // El período que llega con la propuesta ya trae sus importes: no se vuelve a pedir.
   const proposed = useRef<string | null>(null);
 
@@ -172,7 +214,7 @@ export default function ClosingsPage() {
     return () => {
       active = false;
     };
-  }, [kind, period]);
+  }, [kind, period, reload]);
 
   async function save() {
     if (!period || !preview?.closable || saving) return;
@@ -195,8 +237,33 @@ export default function ClosingsPage() {
     }
   }
 
+  // La entrega cubre hasta hoy como máximo (un mes en curso todavía no terminó).
+  const registerHandover = (fromDate: string, toDate: string) => {
+    const today = businessToday();
+    if (fromDate <= today) setHandingOver({ fromDate, toDate: toDate < today ? toDate : today });
+  };
+
+  function closeHandover() {
+    setHandingOver(null);
+    // Las entregas no son parte de la foto: se vuelven a pedir.
+    proposed.current = null;
+    setReload((value) => value + 1);
+    if (selected) void open(selected.id);
+  }
+
+  async function copySummary(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setError('No se pudo copiar el resumen. Mandalo por WhatsApp o descargá el PDF.');
+    }
+  }
+
   async function open(id: string) {
     try {
+      setCopied(false);
       setSelected(await apiRequest<CollectionClosingDto>(`/closings/${id}`));
     } catch (caught) {
       setError(caught instanceof ApiClientError ? caught.message : 'No se pudo abrir el cierre.');
@@ -237,6 +304,9 @@ export default function ClosingsPage() {
             {preview && (
               <p className="subtitle">
                 {closingPeriodLabel(kind, preview.fromDate, preview.toDate)}
+                {closingCutLabel(preview.fromDate, preview.sequence)
+                  ? ` · ${closingCutLabel(preview.fromDate, preview.sequence)}`
+                  : ''}
               </p>
             )}
           </div>
@@ -315,6 +385,15 @@ export default function ClosingsPage() {
               figures={preview.figures}
               caption="Recaudación por concepto y medio (hoy)"
             />
+            <MercadoPagoNote
+              figures={preview.figures}
+              fromDate={preview.fromDate}
+              toDate={preview.toDate}
+            />
+            <ClosingCash
+              handovers={preview.handovers}
+              onRegister={() => registerHandover(preview.fromDate, preview.toDate)}
+            />
             <StudentFigures figures={preview.figures} />
           </>
         )}
@@ -357,20 +436,49 @@ export default function ClosingsPage() {
                 {closingPeriodLabel(selected.kind, selected.fromDate, selected.toDate)}
               </h2>
               <p className="subtitle">
+                {closingCutLabel(selected.fromDate, selected.sequence)
+                  ? `${closingCutLabel(selected.fromDate, selected.sequence)} · `
+                  : ''}
                 Foto guardada por {selected.createdBy.username} el {dateTime(selected.createdAt)}.
               </p>
             </div>
-            <a
-              className="button secondary closing-pdf"
-              href={`${apiUrl}/closings/${selected.id}/pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FileDown aria-hidden="true" size={18} strokeWidth={1.8} />
-              Descargar o imprimir PDF
-            </a>
+            <div className="closing-actions">
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => void copySummary(closingSummaryText(summaryOf(selected)))}
+              >
+                {copied ? 'Resumen copiado' : 'Copiar resumen'}
+              </button>
+              <a
+                className="button secondary"
+                href={closingSummaryUrl(closingSummaryText(summaryOf(selected)))}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Enviar por WhatsApp
+              </a>
+              <a
+                className="button secondary closing-pdf"
+                href={`${apiUrl}/closings/${selected.id}/pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FileDown aria-hidden="true" size={18} strokeWidth={1.8} />
+                Descargar o imprimir PDF
+              </a>
+            </div>
           </div>
           <FiguresTable figures={selected.snapshot} caption="Recaudación al cerrar" />
+          <MercadoPagoNote
+            figures={selected.snapshot}
+            fromDate={selected.fromDate}
+            toDate={selected.toDate}
+          />
+          <ClosingCash
+            handovers={selected.handovers}
+            onRegister={() => registerHandover(selected.fromDate, selected.toDate)}
+          />
           <StudentFigures figures={selected.snapshot} />
           <h3>Correcciones posteriores al cierre</h3>
           {selected.changes.length === 0 ? (
@@ -407,6 +515,7 @@ export default function ClosingsPage() {
           )}
         </section>
       )}
+      {handingOver && <CashHandoverDialog initialPeriod={handingOver} onClose={closeHandover} />}
     </div>
   );
 }

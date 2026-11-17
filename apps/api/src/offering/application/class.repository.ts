@@ -6,6 +6,7 @@ export type ClassData = Readonly<{
   name: string;
   level: string | null;
   capacity: number;
+  isTraining: boolean;
   status: 'ACTIVE' | 'INACTIVE';
   danceType: { id: string; name: string };
   teacher: { id: string; firstName: string; lastName: string };

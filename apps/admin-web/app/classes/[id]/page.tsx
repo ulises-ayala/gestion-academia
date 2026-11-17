@@ -151,6 +151,12 @@ export default function ClassDetailPage() {
             <dt>Nivel</dt>
             <dd>{item.level ?? '—'}</dd>
           </div>
+          {item.isTraining && (
+            <div>
+              <dt>Recaudación</dt>
+              <dd>Formación (sale aparte de Cuotas)</dd>
+            </div>
+          )}
           <div>
             <dt>Cupo utilizado</dt>
             <dd>

@@ -38,6 +38,7 @@ const dto = (overrides: Partial<EnrollmentDto> = {}): EnrollmentDto => ({
     name: 'Bachata',
     level: 'Inicial',
     capacity: 1,
+    isTraining: false,
     status: 'ACTIVE',
     danceType: { id: crypto.randomUUID(), name: 'Bachata' },
     teacher: { id: crypto.randomUUID(), firstName: 'Juan', lastName: 'Pérez' },

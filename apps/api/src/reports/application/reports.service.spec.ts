@@ -72,6 +72,24 @@ describe('ReportsService', () => {
           method: 'MERCADO_PAGO',
           amount: decimal('16000.00'),
         },
+        // Lo de las clases de formación llega aparte, sea cuota o clase suelta.
+        {
+          kind: 'CHARGES',
+          concept: null,
+          conceptId: null,
+          conceptName: null,
+          conceptOrder: null,
+          method: 'CASH',
+          training: true,
+          amount: decimal('9000.00'),
+        },
+        {
+          kind: 'OTHER',
+          concept: 'SINGLE_CLASS',
+          method: 'MERCADO_PAGO',
+          training: true,
+          amount: decimal('1000.00'),
+        },
       ],
       [
         {
@@ -142,8 +160,8 @@ describe('ReportsService', () => {
       { method: 'CARD', amount: '0.00' },
     ]);
     expect(report.collections.byConcept).toEqual({
-      charges: '34000.00',
-      singleClass: '16000.00',
+      charges: '43000.00',
+      singleClass: '17000.00',
       other: '0.00',
     });
     const methods = (cash: string, mp: string) => [
@@ -158,6 +176,12 @@ describe('ReportsService', () => {
         label: 'Cuotas',
         byMethod: methods('30000.00', '4000.00'),
         total: '34000.00',
+      },
+      {
+        concept: 'TRAINING',
+        label: 'Formaciones',
+        byMethod: methods('9000.00', '1000.00'),
+        total: '10000.00',
       },
       {
         concept: 'SINGLE_CLASS',

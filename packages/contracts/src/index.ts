@@ -215,12 +215,26 @@ export type ClosingChangeDto = Readonly<{
   current: string;
   difference: string;
 }>;
+/** Entregas de efectivo a Dirección de un período, contra el efectivo cobrado en él. */
+export type ClosingHandoversDto = Readonly<{
+  /** Entregas vigentes cuyo período toca algún día del cierre, de la más vieja a la más nueva. */
+  items: readonly CashHandoverDto[];
+  delivered: string;
+  /** Efectivo cobrado en el período menos lo devuelto en efectivo. */
+  cash: string;
+  /** Entregado menos efectivo: negativo si falta entregar. */
+  difference: string;
+}>;
 export type CollectionClosingDto = CollectionClosingSummaryDto &
   Readonly<{
     snapshot: ClosingFiguresDto;
     /** Importes de hoy para el mismo período (sin alumnos: esos quedan como estaban). */
     current: ClosingFiguresDto;
     changes: readonly ClosingChangeDto[];
+    /** N.º de corte del mes (semanal): 1 para el primero que arranca en ese mes. */
+    sequence: number | null;
+    /** Entregas de efectivo de hoy para el período (no forman parte de la foto). */
+    handovers: ClosingHandoversDto;
   }>;
 export type CollectionClosingListDto = PageDto<CollectionClosingSummaryDto>;
 export type CreateClosingDto = Readonly<{
@@ -240,6 +254,8 @@ export type ClosingPreviewDto = Readonly<{
   closable: boolean;
   reason: string | null;
   figures: ClosingFiguresDto;
+  sequence: number | null;
+  handovers: ClosingHandoversDto;
 }>;
 export type ReportsSummaryDto = Readonly<{
   activeStudents: number;
@@ -465,6 +481,8 @@ export type ClassDto = Readonly<{
   name: string;
   level: string | null;
   capacity: number;
+  /** Formación: lo cobrado de la clase sale en "Formaciones", aparte de "Cuotas". */
+  isTraining: boolean;
   status: RecordStatusDto;
   danceType: Readonly<{ id: string; name: string }>;
   /** Profesor responsable: recibe las cuotas en los reportes. */
@@ -484,6 +502,7 @@ export type CreateClassDto = Readonly<{
   additionalTeacherIds?: readonly string[];
   level?: string | null;
   capacity: number;
+  isTraining?: boolean;
   schedules: readonly ClassScheduleInputDto[];
 }>;
 export type UpdateClassDto = Readonly<

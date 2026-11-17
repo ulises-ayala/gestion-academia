@@ -8,6 +8,7 @@ import type {
 } from '@academy/contracts';
 import { Prisma } from '@academy/database';
 import { Injectable } from '@nestjs/common';
+import { handoverInclude, mapHandover } from '../../cash/application/cash-handovers.service';
 import { businessDayAt } from '../../dashboard/application/business-day';
 import { PrismaService } from '../../database/prisma.service';
 import { isSerializationConflict } from '../../database/serializable-retry';
@@ -15,6 +16,7 @@ import { DomainError } from '../../shared/domain/domain-error';
 import {
   addDays,
   closingChanges,
+  closingHandovers,
   closingPeriod,
   monthRange,
   nextClosingPeriod,
@@ -102,6 +104,32 @@ export class ClosingsService {
     };
   }
 
+  /** Entregas de efectivo vigentes que tocan algún día del período, contra su efectivo. */
+  private async handovers(figures: ClosingFiguresDto, fromDate: string, toDate: string) {
+    const items = await this.prisma.cashHandover.findMany({
+      where: {
+        voidedAt: null,
+        fromDate: { lte: dateValue(toDate) },
+        toDate: { gte: dateValue(fromDate) },
+      },
+      include: handoverInclude,
+      orderBy: [{ fromDate: 'asc' }, { createdAt: 'asc' }],
+    });
+    return closingHandovers(figures, items.map(mapHandover));
+  }
+
+  /** N.º de corte del mes: los cierres semanales que arrancan antes en el mismo mes, más uno. */
+  private async sequence(kind: ClosingKindDto, fromDate: string) {
+    if (kind !== 'WEEKLY') return null;
+    const earlier = await this.prisma.collectionClosing.count({
+      where: {
+        kind: 'WEEKLY',
+        fromDate: { gte: dateValue(`${fromDate.slice(0, 7)}-01`), lt: dateValue(fromDate) },
+      },
+    });
+    return earlier + 1;
+  }
+
   /**
    * Período a cerrar y sus importes de hoy, para revisar antes de guardar: el que se propone o, si
    * se indica, otro (`custom`). `closable` dice si se puede guardar tal cual.
@@ -130,11 +158,12 @@ export class ClosingsService {
       });
       period = nextClosingPeriod(kind, last ? isoDate(last.toDate) : null, today);
     }
-    return {
-      kind,
-      ...period,
-      figures: await this.figures(kind, period.fromDate, period.toDate),
-    };
+    const figures = await this.figures(kind, period.fromDate, period.toDate);
+    const [sequence, handovers] = await Promise.all([
+      this.sequence(kind, period.fromDate),
+      this.handovers(figures, period.fromDate, period.toDate),
+    ]);
+    return { kind, ...period, figures, sequence, handovers };
   }
 
   async list(kind: ClosingKindDto, page: number, pageSize: number) {
@@ -155,10 +184,23 @@ export class ClosingsService {
     const item = await this.prisma.collectionClosing.findUnique({ where: { id }, include });
     if (!item) throw new DomainError('COLLECTION_CLOSING_NOT_FOUND', 'Cierre no encontrado');
     const snapshot = item.snapshot as unknown as ClosingFiguresDto;
-    const now = await this.figures('WEEKLY', isoDate(item.fromDate), isoDate(item.toDate));
+    const [fromDate, toDate] = [isoDate(item.fromDate), isoDate(item.toDate)];
+    const [now, sequence, handovers] = await Promise.all([
+      this.figures('WEEKLY', fromDate, toDate),
+      this.sequence(item.kind, fromDate),
+      // Contra el efectivo de la foto: es el que se rindió al cerrar.
+      this.handovers(snapshot, fromDate, toDate),
+    ]);
     // Alumnos y deuda quedan como estaban: solo se comparan los importes.
     const current = { ...now, students: null };
-    return { ...summary(item), snapshot, current, changes: closingChanges(snapshot, current) };
+    return {
+      ...summary(item),
+      snapshot,
+      current,
+      changes: closingChanges(snapshot, current),
+      sequence,
+      handovers,
+    };
   }
 
   async create(input: CreateClosingDto | null, actorId: string, now = new Date()) {

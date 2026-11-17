@@ -34,6 +34,7 @@ export class ClassesService {
         patch.additionalTeacherIds ?? current.additionalTeachers.map(({ id }) => id),
       level: patch.level === undefined ? current.level : patch.level,
       capacity: patch.capacity ?? current.capacity,
+      isTraining: patch.isTraining ?? current.isTraining,
       schedules:
         patch.schedules ??
         current.schedules.map((schedule) => ({

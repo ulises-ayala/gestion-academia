@@ -32,6 +32,7 @@ const mapClass = (item: IncludedClass): ClassData => ({
   name: item.name,
   level: item.level,
   capacity: item.capacity,
+  isTraining: item.isTraining,
   status: item.status,
   danceType: item.danceType,
   teacher: item.teacher,
@@ -230,6 +231,7 @@ export class PrismaClassRepository implements ClassRepository {
           teacherId: data.teacherId,
           level: data.level,
           capacity: data.capacity,
+          isTraining: data.isTraining,
           status: data.status,
         };
         let classId = id;
@@ -271,6 +273,7 @@ export class PrismaClassRepository implements ClassRepository {
                 additionalTeacherIds: before.additionalTeachers.map(({ teacher }) => teacher.id),
                 level: before.level,
                 capacity: before.capacity,
+                isTraining: before.isTraining,
                 status: before.status,
                 schedules: before.schedules.map((item) => ({
                   dayOfWeek: item.dayOfWeek,
@@ -286,6 +289,7 @@ export class PrismaClassRepository implements ClassRepository {
                 additionalTeacherIds: saved.additionalTeachers.map(({ teacher }) => teacher.id),
                 level: saved.level,
                 capacity: saved.capacity,
+                isTraining: saved.isTraining,
                 status: saved.status,
                 schedules: saved.schedules.map((item) => ({
                   dayOfWeek: item.dayOfWeek,

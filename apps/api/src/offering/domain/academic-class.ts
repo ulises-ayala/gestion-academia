@@ -62,6 +62,7 @@ export type ValidClassInput = Readonly<{
   additionalTeacherIds: readonly string[];
   level: string | null;
   capacity: number;
+  isTraining: boolean;
   schedules: readonly ClassScheduleInputDto[];
   status: 'ACTIVE' | 'INACTIVE';
 }>;
@@ -75,6 +76,10 @@ export const validateClass = (
   )
     throw new DomainError('VALIDATION_ERROR', 'El cupo debe ser un entero positivo', {
       field: 'capacity',
+    });
+  if (input.isTraining !== undefined && typeof input.isTraining !== 'boolean')
+    throw new DomainError('VALIDATION_ERROR', 'Indicá si la clase es una formación', {
+      field: 'isTraining',
     });
   if (!Array.isArray(input.schedules) || input.schedules.length === 0)
     throw new DomainError('VALIDATION_ERROR', 'La clase debe tener al menos un horario', {
@@ -121,6 +126,7 @@ export const validateClass = (
     additionalTeacherIds: additionalTeachers(input.additionalTeacherIds, teacherId),
     level: optional(input.level, 'level', 100),
     capacity: input.capacity,
+    isTraining: input.isTraining ?? false,
     schedules,
     status: input.status ?? 'ACTIVE',
   };

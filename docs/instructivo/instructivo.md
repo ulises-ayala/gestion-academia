@@ -214,11 +214,13 @@ Solo **Dirección** (las devoluciones las autoriza Charo). Devuelve todo o parte
 ## Caja: control
 
 - **Corregir declaración**: en el historial de turnos, abrí el turno → **Detalle del turno** → **Corregir declaración** (medio, importe correcto y motivo). El cierre original no se modifica.
-- **Entregar efectivo a Dirección**: botón en Caja. Registrás el período, lo entregado y a quién; el sistema muestra cuánto efectivo entró en ese período y la diferencia. No es un gasto ni cambia la caja.
+- **Entregar efectivo a Dirección**: botón en Caja (o **Registrar entrega** desde un cierre). Registrás el período, lo entregado y a quién; el sistema muestra cuánto efectivo entró en ese período y la diferencia. No es un gasto ni cambia la caja.
 
 ## Clases
 
 El listado abre con las **activas**. Las inactivas (archivadas) se ven eligiendo "Inactivas" o "Todos" en Estado. Desactivar una clase la archiva sin perder su historial.
+
+**Es una formación** (Administración y Dirección, al editar la clase): lo cobrado de esa clase —cuotas y clases sueltas— sale en la línea **Formaciones**, aparte de **Cuotas**, en Reportes y en los cierres. Marcala en Formación Docente y en las demás formaciones.
 
 Una clase creada en las pruebas que **no tiene inscripciones, cobros ni clases de prueba** se puede borrar: en la ficha de una clase inactiva, **Borrar clase de prueba** (con motivo). Si tiene registros, el sistema no la borra y hay que dejarla desactivada.
 
@@ -236,6 +238,17 @@ Una clase creada en las pruebas que **no tiene inscripciones, cobros ni clases d
 - **Mensual** (para Charo): un mes ya terminado, con la recaudación por concepto y medio, alumnos activos, nuevos ingresos, bajas, cuotas pendientes y montos adeudados.
 
 Un cierre guardado no cambia. Al abrirlo (**Ver**) se ve la foto y, aparte, las **correcciones posteriores al cierre**: lo que hoy da distinto porque se corrigió o anuló un pago después. **Descargar o imprimir PDF** lo abre listo para imprimir. Dirección los consulta desde su usuario.
+
+### Rendirle el corte a Dirección
+
+Cada cierre junta lo que antes se llevaba en la planilla:
+
+- **Por concepto y por medio**: la tabla, con Cuotas, Formaciones, cada concepto de venta y el total.
+- **Ingresó a la cuenta de Mercado Pago**: el total del período y **Ver esos cobros**, que abre el historial con cada movimiento.
+- **Efectivo entregado a Dirección**: el efectivo cobrado, lo entregado y lo que falta entregar (o se entregó de más), con cada entrega. **Registrar entrega** carga el sobre con el período del cierre ya puesto; se puede registrar antes o después de guardar el cierre.
+- **Copiar resumen** o **Enviar por WhatsApp** (en un cierre guardado): arma el mensaje con el período, el número de corte del mes ("1.º corte de noviembre"), los ingresos por concepto y por medio, el total y el efectivo entregado.
+
+Para que la entrega no muestre diferencia, todo lo que entra en efectivo tiene que estar cobrado en el sistema, también las ventas a quien no es alumno (entradas, precintos, indumentaria).
 
 Para mirar cualquier otro rango, **Reportes → Cobros** muestra la misma recaudación por concepto y medio (en "Detalle por concepto y medio", y también en PDF). En Reportes, **Resumen** compara lo cobrado y las altas con el período anterior de igual largo, y **Profesores**, **Deudores**, **Asistencia** y **Caja** tienen cada uno su pestaña.
 

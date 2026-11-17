@@ -96,6 +96,8 @@ type ConceptMethodRow = {
   conceptName: string | null;
   conceptOrder: number | null;
   method: PaymentMethodDto;
+  /** Parte que corresponde a clases marcadas como formación. */
+  training: boolean;
   amount: Prisma.Decimal;
 };
 type TeacherIncomeRow = {
@@ -220,15 +222,41 @@ export class ReportsService {
         orderBy: { closedAt: 'desc' },
       }),
       this.prisma.cashShift.count({ where: { status: 'OPEN' } }),
-      // Recaudación por concepto y medio: cada medio de un pago mixto va a su columna.
+      // Recaudación por concepto y medio: cada medio de un pago mixto va a su columna. Lo de las
+      // clases de formación va aparte: de un cobro de cuotas, la parte imputada hoy a cuotas de
+      // esas clases (repartida entre sus medios en proporción); de una clase suelta, todo.
       this.prisma.$queryRaw<ConceptMethodRow[]>(Prisma.sql`
-          SELECT p.kind::text AS kind, p.concept::text AS concept, p.concept_id AS "conceptId",
-            pc.name AS "conceptName", pc.sort_order AS "conceptOrder", t.method::text AS method,
-            SUM(t.amount) AS amount
-          FROM payment_tenders t JOIN payments p ON p.id = t.payment_id
-          LEFT JOIN payment_concepts pc ON pc.id = p.concept_id
-          WHERE p.status = 'CONFIRMED' AND p.paid_at >= ${input.from} AND p.paid_at < ${input.toExclusive}
-          GROUP BY p.kind, p.concept, p.concept_id, pc.name, pc.sort_order, t.method`),
+          WITH training_allocations AS (
+            SELECT pa.payment_id, SUM(pa.amount) AS amount
+            FROM payment_allocations pa
+            JOIN monthly_charges mc ON mc.id = pa.monthly_charge_id
+            JOIN enrollments e ON e.id = mc.enrollment_id
+            JOIN classes c ON c.id = e.class_id AND c.is_training
+            GROUP BY pa.payment_id
+          ), parts AS (
+            SELECT p.kind, p.concept, p.concept_id, t.method, t.amount,
+              CASE
+                WHEN p.kind = 'CHARGES' AND p.amount > 0 THEN
+                  ROUND(t.amount * LEAST(GREATEST(COALESCE(ta.amount, 0), 0), p.amount) / p.amount, 2)
+                WHEN sc.is_training THEN t.amount
+                ELSE 0
+              END AS training_amount
+            FROM payment_tenders t JOIN payments p ON p.id = t.payment_id
+            LEFT JOIN training_allocations ta ON ta.payment_id = p.id
+            LEFT JOIN classes sc ON sc.id = p.class_id
+            WHERE p.status = 'CONFIRMED' AND p.paid_at >= ${input.from} AND p.paid_at < ${input.toExclusive}
+          ), split AS (
+            SELECT kind, concept, concept_id, method, false AS training,
+              amount - training_amount AS amount FROM parts
+            UNION ALL
+            SELECT kind, concept, concept_id, method, true, training_amount
+            FROM parts WHERE training_amount <> 0
+          )
+          SELECT x.kind::text AS kind, x.concept::text AS concept, x.concept_id AS "conceptId",
+            pc.name AS "conceptName", pc.sort_order AS "conceptOrder", x.method::text AS method,
+            x.training, SUM(x.amount) AS amount
+          FROM split x LEFT JOIN payment_concepts pc ON pc.id = x.concept_id
+          GROUP BY x.kind, x.concept, x.concept_id, pc.name, pc.sort_order, x.method, x.training`),
       // Clases sueltas por clase y por el profesor que la dictó (foto guardada en el cobro).
       this.prisma.$queryRaw<SingleClassRow[]>(Prisma.sql`
           SELECT c.id AS "classId", c.name AS "className", t.id AS "teacherId",
@@ -273,21 +301,24 @@ export class ReportsService {
         .filter(match)
         .reduce((sum, row) => sum.plus(row.amount), zero())
         .toFixed(2);
-    // Cuotas y clase suelta primero, los conceptos del catálogo en su orden y el recargo al final.
+    // Cuotas, formaciones y clase suelta primero, los conceptos del catálogo en su orden y el
+    // recargo al final.
     const conceptOf = (row: ConceptMethodRow) =>
-      row.kind === 'CHARGES'
-        ? { key: 'CHARGES', label: CONCEPT_LABELS.CHARGES!, order: 0 }
-        : row.concept === 'SINGLE_CLASS' || row.concept === 'CARD_SURCHARGE' || !row.conceptId
-          ? {
-              key: row.concept ?? 'OTHER',
-              label: CONCEPT_LABELS[row.concept ?? 'OTHER'] ?? 'Otros',
-              order: row.concept === 'CARD_SURCHARGE' ? 100_000 : 1,
-            }
-          : {
-              key: row.conceptId,
-              label: row.conceptName ?? 'Otros',
-              order: 10 + (row.conceptOrder ?? 100),
-            };
+      row.training
+        ? { key: 'TRAINING', label: CONCEPT_LABELS.TRAINING!, order: 0.5 }
+        : row.kind === 'CHARGES'
+          ? { key: 'CHARGES', label: CONCEPT_LABELS.CHARGES!, order: 0 }
+          : row.concept === 'SINGLE_CLASS' || row.concept === 'CARD_SURCHARGE' || !row.conceptId
+            ? {
+                key: row.concept ?? 'OTHER',
+                label: CONCEPT_LABELS[row.concept ?? 'OTHER'] ?? 'Otros',
+                order: row.concept === 'CARD_SURCHARGE' ? 100_000 : 1,
+              }
+            : {
+                key: row.conceptId,
+                label: row.conceptName ?? 'Otros',
+                order: 10 + (row.conceptOrder ?? 100),
+              };
     const concepts = [
       ...new Map(byConcept.map((row) => [conceptOf(row).key, conceptOf(row)])).values(),
     ].sort(

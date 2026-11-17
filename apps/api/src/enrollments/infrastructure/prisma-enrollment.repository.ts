@@ -87,6 +87,7 @@ const map = (item: Included): EnrollmentDto => ({
     name: item.class.name,
     level: item.class.level,
     capacity: item.class.capacity,
+    isTraining: item.class.isTraining,
     status: item.class.status,
     danceType: item.class.danceType,
     teacher: item.class.teacher,

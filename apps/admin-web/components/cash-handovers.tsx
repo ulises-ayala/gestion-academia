@@ -20,13 +20,20 @@ import { dayMonth } from '../lib/dates';
  * gasto: queda registrado qué período cubre y cuánto se entregó frente al efectivo que entró a la
  * caja. Abajo, las últimas entregas con la opción de anular.
  */
-export function CashHandoverDialog({ onClose }: Readonly<{ onClose(): void }>) {
+export function CashHandoverDialog({
+  initialPeriod,
+  onClose,
+}: Readonly<{
+  /** Período ya elegido (el de un cierre); sin él se propone el siguiente a la última entrega. */
+  initialPeriod?: Readonly<{ fromDate: string; toDate: string }> | undefined;
+  onClose(): void;
+}>) {
   const dialog = useRef<HTMLDialogElement>(null);
   const today = businessToday();
   const [list, setList] = useState<CashHandoverListDto | null>(null);
   const [form, setForm] = useState<CashHandoverForm>({
-    fromDate: '',
-    toDate: today,
+    fromDate: initialPeriod?.fromDate ?? '',
+    toDate: initialPeriod?.toDate ?? today,
     amount: '',
     receivedBy: 'Dirección',
     note: '',
@@ -60,14 +67,16 @@ export function CashHandoverDialog({ onClose }: Readonly<{ onClose(): void }>) {
   useEffect(() => {
     load()
       .then((result) =>
-        setForm((current) => ({ ...current, ...nextHandoverPeriod(result.items, today) })),
+        setForm((current) =>
+          initialPeriod ? current : { ...current, ...nextHandoverPeriod(result.items, today) },
+        ),
       )
       .catch((caught) =>
         setError(
           caught instanceof ApiClientError ? caught.message : 'No se pudieron cargar las entregas.',
         ),
       );
-  }, [load, today]);
+  }, [initialPeriod, load, today]);
 
   // Efectivo que entró a la caja en el período; precarga el importe mientras no se lo cambie a mano.
   useEffect(() => {

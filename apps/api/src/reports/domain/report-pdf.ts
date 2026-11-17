@@ -8,6 +8,8 @@ export const PDF_DEBTOR_LIMIT = 20;
 /** Nombres de los conceptos que no vienen del catálogo (`payment_concepts`). */
 export const CONCEPT_LABELS: Readonly<Record<string, string>> = {
   CHARGES: 'Cuotas',
+  /** Cuotas y clases sueltas de las clases marcadas como formación (decisión 277). */
+  TRAINING: 'Formaciones',
   SINGLE_CLASS: 'Clase suelta',
   CARD_SURCHARGE: 'Recargo por tarjeta',
   OTHER: 'Otros',

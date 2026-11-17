@@ -10,12 +10,13 @@ import { validateCashHandover } from '../domain/cash-handover';
 
 const timeZone = () => process.env.BUSINESS_TIMEZONE ?? 'America/Buenos_Aires';
 const isoDate = (date: Date) => date.toISOString().slice(0, 10);
-const include = {
+export const handoverInclude = {
   createdBy: { select: { id: true, username: true } },
   voidedBy: { select: { id: true, username: true } },
 };
+const include = handoverInclude;
 type IncludedHandover = Prisma.CashHandoverGetPayload<{ include: typeof include }>;
-const mapHandover = (item: IncludedHandover): CashHandoverDto => ({
+export const mapHandover = (item: IncludedHandover): CashHandoverDto => ({
   id: item.id,
   fromDate: isoDate(item.fromDate),
   toDate: isoDate(item.toDate),

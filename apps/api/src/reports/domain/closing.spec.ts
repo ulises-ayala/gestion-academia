@@ -2,6 +2,7 @@ import type { ClosingFiguresDto } from '@academy/contracts';
 import { describe, expect, it } from 'vitest';
 import {
   closingChanges,
+  closingHandovers,
   closingPeriod,
   monthRange,
   nextClosingPeriod,
@@ -22,6 +23,42 @@ const figures = (cash: string, refund = '0.00'): ClosingFiguresDto => ({
   },
   refunds: { total: refund, byMethod: methods(refund) },
   students: null,
+});
+
+describe('entregas de efectivo del cierre', () => {
+  const handover = (amount: string) => ({
+    id: amount,
+    fromDate: '2026-11-02',
+    toDate: '2026-11-07',
+    amount,
+    collectedAmount: amount,
+    difference: '0.00',
+    receivedBy: 'Dirección',
+    note: null,
+    createdBy: { id: 'u', username: 'administracion' },
+    createdAt: '2026-11-08T13:00:00.000Z',
+    voidedAt: null,
+    voidedBy: null,
+    voidReason: null,
+  });
+
+  it('compara lo entregado con el efectivo cobrado menos lo devuelto en efectivo', () => {
+    expect(
+      closingHandovers(figures('850000.00', '20000.00'), [
+        handover('500000.00'),
+        handover('300000.00'),
+      ]),
+    ).toMatchObject({ delivered: '800000.00', cash: '830000.00', difference: '-30000.00' });
+  });
+
+  it('sin entregas, falta entregar todo el efectivo', () => {
+    expect(closingHandovers(figures('850000.00'), [])).toEqual({
+      items: [],
+      delivered: '0.00',
+      cash: '850000.00',
+      difference: '-850000.00',
+    });
+  });
 });
 
 describe('cierres de la recaudación', () => {

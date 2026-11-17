@@ -61,6 +61,7 @@ class MemoryClasses implements ClassRepository {
       name: data.name,
       level: data.level,
       capacity: data.capacity,
+      isTraining: data.isTraining,
       status: data.status,
       danceType: { id: data.danceTypeId, name: 'Bachata' },
       teacher: { id: data.teacherId, firstName: 'Ana', lastName: 'Pérez' },
@@ -160,6 +161,16 @@ describe('ClassesService', () => {
     expect(renamed.additionalTeachers.map(({ id }) => id)).toEqual([sofia, anabella]);
     const trimmed = await service.update(created.id, { additionalTeacherIds: [anabella] });
     expect(trimmed.additionalTeachers.map(({ id }) => id)).toEqual([anabella]);
+  });
+  it('marca la clase como formación y conserva la marca al editar otros datos', async () => {
+    const created = await service.create(input());
+    expect(created.isTraining).toBe(false);
+    const marked = await service.update(created.id, { isTraining: true });
+    expect(marked.isTraining).toBe(true);
+    expect((await service.update(created.id, { capacity: 30 })).isTraining).toBe(true);
+    await expect(
+      service.update(created.id, { isTraining: 'sí' as unknown as boolean }),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'isTraining' } });
   });
   it('rechaza profesores adicionales inexistentes o inactivos', async () => {
     const other = crypto.randomUUID();

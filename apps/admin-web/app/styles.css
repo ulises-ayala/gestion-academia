@@ -3027,6 +3027,61 @@ td .link-button {
 .closing-detail h3 {
   margin: var(--space-6) 0 var(--space-2);
 }
+.closing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+/* Efectivo del cierre contra lo entregado a Dirección. */
+.closing-cash {
+  margin-top: var(--space-6);
+}
+.closing-cash-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+.closing-cash .closing-cash-heading h3 {
+  margin: 0;
+}
+.closing-cash-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+}
+.closing-cash-figures > div {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.closing-cash-figures dt {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.closing-cash-figures dd {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.closing-cash-figures .is-short dd {
+  color: var(--destructive);
+}
+.closing-cash-figures .is-over dd {
+  color: var(--warning);
+}
+.closing-handovers li {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+@media (max-width: 36rem) {
+  .closing-cash-figures {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 48rem) {
   .closing-list li {
     grid-template-columns: minmax(0, 1fr) auto;

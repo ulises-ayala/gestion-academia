@@ -278,6 +278,8 @@ model AcademyClass {
   teacherId          String                   @map("teacher_id") @db.Uuid
   level              String?                  @db.VarChar(100)
   capacity           Int
+  /// Formación (p. ej. Formación Docente): lo cobrado sale en "Formaciones", aparte de "Cuotas".
+  isTraining         Boolean                  @default(false) @map("is_training")
   status             RecordStatus             @default(ACTIVE)
   createdAt          DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)

@@ -53,15 +53,24 @@ export class ClassesController {
   @Post() @Permissions('offering:manage') create(@Body() input: CreateClassDto) {
     return this.service.create(input);
   }
-  @Patch(':id') @Permissions('classes:update') update(
+  @Patch(':id') @Permissions('classes:update') async update(
     @Param('id') id: string,
     @Body() input: UpdateClassDto,
     @CurrentUser() user: PublicAuthUser,
   ) {
+    const classId = parseUuid(id);
+    const manages = hasPermissions(user, ['offering:manage']);
     // Editar no incluye cambiar el estado: desactivar y reactivar siguen en offering:manage.
-    if (input?.status !== undefined && !hasPermissions(user, ['offering:manage']))
+    if (input?.status !== undefined && !manages)
       throw new DomainError('FORBIDDEN', 'Acción no permitida');
-    return this.service.update(parseUuid(id), input, user.id);
+    // Marcar una formación cambia cómo se informa la recaudación: tampoco entra en la edición.
+    if (
+      input?.isTraining !== undefined &&
+      !manages &&
+      (await this.service.get(classId)).isTraining !== input.isTraining
+    )
+      throw new DomainError('FORBIDDEN', 'Acción no permitida');
+    return this.service.update(classId, input, user.id);
   }
   @Delete(':id') @HttpCode(200) @Permissions('offering:manage') deactivate(
     @Param('id') id: string,
