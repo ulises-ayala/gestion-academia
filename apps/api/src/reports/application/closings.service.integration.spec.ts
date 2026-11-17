@@ -26,6 +26,7 @@ describe.runIf(integrationDatabaseEnabled)(
       const digits = [...token.replaceAll('-', '')]
         .map((character) => character.charCodeAt(0) % 10)
         .join('');
+      const studentLastName = `Prueba ${token}`;
       const actor = await prisma.adminUser.create({
         data: {
           username: `closing-${token}`,
@@ -33,95 +34,104 @@ describe.runIf(integrationDatabaseEnabled)(
           role: 'MANAGER',
         },
       });
-      const teacher = await prisma.teacher.create({
-        data: { dni: `7${digits.slice(0, 20)}`, firstName: 'Profe', lastName: `Cierre ${token}` },
-      });
-      const danceType = await prisma.danceType.create({
-        data: { name: `Cierre ${token}`, normalizedName: `closing-${token}` },
-      });
-      const student = await prisma.student.create({
-        data: { dni: `8${digits.slice(0, 20)}`, firstName: 'Cierre', lastName: `Prueba ${token}` },
-      });
-      const newClass = (name: string, isTraining: boolean) =>
-        prisma.academyClass.create({
-          data: {
-            name: `${name} ${token}`,
-            danceTypeId: danceType.id,
-            teacherId: teacher.id,
-            capacity: 20,
-            isTraining,
-          },
+      try {
+        const teacher = await prisma.teacher.create({
+          data: { dni: `7${digits.slice(0, 20)}`, firstName: 'Profe', lastName: `Cierre ${token}` },
         });
-      const regular = await newClass('Bachata', false);
-      const training = await newClass('Formación Docente', true);
-      // Un año lejano para no mezclarse con otros datos de la base de tests.
-      const startDate = new Date('2032-05-01T00:00:00.000Z');
-      const newCharge = async (classId: string, amount: number) => {
-        const enrollment = await prisma.enrollment.create({
-          data: { studentId: student.id, classId, startDate },
+        const danceType = await prisma.danceType.create({
+          data: { name: `Cierre ${token}`, normalizedName: `closing-${token}` },
         });
-        const charge = await prisma.monthlyCharge.create({
+        const student = await prisma.student.create({
+          data: { dni: `8${digits.slice(0, 20)}`, firstName: 'Cierre', lastName: studentLastName },
+        });
+        // Un año lejano para no mezclarse con otros datos de la base de tests.
+        const period = new Date('2032-05-01T00:00:00.000Z');
+        // Como en el sistema: cada clase con su tarifa, y la cuota mensual sale de esa tarifa (la
+        // base exige tarifa en toda cuota mensual: monthly_charges_kind_check).
+        const paidCharge = async (name: string, isTraining: boolean, amount: number) => {
+          const academyClass = await prisma.academyClass.create({
+            data: {
+              name: `${name} ${token}`,
+              danceTypeId: danceType.id,
+              teacherId: teacher.id,
+              capacity: 20,
+              isTraining,
+            },
+          });
+          const tariff = await prisma.tariff.create({
+            data: { classId: academyClass.id, name: 'Mensual', amount, validFrom: period },
+          });
+          const enrollment = await prisma.enrollment.create({
+            data: {
+              studentId: student.id,
+              classId: academyClass.id,
+              startDate: period,
+              tariffId: tariff.id,
+            },
+          });
+          const charge = await prisma.monthlyCharge.create({
+            data: {
+              studentId: student.id,
+              enrollmentId: enrollment.id,
+              tariffId: tariff.id,
+              period,
+              baseAmount: tariff.amount,
+              finalAmount: tariff.amount,
+              dueDate: new Date('2032-05-10T00:00:00.000Z'),
+              status: 'PAID',
+            },
+          });
+          return { academyClass, charge };
+        };
+        const regular = await paidCharge('Bachata', false, 25000);
+        const training = await paidCharge('Formación Docente', true, 75000);
+        const paidAt = new Date('2032-05-04T15:00:00.000Z');
+        // Un cobro de cuotas mixto: tres cuartos van a la formación.
+        await prisma.payment.create({
           data: {
             studentId: student.id,
-            enrollmentId: enrollment.id,
-            period: startDate,
-            baseAmount: amount,
-            finalAmount: amount,
-            dueDate: new Date('2032-05-10T00:00:00.000Z'),
-            status: 'PAID',
+            amount: '100000.00',
+            paidAt,
+            createdByUserId: actor.id,
+            tenders: {
+              create: [
+                { method: 'CASH', amount: '60000.00' },
+                { method: 'MERCADO_PAGO', amount: '40000.00' },
+              ],
+            },
+            allocations: {
+              create: [
+                { monthlyChargeId: regular.charge.id, amount: '25000.00' },
+                { monthlyChargeId: training.charge.id, amount: '75000.00' },
+              ],
+            },
           },
         });
-        return { enrollment, charge };
-      };
-      const regularCharge = await newCharge(regular.id, 25000);
-      const trainingCharge = await newCharge(training.id, 75000);
-      const paidAt = new Date('2032-05-04T15:00:00.000Z');
-      // Un cobro de cuotas mixto: tres cuartos van a la formación.
-      const charges = await prisma.payment.create({
-        data: {
-          studentId: student.id,
-          amount: '100000.00',
-          paidAt,
-          createdByUserId: actor.id,
-          tenders: {
-            create: [
-              { method: 'CASH', amount: '60000.00' },
-              { method: 'MERCADO_PAGO', amount: '40000.00' },
-            ],
+        // Una clase suelta de la formación va entera a Formaciones.
+        await prisma.payment.create({
+          data: {
+            studentId: student.id,
+            amount: '10000.00',
+            kind: 'OTHER',
+            concept: 'SINGLE_CLASS',
+            classId: training.academyClass.id,
+            teacherId: teacher.id,
+            paidAt,
+            createdByUserId: actor.id,
+            tenders: { create: [{ method: 'MERCADO_PAGO', amount: '10000.00' }] },
           },
-          allocations: {
-            create: [
-              { monthlyChargeId: regularCharge.charge.id, amount: '25000.00' },
-              { monthlyChargeId: trainingCharge.charge.id, amount: '75000.00' },
-            ],
+        });
+        const handover = await prisma.cashHandover.create({
+          data: {
+            fromDate: new Date('2032-05-03T00:00:00.000Z'),
+            toDate: new Date('2032-05-08T00:00:00.000Z'),
+            amount: '50000.00',
+            collectedAmount: '60000.00',
+            receivedBy: 'Dirección',
+            createdByUserId: actor.id,
           },
-        },
-      });
-      // Una clase suelta de la formación va entera a Formaciones.
-      const single = await prisma.payment.create({
-        data: {
-          studentId: student.id,
-          amount: '10000.00',
-          kind: 'OTHER',
-          concept: 'SINGLE_CLASS',
-          classId: training.id,
-          teacherId: teacher.id,
-          paidAt,
-          createdByUserId: actor.id,
-          tenders: { create: [{ method: 'MERCADO_PAGO', amount: '10000.00' }] },
-        },
-      });
-      const handover = await prisma.cashHandover.create({
-        data: {
-          fromDate: new Date('2032-05-03T00:00:00.000Z'),
-          toDate: new Date('2032-05-08T00:00:00.000Z'),
-          amount: '50000.00',
-          collectedAmount: '60000.00',
-          receivedBy: 'Dirección',
-          createdByUserId: actor.id,
-        },
-      });
-      try {
+        });
+
         const preview = await service.preview(
           'WEEKLY',
           { fromDate: '2032-05-03', toDate: '2032-05-08' },
@@ -147,17 +157,21 @@ describe.runIf(integrationDatabaseEnabled)(
         });
         expect(preview.handovers.items.map((item) => item.id)).toEqual([handover.id]);
       } finally {
-        await prisma.cashHandover.delete({ where: { id: handover.id } });
-        const paymentIds = [charges.id, single.id];
-        await prisma.paymentAllocation.deleteMany({ where: { paymentId: { in: paymentIds } } });
-        await prisma.paymentTender.deleteMany({ where: { paymentId: { in: paymentIds } } });
-        await prisma.payment.deleteMany({ where: { id: { in: paymentIds } } });
-        await prisma.monthlyCharge.deleteMany({ where: { studentId: student.id } });
-        await prisma.enrollment.deleteMany({ where: { studentId: student.id } });
-        await prisma.academyClass.deleteMany({ where: { id: { in: [regular.id, training.id] } } });
-        await prisma.danceType.delete({ where: { id: danceType.id } });
-        await prisma.student.delete({ where: { id: student.id } });
-        await prisma.teacher.delete({ where: { id: teacher.id } });
+        // Borra lo que se haya llegado a crear, aunque el armado falle a mitad de camino.
+        const ownPayments = { payment: { createdByUserId: actor.id } };
+        const ownClasses = { name: { endsWith: token } };
+        const ownStudent = { student: { lastName: studentLastName } };
+        await prisma.cashHandover.deleteMany({ where: { createdByUserId: actor.id } });
+        await prisma.paymentAllocation.deleteMany({ where: ownPayments });
+        await prisma.paymentTender.deleteMany({ where: ownPayments });
+        await prisma.payment.deleteMany({ where: { createdByUserId: actor.id } });
+        await prisma.monthlyCharge.deleteMany({ where: ownStudent });
+        await prisma.enrollment.deleteMany({ where: ownStudent });
+        await prisma.tariff.deleteMany({ where: { class: ownClasses } });
+        await prisma.academyClass.deleteMany({ where: ownClasses });
+        await prisma.danceType.deleteMany({ where: { normalizedName: `closing-${token}` } });
+        await prisma.student.deleteMany({ where: { lastName: studentLastName } });
+        await prisma.teacher.deleteMany({ where: { lastName: `Cierre ${token}` } });
         await prisma.adminUser.delete({ where: { id: actor.id } });
       }
     });
